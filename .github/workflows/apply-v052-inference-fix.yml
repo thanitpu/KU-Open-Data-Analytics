@@ -1,0 +1,43 @@
+name: Apply v0.5.2 numeric inference fix
+
+on:
+  push:
+    branches:
+      - hotfix/v0.5.2-numeric-inference
+    paths:
+      - .github/workflows/apply-v052-inference-fix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: hotfix/v0.5.2-numeric-inference
+      - name: Patch numeric measurement-level inference
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('src/app.js')
+          s=p.read_text(encoding='utf-8')
+          old="""    if(storage==='numeric'){\n      const mostlyInteger=vals.filter(v=>Number.isInteger(Number(v))).length/Math.max(1,vals.length)>=.95;\n      level=(mostlyInteger && unique.length<=7)?'Ordinal':'Scale';\n    } else {"""
+          new="""    if(storage==='numeric'){\n      // Numeric variables default to Scale. Only infer Ordinal when the column name\n      // itself provides a strong semantic hint that the values are ordered codes.\n      const name=String(h).toLowerCase().replace(/[^a-z0-9]+/g,'_');\n      const ordinalNameHint=/(^|_)(rating|rank|level|likert|grade|severity|stage|class|category|score_code|ordinal)($|_)/.test(name);\n      const nums=unique.map(v=>Number(v)).filter(Number.isFinite);\n      const mostlyInteger=vals.filter(v=>Number.isInteger(Number(v))).length/Math.max(1,vals.length)>=.95;\n      const compactOrderedCodes=nums.length>=2 && nums.length<=7 && nums.every(Number.isInteger) && Math.min(...nums)>=0 && Math.max(...nums)<=7;\n      level=(ordinalNameHint && mostlyInteger && compactOrderedCodes)?'Ordinal':'Scale';\n    } else {"""
+          if old not in s:
+              raise SystemExit('target inference block not found')
+          p.write_text(s.replace(old,new),encoding='utf-8')
+          PY
+      - name: Validate JavaScript
+        run: node --check src/app.js
+      - name: Commit patch
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/app.js
+          git commit -m 'Fix numeric measurement-level inference' || exit 0
+          git push
