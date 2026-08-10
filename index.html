@@ -21,3 +21,4 @@ function advisor(){let n=headers.filter(h=>types[h]==='numeric').length,c=header
 function usePaste(){try{parse($('paste').value)}catch(e){alert(e.message)}}function demo(){$('paste').value='Group,Score,Age,Satisfaction\nA,72,21,High\nA,81,22,High\nA,77,24,Medium\nB,88,20,High\nB,91,22,High\nB,79,25,Medium\nC,68,21,Low\nC,74,23,Medium\nC,77,26,High';usePaste()}function clearAll(){data=[];headers=[];types={};location.reload()}
 $('file').addEventListener('change',e=>{let f=e.target.files[0];if(!f)return,r=new FileReader;r.onload=()=>{try{parse(r.result)}catch(x){alert(x.message)}};r.readAsText(f)});['dragover','drop'].forEach(ev=>$('drop').addEventListener(ev,e=>e.preventDefault()));$('drop').addEventListener('drop',e=>{let f=e.dataTransfer.files[0];if(!f)return,r=new FileReader;r.onload=()=>{try{parse(r.result)}catch(x){alert(x.message)}};r.readAsText(f)});
 </script></body></html>
+
