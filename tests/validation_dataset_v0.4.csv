@@ -1,0 +1,13 @@
+ID,Group2,Group3,Score,Pre,Post,Age,Satisfaction
+1,A,A,72,60,66,21,High
+2,A,A,81,65,68,22,High
+3,A,A,77,70,74,24,Medium
+4,A,A,85,68,72,23,High
+5,A,B,79,72,75,25,Medium
+6,A,B,88,75,80,20,High
+7,B,B,88,64,68,20,High
+8,B,B,91,69,72,22,High
+9,B,C,79,71,75,25,Medium
+10,B,C,94,73,76,24,High
+11,B,C,86,76,80,23,High
+12,B,C,90,78,82,26,Medium

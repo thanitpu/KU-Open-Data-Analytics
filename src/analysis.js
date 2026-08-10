@@ -1,148 +1,31 @@
-function validScaleVars(){
-  return headers.filter(h=>meta[h]?.level==='Scale' && types[h]==='numeric');
-}
-function groupVars(){
-  return headers.filter(h=>meta[h]?.level!=='Scale' || types[h]!=='numeric');
-}
-function setOptions(id,vars){
-  const el=$(id); if(!el)return;
-  el.innerHTML=vars.length?vars.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join(''):'<option value="">No suitable variables</option>';
-}
-function refreshAnalysisSelectors(){
-  if(!headers.length)return;
-  const scales=validScaleVars(), groups=groupVars();
-  setOptions('freqVar',headers);
-  setOptions('anovaY',scales); setOptions('anovaGroup',groups);
-  setOptions('corrX',scales); setOptions('corrY',scales);
-  refreshTTestControls();
-}
-function rowsFor(h){ return data.map(r=>r[h]).filter(v=>v!=='' && v!=null); }
-function numRowsFor(h){ return data.map(r=>Number(r[h])).filter(Number.isFinite); }
+function validScaleVars(){return headers.filter(h=>meta[h]?.level==='Scale'&&types[h]==='numeric')}
+function groupVars(){return headers.filter(h=>meta[h]?.level!=='Scale'||types[h]!=='numeric')}
+function setOptions(id,vars){const el=$(id);if(!el)return;el.innerHTML=vars.length?vars.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join(''):'<option value="">No suitable variables</option>'}
+function refreshAnalysisSelectors(){if(!headers.length)return;const scales=validScaleVars(),groups=groupVars();setOptions('freqVar',headers);setOptions('anovaY',scales);setOptions('anovaGroup',groups);setOptions('corrX',scales);setOptions('corrY',scales);refreshTTestControls()}
+function numRowsFor(h){return data.map(r=>Number(r[h])).filter(Number.isFinite)}
 function sampleSD(a){if(a.length<2)return NaN;const m=mean(a);return Math.sqrt(a.reduce((s,x)=>s+(x-m)**2,0)/(a.length-1))}
-function p2FromT(t,df){if(typeof jStat==='undefined')return NaN;return 2*(1-jStat.studentt.cdf(Math.abs(t),df))}
-function pFromF(F,df1,df2){if(typeof jStat==='undefined')return NaN;return 1-jStat.centralF.cdf(F,df1,df2)}
-function pFmt(p){return Number.isFinite(p)?(p<0.001?'&lt; .001':p.toFixed(3)):'—'}
-function conclusion(p){
-  if(!Number.isFinite(p))return 'p-value unavailable.';
-  return p<0.05?'Statistically significant at α = .05.':'Not statistically significant at α = .05.';
-}
+function variance(a){const s=sampleSD(a);return s*s}
+function median(a){return q(a,.5)}
+function p2FromT(t,df){return typeof jStat==='undefined'?NaN:2*(1-jStat.studentt.cdf(Math.abs(t),df))}
+function pFromF(F,df1,df2){return typeof jStat==='undefined'?NaN:1-jStat.centralF.cdf(F,df1,df2)}
+function pFmt(p){return Number.isFinite(p)?(p<.001?'&lt; .001':p.toFixed(3)):'—'}
+function conclusion(p){if(!Number.isFinite(p))return 'p-value unavailable.';return p<.05?'Statistically significant at α = .05.':'Not statistically significant at α = .05.'}
 function resultNote(text){return `<div class="advisor" style="margin-top:12px">${text}</div>`}
-
-function runFrequency(){
-  const h=$('freqVar').value;if(!h)return;
-  const vals=data.map(r=>r[h]);
-  const valid=vals.filter(v=>v!==''); const missing=vals.length-valid.length;
-  if(valid.length===0){
-    $('freqResult').innerHTML=resultNote(`No valid observations are available for <b>${esc(h)}</b>. Missing = ${missing}.`);
-    return;
-  }
-  const counts={}; valid.forEach(v=>counts[v]=(counts[v]||0)+1);
-  const entries=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
-  let cum=0, out='<div class="table"><table><thead><tr><th>Value</th><th>Count</th><th>Percent</th><th>Cumulative %</th></tr></thead><tbody>';
-  entries.forEach(([v,n])=>{cum+=n;out+=`<tr><td>${esc(v)}</td><td>${n}</td><td>${(100*n/valid.length).toFixed(1)}%</td><td>${(100*cum/valid.length).toFixed(1)}%</td></tr>`});
-  out+='</tbody></table></div>';
-  out+=resultNote(`<b>N valid = ${valid.length}</b>; missing = ${missing}; unique values = ${entries.length}.`);
-  $('freqResult').innerHTML=out;
-}
-
-function refreshTTestControls(){
-  const box=$('ttestControls'); if(!box||!headers.length)return;
-  const type=$('ttestType')?.value||'one', scales=validScaleVars(), groups=groupVars();
-  if(type==='one'){
-    box.innerHTML=`<div class="row"><span class="note">Variable</span><select id="ttOneVar">${scales.map(v=>`<option>${esc(v)}</option>`).join('')}</select><span class="note">Test value</span><input id="ttMu" type="number" value="0" step="any"></div>`;
-  }else if(type==='independent'){
-    box.innerHTML=`<div class="row"><span class="note">Outcome</span><select id="ttIndY">${scales.map(v=>`<option>${esc(v)}</option>`).join('')}</select><span class="note">Group</span><select id="ttIndG">${groups.map(v=>`<option>${esc(v)}</option>`).join('')}</select></div><div class="note" style="margin-top:7px">The selected grouping variable must contain exactly two non-missing groups.</div>`;
-  }else{
-    box.innerHTML=`<div class="row"><span class="note">Variable 1</span><select id="ttPairA">${scales.map(v=>`<option>${esc(v)}</option>`).join('')}</select><span class="note">Variable 2</span><select id="ttPairB">${scales.map(v=>`<option>${esc(v)}</option>`).join('')}</select></div>`;
-  }
-}
-function runTTest(){
-  if(typeof jStat==='undefined'){$('ttestResult').innerHTML=resultNote('Statistical library could not be loaded.');return}
-  const type=$('ttestType').value;
-  if(type==='one'){
-    const h=$('ttOneVar').value,mu=Number($('ttMu').value),a=numRowsFor(h);
-    if(a.length<2)return $('ttestResult').innerHTML=resultNote('At least 2 valid observations are required.');
-    const m=mean(a),sd=sampleSD(a),se=sd/Math.sqrt(a.length);
-    if(!Number.isFinite(se) || se===0)return $('ttestResult').innerHTML=resultNote('The variable has zero or undefined variance, so a t-test cannot be computed.');
-    const t=(m-mu)/se,df=a.length-1,p=p2FromT(t,df);
-    $('ttestResult').innerHTML=`<div class="table"><table><tr><th>N</th><td>${a.length}</td><th>Mean</th><td>${f(m)}</td></tr><tr><th>SD</th><td>${f(sd)}</td><th>Test value</th><td>${f(mu)}</td></tr><tr><th>t</th><td>${f(t)}</td><th>df</th><td>${df}</td></tr><tr><th>p (two-sided)</th><td colspan="3">${pFmt(p)}</td></tr></table></div>`+resultNote(conclusion(p));
-  }else if(type==='independent'){
-    const y=$('ttIndY').value,g=$('ttIndG').value;
-    const levels=[...new Set(data.map(r=>r[g]).filter(v=>v!==''))];
-    if(levels.length!==2)return $('ttestResult').innerHTML=resultNote(`Grouping variable has ${levels.length} groups; exactly 2 are required.`);
-    const a=data.filter(r=>r[g]===levels[0]).map(r=>Number(r[y])).filter(Number.isFinite);
-    const b=data.filter(r=>r[g]===levels[1]).map(r=>Number(r[y])).filter(Number.isFinite);
-    if(a.length<2||b.length<2)return $('ttestResult').innerHTML=resultNote('Each group needs at least 2 valid observations.');
-    const m1=mean(a),m2=mean(b),s1=sampleSD(a),s2=sampleSD(b);
-    const v1=s1*s1/a.length,v2=s2*s2/b.length,se=Math.sqrt(v1+v2);
-    if(!Number.isFinite(se) || se===0)return $('ttestResult').innerHTML=resultNote('Both groups have zero or undefined variance, so Welch’s t-test cannot be computed.');
-    const t=(m1-m2)/se;
-    const denom=((v1*v1)/(a.length-1)+(v2*v2)/(b.length-1));
-    if(!Number.isFinite(denom) || denom===0)return $('ttestResult').innerHTML=resultNote('Welch degrees of freedom cannot be computed for these data.');
-    const df=(v1+v2)**2/denom,p=p2FromT(t,df);
-    $('ttestResult').innerHTML=`<div class="table"><table><thead><tr><th>Group</th><th>N</th><th>Mean</th><th>SD</th></tr></thead><tbody><tr><td>${esc(levels[0])}</td><td>${a.length}</td><td>${f(m1)}</td><td>${f(s1)}</td></tr><tr><td>${esc(levels[1])}</td><td>${b.length}</td><td>${f(m2)}</td><td>${f(s2)}</td></tr></tbody></table></div><div class="table" style="margin-top:10px"><table><tr><th>Welch t</th><td>${f(t)}</td><th>df</th><td>${f(df)}</td><th>p</th><td>${pFmt(p)}</td></tr></table></div>`+resultNote(conclusion(p)+' Welch’s test does not assume equal variances.');
-  }else{
-    const A=$('ttPairA').value,B=$('ttPairB').value;
-    const pairs=data.map(r=>[Number(r[A]),Number(r[B])]).filter(x=>Number.isFinite(x[0])&&Number.isFinite(x[1]));
-    if(pairs.length<2)return $('ttestResult').innerHTML=resultNote('At least 2 complete pairs are required.');
-    const d=pairs.map(x=>x[0]-x[1]),md=mean(d),sd=sampleSD(d),se=sd/Math.sqrt(d.length);
-    if(!Number.isFinite(se) || se===0)return $('ttestResult').innerHTML=resultNote('Paired differences have zero or undefined variance, so a paired t-test cannot be computed.');
-    const t=md/se,df=d.length-1,p=p2FromT(t,df);
-    $('ttestResult').innerHTML=`<div class="table"><table><tr><th>Complete pairs</th><td>${d.length}</td><th>Mean difference</th><td>${f(md)}</td></tr><tr><th>SD difference</th><td>${f(sd)}</td><th>t</th><td>${f(t)}</td></tr><tr><th>df</th><td>${df}</td><th>p</th><td>${pFmt(p)}</td></tr></table></div>`+resultNote(conclusion(p));
-  }
-}
-
-function runAnova(){
-  if(typeof jStat==='undefined')return $('anovaResult').innerHTML=resultNote('Statistical library could not be loaded.');
-  const y=$('anovaY').value,g=$('anovaGroup').value;
-  const groups={};
-  data.forEach(r=>{const gv=r[g],yv=Number(r[y]);if(gv!==''&&Number.isFinite(yv)){(groups[gv]??=[]).push(yv)}});
-  const entries=Object.entries(groups).filter(([_,a])=>a.length>0),k=entries.length;
-  if(k<3)return $('anovaResult').innerHTML=resultNote(`One-way ANOVA in KU Open Data Analytics requires at least 3 groups with valid observations. The selected grouping variable has ${k}. For exactly 2 groups, use the independent-samples t-test.`);
-  const all=entries.flatMap(x=>x[1]),grand=mean(all),N=all.length;
-  let ssb=0,ssw=0;
-  entries.forEach(([_,a])=>{const m=mean(a);ssb+=a.length*(m-grand)**2;ssw+=a.reduce((s,x)=>s+(x-m)**2,0)});
-  const dfb=k-1,dfw=N-k;
-  if(dfw<=0)return $('anovaResult').innerHTML=resultNote('ANOVA requires residual degrees of freedom. Add more observations within groups.');
-  const msb=ssb/dfb,msw=ssw/dfw;
-  if(!Number.isFinite(msw) || msw===0)return $('anovaResult').innerHTML=resultNote('Within-group variance is zero or undefined, so the ANOVA F statistic cannot be computed.');
-  const F=msb/msw,p=pFromF(F,dfb,dfw);
-  let desc='<div class="table"><table><thead><tr><th>Group</th><th>N</th><th>Mean</th><th>SD</th></tr></thead><tbody>';
-  entries.forEach(([name,a])=>desc+=`<tr><td>${esc(name)}</td><td>${a.length}</td><td>${f(mean(a))}</td><td>${f(sampleSD(a))}</td></tr>`);
-  desc+='</tbody></table></div>';
-  const eta=ssb/(ssb+ssw);
-  const an=`<div class="table" style="margin-top:10px"><table><thead><tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th><th>p</th></tr></thead><tbody><tr><td>Between</td><td>${f(ssb)}</td><td>${dfb}</td><td>${f(msb)}</td><td>${f(F)}</td><td>${pFmt(p)}</td></tr><tr><td>Within</td><td>${f(ssw)}</td><td>${dfw}</td><td>${f(msw)}</td><td></td><td></td></tr></tbody></table></div>`;
-  $('anovaResult').innerHTML=desc+an+resultNote(`${conclusion(p)} Effect size η² = ${f(eta)}. A significant omnibus ANOVA does not identify which groups differ; post-hoc tests will be added later.`);
-}
-
-function ranks(a){
-  const indexed=a.map((v,i)=>[v,i]).sort((x,y)=>x[0]-y[0]),out=Array(a.length);
-  for(let i=0;i<indexed.length;){
-    let j=i;while(j+1<indexed.length&&indexed[j+1][0]===indexed[i][0])j++;
-    const r=(i+j+2)/2;for(let k=i;k<=j;k++)out[indexed[k][1]]=r;i=j+1;
-  }
-  return out;
-}
-function pearson(a,b){
-  const ma=mean(a),mb=mean(b);
-  let num=0,da=0,db=0;
-  for(let i=0;i<a.length;i++){const x=a[i]-ma,y=b[i]-mb;num+=x*y;da+=x*x;db+=y*y}
-  return num/Math.sqrt(da*db);
-}
-function runCorrelation(){
-  if(typeof jStat==='undefined')return $('corrResult').innerHTML=resultNote('Statistical library could not be loaded.');
-  const x=$('corrX').value,y=$('corrY').value,type=$('corrType').value;
-  if(x===y)return $('corrResult').innerHTML=resultNote('Choose two different variables.');
-  const pairs=data.map(r=>[Number(r[x]),Number(r[y])]).filter(z=>Number.isFinite(z[0])&&Number.isFinite(z[1]));
-  if(pairs.length<3)return $('corrResult').innerHTML=resultNote('At least 3 complete pairs are required.');
-  let a=pairs.map(z=>z[0]),b=pairs.map(z=>z[1]);
-  if(type==='spearman'){a=ranks(a);b=ranks(b)}
-  const r=pearson(a,b);
-  if(!Number.isFinite(r))return $('corrResult').innerHTML=resultNote('Correlation cannot be computed because at least one variable has zero variance.');
-  const df=pairs.length-2;
-  const denom=1-r*r;
-  const t=denom<=0?(r>0?Infinity:-Infinity):r*Math.sqrt(df/denom);
-  const p=denom<=0?0:p2FromT(t,df);
-  const strength=Math.abs(r)<.1?'negligible':Math.abs(r)<.3?'weak':Math.abs(r)<.5?'moderate':Math.abs(r)<.7?'strong':'very strong';
-  $('corrResult').innerHTML=`<div class="table"><table><tr><th>Method</th><td>${type==='pearson'?'Pearson':'Spearman'}</td><th>N</th><td>${pairs.length}</td></tr><tr><th>Coefficient</th><td>${f(r)}</td><th>p (two-sided)</th><td>${pFmt(p)}</td></tr></table></div>`+resultNote(`${conclusion(p)} The observed association is ${strength} and ${r>=0?'positive':'negative'}. Correlation does not by itself establish causation.`);
-}
+function ciText(lo,hi){return `[${f(lo)}, ${f(hi)}]`}
+function tCritical95(df){return jStat.studentt.inv(.975,df)}
+function skewness(a){const n=a.length,m=mean(a),s=sampleSD(a);if(n<3||!s)return NaN;return n/((n-1)*(n-2))*a.reduce((z,x)=>z+((x-m)/s)**3,0)}
+function excessKurtosis(a){const n=a.length,m=mean(a),s=sampleSD(a);if(n<4||!s)return NaN;const z=a.reduce((z,x)=>z+((x-m)/s)**4,0);return (n*(n+1)/((n-1)*(n-2)*(n-3))*z)-(3*(n-1)**2/((n-2)*(n-3)))}
+function normalitySummary(a){const sk=skewness(a),ku=excessKurtosis(a);let msg=`Skewness = ${f(sk)}; excess kurtosis = ${f(ku)}. `;if(a.length<8)msg+='Small samples make distribution diagnostics uncertain; inspect the Q–Q plot.';else if(Math.abs(sk)<=1&&Math.abs(ku)<=2)msg+='No strong shape warning from these descriptive diagnostics; still inspect the Q–Q plot.';else msg+='The distribution shows noticeable skewness and/or tail departure; inspect the Q–Q plot and consider robustness/non-parametric alternatives.';return msg}
+function clearNamedCanvas(id,text){const c=$(id);if(!c)return;const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);x.fillStyle='#879080';x.textAlign='center';x.font='13px system-ui';x.fillText(text,c.width/2,c.height/2)}
+function drawQQ(a,id){const c=$(id);if(!c)return;const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);if(a.length<3){clearNamedCanvas(id,'At least 3 observations are needed for a Q–Q plot');return}const obs=[...a].sort((u,v)=>u-v),m=mean(obs),sd=sampleSD(obs);const theo=obs.map((_,i)=>jStat.normal.inv((i+.5)/obs.length,0,1));const ymin=Math.min(...obs),ymax=Math.max(...obs),xmin=Math.min(...theo),xmax=Math.max(...theo);const P={l:48,r:18,t:24,b:42},W=c.width-P.l-P.r,H=c.height-P.t-P.b;const sx=v=>P.l+(v-xmin)/(xmax-xmin||1)*W,sy=v=>P.t+H-(v-ymin)/(ymax-ymin||1)*H;x.strokeStyle='#bcc7b3';x.strokeRect(P.l,P.t,W,H);x.strokeStyle='#879080';x.beginPath();x.moveTo(sx(xmin),sy(m+sd*xmin));x.lineTo(sx(xmax),sy(m+sd*xmax));x.stroke();x.fillStyle='#425d13';obs.forEach((v,i)=>{x.beginPath();x.arc(sx(theo[i]),sy(v),3,0,Math.PI*2);x.fill()});x.fillStyle='#364033';x.font='11px system-ui';x.textAlign='center';x.fillText('Theoretical normal quantiles',P.l+W/2,c.height-10)}
+function drawScatter(a,b,xlab,ylab,id){const c=$(id);if(!c)return;const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);let xmin=Math.min(...a),xmax=Math.max(...a),ymin=Math.min(...b),ymax=Math.max(...b);const P={l:50,r:18,t:24,b:46},W=c.width-P.l-P.r,H=c.height-P.t-P.b;const sx=v=>P.l+(v-xmin)/(xmax-xmin||1)*W,sy=v=>P.t+H-(v-ymin)/(ymax-ymin||1)*H;ctx.strokeStyle='#bcc7b3';ctx.strokeRect(P.l,P.t,W,H);ctx.fillStyle='#425d13';a.forEach((v,i)=>{ctx.beginPath();ctx.arc(sx(v),sy(b[i]),3.2,0,Math.PI*2);ctx.fill()});const ma=mean(a),mb=mean(b),den=a.reduce((s,v)=>s+(v-ma)**2,0);if(den>0){const slope=a.reduce((s,v,i)=>s+(v-ma)*(b[i]-mb),0)/den,inter=mb-slope*ma;ctx.strokeStyle='#879080';ctx.beginPath();ctx.moveTo(sx(xmin),sy(inter+slope*xmin));ctx.lineTo(sx(xmax),sy(inter+slope*xmax));ctx.stroke()}ctx.fillStyle='#364033';ctx.font='11px system-ui';ctx.textAlign='center';ctx.fillText(xlab,P.l+W/2,c.height-10);ctx.save();ctx.translate(12,P.t+H/2);ctx.rotate(-Math.PI/2);ctx.fillText(ylab,0,0);ctx.restore()}
+function drawGroupBoxplots(entries,id){const c=$(id);if(!c)return;const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);const all=entries.flatMap(e=>e[1]),ymin=Math.min(...all),ymax=Math.max(...all),P={l:48,r:18,t:24,b:50},W=c.width-P.l-P.r,H=c.height-P.t-P.b;const sy=v=>P.t+H-(v-ymin)/(ymax-ymin||1)*H;ctx.strokeStyle='#bcc7b3';ctx.strokeRect(P.l,P.t,W,H);const slot=W/entries.length;entries.forEach(([name,a],i)=>{const s=[...a].sort((u,v)=>u-v),q1=q(s,.25),med=q(s,.5),q3=q(s,.75),iqr=q3-q1,lo=Math.max(s[0],q1-1.5*iqr),hi=Math.min(s[s.length-1],q3+1.5*iqr),cx=P.l+slot*(i+.5),bw=Math.min(52,slot*.55);ctx.strokeStyle='#425d13';ctx.strokeRect(cx-bw/2,sy(q3),bw,sy(q1)-sy(q3));ctx.beginPath();ctx.moveTo(cx-bw/2,sy(med));ctx.lineTo(cx+bw/2,sy(med));ctx.moveTo(cx,sy(q3));ctx.lineTo(cx,sy(hi));ctx.moveTo(cx,sy(q1));ctx.lineTo(cx,sy(lo));ctx.stroke();ctx.fillStyle='#364033';ctx.font='11px system-ui';ctx.textAlign='center';ctx.fillText(name,cx,P.t+H+22)})}
+function oneWayF(arrays){const k=arrays.length,all=arrays.flat(),N=all.length,grand=mean(all);let ssb=0,ssw=0;arrays.forEach(a=>{const m=mean(a);ssb+=a.length*(m-grand)**2;ssw+=a.reduce((s,x)=>s+(x-m)**2,0)});const dfb=k-1,dfw=N-k,msb=ssb/dfb,msw=ssw/dfw,F=msb/msw;return {F,p:pFromF(F,dfb,dfw),dfb,dfw,ssb,ssw,msb,msw,N}}
+function brownForsythe(arrays){if(arrays.some(a=>a.length<2))return {F:NaN,p:NaN};const z=arrays.map(a=>{const med=median(a);return a.map(v=>Math.abs(v-med))});return oneWayF(z)}
+function runFrequency(){const h=$('freqVar').value;if(!h)return;const vals=data.map(r=>r[h]),valid=vals.filter(v=>v!==''),missing=vals.length-valid.length;if(!valid.length){$('freqResult').innerHTML=resultNote(`No valid observations are available for <b>${esc(h)}</b>. Missing = ${missing}.`);return}const counts={};valid.forEach(v=>counts[v]=(counts[v]||0)+1);const entries=Object.entries(counts).sort((a,b)=>b[1]-a[1]);let cum=0,out='<div class="table"><table><thead><tr><th>Value</th><th>Count</th><th>Percent</th><th>Cumulative %</th></tr></thead><tbody>';entries.forEach(([v,n])=>{cum+=n;out+=`<tr><td>${esc(v)}</td><td>${n}</td><td>${(100*n/valid.length).toFixed(1)}%</td><td>${(100*cum/valid.length).toFixed(1)}%</td></tr>`});$('freqResult').innerHTML=out+'</tbody></table></div>'+resultNote(`<b>N valid = ${valid.length}</b>; missing = ${missing}; unique values = ${entries.length}.`)}
+function refreshTTestControls(){const box=$('ttestControls');if(!box||!headers.length)return;const type=$('ttestType')?.value||'one',scales=validScaleVars(),groups=groupVars();if(type==='one')box.innerHTML=`<div class="row"><span class="note">Variable</span><select id="ttOneVar">${scales.map(v=>`<option>${esc(v)}</option>`).join('')}</select><span class="note">Test value</span><input id="ttMu" type="number" value="0" step="any"></div>`;else if(type==='independent')box.innerHTML=`<div class="row"><span class="note">Outcome</span><select id="ttIndY">${scales.map(v=>`<option>${esc(v)}</option>`).join('')}</select><span class="note">Group</span><select id="ttIndG">${groups.map(v=>`<option>${esc(v)}</option>`).join('')}</select></div><div class="note" style="margin-top:7px">Exactly two non-missing groups are required. Welch’s test is used by default.</div>`;else box.innerHTML=`<div class="row"><span class="note">Variable 1</span><select id="ttPairA">${scales.map(v=>`<option>${esc(v)}</option>`).join('')}</select><span class="note">Variable 2</span><select id="ttPairB">${scales.map(v=>`<option>${esc(v)}</option>`).join('')}</select></div>`}
+function runTTest(){if(typeof jStat==='undefined')return $('ttestResult').innerHTML=resultNote('Statistical library could not be loaded.');const type=$('ttestType').value;if(type==='one'){const h=$('ttOneVar').value,mu=Number($('ttMu').value),a=numRowsFor(h);if(a.length<2)return $('ttestResult').innerHTML=resultNote('At least 2 valid observations are required.');const m=mean(a),sd=sampleSD(a),se=sd/Math.sqrt(a.length);if(!se)return $('ttestResult').innerHTML=resultNote('Zero or undefined variance prevents a t-test.');const df=a.length-1,t=(m-mu)/se,p=p2FromT(t,df),crit=tCritical95(df),diff=m-mu,lo=diff-crit*se,hi=diff+crit*se,d=diff/sd;$('ttestResult').innerHTML=`<div class="analysis-summary"><div class="metric"><small>Mean difference</small><b>${f(diff)}</b></div><div class="metric"><small>95% CI</small><b>${ciText(lo,hi)}</b></div><div class="metric"><small>Cohen's d</small><b>${f(d)}</b></div></div><div class="table"><table><tr><th>N</th><td>${a.length}</td><th>Mean</th><td>${f(m)}</td><th>SD</th><td>${f(sd)}</td></tr><tr><th>t</th><td>${f(t)}</td><th>df</th><td>${df}</td><th>p</th><td>${pFmt(p)}</td></tr></table></div>`+resultNote(conclusion(p));drawQQ(a,'ttestQQ');$('ttestDiagNote').textContent=normalitySummary(a)}else if(type==='independent'){const y=$('ttIndY').value,g=$('ttIndG').value,levels=[...new Set(data.map(r=>r[g]).filter(v=>v!==''))];if(levels.length!==2)return $('ttestResult').innerHTML=resultNote(`Grouping variable has ${levels.length} groups; exactly 2 are required.`);const a=data.filter(r=>r[g]===levels[0]).map(r=>Number(r[y])).filter(Number.isFinite),b=data.filter(r=>r[g]===levels[1]).map(r=>Number(r[y])).filter(Number.isFinite);if(a.length<2||b.length<2)return $('ttestResult').innerHTML=resultNote('Each group needs at least 2 valid observations.');const m1=mean(a),m2=mean(b),s1=sampleSD(a),s2=sampleSD(b),v1=s1*s1/a.length,v2=s2*s2/b.length,se=Math.sqrt(v1+v2);if(!se)return $('ttestResult').innerHTML=resultNote('Variance is insufficient for Welch’s t-test.');const df=(v1+v2)**2/((v1*v1)/(a.length-1)+(v2*v2)/(b.length-1)),diff=m1-m2,t=diff/se,p=p2FromT(t,df),crit=tCritical95(df),lo=diff-crit*se,hi=diff+crit*se;const sp=Math.sqrt(((a.length-1)*s1*s1+(b.length-1)*s2*s2)/(a.length+b.length-2)),d=diff/sp,J=1-3/(4*(a.length+b.length)-9),gg=J*d,bf=brownForsythe([a,b]);$('ttestResult').innerHTML=`<div class="analysis-summary"><div class="metric"><small>Mean difference</small><b>${f(diff)}</b></div><div class="metric"><small>95% CI</small><b>${ciText(lo,hi)}</b></div><div class="metric"><small>Hedges' g</small><b>${f(gg)}</b></div></div><div class="table"><table><thead><tr><th>Group</th><th>N</th><th>Mean</th><th>SD</th></tr></thead><tbody><tr><td>${esc(levels[0])}</td><td>${a.length}</td><td>${f(m1)}</td><td>${f(s1)}</td></tr><tr><td>${esc(levels[1])}</td><td>${b.length}</td><td>${f(m2)}</td><td>${f(s2)}</td></tr></tbody></table></div><div class="table" style="margin-top:10px"><table><tr><th>Welch t</th><td>${f(t)}</td><th>df</th><td>${f(df)}</td><th>p</th><td>${pFmt(p)}</td></tr><tr><th>Brown–Forsythe F</th><td>${f(bf.F)}</td><th>p</th><td>${pFmt(bf.p)}</td><td colspan="2">Variance diagnostic</td></tr></table></div>`+resultNote(conclusion(p)+' Welch’s test does not require equal variances.');const residuals=[...a.map(v=>v-m1),...b.map(v=>v-m2)];drawQQ(residuals,'ttestQQ');$('ttestDiagNote').textContent=normalitySummary(residuals)}else{const A=$('ttPairA').value,B=$('ttPairB').value,pairs=data.map(r=>[Number(r[A]),Number(r[B])]).filter(x=>Number.isFinite(x[0])&&Number.isFinite(x[1]));if(pairs.length<2)return $('ttestResult').innerHTML=resultNote('At least 2 complete pairs are required.');const dvals=pairs.map(x=>x[0]-x[1]),md=mean(dvals),sd=sampleSD(dvals),se=sd/Math.sqrt(dvals.length);if(!se)return $('ttestResult').innerHTML=resultNote('Paired differences have zero or undefined variance.');const df=dvals.length-1,t=md/se,p=p2FromT(t,df),crit=tCritical95(df),lo=md-crit*se,hi=md+crit*se,dz=md/sd;$('ttestResult').innerHTML=`<div class="analysis-summary"><div class="metric"><small>Mean difference</small><b>${f(md)}</b></div><div class="metric"><small>95% CI</small><b>${ciText(lo,hi)}</b></div><div class="metric"><small>Cohen's dz</small><b>${f(dz)}</b></div></div><div class="table"><table><tr><th>Complete pairs</th><td>${dvals.length}</td><th>SD difference</th><td>${f(sd)}</td></tr><tr><th>t</th><td>${f(t)}</td><th>df</th><td>${df}</td><th>p</th><td>${pFmt(p)}</td></tr></table></div>`+resultNote(conclusion(p));drawQQ(dvals,'ttestQQ');$('ttestDiagNote').textContent=normalitySummary(dvals)}}
+function runAnova(){if(typeof jStat==='undefined')return $('anovaResult').innerHTML=resultNote('Statistical library could not be loaded.');const y=$('anovaY').value,g=$('anovaGroup').value,groups={};data.forEach(r=>{const gv=r[g],yv=Number(r[y]);if(gv!==''&&Number.isFinite(yv))(groups[gv]??=[]).push(yv)});const entries=Object.entries(groups).filter(([_,a])=>a.length>0),k=entries.length;if(k<3)return $('anovaResult').innerHTML=resultNote(`One-way ANOVA requires at least 3 groups; ${k} found. For two groups, use the independent-samples t-test.`);if(entries.some(([_,a])=>a.length<2))return $('anovaResult').innerHTML=resultNote('Each ANOVA group needs at least 2 valid observations so variance diagnostics and group confidence intervals can be computed.');const arrays=entries.map(e=>e[1]),st=oneWayF(arrays);if(st.dfw<=0||!Number.isFinite(st.msw)||st.msw===0)return $('anovaResult').innerHTML=resultNote('Residual variance/degrees of freedom are insufficient for ANOVA.');const eta=st.ssb/(st.ssb+st.ssw),omega=(st.ssb-st.dfb*st.msw)/(st.ssb+st.ssw+st.msw),bf=brownForsythe(arrays);let desc='<div class="table"><table><thead><tr><th>Group</th><th>N</th><th>Mean</th><th>SD</th><th>95% CI mean</th></tr></thead><tbody>';entries.forEach(([name,a])=>{const m=mean(a),sd=sampleSD(a),se=sd/Math.sqrt(a.length),crit=tCritical95(a.length-1);desc+=`<tr><td>${esc(name)}</td><td>${a.length}</td><td>${f(m)}</td><td>${f(sd)}</td><td>${ciText(m-crit*se,m+crit*se)}</td></tr>`});desc+='</tbody></table></div>';let post='<div class="subhead">Tukey–Kramer post-hoc comparisons</div><div class="table"><table><thead><tr><th>Comparison</th><th>Mean diff.</th><th>95% simultaneous CI</th><th>p adj.</th><th>Significant</th></tr></thead><tbody>';const qcrit=jStat.tukey.inv(.95,k,st.dfw);for(let i=0;i<entries.length;i++)for(let j=i+1;j<entries.length;j++){const [ni,ai]=entries[i],[nj,aj]=entries[j],diff=mean(ai)-mean(aj),se=Math.sqrt(st.msw/2*(1/ai.length+1/aj.length)),qs=Math.abs(diff)/se,padj=1-jStat.tukey.cdf(qs,k,st.dfw),lo=diff-qcrit*se,hi=diff+qcrit*se;post+=`<tr><td>${esc(ni)} − ${esc(nj)}</td><td>${f(diff)}</td><td>${ciText(lo,hi)}</td><td>${pFmt(padj)}</td><td>${padj<.05?'Yes':'No'}</td></tr>`}post+='</tbody></table></div>';const an=`<div class="analysis-summary"><div class="metric"><small>η²</small><b>${f(eta)}</b></div><div class="metric"><small>ω²</small><b>${f(omega)}</b></div><div class="metric"><small>Brown–Forsythe p</small><b>${pFmt(bf.p)}</b></div></div><div class="table"><table><thead><tr><th>Source</th><th>SS</th><th>df</th><th>MS</th><th>F</th><th>p</th></tr></thead><tbody><tr><td>Between</td><td>${f(st.ssb)}</td><td>${st.dfb}</td><td>${f(st.msb)}</td><td>${f(st.F)}</td><td>${pFmt(st.p)}</td></tr><tr><td>Within</td><td>${f(st.ssw)}</td><td>${st.dfw}</td><td>${f(st.msw)}</td><td></td><td></td></tr></tbody></table></div>`;$('anovaResult').innerHTML=desc+an+post+resultNote(conclusion(st.p)+' Tukey–Kramer controls family-wise error across pairwise comparisons.');drawGroupBoxplots(entries,'anovaPlot');$('anovaDiagNote').textContent=`Brown–Forsythe median-centered variance test: F = ${f(bf.F)}, p = ${Number.isFinite(bf.p)?bf.p.toFixed(3):'—'}. ${bf.p<.05?'Group variances show evidence of heterogeneity; classical ANOVA/Tukey assumptions deserve caution.':'No statistically significant variance-heterogeneity signal at α = .05.'}`}
+function ranks(a){const indexed=a.map((v,i)=>[v,i]).sort((x,y)=>x[0]-y[0]),out=Array(a.length);for(let i=0;i<indexed.length;){let j=i;while(j+1<indexed.length&&indexed[j+1][0]===indexed[i][0])j++;const r=(i+j+2)/2;for(let k=i;k<=j;k++)out[indexed[k][1]]=r;i=j+1}return out}
+function pearson(a,b){const ma=mean(a),mb=mean(b);let num=0,da=0,db=0;for(let i=0;i<a.length;i++){const x=a[i]-ma,y=b[i]-mb;num+=x*y;da+=x*x;db+=y*y}return num/Math.sqrt(da*db)}
+function runCorrelation(){if(typeof jStat==='undefined')return $('corrResult').innerHTML=resultNote('Statistical library could not be loaded.');const xv=$('corrX').value,yv=$('corrY').value,type=$('corrType').value;if(xv===yv)return $('corrResult').innerHTML=resultNote('Choose two different variables.');const pairs=data.map(r=>[Number(r[xv]),Number(r[yv])]).filter(z=>Number.isFinite(z[0])&&Number.isFinite(z[1]));if(pairs.length<3)return $('corrResult').innerHTML=resultNote('At least 3 complete pairs are required.');const rawA=pairs.map(z=>z[0]),rawB=pairs.map(z=>z[1]);let a=rawA,b=rawB;if(type==='spearman'){a=ranks(a);b=ranks(b)}const rRaw=pearson(a,b);if(!Number.isFinite(rRaw))return $('corrResult').innerHTML=resultNote('Correlation cannot be computed because at least one variable has zero variance.');const r=Math.max(-1,Math.min(1,rRaw));const df=pairs.length-2,denom=1-r*r,t=denom<=0?(r>0?Infinity:-Infinity):r*Math.sqrt(df/denom),p=denom<=0?0:p2FromT(t,df);let ci=type==='pearson'?(Math.abs(r)>=1?ciText(r,r):'—'):'Not reported for Spearman in v0.4';if(type==='pearson'&&Math.abs(r)<1&&pairs.length>3){const z=.5*Math.log((1+r)/(1-r)),se=1/Math.sqrt(pairs.length-3),loz=z-1.959964*se,hiz=z+1.959964*se,back=z=>Math.tanh(z);ci=ciText(back(loz),back(hiz))}const strength=Math.abs(r)<.1?'negligible':Math.abs(r)<.3?'weak':Math.abs(r)<.5?'moderate':Math.abs(r)<.7?'strong':'very strong';$('corrResult').innerHTML=`<div class="analysis-summary"><div class="metric"><small>${type==='pearson'?'Pearson r':'Spearman ρ'}</small><b>${f(r)}</b></div><div class="metric"><small>95% CI</small><b>${ci}</b></div><div class="metric"><small>N</small><b>${pairs.length}</b></div></div><div class="table"><table><tr><th>Method</th><td>${type==='pearson'?'Pearson':'Spearman'}</td><th>p (two-sided)</th><td>${pFmt(p)}</td></tr></table></div>`+resultNote(`${conclusion(p)} The observed association is ${strength} and ${r>=0?'positive':'negative'}. Correlation does not establish causation.`);drawScatter(rawA,rawB,xv,yv,'corrPlot');$('corrDiagNote').textContent=type==='pearson'?'Inspect the scatterplot for nonlinearity, influential observations, and changing spread before interpreting Pearson correlation.':'Spearman correlation is rank-based; inspect the scatterplot for a generally monotonic relationship.'}

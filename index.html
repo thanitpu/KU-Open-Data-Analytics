@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>KU Open Data Analytics v0.3</title>
+<title>KU Open Data Analytics v0.4</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jstat@1.9.6/dist/jstat.min.js"></script>
 <link rel="stylesheet" href="src/app.css">
@@ -122,7 +122,7 @@
 <section id="analysisView" class="hidden">
   <div class="row" style="margin:0 0 14px">
     <button class="btn" onclick="showView('workspace')">← Back to Data Workspace</button>
-    <span class="pill">v0.3 Core Analysis</span>
+    <span class="pill">v0.4 Inference & Diagnostics</span>
   </div>
 
   <section id="frequencyPanel" class="analysis-panel hidden">
@@ -155,6 +155,7 @@
       </div>
     </section>
     <section class="card"><div class="head">Results</div><div class="body" id="ttestResult"><div class="empty">Configure and run the test.</div></div></section>
+    <section class="card"><div class="head">Normality diagnostic</div><div class="body"><canvas id="ttestQQ" width="760" height="300"></canvas><div class="note" id="ttestDiagNote" style="margin-top:8px">Run a t-test to inspect a Q–Q diagnostic.</div></div></section>
   </section>
 
   <section id="anovaPanel" class="analysis-panel hidden">
@@ -171,6 +172,7 @@
       </div>
     </section>
     <section class="card"><div class="head">Results</div><div class="body" id="anovaResult"><div class="empty">Select variables and run the analysis.</div></div></section>
+    <section class="card"><div class="head">Diagnostics & group visualization</div><div class="body"><canvas id="anovaPlot" width="760" height="320"></canvas><div class="note" id="anovaDiagNote" style="margin-top:8px">Run ANOVA to inspect group distributions and variance diagnostics.</div></div></section>
   </section>
 
   <section id="correlationPanel" class="analysis-panel hidden">
@@ -187,6 +189,7 @@
       </div>
     </section>
     <section class="card"><div class="head">Results</div><div class="body" id="corrResult"><div class="empty">Select variables and run the analysis.</div></div></section>
+    <section class="card"><div class="head">Scatterplot</div><div class="body"><canvas id="corrPlot" width="760" height="320"></canvas><div class="note" id="corrDiagNote" style="margin-top:8px">Run correlation to inspect the relationship visually.</div></div></section>
   </section>
 </section>
 
