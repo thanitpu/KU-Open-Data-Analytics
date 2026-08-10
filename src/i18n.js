@@ -5,7 +5,9 @@ const TH={
 let lang=localStorage.getItem('ku_lang')||'th';const originals=new WeakMap();
 function trText(node){if(!originals.has(node))originals.set(node,node.nodeValue);const s=originals.get(node),t=s.trim();if(lang==='th'&&TH[t]){const l=(s.match(/^\s*/)||[''])[0],r=(s.match(/\s*$/)||[''])[0];node.nodeValue=l+TH[t]+r}else node.nodeValue=s;}
 function tree(root){if(!root)return;const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode())if(n.nodeValue.trim())trText(n);}
+function ensureSwitch(){if(document.getElementById('langTH'))return;const actions=document.querySelector('.actions');if(!actions)return;const box=document.createElement('div');box.className='lang-switch';box.setAttribute('role','group');box.setAttribute('aria-label','Language');box.innerHTML='<button class="lang-btn" id="langTH" type="button">TH</button><button class="lang-btn" id="langEN" type="button">EN</button>';actions.insertBefore(box,actions.firstChild);document.getElementById('langTH').onclick=()=>setLanguage('th');document.getElementById('langEN').onclick=()=>setLanguage('en');}
 window.setLanguage=function(v){lang=v==='en'?'en':'th';localStorage.setItem('ku_lang',lang);document.documentElement.lang=lang;tree(document.body);document.getElementById('langTH')?.classList.toggle('active',lang==='th');document.getElementById('langEN')?.classList.toggle('active',lang==='en');};
 const ob=new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===3&&n.nodeValue.trim())trText(n);else if(n.nodeType===1)tree(n)})));
-window.addEventListener('DOMContentLoaded',()=>{ob.observe(document.body,{childList:true,subtree:true});setLanguage(lang)});
+window.addEventListener('DOMContentLoaded',()=>{ensureSwitch();ob.observe(document.body,{childList:true,subtree:true});setLanguage(lang)});
+if(document.readyState!=='loading'){ensureSwitch();ob.observe(document.body,{childList:true,subtree:true});setLanguage(lang)}
 })();
