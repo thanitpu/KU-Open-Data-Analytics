@@ -101,8 +101,14 @@ function inferMetadata(){
     const unique=[...new Set(vals)];
     let level='Nominal';
     if(storage==='numeric'){
+      // Numeric variables default to Scale. Only infer Ordinal when the column name
+      // itself provides a strong semantic hint that the values are ordered codes.
+      const name=String(h).toLowerCase().replace(/[^a-z0-9]+/g,'_');
+      const ordinalNameHint=/(^|_)(rating|rank|level|likert|grade|severity|stage|class|category|score_code|ordinal)($|_)/.test(name);
+      const nums=unique.map(v=>Number(v)).filter(Number.isFinite);
       const mostlyInteger=vals.filter(v=>Number.isInteger(Number(v))).length/Math.max(1,vals.length)>=.95;
-      level=(mostlyInteger && unique.length<=7)?'Ordinal':'Scale';
+      const compactOrderedCodes=nums.length>=2 && nums.length<=7 && nums.every(Number.isInteger) && Math.min(...nums)>=0 && Math.max(...nums)<=7;
+      level=(ordinalNameHint && mostlyInteger && compactOrderedCodes)?'Ordinal':'Scale';
     } else {
       const orderWords=['low','medium','high','poor','fair','good','very good','excellent','strongly disagree','disagree','neutral','agree','strongly agree'];
       const normalized=unique.map(v=>String(v).toLowerCase());
