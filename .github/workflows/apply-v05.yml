@@ -1,0 +1,33 @@
+name: Apply v0.5 branch patch
+on:
+  push:
+    branches: [feature/categorical-regression-v0.5]
+    paths: [.github/workflows/apply-v05.yml]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/categorical-regression-v0.5
+      - name: Patch index for v0.5
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          s=s.replace('KU Open Data Analytics v0.4','KU Open Data Analytics v0.5')
+          s=s.replace('v0.4 Inference & Diagnostics','v0.5 Categorical & Regression')
+          if 'src/v05.js' not in s:
+              s=s.replace('<script src="src/analysis.js"></script>','<script src="src/analysis.js"></script>\n<script src="src/v05.js"></script>')
+          p.write_text(s)
+          PY
+      - name: Commit patch
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add index.html
+          git diff --cached --quiet || git commit -m "Wire v0.5 categorical and regression module"
+          git push
