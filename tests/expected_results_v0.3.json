@@ -1,0 +1,61 @@
+{
+  "one_sample_t_test": {
+    "variable": "Score",
+    "test_value": 80,
+    "n": 12,
+    "mean": 84.16666666666667,
+    "sd": 6.562058065927645,
+    "t": 2.1995777216122874,
+    "df": 11,
+    "p_two_sided": 0.05012306485218973
+  },
+  "welch_independent_t_test": {
+    "outcome": "Score",
+    "group": "Group2",
+    "groups": {
+      "A": {"n": 6, "mean": 80.33333333333333, "sd": 5.715476066494083},
+      "B": {"n": 6, "mean": 88.0, "sd": 5.176871642217914}
+    },
+    "t": -2.435260411853855,
+    "df": 9.903610618764063,
+    "p_two_sided": 0.03535205963417622
+  },
+  "paired_t_test": {
+    "variable_1": "Post",
+    "variable_2": "Pre",
+    "n_pairs": 12,
+    "mean_difference_Post_minus_Pre": 3.9166666666666665,
+    "sd_difference": 0.90033663737852,
+    "t": 15.069620364956949,
+    "df": 11,
+    "p_two_sided": 1.0854287030823325e-08
+  },
+  "one_way_anova": {
+    "outcome": "Score",
+    "group": "Group3",
+    "group_stats": {
+      "A": {"n": 4, "mean": 78.75, "sd": 5.560275772537426},
+      "B": {"n": 4, "mean": 86.5, "sd": 5.196152422706632},
+      "C": {"n": 4, "mean": 87.25, "sd": 6.3966136874651625}
+    },
+    "F": 2.6888701517706575,
+    "df_between": 2,
+    "df_within": 9,
+    "p": 0.12147402871768853,
+    "eta_squared": 0.3740323715693174
+  },
+  "pearson_correlation": {
+    "x": "Score",
+    "y": "Age",
+    "n": 12,
+    "r": -0.019872306088922622,
+    "p_two_sided": 0.951121237992447
+  },
+  "spearman_correlation": {
+    "x": "Score",
+    "y": "Age",
+    "n": 12,
+    "rho": -0.06725758528081144,
+    "p_two_sided": 0.8354775353886608
+  }
+}
