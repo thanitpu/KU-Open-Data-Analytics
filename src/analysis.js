@@ -32,6 +32,10 @@ function runFrequency(){
   const h=$('freqVar').value;if(!h)return;
   const vals=data.map(r=>r[h]);
   const valid=vals.filter(v=>v!==''); const missing=vals.length-valid.length;
+  if(valid.length===0){
+    $('freqResult').innerHTML=resultNote(`No valid observations are available for <b>${esc(h)}</b>. Missing = ${missing}.`);
+    return;
+  }
   const counts={}; valid.forEach(v=>counts[v]=(counts[v]||0)+1);
   const entries=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
   let cum=0, out='<div class="table"><table><thead><tr><th>Value</th><th>Count</th><th>Percent</th><th>Cumulative %</th></tr></thead><tbody>';
@@ -94,7 +98,7 @@ function runAnova(){
   const groups={};
   data.forEach(r=>{const gv=r[g],yv=Number(r[y]);if(gv!==''&&Number.isFinite(yv)){(groups[gv]??=[]).push(yv)}});
   const entries=Object.entries(groups).filter(([_,a])=>a.length>0),k=entries.length;
-  if(k<2)return $('anovaResult').innerHTML=resultNote('At least 2 groups with valid observations are required.');
+  if(k<3)return $('anovaResult').innerHTML=resultNote(`One-way ANOVA in KU Open Data Analytics requires at least 3 groups with valid observations. The selected grouping variable has ${k}. For exactly 2 groups, use the independent-samples t-test.`);
   const all=entries.flatMap(x=>x[1]),grand=mean(all),N=all.length;
   let ssb=0,ssw=0;
   entries.forEach(([_,a])=>{const m=mean(a);ssb+=a.length*(m-grand)**2;ssw+=a.reduce((s,x)=>s+(x-m)**2,0)});
