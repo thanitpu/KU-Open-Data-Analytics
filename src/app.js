@@ -271,3 +271,9 @@ $('file').addEventListener('change',e=>handleFile(e.target.files[0]).catch(err=>
 ['dragover','drop'].forEach(ev=>$('drop').addEventListener(ev,e=>e.preventDefault()));
 $('drop').addEventListener('drop',e=>handleFile(e.dataTransfer.files[0]).catch(err=>alert(err.message)));
 clearCanvas();
+
+window.addEventListener('load',()=>{
+  const h=document.createElement('script');h.src='src/hotfix-v051.js';
+  h.onload=()=>{const i=document.createElement('script');i.src='src/i18n.js';document.body.appendChild(i)};
+  document.body.appendChild(h);
+});
