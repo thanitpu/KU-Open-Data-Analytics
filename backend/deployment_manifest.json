@@ -1,0 +1,21 @@
+{
+  "project": "analytics_service",
+  "version": "0.2.0",
+  "deployment_status": "repository_ready",
+  "api": {
+    "framework": "FastAPI",
+    "entrypoint": "app.api:app",
+    "health_endpoint": "/health",
+    "analysis_endpoint": "/analyze"
+  },
+  "supported_fast_routes": [
+    "binary_classification",
+    "multiclass_classification",
+    "regression",
+    "segmentation",
+    "exploratory",
+    "association"
+  ],
+  "deep_routes_exposed": [],
+  "python": "3.12"
+}
