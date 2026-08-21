@@ -1,84 +1,12 @@
-// KU Open Data Analytics — FastAPI analytics client v0.6
+// KU Open Data Analytics — FastAPI analytics client v0.7
 // Defaults to the deployed Render API; may be overridden before this script loads.
-
-const KU_ANALYTICS_API_BASE = (window.KU_ANALYTICS_API_BASE || 'https://ku-open-data-analytics-api.onrender.com').replace(/\/$/, '');
-
-function analyticsRowsToCsv(){
-  if(!Array.isArray(headers) || !Array.isArray(data) || !headers.length || !data.length){
-    throw new Error('Import a dataset first.');
-  }
-  const quote = value => {
-    const s = String(value ?? '');
-    return /[",\n\r]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
-  };
-  return [headers.map(quote).join(','), ...data.map(row => headers.map(h => quote(row[h])).join(','))].join('\n');
-}
-
-function refreshAIAnalyticsTargets(){
-  const select = document.getElementById('aiTarget');
-  if(!select) return;
-  const current = select.value;
-  select.innerHTML = '<option value="">No target</option>' + headers.map(h => `<option value="${esc(h)}">${esc(h)}</option>`).join('');
-  if(headers.includes(current)) select.value = current;
-}
-
-function refreshAIAnalyticsControls(){
-  const intent = document.getElementById('aiIntent')?.value || '';
-  const targetWrap = document.getElementById('aiTargetWrap');
-  const needsTarget = ['Regression','Binary Classification','Multiclass Classification'].includes(intent);
-  if(targetWrap) targetWrap.classList.toggle('hidden', !needsTarget);
-  refreshAIAnalyticsTargets();
-}
-
-function showAIAnalyticsView(){
-  if(!headers.length){ alert('Import a dataset first.'); return; }
-  document.getElementById('workspaceView').classList.add('hidden');
-  document.getElementById('variablesView').classList.add('hidden');
-  document.getElementById('analysisView').classList.add('hidden');
-  document.getElementById('aiAnalyticsView').classList.remove('hidden');
-  document.querySelectorAll('.nav').forEach(n => n.classList.remove('active'));
-  refreshAIAnalyticsControls();
-}
-
-async function runAIAnalytics(){
-  const intent = document.getElementById('aiIntent').value;
-  const target = document.getElementById('aiTarget').value;
-  const needsTarget = ['Regression','Binary Classification','Multiclass Classification'].includes(intent);
-  const resultEl = document.getElementById('aiAnalyticsResult');
-  const reportEl = document.getElementById('aiAnalyticsReport');
-  if(needsTarget && !target){ alert('Please select a target variable.'); return; }
-  resultEl.innerHTML = '<div class="empty">Running validated analytics engine…</div>';
-  reportEl.textContent = '';
-  try{
-    const csv = analyticsRowsToCsv();
-    const form = new FormData();
-    form.append('file', new Blob([csv], {type:'text/csv'}), 'dataset.csv');
-    form.append('intent', intent);
-    form.append('mode', 'fast');
-    if(needsTarget) form.append('target', target);
-    const response = await fetch(`${KU_ANALYTICS_API_BASE}/analyze`, {method:'POST', body:form});
-    let payload;
-    try { payload = await response.json(); } catch (_) { payload = null; }
-    if(!response.ok){
-      const detail = payload?.detail || payload?.error || `HTTP ${response.status}`;
-      throw new Error(typeof detail === 'string' ? detail : JSON.stringify(detail));
-    }
-    const r = payload?.result || {};
-    const method = r.method || {};
-    const evidence = r.evidence || {};
-    const rows = [
-      ['Route', r.route], ['Analysis type', r.analysis_type], ['Status', r.status], ['Readiness', r.readiness],
-      ...Object.entries(method).map(([k,v]) => [k, v]),
-      ...Object.entries(evidence).filter(([,v]) => ['string','number','boolean'].includes(typeof v)).map(([k,v]) => [k, typeof v === 'number' ? Number(v).toFixed(4) : v])
-    ];
-    resultEl.innerHTML = `<div class="table"><table><tbody>${rows.map(([k,v]) => `<tr><th>${esc(k)}</th><td>${esc(v ?? '—')}</td></tr>`).join('')}</tbody></table></div>`;
-    reportEl.textContent = payload?.report?.text || 'No executive report returned.';
-  }catch(err){
-    resultEl.innerHTML = `<div class="advisor"><b>API request failed.</b><br>${esc(err.message)}<br><br>Check that the FastAPI backend is deployed and reachable.</div>`;
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const intent = document.getElementById('aiIntent');
-  if(intent) intent.addEventListener('change', refreshAIAnalyticsControls);
-});
+const KU_ANALYTICS_API_BASE=(window.KU_ANALYTICS_API_BASE||'https://ku-open-data-analytics-api.onrender.com').replace(/\/$/,'');
+function analyticsRowsToCsv(){if(!Array.isArray(headers)||!Array.isArray(data)||!headers.length||!data.length)throw new Error('Import a dataset first.');const q=v=>{const s=String(v??'');return /[",\n\r]/.test(s)?`"${s.replace(/"/g,'""')}"`:s};return[headers.map(q).join(','),...data.map(r=>headers.map(h=>q(r[h])).join(','))].join('\n')}
+function refreshAIAnalyticsTargets(){const s=document.getElementById('aiTarget');if(!s)return;const c=s.value;s.innerHTML='<option value="">No target</option>'+headers.map(h=>`<option value="${esc(h)}">${esc(h)}</option>`).join('');if(headers.includes(c))s.value=c}
+function refreshAIAnalyticsControls(){const i=document.getElementById('aiIntent')?.value||'',w=document.getElementById('aiTargetWrap'),n=['Regression','Binary Classification','Multiclass Classification'].includes(i);if(w)w.classList.toggle('hidden',!n);refreshAIAnalyticsTargets()}
+function showAIAnalyticsView(){if(!headers.length){alert('Import a dataset first.');return}document.getElementById('workspaceView').classList.add('hidden');document.getElementById('variablesView').classList.add('hidden');document.getElementById('analysisView').classList.add('hidden');document.getElementById('aiAnalyticsView').classList.remove('hidden');document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));refreshAIAnalyticsControls()}
+function reportRows(rows=[]){return rows.map(x=>`<div class="report-kv"><span>${esc(x.label)}</span><b>${esc(x.value??'—')}</b></div>`).join('')}
+function reportFindings(items=[]){if(!items.length)return'<div class="empty">No key findings returned.</div>';return`<div class="finding-grid">${items.map(x=>{const tags=[];if(x.high?.length)tags.push(`<div><b>Higher</b><br>${x.high.map(v=>`<span class="finding-tag">${esc(v)}</span>`).join(' ')}</div>`);if(x.low?.length)tags.push(`<div><b>Lower</b><br>${x.low.map(v=>`<span class="finding-tag muted-tag">${esc(v)}</span>`).join(' ')}</div>`);let meta='';if(typeof x.effect==='number')meta+=`<span class="pill">Effect ${Number(x.effect).toFixed(3)}</span>`;if(typeof x.q_value==='number')meta+=` <span class="pill">q ${Number(x.q_value).toExponential(2)}</span>`;return`<div class="finding-card"><h3>${esc(x.title||'Finding')}</h3>${x.subtitle?`<p>${esc(x.subtitle)}</p>`:''}${tags.join('')}${meta?`<div class="finding-meta">${meta}</div>`:''}</div>`}).join('')}</div>`}
+function renderExecutiveReport(report,r){const el=document.getElementById('aiAnalyticsReport');if(!report?.overview){el.innerHTML=`<pre class="report-legacy">${esc(report?.text||'No executive report returned.')}</pre>`;return}el.innerHTML=`<div class="report-section"><h2>Analysis overview</h2><div class="report-grid">${reportRows(report.overview)}</div></div><div class="report-section"><h2>Selected method</h2><div class="report-grid">${reportRows(report.method)}</div></div><div class="report-section"><h2>Key evidence</h2><div class="report-grid">${reportRows(report.evidence)}</div></div><div class="report-section"><h2>Key findings</h2>${reportFindings(report.findings)}</div>${report.warnings?.length?`<div class="report-section report-warning"><h2>Warnings / guardrails</h2>${report.warnings.map(w=>`<p>⚠ ${esc(w)}</p>`).join('')}</div>`:''}`}
+async function runAIAnalytics(){const intent=document.getElementById('aiIntent').value,target=document.getElementById('aiTarget').value,needs=['Regression','Binary Classification','Multiclass Classification'].includes(intent),resultEl=document.getElementById('aiAnalyticsResult'),reportEl=document.getElementById('aiAnalyticsReport');if(needs&&!target){alert('Please select a target variable.');return}resultEl.innerHTML='<div class="empty">Running validated analytics engine…</div>';reportEl.innerHTML='<div class="empty">Preparing report…</div>';try{const form=new FormData();form.append('file',new Blob([analyticsRowsToCsv()],{type:'text/csv'}),'dataset.csv');form.append('intent',intent);form.append('mode','fast');if(needs)form.append('target',target);const response=await fetch(`${KU_ANALYTICS_API_BASE}/analyze`,{method:'POST',body:form});let payload;try{payload=await response.json()}catch(_){payload=null}if(!response.ok){const d=payload?.detail||payload?.error||`HTTP ${response.status}`;throw new Error(typeof d==='string'?d:JSON.stringify(d))}const r=payload?.result||{},method=r.method||{},evidence=r.evidence||{},rows=[['Route',r.route],['Analysis type',r.analysis_type],['Status',r.status],['Readiness',r.readiness],...Object.entries(method).map(([k,v])=>[k,v]),...Object.entries(evidence).filter(([,v])=>['string','number','boolean'].includes(typeof v)).map(([k,v])=>[k,typeof v==='number'?Number(v).toFixed(4):v])];resultEl.innerHTML=`<div class="table"><table><tbody>${rows.map(([k,v])=>`<tr><th>${esc(k)}</th><td>${esc(v??'—')}</td></tr>`).join('')}</tbody></table></div>`;renderExecutiveReport(payload?.report,r)}catch(err){resultEl.innerHTML=`<div class="advisor"><b>API request failed.</b><br>${esc(err.message)}<br><br>Check that the FastAPI backend is deployed and reachable.</div>`;reportEl.innerHTML=''}}
+document.addEventListener('DOMContentLoaded',()=>{const i=document.getElementById('aiIntent');if(i)i.addEventListener('change',refreshAIAnalyticsControls)});
