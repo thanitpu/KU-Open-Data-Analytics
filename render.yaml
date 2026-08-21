@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: ku-open-data-analytics-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.api:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: CORS_ORIGINS
+        value: https://thanitpu.github.io,http://localhost:8000,http://127.0.0.1:8000
