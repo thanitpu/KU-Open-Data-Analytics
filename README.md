@@ -1,83 +1,48 @@
 # KU Open Data Analytics
 
-**KU Open Data Analytics** is a free, browser-based data analytics and statistics platform intended for education, research, and general-purpose exploratory analysis.
+Free browser-based statistical analysis and learning platform.
 
-> Working prototype: v0.1
+The project now contains two complementary analytical layers:
 
-## Project goals
+- Browser-based descriptive and classical statistical tools.
+- A validated FastAPI analytics backend for Binary Classification, Multiclass Classification, Regression, Customer Segmentation, Exploratory Data Analysis, and Association Analysis.
 
-- Make statistical analysis accessible through a clear browser-based workflow.
-- Keep user datasets local to the browser whenever practical.
-- Help users understand *why* an analysis is appropriate, not only produce output.
-- Build statistical functions as independently testable modules.
-- Support teaching with assumption checks, interpretation guidance, and transparent calculations.
+## Frontend
 
-## Current prototype (v0.1)
+The static frontend is served from the repository root and is compatible with GitHub Pages.
 
-- CSV import
-- Drag-and-drop CSV
-- Paste comma/tab-separated data
-- Data preview
-- Automatic numeric/categorical type inference
-- Dataset overview
-- Descriptive statistics
-- Histogram
-- Basic Analysis Advisor
+## Backend
 
-## Planned roadmap
+The FastAPI service lives under `backend/`.
 
-### v0.2 — Data Workspace
-- XLSX import
-- Variable View
-- Measurement levels: Nominal / Ordinal / Scale
-- Variable labels and value labels
-- Missing-value definitions and handling
-- Data Quality Summary
+Local run:
 
-### v0.3 — Core statistical analysis
-- Frequency tables
-- Descriptive statistics
-- Explore / visualization
-- One-sample t-test
-- Independent-samples t-test
-- Paired-samples t-test
-- One-way ANOVA
-- Correlation
+    cd backend
+    pip install -r requirements.txt
+    uvicorn app.api:app --reload
 
-### Later
-- Chi-square
-- Non-parametric tests
-- Linear and logistic regression
-- Reliability analysis
-- PCA / factor analysis
-- Clustering
-- SPC
-- Power and sample-size tools
+Health check:
 
-## Architecture direction
+    GET /health
 
-```text
-src/
-├── data/             # import, parsing, variable metadata
-├── statistics/       # statistical calculations
-├── visualization/    # charts and plots
-└── advisor/          # analysis recommendation logic
-```
+Validated analysis endpoint:
 
-The statistical engine should remain independent from UI code so calculations can be unit-tested against trusted reference implementations.
+    POST /analyze
 
-## Privacy principle
+The analysis endpoint accepts a CSV upload plus `intent`, optional `target`, and `mode=fast`.
 
-The project is designed around client-side processing where feasible. Dataset contents should not be uploaded to a server unless a future feature explicitly requires it and clearly informs the user.
+## Render deployment
 
-## Development status
+A `render.yaml` Blueprint is included at the repository root. It deploys the backend from the `backend` root directory, installs `backend/requirements.txt`, starts `uvicorn app.api:app --host 0.0.0.0 --port $PORT`, and uses `/health` for the service health check.
 
-This repository structure is the baseline for moving from a single-file prototype toward a modular application.
+The backend CORS policy is configured through `CORS_ORIGINS`. The default configuration allows the GitHub Pages origin and localhost development origins.
 
-## License
+After Render assigns the public API URL, set the frontend configuration before `src/ai-analytics.js` is loaded:
 
-MIT License. See `LICENSE`.
+    <script>window.KU_ANALYTICS_API_BASE='https://YOUR-SERVICE.onrender.com';</script>
 
-## Disclaimer
+The frontend then sends the currently loaded browser dataset to `/analyze` only when the user explicitly runs the Validated Analytics Engine.
 
-This project is under active development. Statistical results should be independently validated before use in high-stakes research, clinical, legal, financial, or regulatory decisions.
+## Current analytical boundary
+
+The hosted backend exposes validated Fast mode. Deep model/architecture discovery remains in the research workflow and is not yet exposed as a public web-service route.
