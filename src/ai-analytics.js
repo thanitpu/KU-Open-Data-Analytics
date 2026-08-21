@@ -1,5 +1,6 @@
 // KU Open Data Analytics — FastAPI analytics client v0.6
-// Configure window.KU_ANALYTICS_API_BASE before this script if the API is hosted elsewhere.
+// Set window.KU_ANALYTICS_API_BASE to the deployed API origin, e.g.
+// window.KU_ANALYTICS_API_BASE = 'https://ku-open-data-analytics-api.onrender.com';
 
 const KU_ANALYTICS_API_BASE = (window.KU_ANALYTICS_API_BASE || '').replace(/\/$/, '');
 
@@ -47,6 +48,10 @@ async function runAIAnalytics(){
   const resultEl = document.getElementById('aiAnalyticsResult');
   const reportEl = document.getElementById('aiAnalyticsReport');
   if(needsTarget && !target){ alert('Please select a target variable.'); return; }
+  if(!KU_ANALYTICS_API_BASE){
+    resultEl.innerHTML = '<div class="advisor"><b>Analytics API is not configured yet.</b><br>Set <code>window.KU_ANALYTICS_API_BASE</code> to the deployed FastAPI origin.</div>';
+    return;
+  }
   resultEl.innerHTML = '<div class="empty">Running validated analytics engine…</div>';
   reportEl.textContent = '';
   try{
@@ -56,8 +61,7 @@ async function runAIAnalytics(){
     form.append('intent', intent);
     form.append('mode', 'fast');
     if(needsTarget) form.append('target', target);
-    const endpoint = `${KU_ANALYTICS_API_BASE}/analyze`;
-    const response = await fetch(endpoint, {method:'POST', body:form});
+    const response = await fetch(`${KU_ANALYTICS_API_BASE}/analyze`, {method:'POST', body:form});
     let payload;
     try { payload = await response.json(); } catch (_) { payload = null; }
     if(!response.ok){
@@ -75,7 +79,7 @@ async function runAIAnalytics(){
     resultEl.innerHTML = `<div class="table"><table><tbody>${rows.map(([k,v]) => `<tr><th>${esc(k)}</th><td>${esc(v ?? '—')}</td></tr>`).join('')}</tbody></table></div>`;
     reportEl.textContent = payload?.report?.text || 'No executive report returned.';
   }catch(err){
-    resultEl.innerHTML = `<div class="advisor"><b>API request failed.</b><br>${esc(err.message)}<br><br>Check that the FastAPI backend is deployed, reachable, and configured in <code>window.KU_ANALYTICS_API_BASE</code>.</div>`;
+    resultEl.innerHTML = `<div class="advisor"><b>API request failed.</b><br>${esc(err.message)}<br><br>Check that the FastAPI backend is deployed and reachable.</div>`;
   }
 }
 
