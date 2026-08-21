@@ -1,8 +1,7 @@
 // KU Open Data Analytics — FastAPI analytics client v0.6
-// Set window.KU_ANALYTICS_API_BASE to the deployed API origin, e.g.
-// window.KU_ANALYTICS_API_BASE = 'https://ku-open-data-analytics-api.onrender.com';
+// Defaults to the deployed Render API; may be overridden before this script loads.
 
-const KU_ANALYTICS_API_BASE = (window.KU_ANALYTICS_API_BASE || '').replace(/\/$/, '');
+const KU_ANALYTICS_API_BASE = (window.KU_ANALYTICS_API_BASE || 'https://ku-open-data-analytics-api.onrender.com').replace(/\/$/, '');
 
 function analyticsRowsToCsv(){
   if(!Array.isArray(headers) || !Array.isArray(data) || !headers.length || !data.length){
@@ -48,10 +47,6 @@ async function runAIAnalytics(){
   const resultEl = document.getElementById('aiAnalyticsResult');
   const reportEl = document.getElementById('aiAnalyticsReport');
   if(needsTarget && !target){ alert('Please select a target variable.'); return; }
-  if(!KU_ANALYTICS_API_BASE){
-    resultEl.innerHTML = '<div class="advisor"><b>Analytics API is not configured yet.</b><br>Set <code>window.KU_ANALYTICS_API_BASE</code> to the deployed FastAPI origin.</div>';
-    return;
-  }
   resultEl.innerHTML = '<div class="empty">Running validated analytics engine…</div>';
   reportEl.textContent = '';
   try{
