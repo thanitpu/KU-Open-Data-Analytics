@@ -91,6 +91,17 @@ function loadAOA(rows){
   render();
 }
 
+function minMax(a){
+  let mn=Infinity,mx=-Infinity;
+  for(const v of a){if(v<mn)mn=v;if(v>mx)mx=v;}
+  return [mn,mx];
+}
+function quantileSorted(s,p){
+  if(!s.length)return NaN;
+  const i=(s.length-1)*p,b=Math.floor(i),r=i-b;
+  return s[b+1]!==undefined?s[b]+r*(s[b+1]-s[b]):s[b];
+}
+
 function inferMetadata(){
   types={}; meta={};
   headers.forEach(h=>{
@@ -101,13 +112,12 @@ function inferMetadata(){
     const unique=[...new Set(vals)];
     let level='Nominal';
     if(storage==='numeric'){
-      // Numeric variables default to Scale. Only infer Ordinal when the column name
-      // itself provides a strong semantic hint that the values are ordered codes.
       const name=String(h).toLowerCase().replace(/[^a-z0-9]+/g,'_');
       const ordinalNameHint=/(^|_)(rating|rank|level|likert|grade|severity|stage|class|category|score_code|ordinal)($|_)/.test(name);
       const nums=unique.map(v=>Number(v)).filter(Number.isFinite);
       const mostlyInteger=vals.filter(v=>Number.isInteger(Number(v))).length/Math.max(1,vals.length)>=.95;
-      const compactOrderedCodes=nums.length>=2 && nums.length<=7 && nums.every(Number.isInteger) && Math.min(...nums)>=0 && Math.max(...nums)<=7;
+      const [numMin,numMax]=minMax(nums);
+      const compactOrderedCodes=nums.length>=2 && nums.length<=7 && nums.every(Number.isInteger) && numMin>=0 && numMax<=7;
       level=(ordinalNameHint && mostlyInteger && compactOrderedCodes)?'Ordinal':'Scale';
     } else {
       const orderWords=['low','medium','high','poor','fair','good','very good','excellent','strongly disagree','disagree','neutral','agree','strongly agree'];
@@ -189,7 +199,7 @@ function refreshScaleVariableSelect(){
 
 function values(h){return data.map(r=>Number(r[h])).filter(Number.isFinite)}
 function mean(a){return a.reduce((s,x)=>s+x,0)/a.length}
-function q(a,p){let s=[...a].sort((x,y)=>x-y),i=(s.length-1)*p,b=Math.floor(i),r=i-b;return s[b+1]!==undefined?s[b]+r*(s[b+1]-s[b]):s[b]}
+function q(a,p){return quantileSorted([...a].sort((x,y)=>x-y),p)}
 function f(x){return Number.isFinite(x)?x.toFixed(3):'—'}
 
 function analyze(){
@@ -198,22 +208,26 @@ function analyze(){
     $('stats').innerHTML='<div class="empty">No scale variable available.</div>'; clearCanvas(); return;
   }
   const a=values(h),m=mean(a),sd=Math.sqrt(a.reduce((s,x)=>s+(x-m)**2,0)/Math.max(1,a.length-1));
+  const [mn,mx]=minMax(a),sorted=[...a].sort((x,y)=>x-y);
+  const med=quantileSorted(sorted,.5),q1=quantileSorted(sorted,.25),q3=quantileSorted(sorted,.75);
   $('stats').innerHTML=`<div class="table"><table>
   <tr><th>N</th><td>${a.length}</td><th>Mean</th><td>${f(m)}</td></tr>
-  <tr><th>Std. deviation</th><td>${f(sd)}</td><th>Median</th><td>${f(q(a,.5))}</td></tr>
-  <tr><th>Minimum</th><td>${f(Math.min(...a))}</td><th>Maximum</th><td>${f(Math.max(...a))}</td></tr>
-  <tr><th>Q1</th><td>${f(q(a,.25))}</td><th>Q3</th><td>${f(q(a,.75))}</td></tr>
+  <tr><th>Std. deviation</th><td>${f(sd)}</td><th>Median</th><td>${f(med)}</td></tr>
+  <tr><th>Minimum</th><td>${f(mn)}</td><th>Maximum</th><td>${f(mx)}</td></tr>
+  <tr><th>Q1</th><td>${f(q1)}</td><th>Q3</th><td>${f(q3)}</td></tr>
   </table></div>`;
-  hist(a,h);
+  hist(a,h,mn,mx);
 }
 
 function clearCanvas(){
   const c=$('hist'),x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);
   x.fillStyle='#879080';x.textAlign='center';x.font='13px system-ui';x.fillText('Histogram will appear here',c.width/2,c.height/2);
 }
-function hist(a,label){
+function hist(a,label,knownMin,knownMax){
   let c=$('hist'),x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);
-  let mn=Math.min(...a),mx=Math.max(...a),k=Math.max(5,Math.min(14,Math.ceil(Math.sqrt(a.length)))),w=(mx-mn||1)/k,n=Array(k).fill(0);
+  let mn=knownMin,mx=knownMax;
+  if(!Number.isFinite(mn)||!Number.isFinite(mx))[mn,mx]=minMax(a);
+  let k=Math.max(5,Math.min(14,Math.ceil(Math.sqrt(a.length)))),w=(mx-mn||1)/k,n=Array(k).fill(0);
   a.forEach(v=>n[Math.min(k-1,Math.floor((v-mn)/w))]++);
   let L=45,T=30,W=c.width-65,H=c.height-70,M=Math.max(...n,1);
   x.strokeStyle='#bcc7b3';x.beginPath();x.moveTo(L,T);x.lineTo(L,T+H);x.lineTo(L+W,T+H);x.stroke();
