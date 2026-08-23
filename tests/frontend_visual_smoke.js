@@ -3,7 +3,9 @@ const fs=require('fs');
 const path=require('path');
 const {chromium}=require('playwright');
 
-const baseURL=process.env.KU_VISUAL_BASE_URL||'http://127.0.0.1:4173';
+const baseURL=(process.env.KU_VISUAL_BASE_URL||'http://127.0.0.1:4173').replace(/\/$/,'');
+const appEntry=process.env.KU_APP_ENTRY||'index.html';
+const appURL=`${baseURL}/${appEntry}`;
 const analyticsBase='https://ku-open-data-analytics-api.onrender.com';
 const artifactDir=path.resolve(__dirname,'..','test-artifacts','visual-uat');
 fs.mkdirSync(artifactDir,{recursive:true});
@@ -77,7 +79,7 @@ async function runViewport(browser,viewport){
   page.on('console',msg=>{if(msg.type()==='error')errors.push(`console: ${msg.text()}`)});
   page.on('response',response=>{if(response.status()>=400&&!response.url().endsWith('/favicon.ico'))errors.push(`http ${response.status()}: ${response.url()}`)});
   await mockNetwork(page);
-  await page.goto(baseURL,{waitUntil:'domcontentloaded'});
+  await page.goto(appURL,{waitUntil:'domcontentloaded'});
   await page.waitForSelector('#workspaceView');
 
   const shell=await page.evaluate(()=>({
@@ -151,7 +153,7 @@ async function runViewport(browser,viewport){
       {name:'mobile-390',width:390,height:844}
     ];
     for(const viewport of viewports)await runViewport(browser,viewport);
-    console.log('FRONTEND_VISUAL_SMOKE_OK');
+    console.log(`FRONTEND_VISUAL_SMOKE_OK (${appEntry})`);
   }finally{
     await browser.close();
   }
