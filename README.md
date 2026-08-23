@@ -43,11 +43,26 @@ When rank coding is used, Step 6 identifies the target as ordinal rank-coded, sh
 
 ## Frontend
 
-The static frontend is served from the repository root and is compatible with GitHub Pages.
+The static frontend is served from the repository and is compatible with GitHub Pages.
 
 Data loading, profiling, field metadata review, and browser statistical exploration remain local to the browser. A dataset is sent to the configured analytics API only when the user explicitly runs a validated analysis.
 
 The six-step navigation is state-gated. In particular, Prepare does not unlock for a target-required question until an executable route has actually been derived from a selected target.
+
+### Frontend entry architecture
+
+The accepted target architecture separates the public site from the analytical workspace:
+
+- `index.html` → Public Landing Page
+- `app.html` → Functional KU Open Data Analytics workspace
+
+During the current integration/UAT phase, the functional shell remains temporarily in `index.html` to avoid unnecessary disruption. Product code must nevertheless remain independent of that filename and should use relative asset/navigation paths wherever possible.
+
+Frontend CI exposes the transitional application entry through `KU_APP_ENTRY=index.html`; browser smoke and static preview use that value rather than assuming the application lives at `/`. During Landing integration the entry can switch to `app.html` without changing browser-test logic.
+
+`tests/frontend_entry_guard.js` prevents runtime `src/*.js` from hard-coding `index.html` or root-absolute navigation and verifies that the configured app shell uses relative CSS/JS asset paths.
+
+The full decision and workstream ownership boundaries are recorded in `docs/ADR-frontend-public-landing-app-entry.md`. Landing-specific HTML/CSS/JS/assets are intentionally outside the functional product workstream.
 
 ## Backend
 
@@ -113,7 +128,7 @@ Dataset replacement/clear therefore resets stale plan/result state reliably. Pre
 
 ## Automated validation
 
-Frontend CI covers JavaScript syntax, static contracts, full six-step JSDOM flow, a dedicated ordinal-target DOM smoke, same-route metadata freshness, same-schema dataset replacement via revision tracking, and Playwright Chromium visual smoke at desktop, tablet, and mobile viewports. The passing browser run uploads screenshots as the `ku-open-da-visual-uat` artifact.
+Frontend CI covers JavaScript syntax, the app-entry migration guard, static contracts, full six-step JSDOM flow, a dedicated ordinal-target DOM smoke, same-route metadata freshness, same-schema dataset replacement via revision tracking, and Playwright Chromium visual smoke at desktop, tablet, and mobile viewports. The passing browser run uploads screenshots as the `ku-open-da-visual-uat` artifact.
 
 Backend CI covers compile + pytest, including API version/capabilities, CORS preflight, Compare Groups, segmentation, reporting, predictive feature importance, and recognized/unknown ordinal-target behavior.
 
