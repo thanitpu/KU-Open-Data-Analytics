@@ -20,6 +20,8 @@
   };
   const $=id=>document.getElementById(id);
   let lastDatasetSignature='';
+  let lastDataReference=null;
+  let datasetRevision=0;
 
   const escJourney=value=>String(value??'').replace(/[&<>"']/g,m=>({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
@@ -152,14 +154,19 @@
 
   function syncDatasetFromLegacy(){
     if(!window.KUAppState||typeof headers==='undefined'||typeof data==='undefined')return;
+    if(data!==lastDataReference){
+      lastDataReference=data;
+      datasetRevision+=1;
+    }
     const loaded=Array.isArray(headers)&&headers.length>0&&Array.isArray(data)&&data.length>0;
     const signature=loaded
-      ?`${data.length}|${headers.join('\u001f')}|${headers.map(h=>`${typeof types!=='undefined'?types[h]:''}:${typeof meta!=='undefined'?meta[h]?.level||'':''}`).join('\u001e')}`
-      :'empty';
+      ?`${datasetRevision}|${data.length}|${headers.join('\u001f')}|${headers.map(h=>`${typeof types!=='undefined'?types[h]:''}:${typeof meta!=='undefined'?meta[h]?.level||'':''}`).join('\u001e')}`
+      :`empty|${datasetRevision}`;
     if(signature===lastDatasetSignature)return;
     lastDatasetSignature=signature;
     window.KUAppState.setDataset(loaded?{
       loaded:true,
+      revision:datasetRevision,
       rowCount:data.length,
       columnCount:headers.length,
       fields:headers.map(name=>({
@@ -184,8 +191,9 @@
     if(status&&typeof MutationObserver!=='undefined'){
       new MutationObserver(syncDatasetFromLegacy).observe(status,{childList:true,subtree:true,characterData:true});
     }
-    if(variableTable&&typeof MutationObserver!=='undefined'){
-      new MutationObserver(syncDatasetFromLegacy).observe(variableTable,{childList:true,subtree:true});
+    if(variableTable){
+      variableTable.addEventListener('change',()=>setTimeout(syncDatasetFromLegacy,0));
+      if(typeof MutationObserver!=='undefined')new MutationObserver(syncDatasetFromLegacy).observe(variableTable,{childList:true,subtree:true});
     }
     syncDatasetFromLegacy();
     renderJourney();
