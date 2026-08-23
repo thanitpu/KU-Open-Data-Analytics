@@ -2,6 +2,7 @@ const assert=require('assert');
 const fs=require('fs');
 const path=require('path');
 const root=path.resolve(__dirname,'..');
+const appEntry=process.env.KU_APP_ENTRY||'app.html';
 const rel=require(path.join(root,'src/relationship-stats.js'));
 function near(actual,expected,eps=1e-9){assert.ok(Math.abs(actual-expected)<=eps,`${actual} != ${expected}`)}
 near(rel.pearson([1,2,3],[2,4,6]),1);
@@ -49,17 +50,18 @@ assert.strictEqual(replaced.result.validated,false,'same-schema dataset replacem
 assert.strictEqual(replaced.analysisPlan.questionType,null,'same-schema dataset replacement must clear the Analysis Plan');
 assert.strictEqual(replaced.currentStep,'start','dataset replacement should return the journey to Start');
 
-const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+const html=fs.readFileSync(path.join(root,appEntry),'utf8');
 const appJs=fs.readFileSync(path.join(root,'src/app.js'),'utf8');
 const analytics=fs.readFileSync(path.join(root,'src/ai-analytics.js'),'utf8');
 const journey=fs.readFileSync(path.join(root,'src/journey.js'),'utf8');
 const workflow=fs.readFileSync(path.join(root,'src/workflow-steps.js'),'utf8');
 const resultDetails=fs.readFileSync(path.join(root,'src/result-details.js'),'utf8');
+assert.strictEqual(appEntry,'app.html','static Product smoke must use app.html as canonical entry');
 for(const id of ['workspaceView','variablesView','profileOverview','profileQuality','relFieldA','relFieldB','relationshipResult','aiAnalyticsView'])assert.ok(html.includes(`id="${id}"`),`missing required UI id ${id}`);
 for(const src of ['src/state.js','src/advanced-stats.js','src/ai-analytics.js','src/relationship-stats.js','src/data-profile.js','src/workflow-steps.js','src/result-drivers.js','src/result-details.js','src/accessibility.js','src/journey.js'])assert.ok(html.includes(`src="${src}"`),`missing direct script ${src}`);
 assert.ok(html.includes('href="src/workflow-steps.css"'),'workflow CSS should load directly from the app shell');
 assert.ok(!html.includes('src/v05.js'),'versioned v05 runtime must not be loaded');
-assert.ok(!html.includes('hotfix-v051'),'legacy hotfix must not be loaded from index');
+assert.ok(!html.includes('hotfix-v051'),'legacy hotfix must not be loaded from app entry');
 assert.ok(!appJs.includes('hotfix-v051'),'legacy hotfix must not be dynamically loaded from app.js');
 assert.ok(!appJs.includes("h.onload=()=>{const i=document.createElement('script');i.src='src/i18n.js'"),'legacy hotfix-gated i18n loader must not return');
 assert.ok(analytics.includes("const KU_ANALYTICS_API_BASE=(window.KU_ANALYTICS_API_BASE||'https://ku-open-data-analytics-api.onrender.com')"),'analytics client should define the shared configurable API base');
@@ -75,4 +77,4 @@ assert.ok(workflow.includes('Number.isInteger(v)'),'integer evidence metrics sho
 assert.ok(resultDetails.includes('fieldMetadata'),'Step 6 details should compare result field metadata for freshness');
 assert.ok(resultDetails.includes('Field storage or measurement metadata changed'),'metadata mismatch should have an explicit stale-result disclosure');
 for(const f of ['src/advanced-stats.js','src/workflow-steps.js','src/workflow-steps.css','src/result-drivers.js','src/result-details.js','src/accessibility.js'])assert.ok(fs.existsSync(path.join(root,f)),`missing production asset ${f}`);
-console.log('FRONTEND_SMOKE_OK');
+console.log(`FRONTEND_SMOKE_OK (${appEntry})`);
