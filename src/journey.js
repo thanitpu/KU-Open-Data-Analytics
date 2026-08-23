@@ -11,12 +11,14 @@
     results:['RESULTS','Understand the Results']
   };
   const $=id=>document.getElementById(id);
+  let lastDatasetSignature='';
 
   function currentPlanLabel(plan){
     if(plan.question)return plan.question;
     if(plan.analyticalFamily)return plan.analyticalFamily;
     return 'No analysis plan yet';
   }
+  function escJourney(value){return String(value??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
   function renderCurrentAnalysis(){
     const el=$('currentAnalysisBar');
     if(!el||!window.KUAppState)return;
@@ -28,7 +30,6 @@
       <div class="current-analysis-item"><span>Target / Outcome</span><b>${escJourney(p.target||'Not selected')}</b></div>
       <div class="current-analysis-item"><span>Predictors</span><b>${escJourney(predictors)}</b></div>`;
   }
-  function escJourney(value){return String(value??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 
   function renderJourney(){
     if(!window.KUAppState)return;
@@ -61,6 +62,9 @@
   function syncDatasetFromLegacy(){
     if(!window.KUAppState||typeof headers==='undefined'||typeof data==='undefined')return;
     const loaded=Array.isArray(headers)&&headers.length>0&&Array.isArray(data)&&data.length>0;
+    const signature=loaded?`${data.length}|${headers.join('\u001f')}|${headers.map(h=>`${typeof types!=='undefined'?types[h]:''}:${typeof meta!=='undefined'?meta[h]?.level||'':''}`).join('\u001e')}`:'empty';
+    if(signature===lastDatasetSignature)return;
+    lastDatasetSignature=signature;
     window.KUAppState.setDataset(loaded?{
       loaded:true,rowCount:data.length,columnCount:headers.length,
       fields:headers.map(name=>({name,storage:typeof types!=='undefined'?types[name]:null,level:typeof meta!=='undefined'?meta[name]?.level:null}))
@@ -72,6 +76,10 @@
     if(!window.KUAppState)return;
     window.KUAppState.subscribe(renderJourney);
     document.querySelectorAll('[data-journey-step]').forEach(button=>button.addEventListener('click',()=>goToJourneyStep(button.dataset.journeyStep)));
+    const status=$('status');
+    if(status&&typeof MutationObserver!=='undefined')new MutationObserver(syncDatasetFromLegacy).observe(status,{childList:true,subtree:true,characterData:true});
+    const variableTable=$('variableTable');
+    if(variableTable&&typeof MutationObserver!=='undefined')new MutationObserver(syncDatasetFromLegacy).observe(variableTable,{childList:true,subtree:true});
     syncDatasetFromLegacy();
     renderJourney();
   });
