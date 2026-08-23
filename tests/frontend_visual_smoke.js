@@ -4,7 +4,7 @@ const path=require('path');
 const {chromium}=require('playwright');
 
 const baseURL=(process.env.KU_VISUAL_BASE_URL||'http://127.0.0.1:4173').replace(/\/$/,'');
-const appEntry=process.env.KU_APP_ENTRY||'index.html';
+const appEntry=process.env.KU_APP_ENTRY||'app.html';
 const appURL=`${baseURL}/${appEntry}`;
 const analyticsBase='https://ku-open-data-analytics-api.onrender.com';
 const artifactDir=path.resolve(__dirname,'..','test-artifacts','visual-uat');
@@ -145,6 +145,7 @@ async function runViewport(browser,viewport){
 }
 
 (async()=>{
+  assert.strictEqual(appEntry,'app.html','browser Product smoke must use app.html');
   const browser=await chromium.launch({headless:true});
   try{
     const viewports=[
