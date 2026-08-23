@@ -4,6 +4,7 @@ const path=require('path');
 const {chromium}=require('playwright');
 
 const baseURL=process.env.KU_VISUAL_BASE_URL||'http://127.0.0.1:4173';
+const analyticsBase='https://ku-open-data-analytics-api.onrender.com';
 const artifactDir=path.resolve(__dirname,'..','test-artifacts','visual-uat');
 fs.mkdirSync(artifactDir,{recursive:true});
 
@@ -52,8 +53,8 @@ async function screenshot(page,viewport,label){
 async function mockNetwork(page){
   await page.route('**/favicon.ico',route=>route.fulfill({status:204,body:''}));
   await page.route('https://cdn.jsdelivr.net/**',route=>route.fulfill({status:200,contentType:'application/javascript',body:'window.XLSX=window.XLSX||{};'}));
-  await page.route('**/capabilities',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(capabilities)}));
-  await page.route('**/analyze',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(analysisPayload)}));
+  await page.route(`${analyticsBase}/capabilities`,route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(capabilities)}));
+  await page.route(`${analyticsBase}/analyze`,route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(analysisPayload)}));
 }
 async function runViewport(browser,viewport){
   const context=await browser.newContext({viewport:{width:viewport.width,height:viewport.height}});
@@ -103,7 +104,9 @@ async function runViewport(browser,viewport){
 
   await page.locator('#continueSetup').click();
   await page.waitForSelector('#runAnalysisBtn:not([disabled])');
-  assert.ok((await page.locator('#setupBody').innerText()).includes('One-way ANOVA'),`${viewport.name}: backend capability metadata should render in Setup`);
+  const setupText=await page.locator('#setupBody').innerText();
+  assert.ok(setupText.includes('One-way ANOVA'),`${viewport.name}: backend capability metadata should render in Setup`);
+  assert.ok(setupText.includes('v0.3.0'),`${viewport.name}: Setup should show the mocked production backend version`);
   await screenshot(page,viewport,'setup');
 
   await page.locator('#runAnalysisBtn').click();
