@@ -62,6 +62,7 @@ const tick=()=>new Promise(resolve=>w.setTimeout(resolve,0));
   });
   w.goToJourneyStep('results');
   await tick();
+  assert.ok(w.document.querySelector('.result-answer h2')?.textContent.startsWith('Ordinal rank-coded target · '));
   const details=w.document.getElementById('familyResultDetails');
   assert.ok(details?.textContent.includes('Target Coding'));
   assert.ok(details?.textContent.includes('Low'));
