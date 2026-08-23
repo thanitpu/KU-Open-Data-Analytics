@@ -15,6 +15,15 @@ Branch under test:
 ### Recommended on Windows
 
 1. Checkout branch `integration/final-public-product-ready`.
+   - GitHub Desktop: **Current Branch → Choose a branch → integration/final-public-product-ready**.
+   - Command line alternative:
+
+```bash
+git fetch origin
+git switch integration/final-public-product-ready
+git pull --ff-only
+```
+
 2. In the repository, double-click:
    - `tools/start-manual-uat.bat`
 3. Keep the server window open.
