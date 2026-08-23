@@ -1,4 +1,5 @@
 import io
+import json
 import pandas as pd
 from fastapi.testclient import TestClient
 from app.api import app
@@ -15,6 +16,14 @@ def test_health():
     assert r.status_code == 200
     assert r.json()['status'] == 'ok'
 
+def test_capabilities():
+    r = client.get('/capabilities')
+    assert r.status_code == 200
+    payload = r.json()
+    assert payload['service']['mode'] == 'fast'
+    assert payload['routes']['regression']['policy']['model'] == 'XGBoost'
+    assert payload['routes']['group-comparison']['intent'] == 'Compare Groups'
+
 def test_segmentation_endpoint():
     df = pd.DataFrame({
         'Income':[20,22,21,80,85,82],
@@ -30,3 +39,17 @@ def test_segmentation_endpoint():
     payload = r.json()
     assert payload['result']['route'] == 'segmentation'
     assert payload['result']['status'] == 'COMPLETE'
+
+def test_compare_groups_endpoint():
+    df = pd.DataFrame({'Group':['A','A','A','B','B','B'],'Score':[1,2,3,7,8,9]})
+    r = client.post(
+        '/analyze',
+        files={'file': _csv_file(df)},
+        data={'intent':'Compare Groups','target':'Score','mode':'fast','options_json':json.dumps({'group':'Group'})}
+    )
+    assert r.status_code == 200
+    payload = r.json()['result']
+    assert payload['route'] == 'compare_groups'
+    assert payload['method']['test'] == 'Welch t-test'
+    assert payload['method']['grouping_field'] == 'Group'
+    assert payload['evidence']['groups'] == 2
