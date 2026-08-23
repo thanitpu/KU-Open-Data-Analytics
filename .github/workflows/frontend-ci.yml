@@ -20,6 +20,7 @@ jobs:
           node --check src/ai-analytics.js
           node --check src/workflow-steps.js
           node --check src/result-drivers.js
+          node --check src/result-details.js
           node --check src/accessibility.js
           node --check src/advanced-stats.js
           node --check src/app.js
