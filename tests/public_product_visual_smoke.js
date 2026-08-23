@@ -26,8 +26,9 @@ async function runViewport(browser,viewport){
   await page.waitForSelector('#siteHeader');
   assert.ok(await page.locator('#hero').isVisible(),`${viewport.name}: Public hero should be visible`);
   assert.strictEqual(await page.locator('#workspaceView').count(),0,`${viewport.name}: Product shell must not leak into Landing`);
-  const cta=page.locator('a.btn[href="app.html"]').first();
-  assert.ok(await cta.isVisible(),`${viewport.name}: Start analyzing CTA should be visible`);
+  const cta=page.locator('.hero-cta a.btn[href="app.html"]');
+  assert.strictEqual(await cta.count(),1,`${viewport.name}: Hero must expose one primary Start analyzing CTA`);
+  assert.ok(await cta.isVisible(),`${viewport.name}: Hero Start analyzing CTA should remain visible`);
   await noHorizontalOverflow(page,`${viewport.name}/landing`);
   await page.screenshot({path:path.join(artifactDir,`${viewport.name}-landing.png`),fullPage:true});
 
