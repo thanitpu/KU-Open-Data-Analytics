@@ -7,7 +7,7 @@ jobs:
   frontend-smoke:
     runs-on: ubuntu-latest
     env:
-      # Canonical Functional Analytics Application entry. Root index.html remains a temporary compatibility mirror until Landing promotion.
+      # Final architecture: index.html is Public Landing; app.html is the canonical Functional Product entry.
       KU_APP_ENTRY: app.html
     steps:
       - uses: actions/checkout@v4
@@ -28,14 +28,21 @@ jobs:
           node --check src/advanced-stats.js
           node --check src/app.js
           node --check src/analysis.js
+          node --check src/landing-copy.js
+          node --check src/landing-content.js
+          node --check src/landing.js
           node --check tests/frontend_entry_guard.js
+          node --check tests/landing_smoke.js
           node --check tests/frontend_file_loader_smoke.js
           node --check tests/frontend_dom_smoke.js
           node --check tests/frontend_ordinal_smoke.js
+          node --check tests/public_product_visual_smoke.js
           node --check tests/frontend_visual_smoke.js
-      - name: App entry migration guard
+      - name: Public and Product entry separation guard
         run: node tests/frontend_entry_guard.js
-      - name: Static smoke tests
+      - name: Landing static smoke
+        run: node tests/landing_smoke.js
+      - name: Product static smoke tests
         run: node tests/frontend_smoke.js
       - name: Install frontend test dependencies
         run: npm install --no-save jsdom@24 playwright@1.55.0
@@ -52,12 +59,14 @@ jobs:
           python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/ku-open-da-http.log 2>&1 &
           echo $! >/tmp/ku-open-da-http.pid
           for i in {1..20}; do
-            if curl -fsS "http://127.0.0.1:4173/${KU_APP_ENTRY}" >/dev/null; then exit 0; fi
+            if curl -fsS "http://127.0.0.1:4173/index.html" >/dev/null && curl -fsS "http://127.0.0.1:4173/${KU_APP_ENTRY}" >/dev/null; then exit 0; fi
             sleep 1
           done
           cat /tmp/ku-open-da-http.log
           exit 1
-      - name: Responsive browser visual smoke
+      - name: Public to Product browser integration smoke
+        run: node tests/public_product_visual_smoke.js
+      - name: Functional responsive browser visual smoke
         run: node tests/frontend_visual_smoke.js
       - name: Upload visual UAT screenshots
         if: always()
