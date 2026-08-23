@@ -11,6 +11,8 @@ This checklist validates the integrated six-step production journey on `integrat
   - `POST /analyze`
 - `GET /health` returns `status=ok`.
 - `GET /capabilities` returns `service.version=0.3.0` and route metadata for regression, binary/multiclass classification, clustering, association, and group comparison.
+- The production frontend uses the configured analytics API base for both `/capabilities` and `/analyze`; the default is `https://ku-open-data-analytics-api.onrender.com`.
+- Backend CORS allows the GitHub Pages origin `https://thanitpu.github.io` and the configured local development origins.
 - Use `sample-data/uat-journey.csv` for route-level UAT. It is synthetic test data, not a benchmark dataset.
 
 ## Core journey
@@ -23,6 +25,7 @@ This checklist validates the integrated six-step production journey on `integrat
 | 2 Data Profile | Open Data Quality | Missing/duplicate/constant checks use the loaded dataset and remain separate from relationship insights. |
 | 2 Data Profile | Open Relationships | Scale↔Scale routes to Pearson/Spearman; categorical↔categorical to Chi-square + Cramér’s V; mixed types to group summary + η². |
 | 3 Analyze | Continue to Analyze | Five question types are available; analytical family is derived rather than manually selected. |
+| 3 Analyze | Select only a target-required Question Type but do not select a target | Prepare remains locked; sidebar navigation cannot bypass the incomplete Analysis Plan. |
 | 4 Prepare | Continue from a complete Analysis Plan | Preparation Summary uses actual target/predictors and shows **Automatically handled** and **Needs review** before field-level detail. |
 | 4 Prepare | Resolve any review item and click **Approve Preparation →** | Preparation becomes approved and Setup opens. |
 | 5 Setup | Review Recommended Setup | Backend policy comes from `/capabilities`; **Technical Run Specification** is collapsed by default and includes backend API version. |
@@ -31,7 +34,7 @@ This checklist validates the integrated six-step production journey on `integrat
 
 ## Route UAT
 
-### Regression
+### Regression — continuous target
 
 1. Question Type: **Predict an outcome**.
 2. Target: `spend`.
@@ -44,6 +47,34 @@ Expected:
 - Step 4 describes numeric/categorical preprocessing from the validated route.
 - Step 5 reports XGBoost policy metadata from `/capabilities`.
 - Step 6 includes MAE, RMSE, R², tail evidence, and validated warnings where returned.
+
+### Regression — recognized ordinal target
+
+Use the built-in 9-row demo.
+
+1. Question Type: **Predict an outcome**.
+2. Target: `Satisfaction`.
+3. Confirm Data Profile treats `Satisfaction` as Ordinal.
+4. Continue to Prepare.
+
+Expected in Step 4:
+- Recommended family remains Regression.
+- **Automatically handled** includes `Encode ordered categories`.
+- The plan shows `Low < Medium < High`.
+- **Needs review = 0** and **Approve Preparation →** is enabled.
+
+Expected after a backend run:
+- Backend returns `method.target_encoding.type = ordinal_rank`.
+- The mapping preserves semantic order, e.g. `Low=1`, `Medium=2`, `High=3`.
+- Step 6 answer identifies the result as an **Ordinal rank-coded target**.
+- Step 6 shows a **Target Coding** table and a visible warning that rank order is meaningful but equal spacing between adjacent categories is not established.
+
+Recognized production ordinal sequences are intentionally conservative:
+- `Low < Medium < High`
+- `Poor < Fair < Good < Very Good < Excellent`
+- `Strongly disagree < Disagree < Neutral < Agree < Strongly agree`
+
+A subset of one of those sequences is supported when at least two levels are observed. Unknown text ordinal labels must **not** be silently alphabetically encoded; Step 4 must keep the run blocked for review.
 
 ### Binary Classification
 
@@ -129,11 +160,24 @@ Expected:
 
 For Compare Groups, a grouping field with any group containing fewer than two complete numeric outcome observations must also block approval.
 
+For Regression, an unrecognized non-numeric ordinal/text target must remain blocked rather than receiving an inferred alphabetical numeric order.
+
+## API and deployment-boundary checks
+
+| Check | Expected result |
+|---|---|
+| Open Step 5 from GitHub Pages | `/capabilities` is requested from the configured analytics API base, not the GitHub Pages origin. |
+| Run a validated analysis | `/analyze` uses the same configured analytics API base as `/capabilities`. |
+| Inspect Technical Run Specification | Backend API version is shown after expanding the collapsed details. |
+| Send a CORS preflight with Origin `https://thanitpu.github.io` | Backend permits the configured GitHub Pages origin. |
+| Override `window.KU_ANALYTICS_API_BASE` before `src/ai-analytics.js` loads | Both Setup capability metadata and analysis execution use that override. |
+
 ## State and regression checks
 
 | Action | Expected result |
 |---|---|
 | Navigate backward/forward without changing the Analysis Plan | Target, route, predictors, preparation, setup, and validated result remain available as appropriate. |
+| Select a target-required Question Type without selecting a target | Prepare remains disabled because no executable route has been derived. |
 | Change predictors only | Previous validated result is preserved; Prepare/Setup approval resets. |
 | Open Results after predictor change | Result is labeled **Previous validated result** until rerun. |
 | Change Question Type or Target | Previous validated result resets. |
@@ -165,12 +209,17 @@ The browser smoke test validates:
 - Sidebar/horizontal journey behavior at the correct responsive breakpoint.
 - No page-level horizontal overflow at each captured journey state.
 - No browser `pageerror`, application console error, or unexpected HTTP 4xx/5xx from repository assets.
-- Backend `/capabilities` and `/analyze` contracts are mocked only for deterministic frontend visual testing; analytical correctness remains covered by Backend CI.
+- `/capabilities` and `/analyze` mocks match the production Render API host, so a regression back to the local/GitHub Pages origin fails the browser smoke instead of being hidden by a wildcard mock.
+- **Technical Run Specification** is collapsed by default; the browser test expands it and verifies backend version metadata.
 - Screenshots for all six journey states at all three viewports are uploaded as the `ku-open-da-visual-uat` GitHub Actions artifact.
+
+Frontend CI also runs a dedicated Ordinal target DOM smoke covering demo `Satisfaction` → Regression → recognized rank coding → Step 4 approval → Step 6 Target Coding/guardrail rendering.
+
+Backend CI covers compile + pytest, including API/CORS contracts, Compare Groups, feature-importance extraction, and recognized/unknown ordinal-target behavior.
 
 ## Final regression before merge
 
-- Frontend CI: JavaScript syntax, static smoke, full journey DOM smoke, and responsive Chromium visual smoke all pass.
+- Frontend CI: JavaScript syntax, static smoke, full journey DOM smoke, Ordinal target DOM smoke, and responsive Chromium visual smoke all pass.
 - Backend CI: compile and pytest all pass.
 - Review the latest `ku-open-da-visual-uat` screenshots for desktop/tablet/mobile before marking PR #11 ready for review.
 - PR remains Draft until manual visual/UAT acceptance.
