@@ -46,8 +46,21 @@ async function noHorizontalOverflow(page,label){
   const d=await page.evaluate(()=>({innerWidth:window.innerWidth,html:document.documentElement.scrollWidth,body:document.body.scrollWidth}));
   assert.ok(d.html<=d.innerWidth+2&&d.body<=d.innerWidth+2,`${label}: horizontal overflow inner=${d.innerWidth}, html=${d.html}, body=${d.body}`);
 }
+async function activeJourneyVisible(page,viewport,label){
+  if(viewport.width>1050)return;
+  const d=await page.evaluate(()=>{
+    const list=document.querySelector('.journey-list');
+    const active=list?.querySelector('.journey-step.active');
+    if(!list||!active)return null;
+    const lr=list.getBoundingClientRect(),ar=active.getBoundingClientRect();
+    return {listLeft:lr.left,listRight:lr.right,activeLeft:ar.left,activeRight:ar.right,step:active.dataset.journeyStep};
+  });
+  assert.ok(d,`${viewport.name}/${label}: active journey step should exist`);
+  assert.ok(d.activeLeft>=d.listLeft-1&&d.activeRight<=d.listRight+1,`${viewport.name}/${label}: active step ${d.step} must be visible inside horizontal journey`);
+}
 async function screenshot(page,viewport,label){
   await noHorizontalOverflow(page,`${viewport.name}/${label}`);
+  await activeJourneyVisible(page,viewport,label);
   await page.screenshot({path:path.join(artifactDir,`${slug(viewport.name)}-${slug(label)}.png`),fullPage:true});
 }
 async function mockNetwork(page){
