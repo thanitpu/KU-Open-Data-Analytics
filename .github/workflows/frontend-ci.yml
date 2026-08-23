@@ -25,9 +25,31 @@ jobs:
           node --check src/advanced-stats.js
           node --check src/app.js
           node --check src/analysis.js
+          node --check tests/frontend_visual_smoke.js
       - name: Static smoke tests
         run: node tests/frontend_smoke.js
-      - name: Install DOM test dependency
-        run: npm install --no-save jsdom@24
+      - name: Install frontend test dependencies
+        run: npm install --no-save jsdom@24 playwright@1.55.0
       - name: Full journey DOM smoke
         run: node tests/frontend_dom_smoke.js
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Start static preview server
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/ku-open-da-http.log 2>&1 &
+          echo $! >/tmp/ku-open-da-http.pid
+          for i in {1..20}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/ku-open-da-http.log
+          exit 1
+      - name: Responsive browser visual smoke
+        run: node tests/frontend_visual_smoke.js
+      - name: Upload visual UAT screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ku-open-da-visual-uat
+          path: test-artifacts/visual-uat
+          if-no-files-found: ignore
