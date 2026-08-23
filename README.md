@@ -1,8 +1,8 @@
 # KU Open Data Analytics
 
-KU Open Data Analytics is a browser-first analytical workspace with a validated FastAPI execution backend.
+KU Open Data Analytics combines a public university-facing Landing Page with a browser-first analytical workspace backed by validated FastAPI execution.
 
-The production experience follows one six-step journey:
+The Product experience follows one six-step journey:
 
 1. **Start** — choose or upload a CSV/XLSX dataset.
 2. **Data Profile** — review field structure, measurement levels, data quality, and mixed-type relationships.
@@ -43,26 +43,22 @@ When rank coding is used, Step 6 identifies the target as ordinal rank-coded, sh
 
 ## Frontend
 
-The static frontend is served from the repository and is compatible with GitHub Pages.
+The static frontend is compatible with repository-path GitHub Pages hosting.
 
-Data loading, profiling, field metadata review, and browser statistical exploration remain local to the browser. A dataset is sent to the configured analytics API only when the user explicitly runs a validated analysis.
-
-The six-step navigation is state-gated. In particular, Prepare does not unlock for a target-required question until an executable route has actually been derived from a selected target.
-
-### Frontend entry architecture
-
-The accepted architecture separates the public site from the analytical workspace:
+### Final entry architecture
 
 - `index.html` → Public Landing Page
 - `app.html` → Functional KU Open Data Analytics workspace
 
-The Functional migration is now complete: `app.html` is the canonical Product entry and frontend CI sets `KU_APP_ENTRY=app.html`. Static smoke, JSDOM journey smoke, Ordinal target smoke, static preview, and Playwright browser smoke all target that configured Product entry rather than the site root.
+The Public Landing owns only `src/landing*` and `assets/landing/*`; it does not import Product analytical JS/CSS and does not call FastAPI. Its primary **Start analyzing** CTA uses the relative target `app.html`.
 
-Until the explicit Final Landing Integration step, root `index.html` remains a temporary compatibility mirror of `app.html` on the Functional branch. `tests/frontend_entry_guard.js` requires the two files to remain byte-equivalent during this transition, preventing accidental Product-shell divergence. The mirror assertion is intentionally removed/changed only when the approved Public Landing replaces root `index.html`.
+The Product entry remains `app.html`. Data loading, profiling, field metadata review, and browser statistical exploration stay local to the browser. A dataset is sent to the configured analytics API only when the user explicitly runs a validated analysis.
 
-Product runtime `src/*.js` must not hard-code `index.html` or root-absolute navigation. Product CSS/JS assets use relative repository paths so `app.html` remains compatible with GitHub Pages project-path hosting.
+Product runtime code must not hard-code `index.html` or root-absolute redirects. Product and Landing local assets use relative repository paths so both entries remain compatible with GitHub Pages project-path hosting.
 
-The architecture/workstream boundaries are recorded in `docs/ADR-frontend-public-landing-app-entry.md`; migration status and Final Integration checks are in `docs/APP_ENTRY_MIGRATION_UAT.md` and `docs/FUNCTIONAL_APP_HANDOFF.md`. Landing-specific HTML/CSS/JS/assets remain outside the Functional Product workstream until the dedicated Final Integration step.
+`tests/frontend_entry_guard.js` enforces Public/Product separation. `tests/landing_smoke.js` validates the Public layer. Functional JSDOM and browser tests continue to target `app.html`. `tests/public_product_visual_smoke.js` verifies the real browser contract `index.html → app.html` at desktop, tablet, and mobile sizes.
+
+Architecture/workstream boundaries are recorded in `docs/ADR-frontend-public-landing-app-entry.md`; handoff and migration history are in `docs/LANDING_INTEGRATION_HANDOFF.md`, `docs/FUNCTIONAL_APP_HANDOFF.md`, and `docs/APP_ENTRY_MIGRATION_UAT.md`.
 
 ## Backend
 
@@ -122,13 +118,13 @@ The Analysis Plan is authoritative across Steps 3–6. Changing Question Type or
 
 Storage/measurement metadata for the selected target and predictors is snapshotted with each validated result. A metadata edit immediately invalidates Prepare/Setup approval and preserves the previous result only for comparison. Step 6 marks that result stale even when the derived analytical route stays the same, for example an Ordinal → Scale edit that still routes to Regression.
 
-Each newly loaded browser dataset receives a monotonic dataset revision when the loader replaces the in-memory data array. This means a genuinely new file/dataset clears the Analysis Plan and result even when it happens to have the same row count, column names, storage types, and measurement levels as the prior dataset. Metadata-only edits do not advance the dataset revision.
+Each newly loaded browser dataset receives a monotonic dataset revision when the loader replaces the in-memory data array. A genuinely new file/dataset therefore clears the Analysis Plan and result even when it has the same row count, schema, storage types, and measurement levels as the prior dataset. Metadata-only edits do not advance the dataset revision.
 
-Dataset replacement/clear therefore resets stale plan/result state reliably. Prepare requires a derived route, Setup requires approved preparation, and Results requires a validated result payload.
+Dataset replacement/clear resets stale plan/result state reliably. Prepare requires a derived route, Setup requires approved preparation, and Results requires a validated result payload.
 
 ## Automated validation
 
-Frontend CI covers JavaScript syntax, the `app.html` entry migration guard, static contracts, full six-step JSDOM flow, a dedicated ordinal-target DOM smoke, same-route metadata freshness, same-schema dataset replacement via revision tracking, and Playwright Chromium visual smoke at desktop, tablet, and mobile viewports. The passing browser run uploads screenshots as the `ku-open-da-visual-uat` artifact.
+Frontend CI covers JavaScript syntax, Public/Product entry separation, Landing static contracts, CSV/XLSX loading, the full six-step JSDOM flow, Ordinal-target/state freshness, browser-level Landing → Product navigation, and responsive Chromium visual smoke at desktop, tablet, and mobile viewports. Passing browser runs upload screenshots as the `ku-open-da-visual-uat` artifact.
 
 Backend CI covers compile + pytest, including API version/capabilities, CORS preflight, Compare Groups, segmentation, reporting, predictive feature importance, and recognized/unknown ordinal-target behavior.
 
