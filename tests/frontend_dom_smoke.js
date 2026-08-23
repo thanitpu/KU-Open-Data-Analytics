@@ -14,15 +14,22 @@ w.fetch=async(url)=>{
   if(String(url).endsWith('/analyze'))return{ok:true,status:200,json:async()=>({result:{status:'COMPLETE',route:'compare_groups',analysis_type:'multi_group_comparison',target:'Score',method:{test:'One-way ANOVA',grouping_field:'Group'},evidence:{f:12.5,p_value:.002,eta_squared:.72,groups:3,n_total:9},findings:[],warnings:[],readiness:'FAST_EXECUTION_READY'},report:{overview:[{label:'Analysis',value:'multi_group_comparison'}],method:[{label:'Test',value:'One-way ANOVA'}],evidence:[{label:'p value',value:'0.002'}],findings:[]}})};
   throw new Error(`Unexpected fetch ${url}`);
 };
-const scripts=['src/state.js','src/app.js','src/analysis.js','src/v05.js','src/ai-analytics.js','src/relationship-stats.js','src/data-profile.js','src/workflow-steps.js','src/result-drivers.js','src/journey.js'];
+const scripts=['src/state.js','src/app.js','src/analysis.js','src/v05.js','src/ai-analytics.js','src/relationship-stats.js','src/data-profile.js','src/workflow-steps.js','src/result-drivers.js','src/accessibility.js','src/journey.js'];
 w.eval(scripts.map(f=>fs.readFileSync(path.join(root,f),'utf8')).join('\n;\n'));
 w.document.dispatchEvent(new w.Event('DOMContentLoaded',{bubbles:true}));
 const tick=()=>new Promise(r=>w.setTimeout(r,0));
 (async()=>{
   w.demo();await tick();assert.strictEqual(w.document.getElementById('rows').textContent,'9');
+
+  // Legacy Data Workspace/Variables navigation must synchronize the six-step state.
+  w.showView('variables');await tick();assert.strictEqual(w.KUAppState.getState().currentStep,'profile');
+  const overviewTab=w.document.querySelector('[data-profile-tab="overview"]');assert.strictEqual(overviewTab.getAttribute('role'),'tab');assert.strictEqual(overviewTab.getAttribute('aria-selected'),'true');
+  overviewTab.focus();overviewTab.dispatchEvent(new w.KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}));await tick();assert.strictEqual(w.document.querySelector('[data-profile-tab="fields"]').getAttribute('aria-selected'),'true');assert.strictEqual(w.document.querySelector('[data-profile-pane="overview"]').hidden,true);
+
   w.goToJourneyStep('profile');await tick();assert.strictEqual(w.document.getElementById('profileRows').textContent,'9');
   w.setProfileTab('relationships');let a=w.document.getElementById('relFieldA'),b=w.document.getElementById('relFieldB');a.value='Score';b.value='Age';w.runProfileRelationship();assert.ok(w.document.getElementById('relationshipResult').textContent.includes('Pearson r'));
-  w.goToJourneyStep('analyze');await tick();w.document.querySelector('[data-question-type="predict-outcome"]').click();let target=w.document.getElementById('analysisTarget');target.value='Group';target.dispatchEvent(new w.Event('change',{bubbles:true}));let state=w.KUAppState.getState();assert.strictEqual(state.analysisPlan.route,'multiclass-classification');
+  w.goToJourneyStep('analyze');await tick();w.showAnalysisView('frequency');assert.ok(w.document.getElementById('aiAnalyticsView').classList.contains('hidden'),'advanced analysis must not overlap Analyze');w.goToJourneyStep('analyze');await tick();
+  w.document.querySelector('[data-question-type="predict-outcome"]').click();let target=w.document.getElementById('analysisTarget');target.value='Group';target.dispatchEvent(new w.Event('change',{bubbles:true}));let state=w.KUAppState.getState();assert.strictEqual(state.analysisPlan.route,'multiclass-classification');
   w.document.querySelector('[data-question-type="compare-groups"]').click();target=w.document.getElementById('analysisTarget');target.value='Score';target.dispatchEvent(new w.Event('change',{bubbles:true}));state=w.KUAppState.getState();assert.strictEqual(state.analysisPlan.route,'group-comparison');assert.ok(state.analysisPlan.predictors.includes('Group'));
   w.document.getElementById('continuePrepare').click();await tick();assert.ok(w.document.getElementById('journeyPendingView').textContent.includes('Preparation summary'));
   let group=w.document.getElementById('prepareGroupField');group.value='Group';group.dispatchEvent(new w.Event('change',{bubbles:true}));await tick();assert.strictEqual(w.document.getElementById('continueSetup').disabled,false);w.document.getElementById('continueSetup').click();await tick();await tick();assert.ok(w.document.getElementById('journeyPendingView').textContent.includes('Recommended Setup'));assert.strictEqual(w.document.getElementById('runAnalysisBtn').disabled,false);
