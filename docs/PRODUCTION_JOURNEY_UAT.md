@@ -23,9 +23,11 @@ This checklist validates the integrated six-step production journey on `integrat
 | 2 Data Profile | Open Data Quality | Missing/duplicate/constant checks use the loaded dataset and remain separate from relationship insights. |
 | 2 Data Profile | Open Relationships | Scale↔Scale routes to Pearson/Spearman; categorical↔categorical to Chi-square + Cramér’s V; mixed types to group summary + η². |
 | 3 Analyze | Continue to Analyze | Five question types are available; analytical family is derived rather than manually selected. |
-| 4 Prepare | Continue from a complete Analysis Plan | Preparation Summary uses the actual target/predictors and route-specific preprocessing rules. |
-| 5 Setup | Approve preparation | Recommended Setup loads from backend `/capabilities`; Technical Run Spec is collapsed by default. |
-| 6 Results | Run Analysis | Only validated/computed payload values appear; answer is shown before technical details. |
+| 4 Prepare | Continue from a complete Analysis Plan | Preparation Summary uses actual target/predictors and shows **Automatically handled** and **Needs review** before field-level detail. |
+| 4 Prepare | Resolve any review item and click **Approve Preparation →** | Preparation becomes approved and Setup opens. |
+| 5 Setup | Review Recommended Setup | Backend policy comes from `/capabilities`; **Technical Run Specification** is collapsed by default and includes backend API version. |
+| 5 Setup | Click **Run recommended analysis →** | The selected validated route executes; no prototype/example result is substituted. |
+| 6 Results | Analysis completes | Only validated/computed payload values appear; answer is shown before technical details. |
 
 ## Route UAT
 
@@ -35,7 +37,7 @@ This checklist validates the integrated six-step production journey on `integrat
 2. Target: `spend`.
 3. Keep **Use all suitable fields**.
 4. Continue through Prepare and Setup.
-5. Run Analysis.
+5. Run the recommended analysis.
 
 Expected:
 - Recommended family is Regression.
@@ -48,7 +50,7 @@ Expected:
 1. Question Type: **Predict an outcome**.
 2. Target: `churn`.
 3. Continue through Prepare and Setup.
-4. Run Analysis.
+4. Run the recommended analysis.
 
 Expected:
 - Recommended family is Binary Classification.
@@ -61,11 +63,11 @@ Expected:
 1. Question Type: **Predict an outcome**.
 2. Target: `segment_label`.
 3. Continue through Prepare and Setup.
-4. Run Analysis.
+4. Run the recommended analysis.
 
 Expected:
 - Recommended family is Multiclass Classification.
-- Step 4 shows three classes and allows Setup because each class has ten observations.
+- Step 4 shows three classes and allows approval because each class has ten observations.
 - Step 6 shows macro/weighted F1, balanced accuracy, multiclass ROC-AUC/log-loss evidence, coverage/abstention evidence where returned.
 
 ### Explain relationships / drivers
@@ -84,7 +86,7 @@ Expected:
 1. Question Type: **Compare groups**.
 2. Target: `spend`.
 3. In Step 4 choose grouping field `region`.
-4. Continue through Setup and Run Analysis.
+4. Confirm **Needs review = 0**, click **Approve Preparation →**, then run the recommended analysis.
 
 Expected:
 - Step 4 shows complete observations by group and blocks any group with fewer than two complete observations.
@@ -98,7 +100,7 @@ Optional two-group check: use a dataset/grouping field with exactly two observed
 1. Question Type: **Discover segments**.
 2. No target is requested.
 3. Continue using suitable numeric fields.
-4. Run Analysis.
+4. Run the recommended analysis.
 
 Expected:
 - Recommended family is Clustering / Segmentation.
@@ -109,7 +111,7 @@ Expected:
 
 1. Question Type: **Discover association rules**.
 2. No target is requested.
-3. Run Analysis.
+3. Run the recommended analysis.
 
 Expected:
 - Recommended family is Association Analysis.
@@ -122,10 +124,10 @@ Use the built-in 9-row demo and choose `Group` as a multiclass prediction target
 
 Expected:
 - Step 3 can still derive Multiclass Classification.
-- Step 4 blocks Continue to Setup because the demo has fewer than five observations per class for 5-fold stratified validation.
+- Step 4 shows the issue under **Needs review** and disables **Approve Preparation →** because the demo has fewer than five observations per class for 5-fold stratified validation.
 - The blocker is presented before any API call.
 
-For Compare Groups, a grouping field with any group containing fewer than two complete numeric outcome observations must also block Setup.
+For Compare Groups, a grouping field with any group containing fewer than two complete numeric outcome observations must also block approval.
 
 ## State and regression checks
 
@@ -137,20 +139,39 @@ For Compare Groups, a grouping field with any group containing fewer than two co
 | Change Question Type or Target | Previous validated result resets. |
 | Change a field Measurement Level in Data Profile and return to Analyze | Route/predictors are re-derived from current metadata; downstream approval resets; preserved result is marked stale if it no longer matches. |
 | Replace/clear dataset | Stale Analysis Plan and result are cleared. |
-| Open an Advanced statistical tool | Advanced panel does not overlap the six-step Analyze page; returning to the journey keeps state coherent. |
+| Open an Advanced statistical tool on desktop | Advanced panel does not overlap the six-step Analyze page; returning to the journey keeps state coherent. |
 
 ## Responsive and accessibility checks
 
-- Desktop: six-step sidebar is visible and no workflow content is covered by sticky elements.
-- Tablet/narrow viewport: sidebar is replaced by the horizontal workflow control without overlap or truncation.
+- Desktop (>1050px): six-step sidebar and optional Advanced statistical tools are available; workflow content is not covered by sticky elements.
+- Tablet/narrow viewport (≤1050px): the journey becomes a horizontal workflow control and the Advanced statistical tools drawer is hidden to keep the production journey primary.
+- Mobile 390px: page-level horizontal overflow must not occur. Wide preview/detail tables scroll inside their own containers rather than widening the document.
 - Step 2 tabs can be changed with mouse/touch and with Left/Right/Home/End keyboard keys.
 - Active Data Profile tab exposes `aria-selected=true`; inactive tab panels are hidden semantically.
 - Current Analysis and load/status regions announce updates through polite live regions.
-- Tables and technical payloads scroll horizontally/vertically instead of clipping content on narrow screens.
+- Tables and technical payloads scroll horizontally/vertically instead of clipping page content on narrow screens.
+
+## Automated browser visual regression
+
+Frontend CI runs Playwright Chromium against a local static preview of the integration branch at:
+
+- Desktop: 1440 × 900
+- Tablet: 900 × 1000
+- Mobile: 390 × 844
+
+The browser smoke test validates:
+
+- Start → Data Profile → Analyze → Prepare → Setup → Results in a real browser.
+- Sidebar/horizontal journey behavior at the correct responsive breakpoint.
+- No page-level horizontal overflow at each captured journey state.
+- No browser `pageerror`, application console error, or unexpected HTTP 4xx/5xx from repository assets.
+- Backend `/capabilities` and `/analyze` contracts are mocked only for deterministic frontend visual testing; analytical correctness remains covered by Backend CI.
+- Screenshots for all six journey states at all three viewports are uploaded as the `ku-open-da-visual-uat` GitHub Actions artifact.
 
 ## Final regression before merge
 
-- Frontend CI: JavaScript syntax, static smoke, and full journey DOM smoke all pass.
+- Frontend CI: JavaScript syntax, static smoke, full journey DOM smoke, and responsive Chromium visual smoke all pass.
 - Backend CI: compile and pytest all pass.
-- PR remains Draft until manual visual UAT is completed.
+- Review the latest `ku-open-da-visual-uat` screenshots for desktop/tablet/mobile before marking PR #11 ready for review.
+- PR remains Draft until manual visual/UAT acceptance.
 - Do not merge or change the Render tracked branch solely to preview this integration without an explicit deployment decision.
