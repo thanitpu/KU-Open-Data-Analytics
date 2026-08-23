@@ -4,11 +4,13 @@ from analytics.classification_binary import run_fast_binary_parity
 from analytics.classification_multiclass import run_fast_multiclass_classification
 from analytics.exploratory import run_fast_exploratory
 from analytics.association import run_fast_association
+from analytics.compare_groups import run_fast_compare_groups
 from analytics.policies import FAST_POLICY_REGISTRY
 
 def execute_analysis(df, intent, target=None, mode='fast', options=None):
     key = str(intent).strip().lower()
     mode = str(mode).strip().lower()
+    options = options or {}
 
     if mode != 'fast':
         raise NotImplementedError(
@@ -44,6 +46,14 @@ def execute_analysis(df, intent, target=None, mode='fast', options=None):
             return run_fast_multiclass_classification(df, target)
 
         raise ValueError("Unable to resolve classification subtype.")
+
+    if key in {'compare groups', 'group comparison', 'compare-groups'}:
+        if target is None:
+            raise ValueError('Compare Groups requires target.')
+        group = options.get('group')
+        if not group:
+            raise ValueError('Compare Groups requires options.group.')
+        return run_fast_compare_groups(df, target, group)
 
     if key in {'exploratory data analysis', 'exploratory', 'eda'}:
         return run_fast_exploratory(df)
