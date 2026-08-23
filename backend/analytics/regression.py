@@ -12,18 +12,72 @@ from .shared import _structural_exclusions, _derive_customer_fields, _top_model_
 from .policies import FAST_POLICY_REGISTRY
 
 
+_STANDARD_ORDINAL_TARGET_SEQUENCES = [
+    ["low", "medium", "high"],
+    ["poor", "fair", "good", "very good", "excellent"],
+    ["strongly disagree", "disagree", "neutral", "agree", "strongly agree"],
+]
+
+
+def _recognized_ordinal_target(series):
+    observed = series.dropna()
+    if observed.empty:
+        return None, None
+
+    representatives = {}
+    normalized = []
+    for value in observed:
+        label = str(value).strip()
+        key = label.casefold()
+        representatives.setdefault(key, label)
+        normalized.append(key)
+
+    observed_keys = set(normalized)
+    for sequence in _STANDARD_ORDINAL_TARGET_SEQUENCES:
+        if len(observed_keys) >= 2 and observed_keys.issubset(set(sequence)):
+            ordered = [key for key in sequence if key in observed_keys]
+            normalized_mapping = {key: idx + 1 for idx, key in enumerate(ordered)}
+            encoded = series.map(
+                lambda value: np.nan
+                if pd.isna(value)
+                else normalized_mapping.get(str(value).strip().casefold(), np.nan)
+            ).astype(float)
+            display_mapping = {
+                representatives[key]: normalized_mapping[key] for key in ordered
+            }
+            return encoded, {
+                "type": "ordinal_rank",
+                "mapping": display_mapping,
+                "order": [representatives[key] for key in ordered],
+            }
+    return None, None
+
+
+def _coerce_regression_target(series):
+    numeric = pd.to_numeric(series, errors="coerce")
+    observed_count = int(series.notna().sum())
+    if int(numeric.notna().sum()) == observed_count:
+        return numeric, None
+
+    ordinal, encoding = _recognized_ordinal_target(series)
+    if ordinal is not None:
+        return ordinal, encoding
+
+    return numeric, None
+
+
 def _build_fast_regression_features(df, target, reference_date="2026-01-01"):
     if target not in df.columns:
         raise ValueError(f"Target '{target}' not found.")
 
     d = df[df[target].notna()].copy().reset_index(drop=True)
-    y = pd.to_numeric(d[target], errors="coerce")
+    y, target_encoding = _coerce_regression_target(d[target])
     valid = y.notna()
     d = d.loc[valid].reset_index(drop=True)
     y = y.loc[valid].reset_index(drop=True)
 
     if len(y) < 5:
-        raise ValueError("Regression requires at least five numeric target observations.")
+        raise ValueError("Regression requires at least five numeric or recognized ordinal target observations.")
 
     exclude = _structural_exclusions(d, target) + [target]
     X = d.drop(columns=list(dict.fromkeys(exclude)), errors="ignore")
@@ -48,7 +102,7 @@ def _build_fast_regression_features(df, target, reference_date="2026-01-01"):
         if s.nunique(dropna=True) > 20 and s.min(skipna=True) >= 0:
             X[f"{c}__log1p"] = np.log1p(s.clip(lower=0))
 
-    return X, y, exclude
+    return X, y, exclude, target_encoding
 
 
 def _fast_regression_preprocessor(X):
@@ -82,7 +136,9 @@ def _fast_regression_preprocessor(X):
 def run_fast_regression(df, target, reference_date="2026-01-01"):
     t0 = time.perf_counter()
     policy = FAST_POLICY_REGISTRY["regression"]
-    X, y, excluded = _build_fast_regression_features(df, target, reference_date)
+    X, y, excluded, target_encoding = _build_fast_regression_features(
+        df, target, reference_date
+    )
 
     model = XGBRegressor(
         n_estimators=500,
@@ -114,6 +170,10 @@ def run_fast_regression(df, target, reference_date="2026-01-01"):
     tail_bias = float(np.mean(pred[tail] - y[tail]))
 
     warnings = []
+    if target_encoding:
+        warnings.append(
+            "Ordinal target categories were encoded as ordered ranks. Regression treats the rank codes numerically; differences between adjacent categories should not be interpreted as proven equal intervals."
+        )
     if tail_bias < 0:
         warnings.append("Model underpredicts high-target observations.")
 
@@ -139,6 +199,7 @@ def run_fast_regression(df, target, reference_date="2026-01-01"):
             "model": policy["model"],
             "architecture": policy["architecture"],
             "selection_source": policy["selection_source"],
+            "target_encoding": target_encoding,
         },
         "evidence": {
             "mae": float(mae),
@@ -159,5 +220,6 @@ def run_fast_regression(df, target, reference_date="2026-01-01"):
         "pipeline": pipe,
         "oof_predictions": pred,
         "target_values": y,
+        "target_encoding": target_encoding,
     }
     return result, artifacts
