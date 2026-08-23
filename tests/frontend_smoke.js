@@ -17,10 +17,13 @@ s.setPredictors(['x']);assert.strictEqual(s.getState().result.validated,true,'pr
 s.updateAnalysisPlan({target:'y'});assert.strictEqual(s.getState().result.validated,false,'target change must reset result');
 s.setResultPayload({ok:true});s.updateAnalysisPlan({questionType:'Compare groups'});assert.strictEqual(s.getState().result.validated,false,'question type change must reset result');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+const appJs=fs.readFileSync(path.join(root,'src/app.js'),'utf8');
 for(const id of ['workspaceView','variablesView','profileOverview','profileQuality','relFieldA','relFieldB','relationshipResult','aiAnalyticsView'])assert.ok(html.includes(`id="${id}"`),`missing required UI id ${id}`);
 for(const src of ['src/state.js','src/advanced-stats.js','src/ai-analytics.js','src/relationship-stats.js','src/data-profile.js','src/workflow-steps.js','src/result-drivers.js','src/result-details.js','src/accessibility.js','src/journey.js'])assert.ok(html.includes(`src="${src}"`),`missing direct script ${src}`);
 assert.ok(html.includes('href="src/workflow-steps.css"'),'workflow CSS should load directly from the app shell');
 assert.ok(!html.includes('src/v05.js'),'versioned v05 runtime must not be loaded');
-assert.ok(!html.includes('hotfix-v051'),'legacy hotfix must not be loaded');
+assert.ok(!html.includes('hotfix-v051'),'legacy hotfix must not be loaded from index');
+assert.ok(!appJs.includes('hotfix-v051'),'legacy hotfix must not be dynamically loaded from app.js');
+assert.ok(!appJs.includes("h.onload=()=>{const i=document.createElement('script');i.src='src/i18n.js'"),'legacy hotfix-gated i18n loader must not return');
 for(const f of ['src/advanced-stats.js','src/workflow-steps.js','src/workflow-steps.css','src/result-drivers.js','src/result-details.js','src/accessibility.js'])assert.ok(fs.existsSync(path.join(root,f)),`missing production asset ${f}`);
 console.log('FRONTEND_SMOKE_OK');
