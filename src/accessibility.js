@@ -19,7 +19,7 @@ function onTabKey(event){
   const tab=event.target.closest?.('.profile-tab');if(!tab||!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
   const tabs=[...document.querySelectorAll('.profile-tab')];if(!tabs.length)return;event.preventDefault();let index=tabs.indexOf(tab);
   if(event.key==='Home')index=0;else if(event.key==='End')index=tabs.length-1;else index=(index+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
-  tabs[index].click();tabs[index].focus();setTimeout(syncProfileTabs,0);
+  const next=tabs[index],name=next.dataset.profileTab;if(typeof root.setProfileTab==='function')root.setProfileTab(name);else next.click();next.focus();setTimeout(syncProfileTabs,0);
 }
 function init(){syncProfileTabs();syncDynamicRegions();document.addEventListener('keydown',onTabKey);document.addEventListener('click',event=>{if(event.target.closest?.('.profile-tab'))setTimeout(syncProfileTabs,0)});document.addEventListener('ku:render-current-analysis',syncDynamicRegions);document.addEventListener('ku:statechange',()=>setTimeout(syncDynamicRegions,0))}
 root.KUAccessibility=Object.freeze({syncProfileTabs,syncDynamicRegions});
