@@ -18,21 +18,28 @@ Target architecture:
 - No page-level horizontal overflow or unexpected browser errors.
 - Backend compile + pytest remains passing without integration-specific backend changes.
 
-## Manual navigation UAT
+## Manual Combined UAT
 
-1. Open `index.html`.
-   - Expected: Public KU Open Data Analytics Landing renders.
-   - Expected: TH/EN controls and Landing navigation remain usable.
-2. Click **Start analyzing / เริ่มวิเคราะห์ข้อมูล**.
-   - Expected: browser opens relative `app.html`.
-3. Confirm Product Start page.
-   - Expected: six-step Analysis Journey is visible.
-4. Load Demo.
-   - Expected: rows/fields populate and Data Profile unlocks.
-5. Continue through Data Profile → Analyze → Prepare → Setup → Results.
-   - Expected: validated Product behavior remains unchanged.
-6. Upload a CSV and an XLSX file.
-   - Expected: both load without entry-path regressions.
+Use the detailed step-by-step checklist:
+
+- `docs/MANUAL_COMBINED_UAT_CHECKLIST.md`
+
+Windows helper:
+
+- `tools/start-manual-uat.bat`
+
+The launcher serves the repository from `http://127.0.0.1:8000/` so the manual browser test uses a local origin already allowed by the validated backend CORS defaults.
+
+Manual UAT covers:
+
+1. Public Landing rendering and TH/EN behavior.
+2. Landing primary CTA → relative `app.html`.
+3. Functional Start → Data Profile → Analyze → Prepare → Setup → Results.
+4. Real backend execution, not a browser mock.
+5. CSV classification regression check using `sample-data/uat-journey.csv`.
+6. XLSX loader check.
+7. Desktop/tablet/mobile responsive checks.
+8. Public/Product separation and direct-entry reload checks.
 
 ## Separation regression
 
