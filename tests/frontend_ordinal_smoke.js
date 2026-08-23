@@ -50,6 +50,8 @@ const tick=()=>new Promise(resolve=>w.setTimeout(resolve,0));
   assert.strictEqual(w.document.querySelector('.prep-status-panel.review .prep-status-title b').textContent.trim(),'0');
   assert.strictEqual(w.document.getElementById('prepBlockers').textContent.trim(),'');
 
+  // Simulate the validated backend payload after approved preparation.
+  w.KUAppState.setPreparation({status:'approved',approved:true});
   w.KUAppState.setResultPayload({
     result:{
       status:'COMPLETE',route:'regression',analysis_type:'regression',target:'Satisfaction',
@@ -70,5 +72,25 @@ const tick=()=>new Promise(resolve=>w.setTimeout(resolve,0));
   assert.ok(details?.textContent.includes('High'));
   assert.ok(details?.textContent.includes('equal spacing'));
   assert.ok(details?.textContent.includes('Warnings / Guardrails'));
+  assert.strictEqual(w.document.querySelector('.result-stale'),null,'fresh ordinal result should not be marked stale');
+
+  // Metadata-only change: Ordinal -> Scale keeps the same Regression route but changes interpretation.
+  w.goToJourneyStep('profile');
+  await tick();
+  const satisfactionIndex=w.eval("headers.indexOf('Satisfaction')");
+  assert.ok(satisfactionIndex>=0,'demo should include Satisfaction');
+  w.updateLevelByIndex(satisfactionIndex,'Scale');
+  await tick();
+  await tick();
+  state=w.KUAppState.getState();
+  assert.strictEqual(state.analysisPlan.route,'regression','Ordinal -> Scale should keep the Regression route');
+  assert.strictEqual(state.result.validated,true,'metadata-only change should preserve previous result for comparison');
+  assert.strictEqual(state.analysisPlan.preparation.approved,false,'metadata-only change should invalidate preparation approval');
+
+  w.goToJourneyStep('results');
+  await tick();
+  const stale=w.document.querySelector('.result-stale');
+  assert.ok(stale,'metadata-only mismatch should mark the previous result stale');
+  assert.ok(stale.textContent.includes('Field storage or measurement metadata changed'));
   console.log('FRONTEND_ORDINAL_SMOKE_OK');
 })().catch(err=>{console.error(err);process.exit(1)});
