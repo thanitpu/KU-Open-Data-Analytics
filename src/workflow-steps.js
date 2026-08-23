@@ -189,7 +189,7 @@ function renderPrepare(){
 
 async function loadCapabilities(){
   if(capabilitiesCache)return capabilitiesCache;
-  const response=await fetch(`${root.KU_ANALYTICS_API_BASE||''}/capabilities`);
+  const response=await fetch(`${KU_ANALYTICS_API_BASE}/capabilities`);
   if(!response.ok)throw new Error(`HTTP ${response.status}`);
   capabilitiesCache=await response.json();
   return capabilitiesCache;
