@@ -20,5 +20,9 @@ jobs:
           node --check src/ai-analytics.js
           node --check src/app.js
           node --check src/analysis.js
-      - name: Frontend smoke tests
+      - name: Static smoke tests
         run: node tests/frontend_smoke.js
+      - name: Install DOM test dependency
+        run: npm install --no-save jsdom@24
+      - name: Journey and Data Profile DOM smoke
+        run: node tests/frontend_dom_smoke.js
