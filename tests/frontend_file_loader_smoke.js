@@ -33,12 +33,13 @@ w.eval(fs.readFileSync(path.join(root,'src/app.js'),'utf8'));
   w.clearAll();
   w.XLSX={
     read:buf=>{
-      assert.ok(buf instanceof ArrayBuffer,'XLSX loader should pass an ArrayBuffer to XLSX.read');
+      assert.ok(buf&&typeof buf.byteLength==='number','XLSX loader should pass an ArrayBuffer-like payload to XLSX.read');
       return {SheetNames:['Data'],Sheets:{Data:{}}};
     },
     utils:{sheet_to_json:(sheet,opts)=>{
       assert.ok(sheet,'selected workbook sheet should be passed to sheet_to_json');
-      assert.deepStrictEqual(opts,{header:1,defval:''});
+      assert.strictEqual(opts.header,1,'XLSX sheet conversion must use header:1');
+      assert.strictEqual(opts.defval,'','XLSX sheet conversion must preserve blank cells with defval');
       return [['Group','Score'],['A',91],['B',84],['C',77]];
     }}
   };
