@@ -18,6 +18,9 @@ s.updateAnalysisPlan({target:'y'});assert.strictEqual(s.getState().result.valida
 s.setResultPayload({ok:true});s.updateAnalysisPlan({questionType:'Compare groups'});assert.strictEqual(s.getState().result.validated,false,'question type change must reset result');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 for(const id of ['workspaceView','variablesView','profileOverview','profileQuality','relFieldA','relFieldB','relationshipResult','aiAnalyticsView'])assert.ok(html.includes(`id="${id}"`),`missing required UI id ${id}`);
-for(const src of ['src/state.js','src/relationship-stats.js','src/data-profile.js','src/journey.js'])assert.ok(html.includes(`src="${src}"`),`missing script ${src}`);
-for(const f of ['src/workflow-steps.js','src/workflow-steps.css','src/result-drivers.js','src/accessibility.js'])assert.ok(fs.existsSync(path.join(root,f)),`missing workflow asset ${f}`);
+for(const src of ['src/state.js','src/advanced-stats.js','src/ai-analytics.js','src/relationship-stats.js','src/data-profile.js','src/workflow-steps.js','src/result-drivers.js','src/accessibility.js','src/journey.js'])assert.ok(html.includes(`src="${src}"`),`missing direct script ${src}`);
+assert.ok(html.includes('href="src/workflow-steps.css"'),'workflow CSS should load directly from the app shell');
+assert.ok(!html.includes('src/v05.js'),'versioned v05 runtime must not be loaded');
+assert.ok(!html.includes('hotfix-v051'),'legacy hotfix must not be loaded');
+for(const f of ['src/advanced-stats.js','src/workflow-steps.js','src/workflow-steps.css','src/result-drivers.js','src/accessibility.js'])assert.ok(fs.existsSync(path.join(root,f)),`missing production asset ${f}`);
 console.log('FRONTEND_SMOKE_OK');
