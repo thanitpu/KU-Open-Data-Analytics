@@ -4,7 +4,9 @@
   'use strict';
 
   const listeners=new Set();
-  const emptyResult=()=>({payload:null,validated:false,source:null,lastRunAt:null});
+  const emptyResult=()=>({payload:null,validated:false,source:null,lastRunAt:null,planSnapshot:null});
+  const emptyPreparation=()=>({status:'not-reviewed',approved:false});
+  const emptySetup=()=>({mode:'recommended',configuration:{}});
   const initialState=()=>({
     currentStep:'start',
     dataset:{loaded:false,name:null,rowCount:0,columnCount:0,fields:[]},
@@ -16,8 +18,8 @@
       analyticalFamily:null,
       route:null,
       question:'',
-      preparation:{status:'not-reviewed',approved:false},
-      setup:{mode:'recommended',configuration:{}}
+      preparation:emptyPreparation(),
+      setup:emptySetup()
     },
     result:emptyResult()
   });
@@ -44,6 +46,7 @@
     emit('journey:step');
   }
 
+  function datasetIdentity(d){return `${d.loaded}|${d.name||''}|${d.rowCount}|${d.columnCount}|${(d.fields||[]).map(f=>f.name||'').join('\u001f')}`}
   function setDataset(dataset){
     const next=dataset&&dataset.loaded!==false?{
       loaded:true,
@@ -52,6 +55,13 @@
       columnCount:Number(dataset.columnCount)||0,
       fields:Array.isArray(dataset.fields)?copy(dataset.fields):[]
     }:{loaded:false,name:null,rowCount:0,columnCount:0,fields:[]};
+    const datasetChanged=state.dataset.loaded&&datasetIdentity(state.dataset)!==datasetIdentity(next);
+    if(datasetChanged){
+      const fresh=initialState();
+      state={...fresh,dataset:next,currentStep:'start'};
+      emit('dataset:replace+analysis-reset');
+      return;
+    }
     state={...state,dataset:next};
     emit('dataset:update');
   }
@@ -63,10 +73,20 @@
     if(patch.preparation)next.preparation={...before.preparation,...patch.preparation};
     if(patch.setup)next.setup={...before.setup,...patch.setup};
 
+    const questionOrTargetChanged=next.questionType!==before.questionType||next.target!==before.target;
+    const predictorsChanged=JSON.stringify(next.predictors)!==JSON.stringify(before.predictors)||next.predictorMode!==before.predictorMode;
+    if(questionOrTargetChanged){
+      next.preparation=emptyPreparation();
+      next.setup=emptySetup();
+    }else if(predictorsChanged){
+      next.preparation={status:'needs-review',approved:false};
+      next.setup=emptySetup();
+    }
+
     // Product rule: validated results are invalidated ONLY by Question Type or Target changes.
-    const invalidatesResult=next.questionType!==before.questionType||next.target!==before.target;
-    state={...state,analysisPlan:next,result:invalidatesResult?emptyResult():state.result};
-    emit(invalidatesResult?'analysis-plan:update+result-reset':'analysis-plan:update');
+    state={...state,analysisPlan:next,result:questionOrTargetChanged?emptyResult():state.result};
+    const reason=questionOrTargetChanged?'analysis-plan:update+downstream-reset+result-reset':predictorsChanged?'analysis-plan:predictors+downstream-reset':'analysis-plan:update';
+    emit(reason);
   }
 
   function setPredictors(predictors){updateAnalysisPlan({predictors})}
@@ -74,7 +94,9 @@
   function setSetup(patch){updateAnalysisPlan({setup:patch||{}})}
 
   function setResultPayload(payload,{validated=true,source='api'}={}){
-    state={...state,result:{payload:copy(payload),validated:Boolean(validated),source,lastRunAt:new Date().toISOString()}};
+    const p=state.analysisPlan;
+    const planSnapshot={questionType:p.questionType,target:p.target,predictors:copy(p.predictors),predictorMode:p.predictorMode,analyticalFamily:p.analyticalFamily,route:p.route,question:p.question};
+    state={...state,result:{payload:copy(payload),validated:Boolean(validated),source,lastRunAt:new Date().toISOString(),planSnapshot}};
     emit('result:set');
   }
   function resetResult(){state={...state,result:emptyResult()};emit('result:reset')}
