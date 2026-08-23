@@ -3,7 +3,7 @@
 'use strict';
 
 const el=id=>document.getElementById(id);
-const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]));
+const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const fmt=(v,d=3)=>Number.isFinite(Number(v))?Number(v).toFixed(d):'—';
 let capabilitiesCache=null;
 
