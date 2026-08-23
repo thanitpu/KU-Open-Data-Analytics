@@ -11,7 +11,12 @@ const eta=rel.etaSquaredByGroup([1,1,3,3],['A','A','B','B']);near(eta.etaSquared
 require(path.join(root,'src/state.js'));
 const s=globalThis.KUAppState;
 s.setDataset({loaded:true,rowCount:4,columnCount:3,fields:[{name:'x'},{name:'y'},{name:'target'}]});
+assert.strictEqual(s.canEnterStep('analyze'),true,'Analyze should unlock after dataset load');
+assert.strictEqual(s.canEnterStep('prepare'),false,'Prepare must remain locked without a derived Analysis Plan route');
 s.updateAnalysisPlan({questionType:'Predict an outcome',target:'target',analyticalFamily:'Binary Classification'});
+assert.strictEqual(s.canEnterStep('prepare'),false,'Question and target alone must not bypass route derivation');
+s.updateAnalysisPlan({route:'binary-classification'});
+assert.strictEqual(s.canEnterStep('prepare'),true,'Prepare should unlock after the route is derived');
 s.setResultPayload({ok:true});
 s.setPredictors(['x']);assert.strictEqual(s.getState().result.validated,true,'predictor-only change must preserve result');
 s.updateAnalysisPlan({target:'y'});assert.strictEqual(s.getState().result.validated,false,'target change must reset result');
