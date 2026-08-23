@@ -147,19 +147,31 @@ function prepareBlockers(p,group){
   }
   return blockers;
 }
+function prepEntries(p,fields){
+  return fields.map(field=>({field,rule:prepRule(p,field)}));
+}
+function automaticPreparation(entries){
+  const items=entries.filter(x=>x.rule[3]==='ok');
+  if(!items.length)return '<p class="prep-clear">No automatic preparation actions are required for the current field selection.</p>';
+  return `<div class="prep-action-list">${items.map(({field,rule})=>`<div class="prep-action-item"><b>${safe(field.name)}</b><span>${safe(rule[0])}</span><small>${safe(rule[1])}</small></div>`).join('')}</div>`;
+}
+function reviewPreparation(blockers){
+  if(!blockers.length)return '<p class="prep-clear">No blocking issues detected. Preparation can be approved.</p>';
+  return `<div class="prep-review-list">${blockers.map(message=>`<div class="prep-review-item"><b>Review required</b><span>${safe(message)}</span></div>`).join('')}</div>`;
+}
 
 function renderPrepare(){
   const p=plan(),view=host(),fields=selectedFields(p).map(summary),saved=p.preparation||{},groups=candidateGroups(p);
   const group=saved.groupField&&groups.includes(saved.groupField)?saved.groupField:(groups.length===1?groups[0]:'');
-  const blockers=prepareBlockers(p,group);
+  const blockers=prepareBlockers(p,group),entries=prepEntries(p,fields);
   const groupCounts=p.route==='group-comparison'&&group?completeGroupCounts(p.target,group):[];
 
   view.innerHTML=`<div class="step-kicker">STEP 4 · PREPARE</div><h1>Review Data Preparation</h1><p class="lead">Review what the selected production route will do with the real fields before confirming execution.</p>${currentBar()}
-  <section class="card prep-summary-card"><div class="head">Preparation summary</div><div class="body"><div class="prep-route"><span>Selected route</span><b>${safe(routeLabel(p.route))}</b><small>${fields.length} selected field${fields.length===1?'':'s'}</small></div><div class="prep-table"><table><thead><tr><th>Field</th><th>Recommended action</th><th>Detected issue / context</th><th>Reason</th></tr></thead><tbody>${fields.map(s=>{const r=prepRule(p,s);return`<tr class="${r[3]==='block'?'prep-block-row':''}"><td><b>${safe(s.name)}</b><small>${safe(s.storage)} · ${safe(s.level)}</small></td><td>${safe(r[0])}</td><td>${safe(r[1])}</td><td>${safe(r[2])}</td></tr>`}).join('')}</tbody></table></div></div></section>
+  <section class="card prep-summary-card"><div class="head">Preparation Summary</div><div class="body"><div class="prep-route"><span>Selected route</span><b>${safe(routeLabel(p.route))}</b><small>${fields.length} selected field${fields.length===1?'':'s'}</small></div><div class="prep-status-grid"><section class="prep-status-panel automatic"><div class="prep-status-title"><span>Automatically handled</span><b>${entries.filter(x=>x.rule[3]==='ok').length}</b></div>${automaticPreparation(entries)}</section><section class="prep-status-panel review"><div class="prep-status-title"><span>Needs review</span><b>${blockers.length}</b></div>${reviewPreparation(blockers)}</section></div></div></section>
   ${p.route==='group-comparison'?`<section class="card route-prep-card"><div class="head">Group comparison setup</div><div class="body"><label class="field-control"><span>Grouping field</span><select id="prepareGroupField"><option value="">Choose grouping field…</option>${groups.map(h=>`<option value="${safe(h)}" ${h===group?'selected':''}>${safe(h)} · ${summary(h).unique} groups</option>`).join('')}</select></label><div class="note">Two observed groups will use Welch t-test; three or more will use one-way ANOVA in the validated backend.${groupCounts.length?` Complete observations by group: ${safe(groupCounts.map(([name,n])=>`${name}=${n}`).join(', '))}.`:''}</div></div></section>`:''}
-  <details class="card field-review-details"><summary>View Field-by-Field</summary><div class="body"><div class="table"><table><thead><tr><th>Field</th><th>Role</th><th>Storage</th><th>Level</th><th>Observed</th><th>Missing</th><th>Unique</th></tr></thead><tbody>${fields.map(s=>`<tr><td>${safe(s.name)}</td><td>${s.name===p.target?'Target':'Predictor / input'}</td><td>${safe(s.storage)}</td><td>${safe(s.level)}</td><td>${s.n}</td><td>${s.missing}</td><td>${s.unique}</td></tr>`).join('')}</tbody></table></div></div></details>
+  <details class="card field-review-details"><summary>View Field-by-Field Preparation Details</summary><div class="body"><div class="prep-table"><table><thead><tr><th>Field</th><th>Recommended Action</th><th>Detected Issues</th><th>Planned Action</th><th>Reason</th></tr></thead><tbody>${entries.map(({field,rule})=>`<tr class="${rule[3]==='block'?'prep-block-row':''}"><td><b>${safe(field.name)}</b><small>${safe(field.storage)} · ${safe(field.level)}</small></td><td>${safe(rule[0])}</td><td>${safe(rule[1])}</td><td>${safe(rule[0])}</td><td>${safe(rule[2])}</td></tr>`).join('')}</tbody></table></div></div></details>
   ${blockers.length?`<div id="prepBlockers" class="workflow-blocker"><b>Preparation cannot be approved yet</b>${blockers.map(x=>`<p>${safe(x)}</p>`).join('')}</div>`:'<div id="prepBlockers"></div>'}
-  <div class="workflow-footer"><button class="btn ghost" onclick="goToJourneyStep('analyze')">← Edit Question</button><button id="continueSetup" class="btn primary" ${blockers.length?'disabled':''}>Continue to Setup →</button></div>`;
+  <div class="workflow-footer"><button class="btn ghost" onclick="goToJourneyStep('analyze')">← Edit Question</button><button id="continueSetup" class="btn primary" ${blockers.length?'disabled':''}>Approve Preparation →</button></div>`;
 
   el('prepareGroupField')?.addEventListener('change',event=>{
     root.KUAppState.setPreparation({status:'pending-review',approved:false,groupField:event.target.value||null});
@@ -169,7 +181,7 @@ function renderPrepare(){
     const selectedGroup=el('prepareGroupField')?.value||saved.groupField||null;
     const currentBlockers=prepareBlockers(p,selectedGroup);
     if(currentBlockers.length)return;
-    root.KUAppState.setPreparation({status:'reviewed',approved:true,groupField:selectedGroup});
+    root.KUAppState.setPreparation({status:'approved',approved:true,groupField:selectedGroup});
     root.goToJourneyStep('setup');
   });
   emitBar();
@@ -195,7 +207,7 @@ function capabilityRows(cap){
 }
 function renderSetupShell(message='Loading backend execution metadata…'){
   const view=host();
-  view.innerHTML=`<div class="step-kicker">STEP 5 · SETUP</div><h1>Confirm How the Analysis Will Run</h1><p class="lead">The recommended setup comes from the validated backend policy, not from a frontend model preset.</p>${currentBar()}<section class="card"><div class="head">Recommended Setup</div><div class="body" id="setupBody"><div class="empty">${safe(message)}</div></div></section><div class="workflow-footer"><button class="btn ghost" onclick="goToJourneyStep('prepare')">← Back to Prepare</button><button id="runAnalysisBtn" class="btn primary" disabled>Run Analysis</button></div>`;
+  view.innerHTML=`<div class="step-kicker">STEP 5 · SETUP</div><h1>How Will the Analysis Run?</h1><p class="lead">The recommended setup comes from the validated backend policy, not from a frontend model preset.</p>${currentBar()}<section class="card"><div class="head">Recommended Setup</div><div class="body" id="setupBody"><div class="empty">${safe(message)}</div></div></section><div class="workflow-footer"><button class="btn ghost" onclick="goToJourneyStep('prepare')">← Back to Prepare</button><button id="runAnalysisBtn" class="btn primary" disabled>Run recommended analysis →</button></div>`;
   emitBar();
 }
 async function renderSetup(){
@@ -204,9 +216,9 @@ async function renderSetup(){
   try{
     const caps=await loadCapabilities(),cap=caps.routes?.[p.route];
     if(!cap)throw new Error(`Backend capability metadata does not include route ${p.route}.`);
-    const group=p.preparation?.groupField||null,metrics=(cap.metrics||[]).join(', ');
-    el('setupBody').innerHTML=`<div class="setup-grid"><div class="setup-hero"><span>Recommended route</span><b>${safe(routeLabel(p.route))}</b><small>${safe(cap.intent||'Validated backend')}</small></div><div class="setup-kv"><span>Target</span><b>${safe(p.target||'Not required')}</b></div><div class="setup-kv"><span>Predictors / inputs</span><b>${(p.predictors||[]).length}</b></div>${group?`<div class="setup-kv"><span>Grouping field</span><b>${safe(group)}</b></div>`:''}</div><div class="setup-policy">${capabilityRows(cap)}</div><details class="technical-run-spec"><summary>Technical Run Spec</summary><div class="body"><div class="setup-kv"><span>API</span><b>POST /analyze</b></div><div class="setup-kv"><span>Mode</span><b>fast</b></div><div class="setup-kv"><span>Metrics returned</span><b>${safe(metrics||'Route-defined evidence')}</b></div><div class="setup-kv"><span>Fields uploaded</span><b>${safe(selectedFields(p).join(', '))}</b></div></div></details>`;
-    root.KUAppState.setSetup({mode:'recommended',confirmed:false,configuration:{intent:cap.intent,route:p.route,groupField:group,capability:cap}});
+    const group=p.preparation?.groupField||null,metrics=(cap.metrics||[]).join(', '),serviceVersion=caps.service?.version||'—';
+    el('setupBody').innerHTML=`<div class="setup-grid"><div class="setup-hero"><span>Recommended route</span><b>${safe(routeLabel(p.route))}</b><small>${safe(cap.intent||'Validated backend')}</small></div><div class="setup-kv"><span>Target</span><b>${safe(p.target||'Not required')}</b></div><div class="setup-kv"><span>Predictors / inputs</span><b>${(p.predictors||[]).length}</b></div>${group?`<div class="setup-kv"><span>Grouping field</span><b>${safe(group)}</b></div>`:''}</div><div class="setup-policy">${capabilityRows(cap)}</div><details class="technical-run-spec"><summary>Technical Run Specification</summary><div class="body"><div class="setup-kv"><span>Backend API</span><b>v${safe(serviceVersion)}</b></div><div class="setup-kv"><span>Endpoint</span><b>POST /analyze</b></div><div class="setup-kv"><span>Mode</span><b>fast</b></div><div class="setup-kv"><span>Metrics returned</span><b>${safe(metrics||'Route-defined evidence')}</b></div><div class="setup-kv"><span>Fields uploaded</span><b>${safe(selectedFields(p).join(', '))}</b></div></div></details>`;
+    root.KUAppState.setSetup({mode:'recommended',confirmed:false,configuration:{intent:cap.intent,route:p.route,groupField:group,capability:cap,serviceVersion}});
     const run=el('runAnalysisBtn');
     run.disabled=false;
     run.addEventListener('click',runAnalysisFromSetup);
@@ -224,7 +236,7 @@ async function runAnalysisFromSetup(){
     root.goToJourneyStep('results');
   }catch(err){
     btn.disabled=false;
-    btn.textContent='Run Analysis';
+    btn.textContent='Run recommended analysis →';
     el('setupBody')?.insertAdjacentHTML('beforeend',`<div class="workflow-blocker"><b>Analysis could not run</b><p>${safe(err.message)}</p></div>`);
   }
 }
@@ -240,17 +252,22 @@ function answerText(r){
   if(r.route==='compare_groups')return `The ${r.method?.test||'group comparison'} returned p = ${Number(e.p_value)<.001?'< .001':fmt(e.p_value,4)}${Number.isFinite(Number(e.hedges_g))?` with Hedges g ${fmt(e.hedges_g)}`:Number.isFinite(Number(e.eta_squared))?` with η² ${fmt(e.eta_squared)}`:''}.`;
   return `The validated analysis completed with status ${r.status||'COMPLETE'}.`;
 }
+function evidenceValue(v){
+  if(typeof v!=='number')return safe(v);
+  if(Number.isInteger(v))return String(v);
+  return fmt(v,4);
+}
 function evidenceCards(r){
   return Object.entries(r.evidence||{})
     .filter(([,v])=>['number','string','boolean'].includes(typeof v))
     .slice(0,12)
-    .map(([k,v])=>`<div class="result-metric"><span>${safe(k.replaceAll('_',' '))}</span><b>${typeof v==='number'?fmt(v,4):safe(v)}</b></div>`)
+    .map(([k,v])=>`<div class="result-metric"><span>${safe(k.replaceAll('_',' '))}</span><b>${evidenceValue(v)}</b></div>`)
     .join('');
 }
 function confusion(r){
   const e=r.evidence||{};
   if(!['tn','fp','fn','tp'].every(k=>Number.isFinite(Number(e[k]))))return'';
-  return `<section class="card"><div class="head">Confusion matrix</div><div class="body"><div class="confusion"><div class="cm-corner"></div><div class="cm-head">Predicted −</div><div class="cm-head">Predicted +</div><div class="cm-head">Actual −</div><div class="cm-cell correct"><b>${e.tn}</b><span>TN</span></div><div class="cm-cell error"><b>${e.fp}</b><span>FP</span></div><div class="cm-head">Actual +</div><div class="cm-cell error"><b>${e.fn}</b><span>FN</span></div><div class="cm-cell correct"><b>${e.tp}</b><span>TP</span></div></div></div></section>`;
+  return `<section class="card"><div class="head">Confusion matrix</div><div class="body"><div class="confusion"><div class="cm-corner"></div><div class="cm-head">Predicted −</div><div class="cm-head">Predicted +</div><div class="cm-head">Actual −</div><div class="cm-cell correct"><b>${e.tn}</b><span>TN</span></div><div class="cm-cell error"><b>${e.fp}</b><span>FP</span></div><div class="cm-head">Actual +</div><div class="cm-cell error"><b>${e.fn}</b><span>FN</span></div><div class="cm-head">Actual +</div><div class="cm-cell error"><b>${e.fn}</b><span>FN</span></div><div class="cm-cell correct"><b>${e.tp}</b><span>TP</span></div></div></div></section>`;
 }
 function sameFields(a=[],b=[]){return JSON.stringify([...a].sort())===JSON.stringify([...b].sort())}
 function resultMatchesCurrentPlan(state,p){
