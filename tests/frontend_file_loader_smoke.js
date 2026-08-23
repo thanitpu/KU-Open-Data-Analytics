@@ -13,6 +13,9 @@ const w=dom.window;
 const alerts=[];
 w.alert=msg=>alerts.push(String(msg));
 w.HTMLCanvasElement.prototype.getContext=function(){return new Proxy({},{get:(t,p)=>p==='measureText'?(()=>({width:10})):(p==='canvas'?this:(()=>{})),set:()=>true})};
+// The loader calls render(), which refreshes selectors owned by analysis.js. This smoke isolates file parsing/loading,
+// so provide the same no-op boundary instead of loading unrelated statistical-analysis code.
+w.refreshAnalysisSelectors=()=>{};
 w.eval(fs.readFileSync(path.join(root,'src/app.js'),'utf8'));
 
 (async()=>{
