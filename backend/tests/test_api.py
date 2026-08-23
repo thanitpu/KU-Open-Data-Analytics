@@ -6,23 +6,28 @@ from app.api import app
 
 client = TestClient(app)
 
+
 def _csv_file(df):
     buf = io.StringIO()
     df.to_csv(buf, index=False)
     return ('dataset.csv', buf.getvalue().encode('utf-8'), 'text/csv')
+
 
 def test_health():
     r = client.get('/health')
     assert r.status_code == 200
     assert r.json()['status'] == 'ok'
 
+
 def test_capabilities():
     r = client.get('/capabilities')
     assert r.status_code == 200
     payload = r.json()
+    assert payload['service']['version'] == '0.3.0'
     assert payload['service']['mode'] == 'fast'
     assert payload['routes']['regression']['policy']['model'] == 'XGBoost'
     assert payload['routes']['group-comparison']['intent'] == 'Compare Groups'
+
 
 def test_segmentation_endpoint():
     df = pd.DataFrame({
@@ -39,6 +44,7 @@ def test_segmentation_endpoint():
     payload = r.json()
     assert payload['result']['route'] == 'segmentation'
     assert payload['result']['status'] == 'COMPLETE'
+
 
 def test_compare_groups_endpoint():
     df = pd.DataFrame({'Group':['A','A','A','B','B','B'],'Score':[1,2,3,7,8,9]})
