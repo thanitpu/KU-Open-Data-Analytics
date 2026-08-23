@@ -49,5 +49,25 @@ const tick=()=>new Promise(resolve=>w.setTimeout(resolve,0));
   assert.ok(automatic.includes('Low < Medium < High'));
   assert.strictEqual(w.document.querySelector('.prep-status-panel.review .prep-status-title b').textContent.trim(),'0');
   assert.strictEqual(w.document.getElementById('prepBlockers').textContent.trim(),'');
+
+  w.KUAppState.setResultPayload({
+    result:{
+      status:'COMPLETE',route:'regression',analysis_type:'regression',target:'Satisfaction',
+      method:{model:'XGBoost',target_encoding:{type:'ordinal_rank',mapping:{Low:1,Medium:2,High:3},order:['Low','Medium','High']}},
+      evidence:{mae:.41,rmse:.53,r2:.68,tail_mae:.62,tail_bias:-.08},
+      findings:[],
+      warnings:['Ordinal target categories were encoded as ordered ranks. Regression treats the rank codes numerically; differences between adjacent categories should not be interpreted as proven equal intervals.']
+    },
+    report:{overview:[],method:[],evidence:[],findings:[]}
+  });
+  w.goToJourneyStep('results');
+  await tick();
+  const details=w.document.getElementById('familyResultDetails');
+  assert.ok(details?.textContent.includes('Target Coding'));
+  assert.ok(details?.textContent.includes('Low'));
+  assert.ok(details?.textContent.includes('Medium'));
+  assert.ok(details?.textContent.includes('High'));
+  assert.ok(details?.textContent.includes('equal spacing'));
+  assert.ok(details?.textContent.includes('Warnings / Guardrails'));
   console.log('FRONTEND_ORDINAL_SMOKE_OK');
 })().catch(err=>{console.error(err);process.exit(1)});
