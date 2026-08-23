@@ -34,6 +34,17 @@
     if(document.body)document.body.scrollTop=0;
   }
 
+  function ensureActiveJourneyVisible(){
+    if(window.innerWidth>1050)return;
+    const list=document.querySelector('.journey-list');
+    const active=list?.querySelector('.journey-step.active');
+    if(!list||!active)return;
+    const left=active.offsetLeft,right=left+active.offsetWidth;
+    const viewLeft=list.scrollLeft,viewRight=viewLeft+list.clientWidth;
+    if(left<viewLeft)list.scrollLeft=Math.max(0,left-12);
+    else if(right>viewRight)list.scrollLeft=Math.max(0,right-list.clientWidth+12);
+  }
+
   function renderCurrentAnalysis(){
     if(!window.KUAppState)return;
     const {analysisPlan:p}=window.KUAppState.getState();
@@ -66,6 +77,7 @@
       button.title=enabled?'':`${stepLabels[key]?.[0]||key} becomes available when the prior required state is complete.`;
     });
     renderCurrentAnalysis();
+    ensureActiveJourneyVisible();
   }
 
   function hideView(id){
