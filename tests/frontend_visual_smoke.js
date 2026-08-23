@@ -106,8 +106,12 @@ async function runViewport(browser,viewport){
   await page.waitForSelector('#runAnalysisBtn:not([disabled])');
   const setupText=await page.locator('#setupBody').innerText();
   assert.ok(setupText.includes('One-way ANOVA'),`${viewport.name}: backend capability metadata should render in Setup`);
-  assert.ok(setupText.includes('v0.3.0'),`${viewport.name}: Setup should show the mocked production backend version`);
+  const technical=page.locator('.technical-run-spec');
+  assert.strictEqual(await technical.evaluate(node=>node.open),false,`${viewport.name}: Technical Run Specification should be collapsed by default`);
   await screenshot(page,viewport,'setup');
+  await page.locator('.technical-run-spec > summary').click();
+  assert.ok((await technical.innerText()).includes('v0.3.0'),`${viewport.name}: opening Technical Run Specification should show backend version`);
+  await page.locator('.technical-run-spec > summary').click();
 
   await page.locator('#runAnalysisBtn').click();
   await page.waitForSelector('.result-answer');
