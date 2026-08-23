@@ -19,6 +19,7 @@ jobs:
           node --check src/data-profile.js
           node --check src/ai-analytics.js
           node --check src/workflow-steps.js
+          node --check src/result-drivers.js
           node --check src/app.js
           node --check src/analysis.js
       - name: Static smoke tests
