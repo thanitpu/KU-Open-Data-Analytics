@@ -50,6 +50,7 @@ async function screenshot(page,viewport,label){
   await page.screenshot({path:path.join(artifactDir,`${slug(viewport.name)}-${slug(label)}.png`),fullPage:true});
 }
 async function mockNetwork(page){
+  await page.route('**/favicon.ico',route=>route.fulfill({status:204,body:''}));
   await page.route('https://cdn.jsdelivr.net/**',route=>route.fulfill({status:200,contentType:'application/javascript',body:'window.XLSX=window.XLSX||{};'}));
   await page.route('**/capabilities',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(capabilities)}));
   await page.route('**/analyze',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(analysisPayload)}));
@@ -60,6 +61,7 @@ async function runViewport(browser,viewport){
   const errors=[];
   page.on('pageerror',err=>errors.push(`pageerror: ${err.message}`));
   page.on('console',msg=>{if(msg.type()==='error')errors.push(`console: ${msg.text()}`)});
+  page.on('response',response=>{if(response.status()>=400&&!response.url().endsWith('/favicon.ico'))errors.push(`http ${response.status()}: ${response.url()}`)});
   await mockNetwork(page);
   await page.goto(baseURL,{waitUntil:'domcontentloaded'});
   await page.waitForSelector('#workspaceView');
