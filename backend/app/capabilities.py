@@ -3,7 +3,11 @@ from analytics.policies import FAST_POLICY_REGISTRY
 
 def get_capabilities():
     return {
-        'service': {'mode': 'fast', 'source': 'validated_backend'},
+        'service': {
+            'version': '0.3.0',
+            'mode': 'fast',
+            'source': 'validated_backend',
+        },
         'routes': {
             'clustering': {
                 'intent': 'Customer Segmentation', 'target_required': False,
