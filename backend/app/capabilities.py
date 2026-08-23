@@ -24,7 +24,13 @@ def get_capabilities():
                 'policy': FAST_POLICY_REGISTRY['regression'],
                 'preparation': {
                     'missing_numeric': 'median imputation', 'missing_categorical': 'most-frequent imputation',
-                    'categorical_encoding': 'OneHotEncoder(handle_unknown=ignore)', 'target': 'numeric target; missing target rows removed'
+                    'categorical_encoding': 'OneHotEncoder(handle_unknown=ignore)',
+                    'target': 'numeric target or recognized ordered text target; missing target rows removed',
+                    'recognized_ordinal_targets': [
+                        'Low < Medium < High',
+                        'Poor < Fair < Good < Very Good < Excellent',
+                        'Strongly disagree < Disagree < Neutral < Agree < Strongly agree',
+                    ],
                 },
                 'validation': '5-fold shuffled KFold out-of-fold prediction',
                 'metrics': ['mae', 'rmse', 'r2', 'tail_mae', 'tail_bias']
