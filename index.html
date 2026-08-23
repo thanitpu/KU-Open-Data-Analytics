@@ -69,7 +69,6 @@
     </div>
   </div>
 </section>
-
 <section id="variablesView" class="hidden">
   <div class="step-kicker">STEP 2 · DATA PROFILE</div>
   <h1>Understand the Dataset</h1>
@@ -87,7 +86,6 @@
     <button class="profile-tab" data-profile-tab="quality" onclick="setProfileTab('quality')">Data Quality</button>
     <button class="profile-tab" data-profile-tab="relationships" onclick="setProfileTab('relationships')">Relationships</button>
   </div>
-
   <div class="profile-pane active" data-profile-pane="overview">
     <div id="profileOverview"></div>
     <div class="profile-overview-grid" style="margin-top:14px">
@@ -96,16 +94,11 @@
     </div>
     <section class="card"><div class="head">Analysis guidance</div><div class="body"><div class="advisor" id="advisor">Import data first. The advisor will inspect measurement levels and suggest suitable analyses.</div></div></section>
   </div>
-
   <div class="profile-pane" data-profile-pane="fields">
     <section class="card"><div class="head">Field-by-field metadata</div><div class="body"><div class="note" style="margin-bottom:8px">Review inferred storage and measurement levels. You can correct the measurement level before analysis.</div><div id="variableTable"><div class="empty">Import data first.</div></div></div></section>
     <details class="advanced-profile-details"><summary>Measurement level guidance</summary><div class="advisor"><b>Nominal</b>: categories without order.<br><b>Ordinal</b>: ordered categories.<br><b>Scale</b>: quantitative interval/ratio values where arithmetic differences are meaningful.</div></details>
   </div>
-
-  <div class="profile-pane" data-profile-pane="quality">
-    <section class="card"><div class="head">Data Quality</div><div class="body" id="profileQuality"><div class="empty">Load a dataset to calculate quality checks.</div></div></section>
-  </div>
-
+  <div class="profile-pane" data-profile-pane="quality"><section class="card"><div class="head">Data Quality</div><div class="body" id="profileQuality"><div class="empty">Load a dataset to calculate quality checks.</div></div></section></div>
   <div class="profile-pane" data-profile-pane="relationships">
     <section class="relationship-explorer">
       <div class="head" style="padding:0 0 12px;border:0">Relationship Explorer</div>
@@ -119,17 +112,14 @@
       <div id="relationshipResult" class="relationship-result"><div class="empty">Select two fields and analyze their relationship.</div></div>
     </section>
   </div>
-
   <div class="profile-footer"><button class="btn ghost" onclick="goToJourneyStep('start')">← Back to Start</button><button class="btn primary" onclick="goToJourneyStep('analyze')">Continue to Analyze →</button></div>
 </section>
-
 <section id="analysisView" class="hidden"><div class="row" style="margin:0 0 14px"><button class="btn" onclick="showView('variables')">← Back to Data Profile</button><span class="pill">Advanced statistical tool</span></div>
 <section id="frequencyPanel" class="analysis-panel hidden"><h1>Frequency Tables</h1><p class="lead">Summarize categorical or ordinal variables using counts and percentages.</p><section class="card"><div class="head">Variables</div><div class="body"><div class="row"><select id="freqVar"></select><button class="btn primary" onclick="runFrequency()">Run</button></div></div></section><section class="card"><div class="head">Results</div><div class="body" id="freqResult"><div class="empty">Select a variable and run the analysis.</div></div></section></section>
 <section id="ttestPanel" class="analysis-panel hidden"><h1>t-tests</h1><p class="lead">Compare means for one sample, two independent groups, or paired measurements.</p><section class="card"><div class="head">Test setup</div><div class="body"><div class="row"><select id="ttestType" onchange="refreshTTestControls()"><option value="one">One-sample t-test</option><option value="independent">Independent-samples t-test (Welch)</option><option value="paired">Paired-samples t-test</option></select></div><div id="ttestControls" style="margin-top:10px"></div><div class="row"><button class="btn primary" onclick="runTTest()">Run t-test</button></div></div></section><section class="card"><div class="head">Results</div><div class="body" id="ttestResult"><div class="empty">Configure and run the test.</div></div></section><section class="card"><div class="head">Normality diagnostic</div><div class="body"><canvas id="ttestQQ" width="760" height="300"></canvas><div class="note" id="ttestDiagNote" style="margin-top:8px">Run a t-test to inspect a Q–Q diagnostic.</div></div></section></section>
 <section id="anovaPanel" class="analysis-panel hidden"><h1>One-way ANOVA</h1><p class="lead">Compare the mean of one numeric Scale variable across three or more groups.</p><section class="card"><div class="head">Variables</div><div class="body"><div class="row"><span class="note">Outcome</span><select id="anovaY"></select><span class="note">Group</span><select id="anovaGroup"></select><button class="btn primary" onclick="runAnova()">Run ANOVA</button></div></div></section><section class="card"><div class="head">Results</div><div class="body" id="anovaResult"><div class="empty">Select variables and run the analysis.</div></div></section><section class="card"><div class="head">Diagnostics & group visualization</div><div class="body"><canvas id="anovaPlot" width="760" height="320"></canvas><div class="note" id="anovaDiagNote" style="margin-top:8px">Run ANOVA to inspect group distributions and variance diagnostics.</div></div></section></section>
 <section id="correlationPanel" class="analysis-panel hidden"><h1>Correlation</h1><p class="lead">Measure the strength and direction of association between two numeric Scale variables.</p><section class="card"><div class="head">Variables</div><div class="body"><div class="row"><select id="corrType"><option value="pearson">Pearson</option><option value="spearman">Spearman</option></select><select id="corrX"></select><select id="corrY"></select><button class="btn primary" onclick="runCorrelation()">Run</button></div></div></section><section class="card"><div class="head">Results</div><div class="body" id="corrResult"><div class="empty">Select variables and run the analysis.</div></div></section><section class="card"><div class="head">Scatterplot</div><div class="body"><canvas id="corrPlot" width="760" height="320"></canvas><div class="note" id="corrDiagNote" style="margin-top:8px">Run correlation to inspect the relationship visually.</div></div></section></section>
 </section>
-
 <section id="aiAnalyticsView" class="hidden">
   <div class="step-kicker">STEP 3 · ANALYZE</div>
   <h1>Define the Analytical Question</h1>
@@ -141,5 +131,5 @@
 </section>
 </main></div>
 <script src="src/state.js"></script>
-<script src="src/app.js"></script><script src="src/analysis.js"></script><script src="src/v05.js"></script><script src="src/ai-analytics.js"></script><script src="src/data-profile.js"></script><script src="src/journey.js"></script>
+<script src="src/app.js"></script><script src="src/analysis.js"></script><script src="src/v05.js"></script><script src="src/ai-analytics.js"></script><script src="src/relationship-stats.js"></script><script src="src/data-profile.js"></script><script src="src/journey.js"></script>
 </body></html>
