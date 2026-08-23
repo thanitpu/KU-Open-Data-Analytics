@@ -190,7 +190,7 @@ For Regression, an unrecognized non-numeric ordinal/text target must remain bloc
 ## Responsive and accessibility checks
 
 - Desktop (>1050px): six-step sidebar and optional Advanced statistical tools are available; workflow content is not covered by sticky elements.
-- Tablet/narrow viewport (≤1050px): the journey becomes a horizontal workflow control and the Advanced statistical tools drawer is hidden to keep the production journey primary.
+- Tablet/narrow viewport (≤1050px): the journey becomes a horizontally scrollable workflow control, the **active/current step is automatically kept visible inside that control**, and the Advanced statistical tools drawer is hidden to keep the production journey primary.
 - Mobile 390px: page-level horizontal overflow must not occur. Wide preview/detail tables scroll inside their own containers rather than widening the document.
 - Step 2 tabs can be changed with mouse/touch and with Left/Right/Home/End keyboard keys.
 - Active Data Profile tab exposes `aria-selected=true`; inactive tab panels are hidden semantically.
@@ -209,6 +209,7 @@ The browser smoke test validates:
 
 - Start → Data Profile → Analyze → Prepare → Setup → Results in a real browser.
 - Sidebar/horizontal journey behavior at the correct responsive breakpoint.
+- On tablet/mobile, the active workflow step stays geometrically inside the visible horizontal journey viewport at every captured step.
 - No page-level horizontal overflow at each captured journey state.
 - No browser `pageerror`, application console error, or unexpected HTTP 4xx/5xx from repository assets.
 - `/capabilities` and `/analyze` mocks match the production Render API host, so a regression back to the local/GitHub Pages origin fails the browser smoke instead of being hidden by a wildcard mock.
