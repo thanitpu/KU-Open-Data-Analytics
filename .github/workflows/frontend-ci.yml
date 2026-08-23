@@ -7,8 +7,8 @@ jobs:
   frontend-smoke:
     runs-on: ubuntu-latest
     env:
-      # Transitional functional app entry. Change this one value to app.html during Landing integration.
-      KU_APP_ENTRY: index.html
+      # Canonical Functional Analytics Application entry. Root index.html remains a temporary compatibility mirror until Landing promotion.
+      KU_APP_ENTRY: app.html
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
