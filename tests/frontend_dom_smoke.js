@@ -39,10 +39,18 @@ const tick=()=>new Promise(r=>w.setTimeout(r,0));
   assert.ok(!w.document.getElementById('aiAnalyticsView').classList.contains('hidden'),'Step 3 should render');
   assert.ok(w.document.getElementById('aiAnalyticsView').textContent.includes('What do you want to learn?'));
   w.document.querySelector('[data-question-type="predict-outcome"]').click();
+
+  // Low/Medium/High is inferred Ordinal, so accepted routing is Regression.
   let target=w.document.getElementById('analysisTarget');target.value='Satisfaction';target.dispatchEvent(new w.Event('change',{bubbles:true}));
   let state=w.KUAppState.getState();
+  assert.strictEqual(state.analysisPlan.analyticalFamily,'Regression');
+  assert.strictEqual(state.analysisPlan.route,'regression');
+
+  // Group is nominal with three classes, so prediction routes to Multiclass Classification.
+  target=w.document.getElementById('analysisTarget');target.value='Group';target.dispatchEvent(new w.Event('change',{bubbles:true}));
+  state=w.KUAppState.getState();
   assert.strictEqual(state.analysisPlan.questionType,'predict-outcome');
-  assert.strictEqual(state.analysisPlan.target,'Satisfaction');
+  assert.strictEqual(state.analysisPlan.target,'Group');
   assert.strictEqual(state.analysisPlan.analyticalFamily,'Multiclass Classification');
   assert.strictEqual(state.analysisPlan.route,'multiclass-classification');
   assert.ok(state.analysisPlan.predictors.includes('Score')&&state.analysisPlan.predictors.includes('Age'),'all suitable fields should be selected');
