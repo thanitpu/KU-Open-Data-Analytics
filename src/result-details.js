@@ -1,7 +1,7 @@
 // KU Open DA — family-specific Step 6 details from validated payloads.
 (function(root){
 'use strict';
-const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]));
+const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const num=(v,d=3)=>Number.isFinite(Number(v))?Number(v).toFixed(d):'—';
 function card(title,body,cls=''){const s=document.createElement('section');s.className=`card result-family-detail ${cls}`.trim();s.innerHTML=`<div class="head">${safe(title)}</div><div class="body">${body}</div>`;return s}
 function table(headers,rows){return `<div class="table"><table><thead><tr>${headers.map(h=>`<th>${safe(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(v=>`<td>${safe(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
