@@ -1,0 +1,22 @@
+const assert=require('assert');
+const fs=require('fs');
+const path=require('path');
+const root=path.resolve(__dirname,'..');
+const rel=require(path.join(root,'src/relationship-stats.js'));
+function near(actual,expected,eps=1e-9){assert.ok(Math.abs(actual-expected)<=eps,`${actual} != ${expected}`)}
+near(rel.pearson([1,2,3],[2,4,6]),1);
+near(rel.correlation([1,2,3],[10,30,20],'spearman'),0.5);
+const cv=rel.chiSquareCramersV([['A','X'],['A','X'],['B','Y'],['B','Y']]);near(cv.cramersV,1);assert.strictEqual(cv.df,1);
+const eta=rel.etaSquaredByGroup([1,1,3,3],['A','A','B','B']);near(eta.etaSquared,1);assert.strictEqual(eta.groups.length,2);
+require(path.join(root,'src/state.js'));
+const s=globalThis.KUAppState;
+s.setDataset({loaded:true,rowCount:4,columnCount:3,fields:[{name:'x'},{name:'y'},{name:'target'}]});
+s.updateAnalysisPlan({questionType:'Predict an outcome',target:'target',analyticalFamily:'Binary Classification'});
+s.setResultPayload({ok:true});
+s.setPredictors(['x']);assert.strictEqual(s.getState().result.validated,true,'predictor-only change must preserve result');
+s.updateAnalysisPlan({target:'y'});assert.strictEqual(s.getState().result.validated,false,'target change must reset result');
+s.setResultPayload({ok:true});s.updateAnalysisPlan({questionType:'Compare groups'});assert.strictEqual(s.getState().result.validated,false,'question type change must reset result');
+const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+for(const id of ['workspaceView','variablesView','profileOverview','profileQuality','relFieldA','relFieldB','relationshipResult','aiAnalyticsView'])assert.ok(html.includes(`id="${id}"`),`missing required UI id ${id}`);
+for(const src of ['src/state.js','src/relationship-stats.js','src/data-profile.js','src/journey.js'])assert.ok(html.includes(`src="${src}"`),`missing script ${src}`);
+console.log('FRONTEND_SMOKE_OK');
