@@ -103,13 +103,17 @@ Render Blueprint `autoDeploy` is enabled, but the branch tracked by an existing 
 
 ## State and result freshness
 
-The Analysis Plan is authoritative across Steps 3–6. Changing Question Type or Target invalidates the validated result. Predictor changes preserve the previous result for comparison but invalidate downstream preparation/setup approval; Step 6 labels the preserved output as a previous validated result when it no longer matches the Current Analysis. Measurement-level changes are re-derived when returning to Analyze.
+The Analysis Plan is authoritative across Steps 3–6. Changing Question Type or Target invalidates the validated result. Predictor changes preserve the previous result for comparison but invalidate downstream preparation/setup approval; Step 6 labels the preserved output as a previous validated result when it no longer matches the Current Analysis.
 
-Dataset replacement/clear resets stale plan/result state. Prepare requires a derived route, Setup requires approved preparation, and Results requires a validated result payload.
+Storage/measurement metadata for the selected target and predictors is snapshotted with each validated result. A metadata edit immediately invalidates Prepare/Setup approval and preserves the previous result only for comparison. Step 6 marks that result stale even when the derived analytical route stays the same, for example an Ordinal → Scale edit that still routes to Regression.
+
+Each newly loaded browser dataset receives a monotonic dataset revision when the loader replaces the in-memory data array. This means a genuinely new file/dataset clears the Analysis Plan and result even when it happens to have the same row count, column names, storage types, and measurement levels as the prior dataset. Metadata-only edits do not advance the dataset revision.
+
+Dataset replacement/clear therefore resets stale plan/result state reliably. Prepare requires a derived route, Setup requires approved preparation, and Results requires a validated result payload.
 
 ## Automated validation
 
-Frontend CI covers JavaScript syntax, static contracts, full six-step JSDOM flow, a dedicated ordinal-target DOM smoke, and Playwright Chromium visual smoke at desktop, tablet, and mobile viewports. The passing browser run uploads screenshots as the `ku-open-da-visual-uat` artifact.
+Frontend CI covers JavaScript syntax, static contracts, full six-step JSDOM flow, a dedicated ordinal-target DOM smoke, same-route metadata freshness, same-schema dataset replacement via revision tracking, and Playwright Chromium visual smoke at desktop, tablet, and mobile viewports. The passing browser run uploads screenshots as the `ku-open-da-visual-uat` artifact.
 
 Backend CI covers compile + pytest, including API version/capabilities, CORS preflight, Compare Groups, segmentation, reporting, predictive feature importance, and recognized/unknown ordinal-target behavior.
 
