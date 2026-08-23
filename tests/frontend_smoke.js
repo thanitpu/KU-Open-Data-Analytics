@@ -21,10 +21,28 @@ s.setResultPayload({ok:true});
 s.setPredictors(['x']);assert.strictEqual(s.getState().result.validated,true,'predictor-only change must preserve result');
 s.updateAnalysisPlan({target:'y'});assert.strictEqual(s.getState().result.validated,false,'target change must reset result');
 s.setResultPayload({ok:true});s.updateAnalysisPlan({questionType:'Compare groups'});assert.strictEqual(s.getState().result.validated,false,'question type change must reset result');
+
+// Measurement/storage metadata changes preserve the previous result for comparison,
+// but invalidate preparation/setup even when the analytical route itself is unchanged.
+s.resetAnalysis();
+s.setDataset({loaded:true,rowCount:4,columnCount:3,fields:[{name:'x',storage:'numeric',level:'Scale'},{name:'y',storage:'numeric',level:'Scale'},{name:'target',storage:'text',level:'Ordinal'}]});
+s.updateAnalysisPlan({questionType:'predict-outcome',target:'target',predictors:['x'],predictorMode:'all-suitable',analyticalFamily:'Regression',route:'regression'});
+s.setPreparation({status:'approved',approved:true});
+s.setSetup({confirmed:true});
+s.setResultPayload({ok:true});
+let metaState=s.getState();
+assert.deepStrictEqual(metaState.result.planSnapshot.fieldMetadata,[{name:'x',storage:'numeric',level:'Scale'},{name:'target',storage:'text',level:'Ordinal'}]);
+s.setDataset({loaded:true,rowCount:4,columnCount:3,fields:[{name:'x',storage:'numeric',level:'Scale'},{name:'y',storage:'numeric',level:'Scale'},{name:'target',storage:'text',level:'Scale'}]});
+metaState=s.getState();
+assert.strictEqual(metaState.result.validated,true,'metadata-only edits must preserve the previous result for comparison');
+assert.strictEqual(metaState.analysisPlan.preparation.approved,false,'metadata-only edits must invalidate preparation approval');
+assert.strictEqual(Boolean(metaState.analysisPlan.setup.confirmed),false,'metadata-only edits must invalidate setup confirmation');
+
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const appJs=fs.readFileSync(path.join(root,'src/app.js'),'utf8');
 const analytics=fs.readFileSync(path.join(root,'src/ai-analytics.js'),'utf8');
 const workflow=fs.readFileSync(path.join(root,'src/workflow-steps.js'),'utf8');
+const resultDetails=fs.readFileSync(path.join(root,'src/result-details.js'),'utf8');
 for(const id of ['workspaceView','variablesView','profileOverview','profileQuality','relFieldA','relFieldB','relationshipResult','aiAnalyticsView'])assert.ok(html.includes(`id="${id}"`),`missing required UI id ${id}`);
 for(const src of ['src/state.js','src/advanced-stats.js','src/ai-analytics.js','src/relationship-stats.js','src/data-profile.js','src/workflow-steps.js','src/result-drivers.js','src/result-details.js','src/accessibility.js','src/journey.js'])assert.ok(html.includes(`src="${src}"`),`missing direct script ${src}`);
 assert.ok(html.includes('href="src/workflow-steps.css"'),'workflow CSS should load directly from the app shell');
@@ -39,5 +57,7 @@ for(const text of ['Automatically handled','Needs review','Approve Preparation â
 assert.ok(!workflow.includes('Continue to Setup â†’'),'obsolete Step 4 forward CTA must not return');
 assert.strictEqual((workflow.match(/<div class=\"cm-head\">Actual \+<\/div>/g)||[]).length,1,'binary confusion matrix must contain one Actual + row');
 assert.ok(workflow.includes('Number.isInteger(v)'),'integer evidence metrics should render without forced decimal padding');
+assert.ok(resultDetails.includes('fieldMetadata'),'Step 6 details should compare result field metadata for freshness');
+assert.ok(resultDetails.includes('Field storage or measurement metadata changed'),'metadata mismatch should have an explicit stale-result disclosure');
 for(const f of ['src/advanced-stats.js','src/workflow-steps.js','src/workflow-steps.css','src/result-drivers.js','src/result-details.js','src/accessibility.js'])assert.ok(fs.existsSync(path.join(root,f)),`missing production asset ${f}`);
 console.log('FRONTEND_SMOKE_OK');
