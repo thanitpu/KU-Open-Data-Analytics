@@ -19,5 +19,5 @@ s.setResultPayload({ok:true});s.updateAnalysisPlan({questionType:'Compare groups
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 for(const id of ['workspaceView','variablesView','profileOverview','profileQuality','relFieldA','relFieldB','relationshipResult','aiAnalyticsView'])assert.ok(html.includes(`id="${id}"`),`missing required UI id ${id}`);
 for(const src of ['src/state.js','src/relationship-stats.js','src/data-profile.js','src/journey.js'])assert.ok(html.includes(`src="${src}"`),`missing script ${src}`);
-for(const f of ['src/workflow-steps.js','src/workflow-steps.css','src/result-drivers.js'])assert.ok(fs.existsSync(path.join(root,f)),`missing workflow asset ${f}`);
+for(const f of ['src/workflow-steps.js','src/workflow-steps.css','src/result-drivers.js','src/accessibility.js'])assert.ok(fs.existsSync(path.join(root,f)),`missing workflow asset ${f}`);
 console.log('FRONTEND_SMOKE_OK');
