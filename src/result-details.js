@@ -1,19 +1,30 @@
 // KU Open DA — family-specific Step 6 details from validated payloads.
 (function(root){
 'use strict';
-const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]));
 const num=(v,d=3)=>Number.isFinite(Number(v))?Number(v).toFixed(d):'—';
 function card(title,body,cls=''){const s=document.createElement('section');s.className=`card result-family-detail ${cls}`.trim();s.innerHTML=`<div class="head">${safe(title)}</div><div class="body">${body}</div>`;return s}
 function table(headers,rows){return `<div class="table"><table><thead><tr>${headers.map(h=>`<th>${safe(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(v=>`<td>${safe(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
 function regressionTargetCoding(r){const enc=r.method?.target_encoding;if(enc?.type!=='ordinal_rank'||!enc.mapping)return null;const rows=Object.entries(enc.mapping).map(([label,rank])=>[label,rank]);return card('Target Coding',`<p class="result-coding-note">The ordinal target was encoded as ordered ranks for modeling. Rank order is meaningful; equal spacing between adjacent categories is not established by the coding.</p>${table(['Category','Rank'],rows)}`)}
 function emphasizeOrdinalAnswer(r){if(r.route!=='regression'||r.method?.target_encoding?.type!=='ordinal_rank')return;const answer=document.querySelector('.result-answer h2');if(answer&&!answer.textContent.startsWith('Ordinal rank-coded target · '))answer.textContent=`Ordinal rank-coded target · ${answer.textContent}`}
+function metadataSignature(fields=[]){return JSON.stringify(fields.map(f=>({name:f.name,storage:f.storage||null,level:f.level||null})).sort((a,b)=>String(a.name).localeCompare(String(b.name))))}
+function ensureMetadataFreshness(state){
+  const snapshot=state.result?.planSnapshot;
+  if(!Array.isArray(snapshot?.fieldMetadata))return;
+  const selected=new Set([state.analysisPlan?.target,...(state.analysisPlan?.predictors||[])].filter(Boolean));
+  const current=(state.dataset?.fields||[]).filter(f=>selected.has(f.name));
+  if(metadataSignature(snapshot.fieldMetadata)===metadataSignature(current)||document.querySelector('.result-stale'))return;
+  const answer=document.querySelector('.result-answer');if(!answer)return;
+  const banner=document.createElement('div');banner.className='result-stale';banner.innerHTML='<b>Previous validated result</b><span>Field storage or measurement metadata changed after this result was generated. The previous result is preserved for comparison; review Prepare and Setup, then run again to refresh it.</span>';
+  answer.insertAdjacentElement('beforebegin',banner);
+}
 function segmentation(r){const f=r.findings;if(!f||Array.isArray(f)||typeof f!=='object')return null;const rows=Object.entries(f).map(([segment,x])=>[segment,`${num(x?.size_pct,1)}%`,(x?.high||[]).join(', ')||'—',(x?.low||[]).join(', ')||'—']);return rows.length?card('Segment Profiles',table(['Segment','Size','Higher than overall','Lower than overall'],rows)) : null}
 function associations(r){const f=Array.isArray(r.findings)?r.findings:[];if(!f.length)return null;const rows=f.slice(0,12).map(x=>[x.relationship||x.title||'Relationship',num(x.effect,3),Number.isFinite(Number(x.q_value))?num(x.q_value,4):'—',x.interpretation||x.subtitle||'']);return card('Top Supported Associations',table(['Relationship','Effect','q-value','Interpretation'],rows))}
 function groupSummary(r){const f=Array.isArray(r.group_summaries)?r.group_summaries:[];if(!f.length)return null;const rows=f.map(x=>[x.group,x.n,num(x.mean),x.sd===null?'—':num(x.sd)]);return card('Group Summary',table(['Group','N','Mean','SD'],rows))}
 function warnings(r){const w=Array.isArray(r.warnings)?r.warnings.filter(Boolean):[];if(!w.length)return null;return card('Warnings / Guardrails',w.map(x=>`<p class="result-warning-item">⚠ ${safe(x)}</p>`).join(''),'result-warning-card')}
 function recommendations(r){const list=Array.isArray(r.recommendations)?r.recommendations:[];if(!list.length)return null;return card('Recommended Follow-up',list.map(x=>`<div class="result-recommendation"><b>${safe(x.analysis||'Follow-up')}</b><span>${safe(x.reason||'')}</span></div>`).join(''))}
 function renderFamilyDetails(){
-  const state=root.KUAppState?.getState();if(state?.currentStep!=='results'||document.getElementById('familyResultDetails'))return;
+  const state=root.KUAppState?.getState();if(state?.currentStep!=='results')return;ensureMetadataFreshness(state);if(document.getElementById('familyResultDetails'))return;
   const r=state.result?.payload?.result;if(!r)return;emphasizeOrdinalAnswer(r);const report=document.getElementById('workflowReport')?.closest('.card'),parts=[];
   if(r.route==='regression')parts.push(regressionTargetCoding(r));
   if(r.route==='segmentation')parts.push(segmentation(r));
