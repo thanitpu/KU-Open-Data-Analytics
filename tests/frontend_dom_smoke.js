@@ -9,12 +9,12 @@ const w=dom.window;
 w.alert=msg=>{throw new Error(`Unexpected alert: ${msg}`)};
 w.HTMLCanvasElement.prototype.getContext=function(){return new Proxy({},{get:(t,p)=>p==='measureText'?(()=>({width:10})):(p==='canvas'?this:(()=>{})),set:()=>true})};
 const capabilities={service:{mode:'fast'},routes:{'group-comparison':{intent:'Compare Groups',policy:{two_groups:'Welch t-test',three_or_more_groups:'One-way ANOVA'},preparation:{missing:'complete-case'},validation:'Inferential group comparison',metrics:['p_value','hedges_g']},regression:{intent:'Regression',policy:{model:'XGBoost'},preparation:{missing_numeric:'median imputation'},validation:'5-fold KFold',metrics:['mae','rmse','r2']}}};
-w.fetch=async(url,opts={})=>{
+w.fetch=async(url)=>{
   if(String(url).endsWith('/capabilities'))return{ok:true,status:200,json:async()=>capabilities};
   if(String(url).endsWith('/analyze'))return{ok:true,status:200,json:async()=>({result:{status:'COMPLETE',route:'compare_groups',analysis_type:'multi_group_comparison',target:'Score',method:{test:'One-way ANOVA',grouping_field:'Group'},evidence:{f:12.5,p_value:.002,eta_squared:.72,groups:3,n_total:9},findings:[],warnings:[],readiness:'FAST_EXECUTION_READY'},report:{overview:[{label:'Analysis',value:'multi_group_comparison'}],method:[{label:'Test',value:'One-way ANOVA'}],evidence:[{label:'p value',value:'0.002'}],findings:[]}})};
   throw new Error(`Unexpected fetch ${url}`);
 };
-const scripts=['src/state.js','src/app.js','src/analysis.js','src/v05.js','src/ai-analytics.js','src/relationship-stats.js','src/data-profile.js','src/workflow-steps.js','src/journey.js'];
+const scripts=['src/state.js','src/app.js','src/analysis.js','src/v05.js','src/ai-analytics.js','src/relationship-stats.js','src/data-profile.js','src/workflow-steps.js','src/result-drivers.js','src/journey.js'];
 w.eval(scripts.map(f=>fs.readFileSync(path.join(root,f),'utf8')).join('\n;\n'));
 w.document.dispatchEvent(new w.Event('DOMContentLoaded',{bubbles:true}));
 const tick=()=>new Promise(r=>w.setTimeout(r,0));
@@ -26,7 +26,12 @@ const tick=()=>new Promise(r=>w.setTimeout(r,0));
   w.document.querySelector('[data-question-type="compare-groups"]').click();target=w.document.getElementById('analysisTarget');target.value='Score';target.dispatchEvent(new w.Event('change',{bubbles:true}));state=w.KUAppState.getState();assert.strictEqual(state.analysisPlan.route,'group-comparison');assert.ok(state.analysisPlan.predictors.includes('Group'));
   w.document.getElementById('continuePrepare').click();await tick();assert.ok(w.document.getElementById('journeyPendingView').textContent.includes('Preparation summary'));
   let group=w.document.getElementById('prepareGroupField');group.value='Group';group.dispatchEvent(new w.Event('change',{bubbles:true}));await tick();assert.strictEqual(w.document.getElementById('continueSetup').disabled,false);w.document.getElementById('continueSetup').click();await tick();await tick();assert.ok(w.document.getElementById('journeyPendingView').textContent.includes('Recommended Setup'));assert.strictEqual(w.document.getElementById('runAnalysisBtn').disabled,false);
-  w.document.getElementById('runAnalysisBtn').click();await tick();await tick();assert.ok(w.document.getElementById('journeyPendingView').textContent.includes('Understand the Results'));assert.ok(w.document.querySelector('.result-answer').textContent.includes('One-way ANOVA'));state=w.KUAppState.getState();assert.strictEqual(state.result.validated,true);assert.strictEqual(state.currentStep,'results');
-  w.goToJourneyStep('analyze');await tick();state=w.KUAppState.getState();assert.strictEqual(state.analysisPlan.target,'Score');assert.strictEqual(state.analysisPlan.preparation.approved,true);
+  w.document.getElementById('runAnalysisBtn').click();await tick();await tick();assert.ok(w.document.querySelector('.result-answer').textContent.includes('One-way ANOVA'));state=w.KUAppState.getState();assert.strictEqual(state.currentStep,'results');
+
+  // Explain-drivers results must surface model-derived importance, not only performance metrics.
+  w.goToJourneyStep('analyze');await tick();w.document.querySelector('[data-question-type="explain-drivers"]').click();target=w.document.getElementById('analysisTarget');target.value='Score';target.dispatchEvent(new w.Event('change',{bubbles:true}));
+  w.KUAppState.setResultPayload({result:{status:'COMPLETE',route:'regression',analysis_type:'regression',target:'Score',method:{model:'XGBoost'},evidence:{r2:.81,rmse:2.1,mae:1.4},findings:[{relationship:'Age',importance:.42,effect:.42},{relationship:'Group_B',importance:.28,effect:.28},{relationship:'Satisfaction_High',importance:.17,effect:.17}],warnings:['Feature importance is predictive model evidence and does not establish causal drivers.']},report:{overview:[],method:[],evidence:[],findings:[]}});
+  w.goToJourneyStep('results');await tick();assert.ok(w.document.querySelector('.result-answer h2').textContent.includes('strongest predictive signals'));assert.ok(w.document.getElementById('predictiveDrivers'));assert.ok(w.document.getElementById('predictiveDrivers').textContent.includes('Age'));
+
   w.goToJourneyStep('start');w.clearAll();await tick();assert.strictEqual(w.KUAppState.getState().analysisPlan.questionType,null);console.log('FRONTEND_DOM_SMOKE_OK');
 })().catch(err=>{console.error(err);process.exit(1)});
