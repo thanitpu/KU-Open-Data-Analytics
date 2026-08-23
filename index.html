@@ -8,6 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/jstat@1.9.6/dist/jstat.min.js"></script>
 <link rel="stylesheet" href="src/app.css">
 <link rel="stylesheet" href="src/journey.css">
+<link rel="stylesheet" href="src/data-profile.css">
 </head>
 <body>
 <header>
@@ -29,60 +30,106 @@
     <button class="journey-step" data-journey-step="setup"><span class="journey-num">5</span><span class="journey-copy"><b>Setup</b><span>Confirm the Run</span></span></button>
     <button class="journey-step" data-journey-step="results"><span class="journey-num">6</span><span class="journey-copy"><b>Results</b><span>Understand Results</span></span></button>
   </div>
-  <div class="advanced-divider"></div>
-  <div class="advanced-note">Advanced statistical tools remain available during migration. The validated backend remains the calculation source of truth.</div>
-  <div class="label">DATA TOOLS</div>
-  <div class="nav active" onclick="showView('workspace')">Data Workspace</div>
-  <div class="nav" onclick="showView('variables')">Variables</div>
-  <div class="label">DESCRIBE</div>
-  <div class="nav">Descriptive Statistics</div>
-  <div class="nav" onclick="showAnalysisView('frequency')">Frequency Tables</div>
-  <div class="nav">Explore & Visualize</div>
-  <div class="label">COMPARE</div>
-  <div class="nav" onclick="showAnalysisView('ttest')">t-tests</div>
-  <div class="nav" onclick="showAnalysisView('anova')">One-way ANOVA</div>
-  <div class="nav">Chi-square · soon</div>
-  <div class="label">RELATIONSHIPS</div>
-  <div class="nav" onclick="showAnalysisView('correlation')">Correlation</div>
-  <div class="nav">Regression · soon</div>
-  <div class="label">VALIDATED ENGINE</div>
-  <div class="nav" onclick="showAIAnalyticsView()">Validated Analytics Engine</div>
-  <div class="label">LEARN</div>
-  <div class="nav">Analysis Advisor</div>
+  <div class="advanced-note">Validated analytical computation remains in the existing backend. Advanced browser tools are retained during migration.</div>
+  <details class="advanced-nav">
+    <summary>Advanced statistical tools</summary>
+    <div class="label">DATA TOOLS</div>
+    <div class="nav active" onclick="showView('workspace')">Data Workspace</div>
+    <div class="nav" onclick="showView('variables')">Variables</div>
+    <div class="label">DESCRIBE</div>
+    <div class="nav" onclick="showAnalysisView('frequency')">Frequency Tables</div>
+    <div class="label">COMPARE</div>
+    <div class="nav" onclick="showAnalysisView('ttest')">t-tests</div>
+    <div class="nav" onclick="showAnalysisView('anova')">One-way ANOVA</div>
+    <div class="label">RELATIONSHIPS</div>
+    <div class="nav" onclick="showAnalysisView('correlation')">Correlation</div>
+    <div class="label">VALIDATED ENGINE</div>
+    <div class="nav" onclick="showAIAnalyticsView()">Validated Analytics Engine</div>
+  </details>
 </aside>
 <main>
 <section id="workspaceView">
   <div class="step-kicker">STEP 1 · START</div>
   <h1>Choose / Upload Dataset</h1>
-  <p class="lead">Start with the dataset you want to understand. Browser inspection stays local; validated analytics are sent only when you explicitly run the configured backend analysis.</p>
-  <div class="grid"><div>
-    <section class="card"><div class="head">Choose a dataset</div><div class="body">
-      <div class="drop" id="drop">Drop CSV or Excel file here<small>or import above / paste comma-separated data below</small></div>
-      <div class="row hidden" id="sheetRow"><span class="note">Excel sheet:</span><select id="sheetSelect" class="sheet-select"></select><button class="btn" onclick="loadSelectedSheet()">Load sheet</button></div>
-      <textarea id="paste" placeholder="Group,Score,Age&#10;A,72,21&#10;B,88,20"></textarea>
-      <div class="row"><button class="btn primary" onclick="usePaste()">Use pasted data</button><button class="btn" onclick="clearAll()">Clear</button><span class="note" id="status">No dataset loaded</span></div>
-    </div></section>
-    <section class="card"><div class="head">Data preview</div><div class="body" id="preview"><div class="empty">Import data to preview it here.</div></div></section>
-  </div><div>
-    <section class="card"><div class="head">Dataset overview</div><div class="body metrics"><div class="metric"><small>Rows</small><b id="rows">—</b></div><div class="metric"><small>Variables</small><b id="cols">—</b></div><div class="metric"><small>Numeric</small><b id="nums">—</b></div><div class="metric"><small>Missing cells</small><b id="miss">—</b></div></div></section>
-    <section class="card"><div class="head">Descriptive statistics</div><div class="body"><select id="var" onchange="analyze()"><option>No scale variables</option></select><div id="stats" style="margin-top:12px"><div class="empty">Select a scale variable.</div></div></div></section>
-    <section class="card"><div class="head">Histogram</div><div class="body"><canvas id="hist" width="600" height="260"></canvas></div></section>
-    <section class="card"><div class="head">Analysis Advisor</div><div class="body"><div class="advisor" id="advisor">Import data first. The advisor will inspect measurement levels and suggest suitable analyses.</div></div></section>
-  </div></div>
+  <p class="lead">Choose the dataset you want to understand. Inspecting and profiling data stays in your browser; data is sent to the configured analytics API only when you explicitly run a validated analysis.</p>
+  <div id="startDatasetBand" class="start-dataset-band"></div>
+  <div class="start-workspace-grid">
+    <div>
+      <section class="card upload-card"><div class="head">Choose your dataset</div><div class="body">
+        <div class="drop" id="drop"><strong>Drop CSV or Excel file here</strong><small>or use Import CSV/XLSX above</small></div>
+        <div class="row hidden" id="sheetRow"><span class="note">Excel sheet:</span><select id="sheetSelect" class="sheet-select"></select><button class="btn" onclick="loadSelectedSheet()">Load sheet</button></div>
+        <details class="paste-details"><summary>Paste delimited data instead</summary><textarea id="paste" placeholder="Group,Score,Age&#10;A,72,21&#10;B,88,20"></textarea><div class="row"><button class="btn" onclick="usePaste()">Use pasted data</button></div></details>
+        <div class="row"><button class="btn" onclick="clearAll()">Clear dataset</button><span class="note" id="status">No dataset loaded</span></div>
+      </div></section>
+      <section class="card"><div class="head">Data preview</div><div class="body" id="preview"><div class="empty">Import data to preview it here.</div></div></section>
+    </div>
+    <div>
+      <section class="card"><div class="head">Dataset overview</div><div class="body start-overview-grid"><div class="metric"><small>Rows</small><b id="rows">—</b></div><div class="metric"><small>Fields</small><b id="cols">—</b></div><div class="metric"><small>Numeric storage</small><b id="nums">—</b></div><div class="metric"><small>Missing cells</small><b id="miss">—</b></div></div></section>
+      <section class="card"><div class="head">What happens next?</div><div class="body"><div class="advisor"><b>1. Load data</b><br>Preview the rows and confirm the dataset.<br><br><b>2. Understand the dataset</b><br>Review field roles, missingness, quality signals, and relationships.<br><br><b>3. Define the analytical question</b><br>KU Open DA will derive the analytical route from the question and target.</div></div></section>
+    </div>
+  </div>
 </section>
+
 <section id="variablesView" class="hidden">
   <div class="step-kicker">STEP 2 · DATA PROFILE</div>
   <h1>Understand the Dataset</h1>
-  <p class="lead">Review field names, storage types, measurement levels, uniqueness, and missingness before defining the analytical question.</p>
-  <section class="card"><div class="head">Variable metadata</div><div class="body"><div class="note" style="margin-bottom:8px">On small screens, swipe horizontally to view all variable columns.</div><div id="variableTable"><div class="empty">Import data first.</div></div></div></section>
-  <section class="card"><div class="head">Measurement level guidance</div><div class="body"><div class="advisor"><b>Nominal</b>: categories without order.<br><b>Ordinal</b>: ordered categories.<br><b>Scale</b>: quantitative interval/ratio values where arithmetic differences are meaningful.</div></div></section>
+  <p class="lead">Understand structure, quality, field meaning, and relationships before defining what you want the analysis to answer.</p>
+  <div id="profileDatasetBand" class="profile-dataset-band"></div>
+  <div class="profile-kpis">
+    <div class="profile-kpi"><span>Rows</span><b id="profileRows">—</b></div>
+    <div class="profile-kpi"><span>Fields</span><b id="profileFields">—</b></div>
+    <div class="profile-kpi"><span>Numeric Scale fields</span><b id="profileNumeric">—</b></div>
+    <div class="profile-kpi"><span>Missing cells</span><b id="profileMissing">—</b></div>
+  </div>
+  <div class="profile-tabs" role="tablist" aria-label="Data profile sections">
+    <button class="profile-tab active" data-profile-tab="overview" onclick="setProfileTab('overview')">Overview</button>
+    <button class="profile-tab" data-profile-tab="fields" onclick="setProfileTab('fields')">Fields</button>
+    <button class="profile-tab" data-profile-tab="quality" onclick="setProfileTab('quality')">Data Quality</button>
+    <button class="profile-tab" data-profile-tab="relationships" onclick="setProfileTab('relationships')">Relationships</button>
+  </div>
+
+  <div class="profile-pane active" data-profile-pane="overview">
+    <div id="profileOverview"></div>
+    <div class="profile-overview-grid" style="margin-top:14px">
+      <section class="card"><div class="head">Explore a numeric field</div><div class="body"><select id="var" onchange="analyze()"><option>No scale variables</option></select><div id="stats" style="margin-top:12px"><div class="empty">Select a Scale variable.</div></div></div></section>
+      <section class="card"><div class="head">Distribution</div><div class="body"><canvas id="hist" width="600" height="260"></canvas></div></section>
+    </div>
+    <section class="card"><div class="head">Analysis guidance</div><div class="body"><div class="advisor" id="advisor">Import data first. The advisor will inspect measurement levels and suggest suitable analyses.</div></div></section>
+  </div>
+
+  <div class="profile-pane" data-profile-pane="fields">
+    <section class="card"><div class="head">Field-by-field metadata</div><div class="body"><div class="note" style="margin-bottom:8px">Review inferred storage and measurement levels. You can correct the measurement level before analysis.</div><div id="variableTable"><div class="empty">Import data first.</div></div></div></section>
+    <details class="advanced-profile-details"><summary>Measurement level guidance</summary><div class="advisor"><b>Nominal</b>: categories without order.<br><b>Ordinal</b>: ordered categories.<br><b>Scale</b>: quantitative interval/ratio values where arithmetic differences are meaningful.</div></details>
+  </div>
+
+  <div class="profile-pane" data-profile-pane="quality">
+    <section class="card"><div class="head">Data Quality</div><div class="body" id="profileQuality"><div class="empty">Load a dataset to calculate quality checks.</div></div></section>
+  </div>
+
+  <div class="profile-pane" data-profile-pane="relationships">
+    <section class="relationship-explorer">
+      <div class="head" style="padding:0 0 12px;border:0">Relationship Explorer</div>
+      <div class="note" style="margin-bottom:12px">Choose two fields. The method is selected from their measurement types rather than forcing every relationship into a correlation matrix.</div>
+      <div class="relationship-controls">
+        <label><span>Field A</span><select id="relFieldA" onchange="updateProfileRelationshipMethod()"></select></label>
+        <label><span>Field B</span><select id="relFieldB" onchange="updateProfileRelationshipMethod()"></select></label>
+        <button class="btn secondary" onclick="runProfileRelationship()">Analyze relationship</button>
+      </div>
+      <div id="relationshipMethod" class="relationship-method"></div>
+      <div id="relationshipResult" class="relationship-result"><div class="empty">Select two fields and analyze their relationship.</div></div>
+    </section>
+  </div>
+
+  <div class="profile-footer"><button class="btn ghost" onclick="goToJourneyStep('start')">← Back to Start</button><button class="btn primary" onclick="goToJourneyStep('analyze')">Continue to Analyze →</button></div>
 </section>
-<section id="analysisView" class="hidden"><div class="row" style="margin:0 0 14px"><button class="btn" onclick="showView('workspace')">← Back to Data Workspace</button><span class="pill">Advanced statistical tool</span></div>
+
+<section id="analysisView" class="hidden"><div class="row" style="margin:0 0 14px"><button class="btn" onclick="showView('variables')">← Back to Data Profile</button><span class="pill">Advanced statistical tool</span></div>
 <section id="frequencyPanel" class="analysis-panel hidden"><h1>Frequency Tables</h1><p class="lead">Summarize categorical or ordinal variables using counts and percentages.</p><section class="card"><div class="head">Variables</div><div class="body"><div class="row"><select id="freqVar"></select><button class="btn primary" onclick="runFrequency()">Run</button></div></div></section><section class="card"><div class="head">Results</div><div class="body" id="freqResult"><div class="empty">Select a variable and run the analysis.</div></div></section></section>
 <section id="ttestPanel" class="analysis-panel hidden"><h1>t-tests</h1><p class="lead">Compare means for one sample, two independent groups, or paired measurements.</p><section class="card"><div class="head">Test setup</div><div class="body"><div class="row"><select id="ttestType" onchange="refreshTTestControls()"><option value="one">One-sample t-test</option><option value="independent">Independent-samples t-test (Welch)</option><option value="paired">Paired-samples t-test</option></select></div><div id="ttestControls" style="margin-top:10px"></div><div class="row"><button class="btn primary" onclick="runTTest()">Run t-test</button></div></div></section><section class="card"><div class="head">Results</div><div class="body" id="ttestResult"><div class="empty">Configure and run the test.</div></div></section><section class="card"><div class="head">Normality diagnostic</div><div class="body"><canvas id="ttestQQ" width="760" height="300"></canvas><div class="note" id="ttestDiagNote" style="margin-top:8px">Run a t-test to inspect a Q–Q diagnostic.</div></div></section></section>
 <section id="anovaPanel" class="analysis-panel hidden"><h1>One-way ANOVA</h1><p class="lead">Compare the mean of one numeric Scale variable across three or more groups.</p><section class="card"><div class="head">Variables</div><div class="body"><div class="row"><span class="note">Outcome</span><select id="anovaY"></select><span class="note">Group</span><select id="anovaGroup"></select><button class="btn primary" onclick="runAnova()">Run ANOVA</button></div></div></section><section class="card"><div class="head">Results</div><div class="body" id="anovaResult"><div class="empty">Select variables and run the analysis.</div></div></section><section class="card"><div class="head">Diagnostics & group visualization</div><div class="body"><canvas id="anovaPlot" width="760" height="320"></canvas><div class="note" id="anovaDiagNote" style="margin-top:8px">Run ANOVA to inspect group distributions and variance diagnostics.</div></div></section></section>
-<section id="correlationPanel" class="analysis-panel hidden"><h1>Correlation</h1><p class="lead">Measure the strength and direction of association between two variables.</p><section class="card"><div class="head">Variables</div><div class="body"><div class="row"><select id="corrType"><option value="pearson">Pearson</option><option value="spearman">Spearman</option></select><select id="corrX"></select><select id="corrY"></select><button class="btn primary" onclick="runCorrelation()">Run</button></div></div></section><section class="card"><div class="head">Results</div><div class="body" id="corrResult"><div class="empty">Select variables and run the analysis.</div></div></section><section class="card"><div class="head">Scatterplot</div><div class="body"><canvas id="corrPlot" width="760" height="320"></canvas><div class="note" id="corrDiagNote" style="margin-top:8px">Run correlation to inspect the relationship visually.</div></div></section></section>
+<section id="correlationPanel" class="analysis-panel hidden"><h1>Correlation</h1><p class="lead">Measure the strength and direction of association between two numeric Scale variables.</p><section class="card"><div class="head">Variables</div><div class="body"><div class="row"><select id="corrType"><option value="pearson">Pearson</option><option value="spearman">Spearman</option></select><select id="corrX"></select><select id="corrY"></select><button class="btn primary" onclick="runCorrelation()">Run</button></div></div></section><section class="card"><div class="head">Results</div><div class="body" id="corrResult"><div class="empty">Select variables and run the analysis.</div></div></section><section class="card"><div class="head">Scatterplot</div><div class="body"><canvas id="corrPlot" width="760" height="320"></canvas><div class="note" id="corrDiagNote" style="margin-top:8px">Run correlation to inspect the relationship visually.</div></div></section></section>
 </section>
+
 <section id="aiAnalyticsView" class="hidden">
   <div class="step-kicker">STEP 3 · ANALYZE</div>
   <h1>Define the Analytical Question</h1>
@@ -94,5 +141,5 @@
 </section>
 </main></div>
 <script src="src/state.js"></script>
-<script src="src/app.js"></script><script src="src/analysis.js"></script><script src="src/v05.js"></script><script src="src/ai-analytics.js"></script><script src="src/journey.js"></script>
+<script src="src/app.js"></script><script src="src/analysis.js"></script><script src="src/v05.js"></script><script src="src/ai-analytics.js"></script><script src="src/data-profile.js"></script><script src="src/journey.js"></script>
 </body></html>
