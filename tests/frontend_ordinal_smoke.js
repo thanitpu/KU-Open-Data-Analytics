@@ -27,6 +27,7 @@ const tick=()=>new Promise(resolve=>w.setTimeout(resolve,0));
 (async()=>{
   w.demo();
   await tick();
+  await tick();
   w.goToJourneyStep('analyze');
   await tick();
   w.document.querySelector('[data-question-type="predict-outcome"]').click();
@@ -37,6 +38,7 @@ const tick=()=>new Promise(resolve=>w.setTimeout(resolve,0));
   let state=w.KUAppState.getState();
   assert.strictEqual(state.analysisPlan.route,'regression');
   assert.strictEqual(state.analysisPlan.target,'Satisfaction');
+  assert.ok(state.dataset.revision>0,'loaded dataset should have a revision');
   assert.strictEqual(w.KUAppState.canEnterStep('prepare'),true);
 
   w.document.getElementById('continuePrepare').click();
@@ -77,11 +79,14 @@ const tick=()=>new Promise(resolve=>w.setTimeout(resolve,0));
   // Metadata-only change: Ordinal -> Scale keeps the same Regression route but changes interpretation.
   w.goToJourneyStep('profile');
   await tick();
-  const variableNames=[...w.document.querySelectorAll('#variableTable .variable-name')].map(node=>node.textContent.trim());
-  const satisfactionIndex=variableNames.indexOf('Satisfaction');
-  assert.ok(satisfactionIndex>=0,'demo should include Satisfaction');
+  const rows=[...w.document.querySelectorAll('#variableTable tbody tr')];
+  const satisfactionRow=rows.find(row=>row.querySelector('.variable-name')?.textContent.trim()==='Satisfaction');
+  assert.ok(satisfactionRow,'demo should include Satisfaction');
+  const measurementSelect=satisfactionRow.querySelector('select');
+  const satisfactionIndex=rows.indexOf(satisfactionRow);
+  measurementSelect.value='Scale';
   w.updateLevelByIndex(satisfactionIndex,'Scale');
-  if(typeof w.syncKUJourneyDataset==='function')w.syncKUJourneyDataset();
+  measurementSelect.dispatchEvent(new w.Event('change',{bubbles:true}));
   await tick();
   await tick();
   state=w.KUAppState.getState();
@@ -94,5 +99,17 @@ const tick=()=>new Promise(resolve=>w.setTimeout(resolve,0));
   const stale=w.document.querySelector('.result-stale');
   assert.ok(stale,'metadata-only mismatch should mark the previous result stale');
   assert.ok(stale.textContent.includes('Field storage or measurement metadata changed'));
+
+  // Reloading the same demo creates a new data array. Even with identical schema/shape,
+  // the new revision must reset the Analysis Plan and previous validated result.
+  const priorRevision=state.dataset.revision;
+  w.demo();
+  await tick();
+  await tick();
+  state=w.KUAppState.getState();
+  assert.ok(state.dataset.revision>priorRevision,'same-schema reload should advance the dataset revision');
+  assert.strictEqual(state.result.validated,false,'same-schema reload must clear the previous result');
+  assert.strictEqual(state.analysisPlan.questionType,null,'same-schema reload must clear the Analysis Plan');
+  assert.strictEqual(state.currentStep,'start','dataset replacement should return the journey to Start');
   console.log('FRONTEND_ORDINAL_SMOKE_OK');
 })().catch(err=>{console.error(err);process.exit(1)});
