@@ -77,9 +77,11 @@ const tick=()=>new Promise(resolve=>w.setTimeout(resolve,0));
   // Metadata-only change: Ordinal -> Scale keeps the same Regression route but changes interpretation.
   w.goToJourneyStep('profile');
   await tick();
-  const satisfactionIndex=w.eval("headers.indexOf('Satisfaction')");
+  const variableNames=[...w.document.querySelectorAll('#variableTable .variable-name')].map(node=>node.textContent.trim());
+  const satisfactionIndex=variableNames.indexOf('Satisfaction');
   assert.ok(satisfactionIndex>=0,'demo should include Satisfaction');
   w.updateLevelByIndex(satisfactionIndex,'Scale');
+  if(typeof w.syncKUJourneyDataset==='function')w.syncKUJourneyDataset();
   await tick();
   await tick();
   state=w.KUAppState.getState();
