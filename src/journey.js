@@ -6,18 +6,23 @@
     start:['START','Choose / Upload Dataset'],profile:['DATA PROFILE','Understand the Dataset'],analyze:['ANALYZE','Define the Analytical Question'],
     prepare:['PREPARE','Review Data Preparation'],setup:['SETUP','Confirm How the Analysis Will Run'],results:['RESULTS','Understand the Results']
   };
+  const questionLabels={'predict-outcome':'Predict an outcome','compare-groups':'Compare groups','explain-drivers':'Explain relationships / drivers','discover-segments':'Discover segments','discover-association-rules':'Discover association rules'};
   const $=id=>document.getElementById(id);
   let lastDatasetSignature='';
   const escJourney=value=>String(value??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const currentPlanLabel=plan=>plan.question||plan.analyticalFamily||'No analysis plan yet';
 
   function renderCurrentAnalysis(){
-    const el=$('currentAnalysisBar');if(!el||!window.KUAppState)return;
-    const {analysisPlan:p}=window.KUAppState.getState(),predictors=p.predictorMode==='all-suitable'?'All suitable fields':String((p.predictors||[]).length);
-    el.innerHTML=`<div class="current-analysis-main"><span>Current Analysis</span><b>${escJourney(currentPlanLabel(p))}</b></div>
-      <div class="current-analysis-item"><span>Question Type</span><b>${escJourney(p.questionType||'Not defined')}</b></div>
-      <div class="current-analysis-item"><span>Target / Outcome</span><b>${escJourney(p.target||'Not selected')}</b></div>
+    if(!window.KUAppState)return;
+    const {analysisPlan:p}=window.KUAppState.getState(),predictors=p.predictorMode==='all-suitable'?`All suitable fields (${(p.predictors||[]).length})`:`${(p.predictors||[]).length} custom field${(p.predictors||[]).length===1?'':'s'}`;
+    const html=`<div class="current-analysis-main"><span>Current Analysis</span><b>${escJourney(currentPlanLabel(p))}</b></div>
+      <div class="current-analysis-item"><span>Question Type</span><b>${escJourney(questionLabels[p.questionType]||'Not defined')}</b></div>
+      <div class="current-analysis-item"><span>Target / Outcome</span><b>${escJourney(p.target||'Not required / selected')}</b></div>
+      <div class="current-analysis-item"><span>Recommended Family</span><b>${escJourney(p.analyticalFamily||'Not derived')}</b></div>
       <div class="current-analysis-item"><span>Predictors</span><b>${escJourney(predictors)}</b></div>`;
+    const nodes=new Set([...document.querySelectorAll('[data-current-analysis]')]);
+    const primary=$('currentAnalysisBar');if(primary)nodes.add(primary);
+    nodes.forEach(el=>el.innerHTML=html);
   }
   function renderJourney(){
     if(!window.KUAppState)return;const state=window.KUAppState.getState();
@@ -28,14 +33,25 @@
     });renderCurrentAnalysis();
   }
   function hideView(id){const el=$(id);if(el)el.classList.add('hidden')}
+  function ensurePendingView(){
+    let view=$('journeyPendingView');if(view)return view;
+    view=document.createElement('section');view.id='journeyPendingView';view.className='hidden';document.querySelector('main')?.appendChild(view);return view;
+  }
+  function showPendingStep(step){
+    const view=ensurePendingView(),label=stepLabels[step]||[step.toUpperCase(),step];
+    ['workspaceView','variablesView','analysisView','aiAnalyticsView'].forEach(hideView);view.classList.remove('hidden');
+    view.innerHTML=`<div class="step-kicker">STEP ${stepOrder.indexOf(step)+1} · ${escJourney(label[0])}</div><h1>${escJourney(label[1])}</h1><p class="lead">The Analysis Plan is preserved as you move through the workflow.</p><div class="current-analysis-bar" data-current-analysis></div><div class="journey-pending-card"><b>Analysis Plan saved</b><p>This integration branch has reached the ${escJourney(label[0])} boundary. The next production batch will connect this page to real preparation/setup metadata rather than showing prototype or example calculations.</p></div><div style="margin-top:16px"><button class="btn ghost" onclick="goToJourneyStep('analyze')">← Back to Analyze</button></div>`;
+    renderCurrentAnalysis();
+  }
   function goToJourneyStep(step){
     if(!window.KUAppState||!window.KUAppState.canEnterStep(step))return;
     window.KUAppState.setStep(step);
     if(step==='start'||step==='profile'){
-      hideView('aiAnalyticsView');
+      hideView('aiAnalyticsView');hideView('journeyPendingView');
       if(typeof showView==='function')showView(step==='start'?'workspace':'variables');
-    }else if(step==='analyze'&&typeof showAIAnalyticsView==='function')showAIAnalyticsView();
-    // Prepare, Setup, and Results receive their production pages in subsequent migration batches.
+    }else if(step==='analyze'&&typeof showAIAnalyticsView==='function'){
+      hideView('journeyPendingView');showAIAnalyticsView();
+    }else showPendingStep(step);
     renderJourney();
   }
   window.goToJourneyStep=goToJourneyStep;
@@ -49,6 +65,7 @@
   }
   window.syncKUJourneyDataset=syncDatasetFromLegacy;
 
+  document.addEventListener('ku:render-current-analysis',renderCurrentAnalysis);
   document.addEventListener('DOMContentLoaded',()=>{
     if(!window.KUAppState)return;window.KUAppState.subscribe(renderJourney);
     document.querySelectorAll('[data-journey-step]').forEach(button=>button.addEventListener('click',()=>goToJourneyStep(button.dataset.journeyStep)));
