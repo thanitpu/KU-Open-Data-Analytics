@@ -4,10 +4,11 @@ const path=require('path');
 const {JSDOM}=require('jsdom');
 
 const root=path.resolve(__dirname,'..');
-const html=fs.readFileSync(path.join(root,'index.html'),'utf8')
+const appEntry=process.env.KU_APP_ENTRY||'app.html';
+const html=fs.readFileSync(path.join(root,appEntry),'utf8')
   .replace(/<script[^>]+src="https:[^"]+"[^>]*><\/script>/g,'')
   .replace(/<script src="src\/[^"]+"><\/script>/g,'');
-const dom=new JSDOM(html,{url:'http://localhost/',runScripts:'outside-only',pretendToBeVisual:true});
+const dom=new JSDOM(html,{url:`http://localhost/${appEntry}`,runScripts:'outside-only',pretendToBeVisual:true});
 const w=dom.window;
 w.alert=msg=>{throw new Error(`Unexpected alert: ${msg}`)};
 w.HTMLCanvasElement.prototype.getContext=function(){
@@ -25,6 +26,7 @@ w.document.dispatchEvent(new w.Event('DOMContentLoaded',{bubbles:true}));
 const tick=()=>new Promise(resolve=>w.setTimeout(resolve,0));
 
 (async()=>{
+  assert.strictEqual(appEntry,'app.html','ordinal Product smoke must use app.html');
   w.demo();
   await tick();
   await tick();
@@ -111,5 +113,5 @@ const tick=()=>new Promise(resolve=>w.setTimeout(resolve,0));
   assert.strictEqual(state.result.validated,false,'same-schema reload must clear the previous result');
   assert.strictEqual(state.analysisPlan.questionType,null,'same-schema reload must clear the Analysis Plan');
   assert.strictEqual(state.currentStep,'start','dataset replacement should return the journey to Start');
-  console.log('FRONTEND_ORDINAL_SMOKE_OK');
+  console.log(`FRONTEND_ORDINAL_SMOKE_OK (${appEntry})`);
 })().catch(err=>{console.error(err);process.exit(1)});
