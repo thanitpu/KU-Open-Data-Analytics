@@ -5,6 +5,11 @@
 const el=id=>document.getElementById(id);
 const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const fmt=(v,d=3)=>Number.isFinite(Number(v))?Number(v).toFixed(d):'—';
+const STANDARD_ORDINAL_SEQUENCES=[
+  ['low','medium','high'],
+  ['poor','fair','good','very good','excellent'],
+  ['strongly disagree','disagree','neutral','agree','strongly agree']
+];
 let capabilitiesCache=null;
 
 const plan=()=>root.KUAppState?.getState().analysisPlan||{};
@@ -26,6 +31,26 @@ function valueCounts(h){
     counts.set(key,(counts.get(key)||0)+1);
   }
   return [...counts.entries()].sort((a,b)=>b[1]-a[1]);
+}
+function recognizedOrdinalEncoding(h){
+  const representatives=new Map(),keys=[];
+  for(const value of observed(h)){
+    const label=String(value).trim(),key=label.toLocaleLowerCase();
+    if(!representatives.has(key))representatives.set(key,label);
+    keys.push(key);
+  }
+  const observedKeys=new Set(keys);
+  if(observedKeys.size<2)return null;
+  for(const sequence of STANDARD_ORDINAL_SEQUENCES){
+    if([...observedKeys].every(key=>sequence.includes(key))){
+      const ordered=sequence.filter(key=>observedKeys.has(key));
+      return {
+        order:ordered.map(key=>representatives.get(key)),
+        mapping:Object.fromEntries(ordered.map((key,index)=>[representatives.get(key),index+1]))
+      };
+    }
+  }
+  return null;
 }
 function completeGroupCounts(target,group){
   const counts=new Map();
@@ -68,7 +93,16 @@ function prepRule(p,s){
   const isTarget=s.name===p.target;
   if(isTarget){
     if(p.route==='regression'&&s.storage!=='numeric'){
-      return ['Blocked','Numeric target required','The validated regression engine coerces the target to numeric; this field is currently stored as text.','block'];
+      const encoding=s.level==='Ordinal'?recognizedOrdinalEncoding(s.name):null;
+      if(encoding){
+        return [
+          'Encode ordered categories',
+          encoding.order.join(' < '),
+          'The validated regression engine rank-encodes recognized ordinal scales before fitting. Rank spacing is numeric for modeling but should be interpreted cautiously.',
+          'ok'
+        ];
+      }
+      return ['Blocked','Recognized ordinal coding required','This text target cannot be safely ordered from the validated standard ordinal sequences, so KU Open DA will not invent a category order.','block'];
     }
     if(['binary-classification','multiclass-classification'].includes(p.route)){
       const counts=valueCounts(s.name);
@@ -115,7 +149,13 @@ function prepareBlockers(p,group){
   const blockers=[];
   if(p.route==='regression'&&p.target){
     if(types[p.target]!=='numeric'){
-      blockers.push(`Target ${p.target} is stored as text; validated regression requires numeric coding.`);
+      const targetSummary=summary(p.target);
+      const encoding=targetSummary.level==='Ordinal'?recognizedOrdinalEncoding(p.target):null;
+      if(!encoding){
+        blockers.push(`Target ${p.target} is stored as text and its ordinal order is not one of the validated standard sequences. KU Open DA will not guess the category order.`);
+      }else if(targetSummary.n<5){
+        blockers.push(`Regression requires at least 5 observed target values; ${targetSummary.n} are available.`);
+      }
     }else{
       const numericObserved=observed(p.target).filter(v=>Number.isFinite(Number(v))).length;
       if(numericObserved<5)blockers.push(`Regression requires at least 5 numeric target observations; ${numericObserved} are available.`);
