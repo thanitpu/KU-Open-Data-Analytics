@@ -14,9 +14,8 @@
 
   function renderCurrentAnalysis(){
     if(!window.KUAppState)return;
-    const {analysisPlan:p}=window.KUAppState.getState(),predictors=p.predictorMode==='all-suitable'?`All suitable fields (${(p.predictors||[]).length})`:`${(p.predictors||[]).length} custom field${(p.predictors||[]).length===1?'':'s'}`;
-    const html=`<div class="current-analysis-main"><span>Current Analysis</span><b>${escJourney(currentPlanLabel(p))}</b></div>
-      <div class="current-analysis-item"><span>Question Type</span><b>${escJourney(questionLabels[p.questionType]||'Not defined')}</b></div>
+    const {analysisPlan:p}=window.KUAppState.getState(),predictors=p.predictorMode==='all-suitable'?`All suitable fields (${(p.predictors||[]).length})`:`${(p.predictors||[]).length} custom field${(p.predictors||[]).length===1?'':'s'}`,questionType=questionLabels[p.questionType]||'Question not defined';
+    const html=`<div class="current-analysis-main"><span>Current Analysis · ${escJourney(questionType)}</span><b>${escJourney(currentPlanLabel(p))}</b></div>
       <div class="current-analysis-item"><span>Target / Outcome</span><b>${escJourney(p.target||'Not required / selected')}</b></div>
       <div class="current-analysis-item"><span>Recommended Family</span><b>${escJourney(p.analyticalFamily||'Not derived')}</b></div>
       <div class="current-analysis-item"><span>Predictors</span><b>${escJourney(predictors)}</b></div>`;
