@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="src/app.css">
 <link rel="stylesheet" href="src/journey.css">
 <link rel="stylesheet" href="src/data-profile.css">
+<link rel="stylesheet" href="src/workflow-steps.css">
 </head>
 <body>
 <header>
@@ -30,7 +31,7 @@
     <button class="journey-step" data-journey-step="setup"><span class="journey-num">5</span><span class="journey-copy"><b>Setup</b><span>Confirm the Run</span></span></button>
     <button class="journey-step" data-journey-step="results"><span class="journey-num">6</span><span class="journey-copy"><b>Results</b><span>Understand Results</span></span></button>
   </div>
-  <div class="advanced-note">Validated analytical computation remains in the existing backend. Advanced browser tools are retained during migration.</div>
+  <div class="advanced-note">Validated production analyses run through the backend. Optional browser statistical tools remain available for focused exploration.</div>
   <details class="advanced-nav">
     <summary>Advanced statistical tools</summary>
     <div class="label">DATA TOOLS</div>
@@ -120,16 +121,17 @@
 <section id="anovaPanel" class="analysis-panel hidden"><h1>One-way ANOVA</h1><p class="lead">Compare the mean of one numeric Scale variable across three or more groups.</p><section class="card"><div class="head">Variables</div><div class="body"><div class="row"><span class="note">Outcome</span><select id="anovaY"></select><span class="note">Group</span><select id="anovaGroup"></select><button class="btn primary" onclick="runAnova()">Run ANOVA</button></div></div></section><section class="card"><div class="head">Results</div><div class="body" id="anovaResult"><div class="empty">Select variables and run the analysis.</div></div></section><section class="card"><div class="head">Diagnostics & group visualization</div><div class="body"><canvas id="anovaPlot" width="760" height="320"></canvas><div class="note" id="anovaDiagNote" style="margin-top:8px">Run ANOVA to inspect group distributions and variance diagnostics.</div></div></section></section>
 <section id="correlationPanel" class="analysis-panel hidden"><h1>Correlation</h1><p class="lead">Measure the strength and direction of association between two numeric Scale variables.</p><section class="card"><div class="head">Variables</div><div class="body"><div class="row"><select id="corrType"><option value="pearson">Pearson</option><option value="spearman">Spearman</option></select><select id="corrX"></select><select id="corrY"></select><button class="btn primary" onclick="runCorrelation()">Run</button></div></div></section><section class="card"><div class="head">Results</div><div class="body" id="corrResult"><div class="empty">Select variables and run the analysis.</div></div></section><section class="card"><div class="head">Scatterplot</div><div class="body"><canvas id="corrPlot" width="760" height="320"></canvas><div class="note" id="corrDiagNote" style="margin-top:8px">Run correlation to inspect the relationship visually.</div></div></section></section>
 </section>
-<section id="aiAnalyticsView" class="hidden">
-  <div class="step-kicker">STEP 3 · ANALYZE</div>
-  <h1>Define the Analytical Question</h1>
-  <p class="lead">This validated engine is the current production bridge. The next migration batch will replace its family-first controls with the accepted v62 question-first Analysis Plan flow.</p>
-  <div id="currentAnalysisBar" class="current-analysis-bar"></div>
-  <section class="card"><div class="head">Current validated analysis setup <span class="migration-badge">Real FastAPI route</span></div><div class="body"><div class="row"><span class="note">Objective</span><select id="aiIntent" onchange="refreshAIAnalyticsControls()"><option>Customer Segmentation</option><option>Regression</option><option>Binary Classification</option><option>Multiclass Classification</option><option>Exploratory Data Analysis</option><option>Association Analysis</option></select><span id="aiTargetWrap" class="hidden"><span class="note">Target</span> <select id="aiTarget"></select></span><button class="btn primary" onclick="runAIAnalytics()">Run validated analysis</button></div><div class="note" style="margin-top:10px">The dataset is uploaded to the configured FastAPI service only when you run this analysis.</div></div></section>
-  <section class="card"><div class="head">Result summary</div><div class="body" id="aiAnalyticsResult"><div class="empty">Choose an objective and run the analysis.</div></div></section>
-  <section class="card"><div class="head">Executive analytical report</div><div class="body"><pre id="aiAnalyticsReport" style="white-space:pre-wrap;font:inherit;margin:0">No report yet.</pre></div></section>
-</section>
+<section id="aiAnalyticsView" class="hidden"></section>
 </main></div>
 <script src="src/state.js"></script>
-<script src="src/app.js"></script><script src="src/analysis.js"></script><script src="src/v05.js"></script><script src="src/ai-analytics.js"></script><script src="src/relationship-stats.js"></script><script src="src/data-profile.js"></script><script src="src/journey.js"></script>
+<script src="src/app.js"></script>
+<script src="src/analysis.js"></script>
+<script src="src/advanced-stats.js"></script>
+<script src="src/ai-analytics.js"></script>
+<script src="src/relationship-stats.js"></script>
+<script src="src/data-profile.js"></script>
+<script src="src/workflow-steps.js"></script>
+<script src="src/result-drivers.js"></script>
+<script src="src/accessibility.js"></script>
+<script src="src/journey.js"></script>
 </body></html>
