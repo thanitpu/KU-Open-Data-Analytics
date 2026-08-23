@@ -181,8 +181,10 @@ For Regression, an unrecognized non-numeric ordinal/text target must remain bloc
 | Change predictors only | Previous validated result is preserved; Prepare/Setup approval resets. |
 | Open Results after predictor change | Result is labeled **Previous validated result** until rerun. |
 | Change Question Type or Target | Previous validated result resets. |
-| Change a field Measurement Level in Data Profile and return to Analyze | Route/predictors are re-derived from current metadata; downstream approval resets; preserved result is marked stale if it no longer matches. |
-| Replace/clear dataset | Stale Analysis Plan and result are cleared. |
+| Change a selected field Measurement Level while the derived route also changes | Route/predictors are re-derived; downstream approval resets; the preserved result is marked stale if it no longer matches. |
+| Change a selected field Measurement Level while the route stays the same, e.g. Ordinal → Scale with Regression | The result remains available only for comparison, Prepare/Setup approval resets immediately, and Step 6 shows **Previous validated result** because selected-field metadata differs from the run snapshot. |
+| Reload/replace with a genuinely new dataset that has the same row count, column names, storage types and measurement levels as the previous dataset | The loader advances the dataset revision; the Analysis Plan/result are cleared and the journey returns to Start. |
+| Replace/clear dataset with a different schema or shape | Stale Analysis Plan and result are cleared. |
 | Open an Advanced statistical tool on desktop | Advanced panel does not overlap the six-step Analyze page; returning to the journey keeps state coherent. |
 
 ## Responsive and accessibility checks
@@ -213,13 +215,13 @@ The browser smoke test validates:
 - **Technical Run Specification** is collapsed by default; the browser test expands it and verifies backend version metadata.
 - Screenshots for all six journey states at all three viewports are uploaded as the `ku-open-da-visual-uat` GitHub Actions artifact.
 
-Frontend CI also runs a dedicated Ordinal target DOM smoke covering demo `Satisfaction` → Regression → recognized rank coding → Step 4 approval → Step 6 Target Coding/guardrail rendering.
+Frontend CI also runs a dedicated Ordinal target DOM smoke covering demo `Satisfaction` → Regression → recognized rank coding → Step 4 approval → Step 6 Target Coding/guardrail rendering → same-route metadata stale handling → same-schema dataset reload/reset via dataset revision.
 
 Backend CI covers compile + pytest, including API/CORS contracts, Compare Groups, feature-importance extraction, and recognized/unknown ordinal-target behavior.
 
 ## Final regression before merge
 
-- Frontend CI: JavaScript syntax, static smoke, full journey DOM smoke, Ordinal target DOM smoke, and responsive Chromium visual smoke all pass.
+- Frontend CI: JavaScript syntax, static smoke, full journey DOM smoke, Ordinal target/state freshness DOM smoke, and responsive Chromium visual smoke all pass.
 - Backend CI: compile and pytest all pass.
 - Review the latest `ku-open-da-visual-uat` screenshots for desktop/tablet/mobile before marking PR #11 ready for review.
 - PR remains Draft until manual visual/UAT acceptance.
