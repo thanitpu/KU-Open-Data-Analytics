@@ -19,6 +19,19 @@ def test_health():
     assert r.json()['status'] == 'ok'
 
 
+def test_github_pages_cors_preflight():
+    r = client.options(
+        '/capabilities',
+        headers={
+            'Origin': 'https://thanitpu.github.io',
+            'Access-Control-Request-Method': 'GET',
+        },
+    )
+    assert r.status_code == 200
+    assert r.headers['access-control-allow-origin'] == 'https://thanitpu.github.io'
+    assert 'GET' in r.headers['access-control-allow-methods']
+
+
 def test_capabilities():
     r = client.get('/capabilities')
     assert r.status_code == 200
