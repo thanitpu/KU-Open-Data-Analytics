@@ -23,8 +23,9 @@ w.document.querySelector('[data-ku-text-size="large"]').click();
 assert.strictEqual(w.document.documentElement.dataset.kuTextSize,'large','A++ should apply large text size');
 assert.strictEqual(w.localStorage.getItem('ku-open-da-text-size'),'large','Text-size preference should persist');
 
-// Local Manual UAT must resolve to the branch-matched FastAPI, never Render.
-w.eval(fs.readFileSync(path.join(root,'src/ai-analytics.js'),'utf8'));
-assert.strictEqual(w.eval('KU_ANALYTICS_API_BASE'),'http://127.0.0.1:8001','localhost Product must resolve analytics API to local port 8001');
+// Capture the lexical API constant in the same evaluation as the real analytics client.
+const analyticsSource=fs.readFileSync(path.join(root,'src/ai-analytics.js'),'utf8');
+w.eval(`${analyticsSource}\nwindow.__KU_TEST_API_BASE=KU_ANALYTICS_API_BASE;`);
+assert.strictEqual(w.__KU_TEST_API_BASE,'http://127.0.0.1:8001','localhost Product must resolve analytics API to local port 8001');
 
 console.log('UI_PREFERENCES_SMOKE_OK (real app header + A/A+/A++; local API 8001)');
