@@ -1,12 +1,14 @@
 from io import BytesIO
+import json
 import os
 import pandas as pd
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from .orchestrator import execute_analysis
 from .reporting import build_executive_report
+from .capabilities import get_capabilities
 
-app = FastAPI(title='Automated Analytics Service', version='0.2.0')
+app = FastAPI(title='Automated Analytics Service', version='0.3.0')
 
 cors_origins = [
     x.strip() for x in os.getenv(
@@ -28,18 +30,26 @@ app.add_middleware(
 def health():
     return {'status': 'ok'}
 
+@app.get('/capabilities')
+def capabilities():
+    return get_capabilities()
+
 @app.post('/analyze')
 async def analyze(
     file: UploadFile = File(...),
     intent: str = Form(...),
     target: str | None = Form(None),
     mode: str = Form('fast'),
+    options_json: str | None = Form(None),
 ):
     try:
         raw = await file.read()
         df = pd.read_csv(BytesIO(raw))
+        options = json.loads(options_json) if options_json else None
+        if options is not None and not isinstance(options, dict):
+            raise ValueError('options_json must encode a JSON object.')
         result, _ = execute_analysis(
-            df=df, intent=intent, target=target, mode=mode
+            df=df, intent=intent, target=target, mode=mode, options=options
         )
         return {
             'result': result,

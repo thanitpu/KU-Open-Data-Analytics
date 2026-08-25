@@ -1,4 +1,4 @@
-/* KU Open Data Analytics v0.5 — Categorical Analysis & Linear Regression */
+/* KU Open Data Analytics — Advanced categorical analysis & linear regression */
 (function(){
   const style=document.createElement('style');
   style.textContent='select[multiple]{padding:6px;min-height:115px}.model-equation{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#f7f9f5;border:1px solid var(--line);border-radius:9px;padding:10px;overflow-x:auto}';

@@ -1,19 +1,46 @@
 import io
+import json
 import pandas as pd
 from fastapi.testclient import TestClient
 from app.api import app
 
 client = TestClient(app)
 
+
 def _csv_file(df):
     buf = io.StringIO()
     df.to_csv(buf, index=False)
     return ('dataset.csv', buf.getvalue().encode('utf-8'), 'text/csv')
 
+
 def test_health():
     r = client.get('/health')
     assert r.status_code == 200
     assert r.json()['status'] == 'ok'
+
+
+def test_github_pages_cors_preflight():
+    r = client.options(
+        '/capabilities',
+        headers={
+            'Origin': 'https://thanitpu.github.io',
+            'Access-Control-Request-Method': 'GET',
+        },
+    )
+    assert r.status_code == 200
+    assert r.headers['access-control-allow-origin'] == 'https://thanitpu.github.io'
+    assert 'GET' in r.headers['access-control-allow-methods']
+
+
+def test_capabilities():
+    r = client.get('/capabilities')
+    assert r.status_code == 200
+    payload = r.json()
+    assert payload['service']['version'] == '0.3.0'
+    assert payload['service']['mode'] == 'fast'
+    assert payload['routes']['regression']['policy']['model'] == 'XGBoost'
+    assert payload['routes']['group-comparison']['intent'] == 'Compare Groups'
+
 
 def test_segmentation_endpoint():
     df = pd.DataFrame({
@@ -30,3 +57,18 @@ def test_segmentation_endpoint():
     payload = r.json()
     assert payload['result']['route'] == 'segmentation'
     assert payload['result']['status'] == 'COMPLETE'
+
+
+def test_compare_groups_endpoint():
+    df = pd.DataFrame({'Group':['A','A','A','B','B','B'],'Score':[1,2,3,7,8,9]})
+    r = client.post(
+        '/analyze',
+        files={'file': _csv_file(df)},
+        data={'intent':'Compare Groups','target':'Score','mode':'fast','options_json':json.dumps({'group':'Group'})}
+    )
+    assert r.status_code == 200
+    payload = r.json()['result']
+    assert payload['route'] == 'compare_groups'
+    assert payload['method']['test'] == 'Welch t-test'
+    assert payload['method']['grouping_field'] == 'Group'
+    assert payload['evidence']['groups'] == 2
