@@ -3,15 +3,30 @@
 'use strict';
 const TEXT_SIZE_KEY='ku-open-da-text-size';
 const TEXT_SIZES=['standard','comfortable','large'];
+let stickyHeaderObserver=null;
 function ensurePreferenceStyles(){
   if(document.querySelector('link[data-ku-ui-preferences]'))return;
   const link=document.createElement('link');link.rel='stylesheet';link.href='src/ui-preferences.css';link.dataset.kuUiPreferences='true';document.head.appendChild(link);
+}
+function syncStickyShellOffset(){
+  const header=document.querySelector('header');if(!header)return;
+  const height=Math.max(0,Math.ceil(header.getBoundingClientRect().height));
+  document.documentElement.style.setProperty('--ku-product-header-height',`${height}px`);
+}
+function installStickyShellSync(){
+  syncStickyShellOffset();
+  const header=document.querySelector('header');
+  if(header&&typeof ResizeObserver!=='undefined'){
+    stickyHeaderObserver?.disconnect?.();stickyHeaderObserver=new ResizeObserver(()=>syncStickyShellOffset());stickyHeaderObserver.observe(header);
+  }
+  root.addEventListener?.('resize',()=>root.requestAnimationFrame?root.requestAnimationFrame(syncStickyShellOffset):syncStickyShellOffset(),{passive:true});
 }
 function normalizeTextSize(value){return TEXT_SIZES.includes(value)?value:'comfortable'}
 function applyTextSize(value,{persist=true}={}){
   const size=normalizeTextSize(value);document.documentElement.dataset.kuTextSize=size;
   if(persist){try{localStorage.setItem(TEXT_SIZE_KEY,size)}catch(_){}}
   document.querySelectorAll('[data-ku-text-size]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.kuTextSize===size)));
+  if(root.requestAnimationFrame)root.requestAnimationFrame(syncStickyShellOffset);else syncStickyShellOffset();
   return size;
 }
 function installTextSizeControl(){
@@ -42,8 +57,8 @@ function onTabKey(event){
   if(event.key==='Home')index=0;else if(event.key==='End')index=tabs.length-1;else index=(index+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
   const next=tabs[index],name=next.dataset.profileTab;if(typeof root.setProfileTab==='function')root.setProfileTab(name);else next.click();next.focus();setTimeout(syncProfileTabs,0);
 }
-function init(){ensurePreferenceStyles();installTextSizeControl();syncProfileTabs();syncDynamicRegions();document.addEventListener('keydown',onTabKey);document.addEventListener('click',event=>{if(event.target.closest?.('.profile-tab'))setTimeout(syncProfileTabs,0)});document.addEventListener('ku:render-current-analysis',syncDynamicRegions);document.addEventListener('ku:statechange',()=>setTimeout(syncDynamicRegions,0))}
-root.KUAccessibility=Object.freeze({syncProfileTabs,syncDynamicRegions,applyTextSize});
+function init(){ensurePreferenceStyles();installTextSizeControl();installStickyShellSync();syncProfileTabs();syncDynamicRegions();document.addEventListener('keydown',onTabKey);document.addEventListener('click',event=>{if(event.target.closest?.('.profile-tab'))setTimeout(syncProfileTabs,0)});document.addEventListener('ku:render-current-analysis',syncDynamicRegions);document.addEventListener('ku:statechange',()=>setTimeout(syncDynamicRegions,0))}
+root.KUAccessibility=Object.freeze({syncProfileTabs,syncDynamicRegions,applyTextSize,syncStickyShellOffset});
 ensurePreferenceStyles();
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })(window);
