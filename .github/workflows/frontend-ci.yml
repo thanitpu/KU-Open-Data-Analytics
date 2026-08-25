@@ -33,6 +33,7 @@ jobs:
           node --check src/landing.js
           node --check tests/frontend_entry_guard.js
           node --check tests/landing_smoke.js
+          node --check tests/ui_preferences_smoke.js
           node --check tests/frontend_file_loader_smoke.js
           node --check tests/frontend_dom_smoke.js
           node --check tests/frontend_ordinal_smoke.js
@@ -46,6 +47,8 @@ jobs:
         run: node tests/frontend_smoke.js
       - name: Install frontend test dependencies
         run: npm install --no-save jsdom@24 playwright@1.55.0
+      - name: Text-size preference smoke
+        run: node tests/ui_preferences_smoke.js
       - name: CSV and XLSX loader smoke
         run: node tests/frontend_file_loader_smoke.js
       - name: Full journey DOM smoke
