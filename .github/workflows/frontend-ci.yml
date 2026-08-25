@@ -38,6 +38,7 @@ jobs:
           node --check tests/frontend_dom_smoke.js
           node --check tests/frontend_ordinal_smoke.js
           node --check tests/public_product_visual_smoke.js
+          node --check tests/responsive_sticky_smoke.js
           node --check tests/frontend_visual_smoke.js
       - name: Public and Product entry separation guard
         run: node tests/frontend_entry_guard.js
@@ -67,6 +68,8 @@ jobs:
           done
           cat /tmp/ku-open-da-http.log
           exit 1
+      - name: Responsive sticky shell smoke
+        run: node tests/responsive_sticky_smoke.js
       - name: Public to Product browser integration smoke
         run: node tests/public_product_visual_smoke.js
       - name: Functional responsive browser visual smoke
