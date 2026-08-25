@@ -42,8 +42,7 @@ assert.strictEqual(Boolean(metaState.analysisPlan.setup.confirmed),false,'metada
 
 // A newly loaded dataset must reset analysis even if row count, columns and metadata are identical.
 s.setPreparation({status:'approved',approved:true});
-s.setResultPayload({ok:true});
-s.setDataset({loaded:true,revision:11,rowCount:4,columnCount:3,fields:[{name:'x',storage:'numeric',level:'Scale'},{name:'y',storage:'numeric',level:'Scale'},{name:'target',storage:'text',level:'Scale'}]});
+s.setResultPayload({ok:true});s.setDataset({loaded:true,revision:11,rowCount:4,columnCount:3,fields:[{name:'x',storage:'numeric',level:'Scale'},{name:'y',storage:'numeric',level:'Scale'},{name:'target',storage:'text',level:'Scale'}]});
 const replaced=s.getState();
 assert.strictEqual(replaced.dataset.revision,11);
 assert.strictEqual(replaced.result.validated,false,'same-schema dataset replacement must clear the previous result');
@@ -56,6 +55,8 @@ const analytics=fs.readFileSync(path.join(root,'src/ai-analytics.js'),'utf8');
 const journey=fs.readFileSync(path.join(root,'src/journey.js'),'utf8');
 const workflow=fs.readFileSync(path.join(root,'src/workflow-steps.js'),'utf8');
 const resultDetails=fs.readFileSync(path.join(root,'src/result-details.js'),'utf8');
+const accessibility=fs.readFileSync(path.join(root,'src/accessibility.js'),'utf8');
+const uiPreferences=fs.readFileSync(path.join(root,'src/ui-preferences.css'),'utf8');
 assert.strictEqual(appEntry,'app.html','static Product smoke must use app.html as canonical entry');
 for(const id of ['workspaceView','variablesView','profileOverview','profileQuality','relFieldA','relFieldB','relationshipResult','aiAnalyticsView'])assert.ok(html.includes(`id="${id}"`),`missing required UI id ${id}`);
 for(const src of ['src/state.js','src/advanced-stats.js','src/ai-analytics.js','src/relationship-stats.js','src/data-profile.js','src/workflow-steps.js','src/result-drivers.js','src/result-details.js','src/accessibility.js','src/journey.js'])assert.ok(html.includes(`src="${src}"`),`missing direct script ${src}`);
@@ -64,9 +65,14 @@ assert.ok(!html.includes('src/v05.js'),'versioned v05 runtime must not be loaded
 assert.ok(!html.includes('hotfix-v051'),'legacy hotfix must not be loaded from app entry');
 assert.ok(!appJs.includes('hotfix-v051'),'legacy hotfix must not be dynamically loaded from app.js');
 assert.ok(!appJs.includes("h.onload=()=>{const i=document.createElement('script');i.src='src/i18n.js'"),'legacy hotfix-gated i18n loader must not return');
-assert.ok(analytics.includes("const KU_ANALYTICS_API_BASE=(window.KU_ANALYTICS_API_BASE||'https://ku-open-data-analytics-api.onrender.com')"),'analytics client should define the shared configurable API base');
+assert.ok(analytics.includes("['localhost','127.0.0.1'].includes(window.location.hostname)?'http://127.0.0.1:8001':'https://ku-open-data-analytics-api.onrender.com'"),'analytics client should use local FastAPI for local UAT and Render elsewhere');
+assert.ok(analytics.includes('window.KU_ANALYTICS_API_BASE||KU_DEFAULT_ANALYTICS_API_BASE'),'analytics client should retain an explicit API-base override contract');
 assert.ok(workflow.includes('`${KU_ANALYTICS_API_BASE}/capabilities`'),'Step 5 capabilities must use the same API base as analysis execution');
 assert.ok(!workflow.includes('root.KU_ANALYTICS_API_BASE'),'Step 5 must not assume a top-level const is a window property');
+assert.ok(accessibility.includes('ku-open-da-text-size'),'text-size preference should persist through localStorage');
+assert.ok(accessibility.includes('src/ui-preferences.css'),'accessibility module should load text-size preference styles');
+for(const option of ['standard','comfortable','large'])assert.ok(accessibility.includes(`data-ku-text-size=\\"${option}\\"`)||accessibility.includes(`data-ku-text-size="${option}"`),`missing text-size option ${option}`);
+assert.ok(uiPreferences.includes('--ku-text-scale:1.12'),'comfortable text size should be the default scale');
 assert.ok(journey.includes('datasetRevision'),'journey should track monotonic dataset revisions');
 assert.ok(journey.includes('data!==lastDataReference'),'dataset revision must advance when the loader replaces the data array');
 assert.ok(journey.includes("variableTable.addEventListener('change'"),'measurement-level edits should sync metadata directly into application state');
@@ -76,5 +82,5 @@ assert.strictEqual((workflow.match(/<div class=\"cm-head\">Actual \+<\/div>/g)||
 assert.ok(workflow.includes('Number.isInteger(v)'),'integer evidence metrics should render without forced decimal padding');
 assert.ok(resultDetails.includes('fieldMetadata'),'Step 6 details should compare result field metadata for freshness');
 assert.ok(resultDetails.includes('Field storage or measurement metadata changed'),'metadata mismatch should have an explicit stale-result disclosure');
-for(const f of ['src/advanced-stats.js','src/workflow-steps.js','src/workflow-steps.css','src/result-drivers.js','src/result-details.js','src/accessibility.js'])assert.ok(fs.existsSync(path.join(root,f)),`missing production asset ${f}`);
+for(const f of ['src/advanced-stats.js','src/workflow-steps.js','src/workflow-steps.css','src/result-drivers.js','src/result-details.js','src/accessibility.js','src/ui-preferences.css'])assert.ok(fs.existsSync(path.join(root,f)),`missing production asset ${f}`);
 console.log(`FRONTEND_SMOKE_OK (${appEntry})`);
