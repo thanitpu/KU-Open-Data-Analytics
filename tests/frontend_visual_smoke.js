@@ -78,9 +78,12 @@ async function runViewport(browser,viewport){
   page.on('pageerror',err=>errors.push(`pageerror: ${err.message}`));
   page.on('console',msg=>{if(msg.type()==='error')errors.push(`console: ${msg.text()}`)});
   page.on('response',response=>{if(response.status()>=400&&!response.url().endsWith('/favicon.ico'))errors.push(`http ${response.status()}: ${response.url()}`)});
+  await page.addInitScript(base=>{window.KU_ANALYTICS_API_BASE=base},analyticsBase);
   await mockNetwork(page);
   await page.goto(appURL,{waitUntil:'domcontentloaded'});
   await page.waitForSelector('#workspaceView');
+  assert.strictEqual(await page.locator('.text-size-control').count(),1,`${viewport.name}: Product header should expose one text-size control`);
+  assert.strictEqual(await page.locator('html').getAttribute('data-ku-text-size'),'comfortable',`${viewport.name}: Product should default to comfortable text size`);
 
   const shell=await page.evaluate(()=>({
     asidePosition:getComputedStyle(document.querySelector('aside')).position,
