@@ -95,7 +95,7 @@ async function runViewport(browser,viewport){
     assert.strictEqual(shell.asidePosition,'sticky',`${viewport.name}: desktop sidebar should be sticky`);
     assert.notStrictEqual(shell.journeyDisplay,'flex',`${viewport.name}: desktop journey should not be horizontal flex`);
   }else{
-    assert.strictEqual(shell.asidePosition,'static',`${viewport.name}: narrow journey should be in normal flow`);
+    assert.strictEqual(shell.asidePosition,'sticky',`${viewport.name}: narrow workflow should remain sticky below the Product header`);
     assert.strictEqual(shell.journeyDisplay,'flex',`${viewport.name}: narrow journey should be horizontal flex`);
     assert.ok(shell.asideWidth<=shell.viewport+1,`${viewport.name}: narrow navigation must fit viewport`);
   }
