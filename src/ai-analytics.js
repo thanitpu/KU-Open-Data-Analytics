@@ -1,5 +1,6 @@
 // KU Open Data Analytics — question-first Analysis Plan + validated analytics client
-const KU_ANALYTICS_API_BASE=(window.KU_ANALYTICS_API_BASE||'https://ku-open-data-analytics-api.onrender.com').replace(/\/$/,'');
+const KU_DEFAULT_ANALYTICS_API_BASE=['localhost','127.0.0.1'].includes(window.location.hostname)?'http://127.0.0.1:8001':'https://ku-open-data-analytics-api.onrender.com';
+const KU_ANALYTICS_API_BASE=(window.KU_ANALYTICS_API_BASE||KU_DEFAULT_ANALYTICS_API_BASE).replace(/\/$/,'');
 (function(root){
 'use strict';
 const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
