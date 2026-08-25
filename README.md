@@ -54,9 +54,11 @@ The Public Landing owns only `src/landing*` and `assets/landing/*`; it does not 
 
 The Product entry remains `app.html`. Data loading, profiling, field metadata review, and browser statistical exploration stay local to the browser. A dataset is sent to the configured analytics API only when the user explicitly runs a validated analysis.
 
+The Product header includes a persistent text-size control with `A`, `A+`, and `A++`. `A+` is the default comfortable size. The selected size is stored in browser local storage and is applied to dense analytical copy and controls without changing the Landing design.
+
 Product runtime code must not hard-code `index.html` or root-absolute redirects. Product and Landing local assets use relative repository paths so both entries remain compatible with GitHub Pages project-path hosting.
 
-`tests/frontend_entry_guard.js` enforces Public/Product separation. `tests/landing_smoke.js` validates the Public layer. Functional JSDOM and browser tests continue to target `app.html`. `tests/public_product_visual_smoke.js` verifies the real browser contract `index.html → app.html` at desktop, tablet, and mobile sizes.
+`tests/frontend_entry_guard.js` enforces Public/Product separation. `tests/landing_smoke.js` validates the Public layer. Functional JSDOM and browser tests continue to target `app.html`. `tests/public_product_visual_smoke.js` verifies the real browser contract `index.html → app.html` at desktop, tablet, and mobile sizes. `tests/ui_preferences_smoke.js` validates the text-size control and preference persistence.
 
 Architecture/workstream boundaries are recorded in `docs/ADR-frontend-public-landing-app-entry.md`; handoff and migration history are in `docs/LANDING_INTEGRATION_HANDOFF.md`, `docs/FUNCTIONAL_APP_HANDOFF.md`, and `docs/APP_ENTRY_MIGRATION_UAT.md`.
 
@@ -64,11 +66,10 @@ Architecture/workstream boundaries are recorded in `docs/ADR-frontend-public-lan
 
 The FastAPI service lives under `backend/` and currently reports API version `0.3.0`.
 
-Local run:
+Local run from the repository root:
 
-    cd backend
-    pip install -r requirements.txt
-    uvicorn app.api:app --reload
+    pip install -r backend/requirements.txt
+    uvicorn app.api:app --app-dir backend --host 127.0.0.1 --port 8001
 
 Health check:
 
@@ -94,13 +95,13 @@ A `render.yaml` Blueprint is included at the repository root. It deploys the bac
 
 and uses `/health` for the service health check.
 
-The frontend default analytics API base is:
+The Product resolves its analytics API base by environment:
 
-    https://ku-open-data-analytics-api.onrender.com
+- when opened from `localhost` or `127.0.0.1` → `http://127.0.0.1:8001` for Manual UAT/local development;
+- on GitHub Pages/other non-local origins → `https://ku-open-data-analytics-api.onrender.com`;
+- an explicit `window.KU_ANALYTICS_API_BASE` set before `src/ai-analytics.js` loads overrides either default.
 
-Both Step 5 `/capabilities` and Step 5/6 analysis execution through `/analyze` use the same configurable API base. It can be overridden before `src/ai-analytics.js` loads:
-
-    <script>window.KU_ANALYTICS_API_BASE='https://YOUR-SERVICE.onrender.com';</script>
+Both Step 5 `/capabilities` and Step 5/6 analysis execution through `/analyze` use the same resolved API base.
 
 The backend CORS policy is configured through `CORS_ORIGINS`. The default configuration allows:
 
@@ -108,7 +109,9 @@ The backend CORS policy is configured through `CORS_ORIGINS`. The default config
 - `http://localhost:8000`
 - `http://127.0.0.1:8000`
 
-Backend tests include a GitHub Pages CORS preflight contract. Frontend browser smoke mocks `/capabilities` and `/analyze` only on the production Render host so an accidental fallback to the GitHub Pages/local origin is detected rather than hidden by the test harness.
+For Manual Combined UAT on Windows, `tools/start-manual-uat.bat` checks/install backend dependencies if needed, starts the local FastAPI on port `8001`, starts the Public/Product web server on port `8000`, and opens the Public Landing. This lets the branch backend be tested before any Render deployment.
+
+Backend tests include a GitHub Pages CORS preflight contract. Frontend browser smoke explicitly overrides the API base to the mocked production Render host so CI remains deterministic and does not depend on a live local or deployed backend.
 
 Render Blueprint `autoDeploy` is enabled, but the branch tracked by an existing Render service is controlled by the Render service configuration. Production deployment should therefore remain aligned with the reviewed/merged GitHub branch.
 
@@ -124,7 +127,7 @@ Dataset replacement/clear resets stale plan/result state reliably. Prepare requi
 
 ## Automated validation
 
-Frontend CI covers JavaScript syntax, Public/Product entry separation, Landing static contracts, CSV/XLSX loading, the full six-step JSDOM flow, Ordinal-target/state freshness, browser-level Landing → Product navigation, and responsive Chromium visual smoke at desktop, tablet, and mobile viewports. Passing browser runs upload screenshots as the `ku-open-da-visual-uat` artifact.
+Frontend CI covers JavaScript syntax, Public/Product entry separation, Landing static contracts, text-size preference persistence, CSV/XLSX loading, the full six-step JSDOM flow, Ordinal-target/state freshness, browser-level Landing → Product navigation, and responsive Chromium visual smoke at desktop, tablet, and mobile viewports. Passing browser runs upload screenshots as the `ku-open-da-visual-uat` artifact.
 
 Backend CI covers compile + pytest, including API version/capabilities, CORS preflight, Compare Groups, segmentation, reporting, predictive feature importance, and recognized/unknown ordinal-target behavior.
 
