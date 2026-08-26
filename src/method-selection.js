@@ -32,7 +32,7 @@ const RECOMMENDED_BY_ROUTE=Object.freeze({
   clustering:'kmeans-clustering',
   association:'mixed-association-screen'
 });
-const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]));
+const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const unique=a=>[...new Set((Array.isArray(a)?a:[]).filter(Boolean))];
 const same=(a,b)=>JSON.stringify(unique(a).sort())===JSON.stringify(unique(b).sort());
 function manifestFromRoot(){
