@@ -117,7 +117,7 @@ async function boot(browser,{mixed=false}={}){
       await page.click('#continuePrepare');
       await page.waitForFunction(()=>window.KUAppState.getState().currentStep==='prepare');
       await page.waitForSelector('#prepareGroupField');
-      await page.selectOption('#prepareGroupField','Group');
+      await page.waitForFunction(()=>document.getElementById('prepareGroupField')?.value==='Group');
       await page.waitForSelector('#methodPrepBlockers');
       assert((await page.locator('#methodPrepBlockers').innerText()).includes('exactly 2 complete groups'));
       assert.equal(await page.locator('#continueSetup').isDisabled(),true);
