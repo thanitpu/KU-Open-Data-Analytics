@@ -75,13 +75,26 @@ def recommend_features(payload):
     ref_date = str(payload.get('reference_date') or f'{ref_year}-12-31')
     candidates = []
 
+    # Group comparison currently consumes only the reviewed outcome + grouping field.
+    # Do not recommend derived predictors that the selected route would then ignore.
+    if question in {'compare-groups', 'compare groups'} or intent.get('route') == 'group-comparison':
+        return {
+            'schema_version': '1.0',
+            'recommender_version': 'rule_based_v1',
+            'domain_hints': _domain_hints(fields),
+            'recommendations': [],
+            'warnings': [
+                'No derived predictors are recommended for the current group-comparison route because that route uses only the reviewed outcome and grouping field.',
+                'This version uses curated rules only; external Kaggle/knowledge retrieval is not enabled yet.',
+            ],
+        }
+
     for field in fields:
         name = field.get('name')
         if not name or _is_target(field, target) or not _selected_for_analysis(field):
             continue
         norm = _norm(name)
         profile = field.get('profile') or {}
-        distribution = field.get('distribution') or {}
         frequency = field.get('frequency') or {}
         temporal = field.get('temporal') or {}
 
