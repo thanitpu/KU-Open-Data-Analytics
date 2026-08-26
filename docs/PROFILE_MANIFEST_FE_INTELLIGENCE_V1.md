@@ -29,6 +29,8 @@ The live Product now consumes the same Profile Manifest computation for four add
 
 These views are computed in the browser. They do not require the analytics API. `KUProfileInsights.getManifest()` exposes the current aggregate manifest for later Step 4 intelligence calls without attaching raw rows.
 
+The current Temporal view profiles the **time axis itself**. Numeric trend, seasonality, autocorrelation, lag and rolling-pattern screening remain a later browser-computation extension because those require pairing a time field with one or more measures rather than profiling the date field alone.
+
 ## FE recommendation contract
 
 `POST /recommend/feature-engineering`
@@ -55,6 +57,7 @@ The foundation now covers Phase A/B, a minimal Phase C rule-based recommender, a
 - add derived fields to the predictor pool
 - add Step 3 method selection
 - call the FE recommender from Step 4
+- perform numeric trend/seasonality/autocorrelation screening in the Temporal view
 - use Kaggle/RAG knowledge
 - provide a Knowledge Admin UI
 
@@ -64,8 +67,9 @@ The foundation now covers Phase A/B, a minimal Phase C rule-based recommender, a
 2. Add Step 4 call to the FE recommender and review UI.
 3. Build the trusted browser FE executor + feature lineage; derived fields become real predictors.
 4. Move deterministic preparation/FE computation to the browser while keeping backend validation of the manifest/policy boundary.
-5. Add curated Kaggle knowledge ingestion and hybrid retrieval after the recommendation schema stabilizes.
-6. Build internal Knowledge Admin UI only after the knowledge schema and evaluation workflow are stable.
+5. Extend Temporal profiling with local trend, seasonality, autocorrelation, lag and rolling-pattern screening where a usable time field and numeric measures coexist.
+6. Add curated Kaggle knowledge ingestion and hybrid retrieval after the recommendation schema stabilizes.
+7. Build internal Knowledge Admin UI only after the knowledge schema and evaluation workflow are stable.
 
 ## UAT focus for the Step 2 slice
 
