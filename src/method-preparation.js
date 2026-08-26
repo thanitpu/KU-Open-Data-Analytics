@@ -15,8 +15,9 @@ const finite=v=>{if(missing(v))return null;const n=Number(v);return Number.isFin
 const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 function rows(){try{return typeof data!=='undefined'&&Array.isArray(data)?data:[]}catch(_){return[]}}
 function selectedMethodIds(plan={}){
+  if(plan.methodMode==='custom')return[...new Set((plan.selectedMethods||[]).filter(Boolean))];
   try{return root.KUMethodSelection?.effectiveMethodIds?.(plan,root.KUProfileInsights?.getManifest?.())||[]}
-  catch(_){return plan.methodMode==='custom'?[...(plan.selectedMethods||[])]:[]}
+  catch(_){return[]}
 }
 function currentGroup(plan={}){return plan.preparation?.groupField||root.document?.getElementById('prepareGroupField')?.value||null}
 function completeGroupCount(plan={},group=currentGroup(plan)){
