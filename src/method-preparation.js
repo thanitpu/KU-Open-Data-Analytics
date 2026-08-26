@@ -12,7 +12,7 @@
 let installed=false;
 const missing=v=>v===''||v===null||v===undefined||(typeof v==='number'&&Number.isNaN(v));
 const finite=v=>{if(missing(v))return null;const n=Number(v);return Number.isFinite(n)?n:null};
-const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]));
+const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 function rows(){try{return typeof data!=='undefined'&&Array.isArray(data)?data:[]}catch(_){return[]}}
 function selectedMethodIds(plan={}){
   try{return root.KUMethodSelection?.effectiveMethodIds?.(plan,root.KUProfileInsights?.getManifest?.())||[]}
