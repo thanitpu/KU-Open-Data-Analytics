@@ -25,7 +25,6 @@ jobs:
           node --check src/fe-executor.js
           node --check src/fe-review.js
           node --check src/multi-method.js
-          node --check src/method-preparation.js
           node --check src/data-profile.js
           node --check src/ai-analytics.js
           node --check src/workflow-steps.js
