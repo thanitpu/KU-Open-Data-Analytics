@@ -8,7 +8,7 @@
 const VERSION='1.0';
 const ALLOWED_OPERATIONS=new Set(['reference_year_minus','date_difference','extract_month','extract_day_of_week','log1p','row_sum','group_rare_categories']);
 const missing=v=>v===''||v===null||v===undefined||(typeof v==='number'&&Number.isNaN(v));
-const finite=v=>{const n=Number(v);return Number.isFinite(n)?n:null};
+const finite=v=>{if(missing(v))return null;const n=Number(v);return Number.isFinite(n)?n:null};
 const unique=a=>[...new Set((Array.isArray(a)?a:[]).filter(Boolean))];
 function cleanName(value){return String(value||'Derived_Feature').trim().replace(/\s+/g,'_')||'Derived_Feature'}
 function resolvedOutputName(desired,used){let base=cleanName(desired),name=base,i=2;while(used.has(name)){name=`${base}_FE${i===2?'':`_${i}`}`;i++}used.add(name);return name}
