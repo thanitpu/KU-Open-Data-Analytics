@@ -12,7 +12,7 @@
 let installed=false;
 const missing=v=>v===''||v===null||v===undefined||(typeof v==='number'&&Number.isNaN(v));
 const finite=v=>{if(missing(v))return null;const n=Number(v);return Number.isFinite(n)?n:null};
-const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]));
 function rows(){try{return typeof data!=='undefined'&&Array.isArray(data)?data:[]}catch(_){return[]}}
 function selectedMethodIds(plan={}){
   try{return root.KUMethodSelection?.effectiveMethodIds?.(plan,root.KUProfileInsights?.getManifest?.())||[]}
@@ -59,10 +59,6 @@ function install(){
   root.document.addEventListener('ku:render-current-analysis',()=>queueMicrotask(sync));
   root.document.addEventListener('ku:statechange',()=>queueMicrotask(sync));
   root.document.addEventListener('change',event=>{if(event.target?.id==='prepareGroupField')queueMicrotask(sync)});
-  if(typeof MutationObserver!=='undefined'){
-    const observer=new MutationObserver(()=>{if(root.KUAppState?.getState?.().currentStep==='prepare')queueMicrotask(sync)});
-    observer.observe(root.document.body,{childList:true,subtree:true});
-  }
   sync();
 }
 return Object.freeze({selectedMethodIds,currentGroup,completeGroupCount,blockers,sync,install});
