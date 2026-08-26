@@ -6,7 +6,7 @@
 })(typeof window!=='undefined'?window:globalThis,function(){
 'use strict';
 const VERSION='1.0';
-const ALLOWED_OPERATIONS=new Set(['reference_year_minus','date_difference','extract_month','extract_day_of_week','log1p','row_sum','group_rare_categories']);
+const ALLOWED_OPERATIONS=new Set(['reference_year_minus','date_difference','extract_month','extract_day_of_week','log1p','row_sum','group_rare_categories','product']);
 const missing=v=>v===''||v===null||v===undefined||(typeof v==='number'&&Number.isNaN(v));
 const finite=v=>{if(missing(v))return null;const n=Number(v);return Number.isFinite(n)?n:null};
 const unique=a=>[...new Set((Array.isArray(a)?a:[]).filter(Boolean))];
@@ -66,20 +66,23 @@ function executeOne(item,row,ctx){
   if(item.operation==='row_sum'){
     const vals=src.map(name=>finite(row?.[name]));return vals.some(v=>v===null)?'':vals.reduce((s,v)=>s+v,0);
   }
+  if(item.operation==='product'){
+    const vals=src.map(name=>finite(row?.[name]));return vals.some(v=>v===null)?'':vals.reduce((p,v)=>p*v,1);
+  }
   if(item.operation==='group_rare_categories'){
     const v=row?.[src[0]];if(missing(v))return'';return ctx.rareSets.get(item.output_field)?.has(String(v))?(p.replacement||'Other'):v;
   }
   throw new Error(`Unsupported browser FE operation: ${item.operation}`);
 }
 function buildAnalyticalDataset({rows=[],plan={},baseColumns=[]}={}){
-  const base=unique(baseColumns),compiled=compilePlan({plan,baseColumns:base}),ctx=contextFor(compiled.lineage,rows);
+  const base=unique(baseColumns),compiled=compilePlan({plan,baseColumns:base}),ctx=contextFor(compiled.lineage,rows),fe=plan.preparation?.featureEngineering||{};
   const columns=[...base,...compiled.derived_fields];
   const outputRows=rows.map(row=>{
     const out={};for(const c of base)out[c]=row?.[c]??'';
     for(const item of compiled.lineage)out[item.output_field]=executeOne(item,row,ctx);
     return out;
   });
-  return{columns,rows:outputRows,lineage:compiled.lineage,manifest:{schema_version:'1.0',executor_version:VERSION,applied:compiled.lineage.length>0,derived_fields:compiled.derived_fields,lineage:compiled.lineage}};
+  return{columns,rows:outputRows,lineage:compiled.lineage,manifest:{schema_version:'1.0',executor_version:VERSION,reviewed:Boolean(fe.reviewed),review_status:fe.status||null,applied:compiled.lineage.length>0,derived_fields:compiled.derived_fields,lineage:compiled.lineage}};
 }
 function outputFields(plan={},baseColumns=[]){return compilePlan({plan,baseColumns}).derived_fields}
 return Object.freeze({VERSION,ALLOWED_OPERATIONS:[...ALLOWED_OPERATIONS],selectedRecommendations,compilePlan,buildAnalyticalDataset,outputFields});
