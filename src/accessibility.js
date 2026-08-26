@@ -35,12 +35,6 @@ async function installMultiMethodModule(){
     root.KUMultiMethod?.install?.();
   }catch(error){console.warn('KU Open DA multi-method execution module unavailable:',error?.message||error)}
 }
-async function installMethodPreparationModule(){
-  try{
-    if(!root.KUMethodPreparation)await loadScriptOnce('src/method-preparation.js','method-preparation');
-    root.KUMethodPreparation?.install?.();
-  }catch(error){console.warn('KU Open DA method preparation module unavailable:',error?.message||error)}
-}
 function syncStickyShellOffset(){
   const header=document.querySelector('header');if(!header)return;
   const height=Math.max(0,Math.ceil(header.getBoundingClientRect().height));
@@ -90,8 +84,8 @@ function onTabKey(event){
   if(event.key==='Home')index=0;else if(event.key==='End')index=tabs.length-1;else index=(index+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
   const next=tabs[index],name=next.dataset.profileTab;if(typeof root.setProfileTab==='function')root.setProfileTab(name);else next.click();next.focus();setTimeout(syncProfileTabs,0);
 }
-function init(){ensurePreferenceStyles();installTextSizeControl();installStickyShellSync();syncProfileTabs();syncDynamicRegions();installProfileInsightModules();installFeatureEngineeringReviewModule();installMultiMethodModule();installMethodPreparationModule();document.addEventListener('keydown',onTabKey);document.addEventListener('click',event=>{if(event.target.closest?.('.profile-tab'))setTimeout(syncProfileTabs,0)});document.addEventListener('ku:render-current-analysis',syncDynamicRegions);document.addEventListener('ku:statechange',()=>setTimeout(syncDynamicRegions,0))}
-root.KUAccessibility=Object.freeze({syncProfileTabs,syncDynamicRegions,applyTextSize,syncStickyShellOffset,installProfileInsightModules,installFeatureEngineeringReviewModule,installMultiMethodModule,installMethodPreparationModule});
+function init(){ensurePreferenceStyles();installTextSizeControl();installStickyShellSync();syncProfileTabs();syncDynamicRegions();installProfileInsightModules();installFeatureEngineeringReviewModule();installMultiMethodModule();document.addEventListener('keydown',onTabKey);document.addEventListener('click',event=>{if(event.target.closest?.('.profile-tab'))setTimeout(syncProfileTabs,0)});document.addEventListener('ku:render-current-analysis',syncDynamicRegions);document.addEventListener('ku:statechange',()=>setTimeout(syncDynamicRegions,0))}
+root.KUAccessibility=Object.freeze({syncProfileTabs,syncDynamicRegions,applyTextSize,syncStickyShellOffset,installProfileInsightModules,installFeatureEngineeringReviewModule,installMultiMethodModule});
 ensurePreferenceStyles();
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })(window);
