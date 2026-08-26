@@ -27,43 +27,28 @@ The Product consumes the same Profile Manifest computation for four additional D
 - **Categorical** — top-frequency summaries, dominance, rare levels and normalized entropy
 - **Temporal** — shown only when a usable temporal field is detected; reports date coverage, granularity and interval regularity
 
-These views are computed in the browser. They do not require the analytics API. `KUProfileInsights.getManifest()` exposes the current aggregate manifest for later Step 4 intelligence calls without attaching raw rows.
+These views are computed in the browser. They do not require the analytics API. `KUProfileInsights.getManifest()` exposes the current aggregate manifest for later intelligence calls without attaching raw rows.
 
 The current Temporal view profiles the **time axis itself**. Numeric trend, seasonality, autocorrelation, lag and rolling-pattern screening remain a later browser-computation extension because those require pairing a time field with one or more measures rather than profiling the date field alone.
 
 ## Step 3 profile-aware method selection
 
-Analyze keeps the question-first flow:
+Step 3 preserves the question-first flow and derived analytical family, then adds:
 
-1. **What do you want to learn?**
-2. **Select the target / outcome** when required.
-3. **Recommended analytical family** remains derived automatically.
+- a recommended method
+- an **OR — Choose your method(s)** path
+- filtering by question type, target kind, usable predictors and Profile Manifest signals
+- execution labels distinguishing `Local · Browser` from `KU Validated Engine`
 
-Within the third panel, the Product now adds a method layer:
-
-- **Recommended method** — the current validated default for the derived route.
-- **OR — Choose your method(s)** — exposes only methods compatible with the question type, target type, available predictors and current Profile Manifest.
-- Every method is labelled **Local · Browser** or **KU Validated Engine** so execution responsibility is transparent.
-- Profile signals can add method-specific cautions, for example recommending robustness review when the target is strongly skewed or has notable outlier signals.
-
-The current method catalog covers:
-
-- XGBoost Regression / Binary / Multiclass on the validated backend
-- Linear Regression (OLS) locally in the browser
-- Pearson and Spearman correlation as local supporting methods for Explain Drivers
-- Validated Group Comparison plus local Welch t-test / One-way ANOVA candidates
-- K-means Segmentation on the validated backend
-- Mixed-Type Association Screening on the validated backend
-
-Method choice is persisted in the Analysis Plan through `methodMode` and `selectedMethods`. Switching question type or target resets method selection to the recommended mode. Explicit method-selection changes invalidate downstream preparation/setup and the previous result because the planned execution has changed. Metadata-only route re-derivation still preserves the previous validated result for stale-result comparison.
-
-This slice establishes **selection, suitability filtering and state**. Full execution of arbitrary custom multi-method selections is intentionally deferred until Step 4 can validate method-specific preparation and the browser execution coordinator is available.
+`methodMode` and `selectedMethods` are stored in the authoritative Analysis Plan. Question/target changes reset method selection. Explicit method changes invalidate downstream preparation/setup and prior results. Custom multi-method execution is not yet coordinated end to end; the current slice establishes selection and state only.
 
 ## FE recommendation contract
 
 `POST /recommend/feature-engineering`
 
 Input: Profile Manifest v1 plus optional `reference_date`.
+
+The Step 4 request includes the analytical objective and current method selection as well as all field names and their aggregate profiles. Each field is marked as target, selected predictor, or context. Context fields may help domain inference, but the rule-based recommender does not silently derive features from fields excluded from the current analysis.
 
 Output: structured recommendations only. The backend never returns arbitrary JavaScript/Python code. Every recommendation names a browser operation from an allowlist, source fields, derived output field, parameters, reason, evidence basis, confidence, and review requirement.
 
@@ -76,6 +61,21 @@ Initial rule-based operations:
 - `log1p`
 - `row_sum`
 - `group_rare_categories`
+
+## Step 4 Feature Engineering Intelligence review
+
+Step 4 now requests FE recommendations from KU Analytical Intelligence using only the aggregated Profile Manifest. The review panel:
+
+- states that field names and aggregate distribution/frequency summaries are sent while raw rows remain local
+- shows the inferred domain hint
+- presents each suggested derived feature with source fields, operation, reason, evidence basis and confidence
+- defaults recommendations to selected but requires explicit confirmation before Preparation can be approved
+- supports select all, clear all, edit and reconfirm
+- stores the reviewed recommendation payload and selected recommendation IDs in the Preparation Plan
+- handles service errors with Retry or an explicit **Continue without FE recommendations** path
+- automatically marks the review complete when no additional derived features are recommended
+
+This slice is **review only**. Selected recommendations are not yet executed and do not yet enter the analytical matrix. Browser FE execution and feature lineage are the next implementation slice.
 
 ## UX note — contextual parameter help
 
@@ -93,12 +93,11 @@ This is intentionally deferred so contextual help can be designed once and reuse
 
 ## Current scope
 
-The branch now covers Phase A/B, a minimal Phase C rule-based FE recommender, visible Step 2 profile insights, and Step 3 profile-aware method selection. It does **not** yet:
+The foundation now covers Profile Manifest, visible Step 2 profile intelligence, Step 3 method selection, the rule-based FE intelligence contract, and Step 4 FE recommendation review. It does **not** yet:
 
-- execute FE in the browser
-- add derived fields to the predictor pool
-- call the FE recommender from Step 4
-- validate and execute arbitrary custom multi-method selections end-to-end
+- execute approved FE in the browser
+- add derived fields to the predictor pool / analytical matrix
+- coordinate end-to-end execution for arbitrary custom multi-method selections
 - perform numeric trend/seasonality/autocorrelation screening in the Temporal view
 - add reusable `?` contextual parameter help across analytical screens
 - use Kaggle/RAG knowledge
@@ -106,33 +105,23 @@ The branch now covers Phase A/B, a minimal Phase C rule-based FE recommender, vi
 
 ## Next implementation slices
 
-1. Add Step 4 call to the FE recommender and review UI, including method-specific preparation requirements.
-2. Build the trusted browser FE executor + feature lineage; derived fields become real predictors.
-3. Move deterministic preparation/FE computation to the browser while keeping backend validation of the manifest/policy boundary.
-4. Add execution coordination for selected local/backend methods and combined Results when multiple methods are requested.
-5. Extend Temporal profiling with local trend, seasonality, autocorrelation, lag and rolling-pattern screening where a usable time field and numeric measures coexist.
-6. Add a reusable contextual-help component and parameter glossary for the `?` controls across Data Profile / Analyze / Prepare / Setup / Results.
-7. Add curated Kaggle knowledge ingestion and hybrid retrieval after the recommendation schema stabilizes.
-8. Build internal Knowledge Admin UI only after the knowledge schema and evaluation workflow are stable.
+1. Build the trusted browser FE executor + feature lineage; approved derived fields become real predictors and enter the analytical matrix.
+2. Move deterministic preparation/FE computation to the browser while keeping backend validation of the manifest/policy boundary.
+3. Coordinate execution and combined Results for compatible selected browser/backend methods.
+4. Extend Temporal profiling with local trend, seasonality, autocorrelation, lag and rolling-pattern screening where a usable time field and numeric measures coexist.
+5. Add a reusable contextual-help component and parameter glossary for the `?` controls across Data Profile / Analyze / Prepare / Setup / Results.
+6. Add curated Kaggle knowledge ingestion and hybrid retrieval after the recommendation schema stabilizes.
+7. Build internal Knowledge Admin UI only after the knowledge schema and evaluation workflow are stable.
 
-## UAT focus — Step 2
+## UAT focus for Step 4 FE review
 
-1. Load a dataset, then open **Step 2 · Data Profile**.
-2. Confirm tabs are ordered as Overview, Fields, Data Quality, Distribution, Outliers, Categorical, Relationships, plus Temporal when a temporal field is detected.
-3. Distribution must show field-specific shape metrics and histogram summaries.
-4. Outliers must show IQR and MAD signals without describing outliers as automatic errors.
-5. Categorical must show frequency structure; identifier/sensitive-like values remain redacted from the manifest.
-6. Temporal must appear only for datasets with a detected date/time field and show coverage/granularity/regularity.
-7. Key regression checks: Start→Profile→Analyze still works; existing Relationships still works; no page-level horizontal overflow; no raw row array is present in `KUProfileInsights.getManifest()`.
-
-## UAT focus — Step 3 method selection
-
-1. Choose **Predict an outcome** with a continuous target. The existing Recommended analytical family must remain visible, followed by **Recommended method**, an **OR** divider, and **Choose your method(s)**.
-2. The recommended route should show **XGBoost Regression · KU Validated Engine**. When numeric predictors are available, **Linear Regression (OLS) · Local · Browser** should also be offered.
-3. Switch to **Choose methods**. Continue to Prepare must remain disabled until at least one compatible method is selected.
-4. For **Explain relationships / drivers** with a continuous target, suitable choices should include XGBoost Regression, OLS, Pearson and Spearman when numeric predictors are available.
-5. Binary / multiclass targets must not expose incompatible regression methods.
-6. **Compare groups** should expose Validated Group Comparison plus local Welch t-test and One-way ANOVA candidates, with their group-count conditions clearly stated.
-7. **Discover segments** should expose K-means Segmentation; **Discover association rules** currently maps to Mixed-Type Association Screening.
-8. Changing the question type or target must reset custom method choices to Recommended.
-9. Regression checks: Step 1→2→3→4 remains navigable, stale-result behavior after metadata-only changes is preserved, responsive shell behavior remains unchanged, and there is no page-level horizontal overflow.
+1. Load a dataset and define a valid analytical question in Step 3.
+2. Continue to **Step 4 · Prepare** and confirm the Feature Engineering Recommendations panel appears below Preparation Summary.
+3. Confirm the panel explains that only Profile Manifest metadata, field names and aggregate distribution/frequency summaries are sent; raw rows are not sent.
+4. When recommendations are returned, review the suggested output feature, source fields, operation, reason, basis and confidence.
+5. Before confirming FE choices, **Approve Preparation** remains disabled unless the backend returns no recommendations.
+6. Select/clear recommendations and click **Confirm feature choices**; approval becomes available when no other preparation blocker exists.
+7. Click **Edit feature choices**; approval becomes blocked again until reconfirmed.
+8. Existing group-comparison setup and route-specific preparation blockers must remain authoritative.
+9. When the recommendation service is unavailable, Retry and explicit Continue-without-FE paths must work.
+10. Remember: approved FE is stored only as a reviewed plan in this slice. Derived columns are not created or sent into ML until the browser FE executor slice.
