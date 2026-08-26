@@ -34,16 +34,18 @@
     if(Object.prototype.hasOwnProperty.call(patch,'selectedMethods'))next.selectedMethods=unique(patch.selectedMethods);
     if(patch.preparation)next.preparation={...before.preparation,...patch.preparation};
     if(patch.setup)next.setup={...before.setup,...patch.setup};
+    const methodPatch=Object.prototype.hasOwnProperty.call(patch,'methodMode')||Object.prototype.hasOwnProperty.call(patch,'selectedMethods');
     const questionOrTargetChanged=next.questionType!==before.questionType||next.target!==before.target;
     const predictorsChanged=JSON.stringify(next.predictors)!==JSON.stringify(before.predictors)||next.predictorMode!==before.predictorMode;
     const routeChanged=next.route!==before.route||next.analyticalFamily!==before.analyticalFamily;
     if(questionOrTargetChanged||routeChanged){next.methodMode='recommended';next.selectedMethods=[]}
     const methodsChanged=next.methodMode!==before.methodMode||JSON.stringify(unique(next.selectedMethods).sort())!==JSON.stringify(unique(before.selectedMethods).sort());
+    const explicitMethodsChanged=methodPatch&&methodsChanged;
     if(questionOrTargetChanged){next.preparation=emptyPreparation();next.setup=emptySetup()}
     else if(predictorsChanged||routeChanged||methodsChanged){next.preparation={status:'needs-review',approved:false};next.setup=emptySetup()}
-    const invalidateResult=questionOrTargetChanged||methodsChanged||routeChanged;
+    const invalidateResult=questionOrTargetChanged||explicitMethodsChanged;
     state={...state,analysisPlan:next,result:invalidateResult?emptyResult():state.result};
-    emit(questionOrTargetChanged?'analysis-plan:update+downstream-reset+result-reset':methodsChanged?'analysis-plan:methods+downstream-reset+result-reset':predictorsChanged?'analysis-plan:predictors+downstream-reset':routeChanged?'analysis-plan:route+downstream-reset+result-reset':'analysis-plan:update')
+    emit(questionOrTargetChanged?'analysis-plan:update+downstream-reset+result-reset':explicitMethodsChanged?'analysis-plan:methods+downstream-reset+result-reset':routeChanged?'analysis-plan:route+downstream-reset':predictorsChanged?'analysis-plan:predictors+downstream-reset':'analysis-plan:update')
   }
   function setPredictors(predictors){updateAnalysisPlan({predictors})}
   function setPreparation(patch){updateAnalysisPlan({preparation:patch||{}})}
