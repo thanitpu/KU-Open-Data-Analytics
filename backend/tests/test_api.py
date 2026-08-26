@@ -36,12 +36,14 @@ def test_capabilities():
     r = client.get('/capabilities')
     assert r.status_code == 200
     payload = r.json()
-    assert payload['service']['version'] == '0.4.0'
+    assert payload['service']['version'] == '0.5.0'
     assert payload['service']['mode'] == 'fast'
     assert payload['routes']['regression']['policy']['model'] == 'XGBoost'
     assert payload['routes']['group-comparison']['intent'] == 'Compare Groups'
     assert payload['intelligence']['feature_engineering']['endpoint'] == '/recommend/feature-engineering'
     assert payload['intelligence']['feature_engineering']['recommendation_execution'] == 'browser'
+    assert payload['intelligence']['feature_engineering']['execution_contract'] == 'Browser FE Manifest v1 in /analyze options_json'
+    assert payload['architecture']['model_preprocessing'] == 'backend validation pipeline'
 
 
 def test_segmentation_endpoint():
@@ -59,6 +61,7 @@ def test_segmentation_endpoint():
     payload = r.json()
     assert payload['result']['route'] == 'segmentation'
     assert payload['result']['status'] == 'COMPLETE'
+    assert payload['result']['preparation']['legacy_backend_feature_engineering'] is True
 
 
 def test_compare_groups_endpoint():
