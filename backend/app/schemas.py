@@ -25,6 +25,8 @@ class ProfileFieldManifest(BaseModel):
     role: Optional[str] = None
     storage_type: Optional[str] = None
     measurement_level: Optional[str] = None
+    selected_for_analysis: Optional[bool] = None
+    analysis_role: Optional[str] = None
     profile: Dict[str, Any] = Field(default_factory=dict)
     distribution: Optional[Dict[str, Any]] = None
     outliers: Optional[Dict[str, Any]] = None
