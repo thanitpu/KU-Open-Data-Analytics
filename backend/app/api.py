@@ -15,7 +15,7 @@ app = FastAPI(title='Automated Analytics Service', version='0.5.0')
 cors_origins = [
     x.strip() for x in os.getenv(
         'CORS_ORIGINS',
-        'https://thanitpu.github.io,http://localhost:8000,http://127.0.0.1:8000'
+        'https://thanitpu.github.io,https://raw.githack.com,http://localhost:8000,http://127.0.0.1:8000'
     ).split(',') if x.strip()
 ]
 
