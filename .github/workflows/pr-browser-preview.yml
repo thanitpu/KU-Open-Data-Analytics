@@ -1,0 +1,39 @@
+name: PR Browser Preview Link
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  preview-link:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment browser preview links
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const repo = pr.head.repo.full_name;
+            const sha = pr.head.sha;
+            const appUrl = `https://raw.githack.com/${repo}/${sha}/app.html`;
+            const landingUrl = `https://raw.githack.com/${repo}/${sha}/index.html`;
+            const body = [
+              '## Browser UAT Preview',
+              '',
+              `- [Open Functional App](${appUrl})`,
+              `- [Open Public Landing](${landingUrl})`,
+              '',
+              `Preview commit: \`${sha.slice(0, 12)}\``,
+              '',
+              '> Preview is served from the PR commit via raw.githack for UAT only. Production remains on GitHub Pages / main.',
+            ].join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body,
+            });
