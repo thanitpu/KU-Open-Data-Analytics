@@ -80,7 +80,3 @@ The foundation now covers Phase A/B, a minimal Phase C rule-based recommender, a
 5. Categorical must show frequency structure; identifier/sensitive-like values remain redacted from the manifest.
 6. Temporal must appear only for datasets with a detected date/time field and show coverage/granularity/regularity.
 7. Key regression checks: Start→Profile→Analyze still works; existing Relationships still works; no page-level horizontal overflow; no raw row array is present in `KUProfileInsights.getManifest()`.
-
-## Automated checkpoint
-
-At commit `50748e7f1d12529dd065000a1e9e8f7d652fb180`, Frontend CI #390 and Backend CI #214 both passed, including the new local Profile Insights smoke and Playwright Step 2 browser smoke.
