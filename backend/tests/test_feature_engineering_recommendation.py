@@ -86,3 +86,23 @@ def test_context_fields_inform_domain_but_are_not_feature_sources():
     assert 'Age' in outputs
     assert 'Income_log1p' not in outputs
     assert 'customer_analytics' in body['domain_hints']
+
+
+def test_group_comparison_does_not_recommend_unused_derived_predictors():
+    birth = _field('Birth_Year', min=1940, max=2000, skewness=0.1)
+    birth['selected_for_analysis'] = True
+    birth['analysis_role'] = 'selected_predictor'
+    payload = {
+        'analysis_intent': {
+            'question_type': 'compare-groups',
+            'route': 'group-comparison',
+            'target': 'Score',
+        },
+        'dataset_profile': {'rows': 100, 'fields': 2},
+        'fields': [birth, _field('Score', role='target', min=0, max=100, skewness=0.1)],
+    }
+    response = client.post('/recommend/feature-engineering', json=payload)
+    assert response.status_code == 200
+    body = response.json()
+    assert body['recommendations'] == []
+    assert any('group-comparison route' in warning for warning in body['warnings'])
