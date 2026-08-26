@@ -21,6 +21,7 @@ jobs:
           node --check src/relationship-stats.js
           node --check src/profile-manifest.js
           node --check src/profile-insights.js
+          node --check src/large-dataset-profile.js
           node --check src/method-selection.js
           node --check src/fe-executor.js
           node --check src/fe-review.js
@@ -44,6 +45,7 @@ jobs:
           node --check tests/frontend_dom_smoke.js
           node --check tests/frontend_ordinal_smoke.js
           node --check tests/profile_manifest_smoke.js
+          node --check tests/large_dataset_profile_smoke.js
           node --check tests/profile_insights_smoke.js
           node --check tests/profile_insights_browser_smoke.js
           node --check tests/profile_shell_wiring_smoke.js
@@ -66,6 +68,8 @@ jobs:
         run: node tests/profile_shell_wiring_smoke.js
       - name: Local Profile Manifest smoke
         run: node tests/profile_manifest_smoke.js
+      - name: Large dataset Profile Manifest smoke
+        run: node tests/large_dataset_profile_smoke.js
       - name: Local Profile Insights smoke
         run: node tests/profile_insights_smoke.js
       - name: Analyze method selection smoke
