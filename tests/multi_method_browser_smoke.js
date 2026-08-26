@@ -20,7 +20,7 @@ async function boot(browser,{mixed=false}={}){
   await page.route(`${api}/capabilities`,route=>{capabilityCalls++;return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(capabilities)})});
   await page.route(`${api}/analyze`,route=>{analyzeCalls++;return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(backendPayload)})});
   await page.goto(base,{waitUntil:'domcontentloaded'});
-  await page.waitForFunction(()=>window.KUMultiMethod&&window.KUMethodSelection&&window.KUFeatureEngineeringReview&&window.KUAppState);
+  await page.waitForFunction(()=>window.KUMultiMethod&&window.KUMethodSelection&&window.KUFeatureEngineeringReview&&window.KUMethodPreparation&&window.KUAppState);
   await page.evaluate(text=>{document.getElementById('paste').value=text;usePaste()},csv);
   await page.waitForFunction(()=>!document.querySelector('[data-journey-step="analyze"]').disabled);
   await page.click('[data-journey-step="analyze"]');
@@ -44,7 +44,6 @@ async function boot(browser,{mixed=false}={}){
 (async()=>{
   const browser=await chromium.launch({headless:true});
   try{
-    // Local-only: selected methods must never call POST /analyze.
     {
       const {context,page,counts,ids}=await boot(browser,{mixed:false});
       const setup=await page.locator('#multiSetupBody').innerText();
@@ -65,8 +64,6 @@ async function boot(browser,{mixed=false}={}){
       assert(resultText.includes('Linear Regression (OLS)'));
       assert(resultText.includes('Pearson Correlation'));
       assert(resultText.includes('Spearman Correlation'));
-
-      // Predictor change preserves old payload but must mark it stale.
       await page.evaluate(()=>window.KUAppState.updateAnalysisPlan({predictorMode:'custom',predictors:['Age']}));
       await page.evaluate(()=>window.goToJourneyStep('results'));
       await page.waitForSelector('.result-stale');
@@ -74,7 +71,6 @@ async function boot(browser,{mixed=false}={}){
       await context.close();
     }
 
-    // Mixed local + backend: all local methods run, but the backend is called exactly once.
     {
       const {context,page,counts}=await boot(browser,{mixed:true});
       const setup=await page.locator('#multiSetupBody').innerText();
@@ -98,13 +94,12 @@ async function boot(browser,{mixed=false}={}){
       await context.close();
     }
 
-    // Method-specific preparation gate: Welch cannot silently run on 3 groups.
     {
       const context=await browser.newContext({viewport:{width:1100,height:900}}),page=await context.newPage();
       await page.addInitScript(base=>{window.KU_ANALYTICS_API_BASE=base},api);
       await page.route(`${api}/recommend/feature-engineering`,route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(feEmpty)}));
       await page.goto(base,{waitUntil:'domcontentloaded'});
-      await page.waitForFunction(()=>window.KUMultiMethod&&window.KUMethodSelection&&window.KUFeatureEngineeringReview);
+      await page.waitForFunction(()=>window.KUMultiMethod&&window.KUMethodSelection&&window.KUFeatureEngineeringReview&&window.KUMethodPreparation&&window.KUAppState);
       const groupCsv=['Group,Score','A,10','A,11','A,12','B,20','B,21','B,22','C,30','C,31','C,32'].join('\n');
       await page.evaluate(text=>{document.getElementById('paste').value=text;usePaste()},groupCsv);
       await page.click('[data-journey-step="analyze"]');
@@ -118,6 +113,8 @@ async function boot(browser,{mixed=false}={}){
       await page.waitForFunction(()=>window.KUAppState.getState().currentStep==='prepare');
       await page.waitForSelector('#prepareGroupField');
       await page.waitForFunction(()=>document.getElementById('prepareGroupField')?.value==='Group');
+      await page.waitForFunction(()=>window.KUMethodPreparation.blockers(window.KUAppState.getState().analysisPlan).length>0);
+      await page.evaluate(()=>window.KUMethodPreparation.sync());
       await page.waitForSelector('#methodPrepBlockers');
       assert((await page.locator('#methodPrepBlockers').innerText()).includes('exactly 2 complete groups'));
       assert.equal(await page.locator('#continueSetup').isDisabled(),true);
