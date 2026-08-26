@@ -76,9 +76,11 @@ def run_fast_binary_parity(
     threshold=.30,
     outer_folds=5,
     inner_folds=3,
+    feature_context=None,
 ):
     t0 = time.perf_counter()
     policy = FAST_POLICY_REGISTRY["classification_binary"]
+    browser_managed = bool((feature_context or {}).get('provided'))
 
     if target not in df.columns:
         raise ValueError(f"Target '{target}' not found.")
@@ -93,8 +95,9 @@ def run_fast_binary_parity(
     y = y_raw.map(class_to_int).astype(int)
     exclude = _structural_exclusions(d, target) + [target]
     X = d.drop(columns=list(dict.fromkeys(exclude)), errors="ignore")
-    X = _derive_customer_fields(X, reference_date)
-    X = _build_binary_parity_features(X)
+    if not browser_managed:
+        X = _derive_customer_fields(X, reference_date)
+        X = _build_binary_parity_features(X)
 
     base_model = XGBClassifier(
         n_estimators=500,
@@ -190,6 +193,10 @@ def run_fast_binary_parity(
 
     findings = _top_model_importance(final_preprocessor, final_model)
     warnings = []
+    if browser_managed:
+        warnings.append(
+            "Deterministic feature construction was supplied by the reviewed browser preparation contract; imputation and categorical encoding remained inside validation folds."
+        )
     if findings:
         warnings.append(
             "Feature importance is predictive model evidence and does not establish causal drivers."
@@ -206,7 +213,8 @@ def run_fast_binary_parity(
             "columns": int(df.shape[1]),
         },
         "method": {
-            "feature_engineering": "validated_binary_FE",
+            "feature_engineering": "browser_prepared_matrix" if browser_managed else "validated_binary_FE",
+            "model_preprocessing": "CV-safe median/most-frequent imputation + one-hot encoding",
             "model": policy["model"],
             "calibration": policy["calibration"],
             "threshold_policy": policy["threshold_policy"],
@@ -230,5 +238,6 @@ def run_fast_binary_parity(
         "oof_uncalibrated_probability": oof_uncal,
         "oof_calibrated_probability": oof_cal,
         "oof_prediction": pred,
+        "browser_feature_engineering": browser_managed,
     }
     return result, artifacts
