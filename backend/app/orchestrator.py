@@ -6,6 +6,14 @@ from analytics.exploratory import run_fast_exploratory
 from analytics.association import run_fast_association
 from analytics.compare_groups import run_fast_compare_groups
 from analytics.policies import FAST_POLICY_REGISTRY
+from .prepared_matrix import validate_browser_feature_engineering, preparation_summary
+
+
+def _finish(output, feature_context):
+    result, artifacts = output
+    result['preparation'] = preparation_summary(feature_context)
+    return result, artifacts
+
 
 def execute_analysis(df, intent, target=None, mode='fast', options=None):
     key = str(intent).strip().lower()
@@ -18,13 +26,15 @@ def execute_analysis(df, intent, target=None, mode='fast', options=None):
             "Deep engines remain in the notebook research layer."
         )
 
+    feature_context = validate_browser_feature_engineering(df, options, target=target)
+
     if key in {'customer segmentation', 'segmentation', 'clustering'}:
-        return run_fast_segmentation(df)
+        return _finish(run_fast_segmentation(df, feature_context=feature_context), feature_context)
 
     if key == 'regression':
         if target is None:
             raise ValueError("Regression requires target.")
-        return run_fast_regression(df, target)
+        return _finish(run_fast_regression(df, target, feature_context=feature_context), feature_context)
 
     if key in {'binary classification', 'multiclass classification', 'classification'}:
         if target is None:
@@ -40,10 +50,20 @@ def execute_analysis(df, intent, target=None, mode='fast', options=None):
 
         if subtype == 'binary':
             threshold = FAST_POLICY_REGISTRY['classification_binary']['threshold']
-            return run_fast_binary_parity(df, target, threshold=threshold)
+            return _finish(
+                run_fast_binary_parity(
+                    df, target, threshold=threshold, feature_context=feature_context
+                ),
+                feature_context,
+            )
 
         if subtype == 'multiclass':
-            return run_fast_multiclass_classification(df, target)
+            return _finish(
+                run_fast_multiclass_classification(
+                    df, target, feature_context=feature_context
+                ),
+                feature_context,
+            )
 
         raise ValueError("Unable to resolve classification subtype.")
 
@@ -53,12 +73,12 @@ def execute_analysis(df, intent, target=None, mode='fast', options=None):
         group = options.get('group')
         if not group:
             raise ValueError('Compare Groups requires options.group.')
-        return run_fast_compare_groups(df, target, group)
+        return _finish(run_fast_compare_groups(df, target, group), feature_context)
 
     if key in {'exploratory data analysis', 'exploratory', 'eda'}:
-        return run_fast_exploratory(df)
+        return _finish(run_fast_exploratory(df), feature_context)
 
     if key in {'association analysis', 'association'}:
-        return run_fast_association(df)
+        return _finish(run_fast_association(df), feature_context)
 
     raise ValueError(f"Unsupported intent: {intent}")
