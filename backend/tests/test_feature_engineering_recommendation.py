@@ -65,3 +65,24 @@ def test_target_is_not_transformed_by_default():
     response = client.post('/recommend/feature-engineering', json=payload)
     assert response.status_code == 200
     assert response.json()['recommendations'] == []
+
+
+def test_context_fields_inform_domain_but_are_not_feature_sources():
+    context = _field('Income', min=0, max=600000, skewness=4.0)
+    context['selected_for_analysis'] = False
+    context['analysis_role'] = 'context'
+    selected = _field('Birth_Year', min=1940, max=2000, skewness=0.1)
+    selected['selected_for_analysis'] = True
+    selected['analysis_role'] = 'selected_predictor'
+    payload = {
+        'analysis_intent': {'question_type': 'predict-outcome', 'target': 'Response'},
+        'dataset_profile': {'rows': 100, 'fields': 3},
+        'fields': [context, selected, _field('Response', storage='text', role='target', unique=2)],
+    }
+    response = client.post('/recommend/feature-engineering', json=payload)
+    assert response.status_code == 200
+    body = response.json()
+    outputs = {x['output_field'] for x in body['recommendations']}
+    assert 'Age' in outputs
+    assert 'Income_log1p' not in outputs
+    assert 'customer_analytics' in body['domain_hints']
