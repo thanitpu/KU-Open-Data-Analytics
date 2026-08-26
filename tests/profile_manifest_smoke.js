@@ -14,11 +14,14 @@ const data=[
   {Customer_ID:'C010',Income:1000,Education:'Graduate',Signup_Date:'2026-01-10'},
 ];
 const out=manifest.build({headers,data,types:{Customer_ID:'text',Income:'numeric',Education:'text',Signup_Date:'text'},meta:{Customer_ID:{level:'Nominal'},Income:{level:'Scale'},Education:{level:'Ordinal'},Signup_Date:{level:'Nominal'}},analysisIntent:{question_type:'predict-outcome',target:'Education',analytical_family:'Multiclass Classification'}});
-assert.equal(out.schema_version,'1.0');
+assert.equal(out.schema_version,'1.1');
 assert.equal(out.generated_by,'browser');
 assert.equal(out.privacy.row_level_values_included,false);
 assert.equal(out.dataset_profile.rows,10);
 assert.equal(out.dataset_profile.temporal_fields,1);
+assert.equal(out.profile_provenance.mode,'full');
+assert.equal(out.profile_provenance.profile_rows,10);
+assert.equal(out.profile_provenance.sampling_method,'full_dataset');
 const income=out.fields.find(f=>f.name==='Income');
 assert(income.distribution.histogram.bins.length>=4);
 assert(income.profile.skewness>1);
