@@ -7,18 +7,27 @@
 'use strict';
 const VERSION='1.1';
 const DEFAULT_PROFILE_ROW_LIMIT=100000;
+let globalCache=null;
 const missing=v=>v===''||v===null||v===undefined||(typeof v==='number'&&Number.isNaN(v));
 const finite=v=>{const n=Number(v);return Number.isFinite(n)?n:null};
 const mean=a=>a.length?a.reduce((s,v)=>s+v,0)/a.length:NaN;
 function minMax(a){let min=Infinity,max=-Infinity;for(const v of a){if(v<min)min=v;if(v>max)max=v}return{min,max}}
-function quantile(a,p){if(!a.length)return NaN;const s=[...a].sort((x,y)=>x-y),i=(s.length-1)*p,lo=Math.floor(i),hi=Math.ceil(i);return lo===hi?s[lo]:s[lo]+(s[hi]-s[lo])*(i-lo)}
+function quantileSorted(s,p){if(!s.length)return NaN;const i=(s.length-1)*p,lo=Math.floor(i),hi=Math.ceil(i);return lo===hi?s[lo]:s[lo]+(s[hi]-s[lo])*(i-lo)}
+function quantile(a,p){return quantileSorted([...a].sort((x,y)=>x-y),p)}
 function sampleSD(a){if(a.length<2)return NaN;const m=mean(a);return Math.sqrt(a.reduce((s,v)=>s+(v-m)**2,0)/(a.length-1))}
 function skewness(a){const n=a.length,m=mean(a),sd=sampleSD(a);if(n<3||!sd)return 0;return n/((n-1)*(n-2))*a.reduce((s,v)=>s+((v-m)/sd)**3,0)}
 function excessKurtosis(a){const n=a.length,m=mean(a),sd=sampleSD(a);if(n<4||!sd)return 0;const z=a.reduce((s,v)=>s+((v-m)/sd)**4,0);return n*(n+1)/((n-1)*(n-2)*(n-3))*z-3*(n-1)**2/((n-2)*(n-3))}
-function medianAbsoluteDeviation(a){if(!a.length)return NaN;const med=quantile(a,.5);return quantile(a.map(v=>Math.abs(v-med)),.5)}
+function medianAbsoluteDeviation(a,med){if(!a.length)return NaN;const deviations=a.map(v=>Math.abs(v-med)).sort((x,y)=>x-y);return quantileSorted(deviations,.5)}
 function histogram(a,bins=12){if(!a.length)return{bins:[],edges:[]};const {min:lo,max:hi}=minMax(a);if(lo===hi)return{bins:[a.length],edges:[lo,hi]};const k=Math.max(4,Math.min(30,Number(bins)||12)),w=(hi-lo)/k,counts=Array(k).fill(0);for(const v of a){const i=Math.min(k-1,Math.floor((v-lo)/w));counts[i]++}return{bins:counts,edges:Array.from({length:k+1},(_,i)=>lo+i*w)}}
 function shapeLabel(sk,sd){if(!Number.isFinite(sd)||sd===0)return'constant';if(sk>=2)return'strong_right_skew';if(sk>=1)return'right_skew';if(sk>=.5)return'mild_right_skew';if(sk<=-2)return'strong_left_skew';if(sk<=-1)return'left_skew';if(sk<=-.5)return'mild_left_skew';return'roughly_symmetric'}
-function numericProfile(values,bins){const a=values.map(finite).filter(v=>v!==null),n=a.length;if(!n)return null;const q1=quantile(a,.25),med=quantile(a,.5),q3=quantile(a,.75),iqr=q3-q1,lower=q1-1.5*iqr,upper=q3+1.5*iqr,out=a.filter(v=>v<lower||v>upper),mad=medianAbsoluteDeviation(a),madOut=mad>0?a.filter(v=>Math.abs(.6745*(v-med)/mad)>3.5):[];const sd=sampleSD(a),sk=skewness(a),ku=excessKurtosis(a),mm=minMax(a);return{summary:{min:mm.min,q1,median:med,q3,max:mm.max,mean:mean(a),sd,skewness:sk,excess_kurtosis:ku,zero_pct:100*a.filter(v=>v===0).length/n,negative_pct:100*a.filter(v=>v<0).length/n},distribution:{shape:shapeLabel(sk,sd),histogram:histogram(a,bins)},outliers:{method_iqr:{lower,upper,count:out.length,pct:100*out.length/n},method_mad:{count:madOut.length,pct:100*madOut.length/n}}}}
+function numericProfile(values,bins){
+  const a=values.map(finite).filter(v=>v!==null),n=a.length;if(!n)return null;
+  const sorted=[...a].sort((x,y)=>x-y),q1=quantileSorted(sorted,.25),med=quantileSorted(sorted,.5),q3=quantileSorted(sorted,.75),iqr=q3-q1,lower=q1-1.5*iqr,upper=q3+1.5*iqr;
+  let iqrCount=0,zeroCount=0,negativeCount=0;for(const v of a){if(v<lower||v>upper)iqrCount++;if(v===0)zeroCount++;if(v<0)negativeCount++}
+  const mad=medianAbsoluteDeviation(a,med);let madCount=0;if(mad>0)for(const v of a)if(Math.abs(.6745*(v-med)/mad)>3.5)madCount++;
+  const sd=sampleSD(a),sk=skewness(a),ku=excessKurtosis(a),mm=minMax(a);
+  return{summary:{min:mm.min,q1,median:med,q3,max:mm.max,mean:mean(a),sd,skewness:sk,excess_kurtosis:ku,zero_pct:100*zeroCount/n,negative_pct:100*negativeCount/n},distribution:{shape:shapeLabel(sk,sd),histogram:histogram(a,bins)},outliers:{method_iqr:{lower,upper,count:iqrCount,pct:100*iqrCount/n},method_mad:{count:madCount,pct:100*madCount/n}}};
+}
 function entropyNormalized(counts){const vals=[...counts.values()],n=vals.reduce((s,v)=>s+v,0),k=vals.length;if(!n||k<=1)return 0;const h=-vals.reduce((s,c)=>{const p=c/n;return s+(p?p*Math.log(p):0)},0);return h/Math.log(k)}
 function sensitiveLike(name){const s=String(name||'').toLowerCase().replace(/[^a-z0-9]+/g,'_');return/(^|_)(email|e_mail|phone|mobile|address|first_name|last_name|full_name|customer_name|person_name|national_id|passport)(_|$)/.test(s)}
 function structuralLike(name,n,unique){const s=String(name||'').toLowerCase();return['id','customer_id','row_id','index','uuid'].includes(s)||(n>=20&&unique/Math.max(1,n)>=.98)}
@@ -34,6 +43,14 @@ function build({headers=[],data=[],types={},meta={},analysisIntent={},maxCategor
   const sampleCells=profileData.length*headers.length;
   return{schema_version:VERSION,generated_by:'browser',privacy:{row_level_values_included:false,categorical_frequency_limit:maxCategories},analysis_intent:{...analysisIntent},profile_provenance:{mode:sample.mode,dataset_rows:datasetRows,profile_rows:profileData.length,sampling_fraction:sample.fraction,sampling_method:sample.method,profile_row_limit:profileRowLimit,distributional_statistics_basis:sample.mode==='sampled'?'representative_sample':'full_dataset'},dataset_profile:{rows:datasetRows,fields:headers.length,profile_rows:profileData.length,missing_cells:sample.mode==='full'?sampleMissingCells:null,missing_pct:sampleCells?100*sampleMissingCells/sampleCells:0,missing_pct_basis:sample.mode,duplicate_rows:sample.mode==='full'?duplicateRows(headers,profileData):null,duplicate_rows_basis:sample.mode==='full'?'full_dataset':'not_computed_large_dataset',numeric_fields:fields.filter(f=>f.storage_type==='numeric').length,categorical_fields:fields.filter(f=>f.storage_type!=='numeric'&&!f.temporal).length,temporal_fields:fields.filter(f=>f.temporal?.detected).length},fields};
 }
-function fromGlobals(analysisIntent={}){if(typeof headers==='undefined'||typeof data==='undefined')throw new Error('Dataset globals are unavailable.');return build({headers,data,types:typeof types==='undefined'?{}:types,meta:typeof meta==='undefined'?{}:meta,analysisIntent})}
-return{VERSION,DEFAULT_PROFILE_ROW_LIMIT,build,fromGlobals,deterministicSample};
+function fromGlobals(analysisIntent={}){
+  if(typeof headers==='undefined'||typeof data==='undefined')throw new Error('Dataset globals are unavailable.');
+  const currentTypes=typeof types==='undefined'?{}:types,currentMeta=typeof meta==='undefined'?{}:meta;
+  const headersSig=headers.join('\u001f'),metaSig=headers.map(h=>`${h}:${currentTypes[h]||''}:${currentMeta[h]?.level||''}`).join('\u001e'),intentSig=JSON.stringify(analysisIntent||{});
+  if(globalCache&&globalCache.dataRef===data&&globalCache.dataLength===data.length&&globalCache.headersSig===headersSig&&globalCache.metaSig===metaSig&&globalCache.intentSig===intentSig)return globalCache.manifest;
+  const manifest=build({headers,data,types:currentTypes,meta:currentMeta,analysisIntent});
+  globalCache={dataRef:data,dataLength:data.length,headersSig,metaSig,intentSig,manifest};return manifest;
+}
+function clearCache(){globalCache=null}
+return{VERSION,DEFAULT_PROFILE_ROW_LIMIT,build,fromGlobals,deterministicSample,clearCache};
 });
