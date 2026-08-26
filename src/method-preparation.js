@@ -44,13 +44,17 @@ function blockers(plan={}){
 }
 function sync(){
   const state=root.KUAppState?.getState?.();if(state?.currentStep!=='prepare')return;
-  const view=root.document?.getElementById('journeyPendingView'),footer=view?.querySelector('.workflow-footer');if(!view||!footer)return;
+  const view=root.document?.getElementById('journeyPendingView');if(!view)return;
+  const button=root.document.getElementById('continueSetup'),anchor=button?.closest?.('.workflow-footer')||button?.parentElement||null;
   const issues=blockers(state.analysisPlan||{});let box=view.querySelector('#methodPrepBlockers');
   if(issues.length){
-    if(!box){box=root.document.createElement('div');box.id='methodPrepBlockers';box.className='workflow-blocker method-prep-blocker';footer.before(box)}
+    if(!box){
+      box=root.document.createElement('div');box.id='methodPrepBlockers';box.className='workflow-blocker method-prep-blocker';
+      if(anchor?.parentNode)anchor.before(box);else view.appendChild(box);
+    }
     box.innerHTML=`<b>Selected method needs preparation review</b>${issues.map(x=>`<p>${safe(x)}</p>`).join('')}`;
   }else box?.remove();
-  const button=root.document.getElementById('continueSetup');if(!button)return;
+  if(!button)return;
   const baseBlocked=Boolean(root.document.getElementById('prepBlockers')?.classList.contains('workflow-blocker'));
   const fe=root.KUFeatureEngineeringReview,feReady=fe?.isApprovalReady?fe.isApprovalReady(state.analysisPlan||{}):true;
   button.disabled=baseBlocked||issues.length>0||!feReady;
