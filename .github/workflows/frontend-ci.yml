@@ -24,6 +24,7 @@ jobs:
           node --check src/method-selection.js
           node --check src/fe-executor.js
           node --check src/fe-review.js
+          node --check src/multi-method.js
           node --check src/data-profile.js
           node --check src/ai-analytics.js
           node --check src/workflow-steps.js
@@ -50,6 +51,8 @@ jobs:
           node --check tests/method_selection_browser_smoke.js
           node --check tests/fe_executor_smoke.js
           node --check tests/fe_review_browser_smoke.js
+          node --check tests/multi_method_smoke.js
+          node --check tests/multi_method_browser_smoke.js
           node --check tests/public_product_visual_smoke.js
           node --check tests/responsive_sticky_smoke.js
           node --check tests/frontend_visual_smoke.js
@@ -69,6 +72,8 @@ jobs:
         run: node tests/method_selection_smoke.js
       - name: Browser Feature Engineering Executor smoke
         run: node tests/fe_executor_smoke.js
+      - name: Multi-method statistical engine smoke
+        run: node tests/multi_method_smoke.js
       - name: Install frontend test dependencies
         run: npm install --no-save jsdom@24 playwright@1.55.0
       - name: Text-size preference smoke
@@ -97,6 +102,8 @@ jobs:
         run: node tests/method_selection_browser_smoke.js
       - name: Step 4 FE recommendation + browser execution smoke
         run: node tests/fe_review_browser_smoke.js
+      - name: Step 5-6 multi-method execution browser smoke
+        run: node tests/multi_method_browser_smoke.js
       - name: Responsive sticky shell smoke
         run: node tests/responsive_sticky_smoke.js
       - name: Public to Product browser integration smoke
