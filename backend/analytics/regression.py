@@ -66,7 +66,12 @@ def _coerce_regression_target(series):
     return numeric, None
 
 
-def _build_fast_regression_features(df, target, reference_date="2026-01-01"):
+def _build_fast_regression_features(
+    df,
+    target,
+    reference_date="2026-01-01",
+    browser_managed=False,
+):
     if target not in df.columns:
         raise ValueError(f"Target '{target}' not found.")
 
@@ -81,26 +86,31 @@ def _build_fast_regression_features(df, target, reference_date="2026-01-01"):
 
     exclude = _structural_exclusions(d, target) + [target]
     X = d.drop(columns=list(dict.fromkeys(exclude)), errors="ignore")
-    X = _derive_customer_fields(X, reference_date)
 
-    pairs = [
-        ("MntMeatProducts", "NumCatalogPurchases"),
-        ("MntWines", "NumCatalogPurchases"),
-        ("Income", "MntWines"),
-        ("MntWines", "MntMeatProducts"),
-        ("Income", "MntMeatProducts"),
-    ]
-    for a, b in pairs:
-        if a in X.columns and b in X.columns:
-            X[f"{a}__x__{b}"] = (
-                pd.to_numeric(X[a], errors="coerce")
-                * pd.to_numeric(X[b], errors="coerce")
-            )
+    # Backward-compatible clients still receive the validated legacy R3 feature
+    # expansion. Once a reviewed browser FE manifest is supplied, deterministic
+    # feature construction is browser-owned and the backend must not silently
+    # recreate, overwrite or double-transform those fields.
+    if not browser_managed:
+        X = _derive_customer_fields(X, reference_date)
+        pairs = [
+            ("MntMeatProducts", "NumCatalogPurchases"),
+            ("MntWines", "NumCatalogPurchases"),
+            ("Income", "MntWines"),
+            ("MntWines", "MntMeatProducts"),
+            ("Income", "MntMeatProducts"),
+        ]
+        for a, b in pairs:
+            if a in X.columns and b in X.columns:
+                X[f"{a}__x__{b}"] = (
+                    pd.to_numeric(X[a], errors="coerce")
+                    * pd.to_numeric(X[b], errors="coerce")
+                )
 
-    for c in list(X.select_dtypes(include=np.number).columns):
-        s = pd.to_numeric(X[c], errors="coerce")
-        if s.nunique(dropna=True) > 20 and s.min(skipna=True) >= 0:
-            X[f"{c}__log1p"] = np.log1p(s.clip(lower=0))
+        for c in list(X.select_dtypes(include=np.number).columns):
+            s = pd.to_numeric(X[c], errors="coerce")
+            if s.nunique(dropna=True) > 20 and s.min(skipna=True) >= 0:
+                X[f"{c}__log1p"] = np.log1p(s.clip(lower=0))
 
     return X, y, exclude, target_encoding
 
@@ -133,11 +143,17 @@ def _fast_regression_preprocessor(X):
     return ColumnTransformer(transformers)
 
 
-def run_fast_regression(df, target, reference_date="2026-01-01"):
+def run_fast_regression(
+    df,
+    target,
+    reference_date="2026-01-01",
+    feature_context=None,
+):
     t0 = time.perf_counter()
     policy = FAST_POLICY_REGISTRY["regression"]
+    browser_managed = bool((feature_context or {}).get('provided'))
     X, y, excluded, target_encoding = _build_fast_regression_features(
-        df, target, reference_date
+        df, target, reference_date, browser_managed=browser_managed
     )
 
     model = XGBRegressor(
@@ -174,6 +190,10 @@ def run_fast_regression(df, target, reference_date="2026-01-01"):
         warnings.append(
             "Ordinal target categories were encoded as ordered ranks. Regression treats the rank codes numerically; differences between adjacent categories should not be interpreted as proven equal intervals."
         )
+    if browser_managed:
+        warnings.append(
+            "Deterministic feature construction was supplied by the reviewed browser preparation contract; backend preprocessing remained inside the validation pipeline."
+        )
     if tail_bias < 0:
         warnings.append("Model underpredicts high-target observations.")
 
@@ -195,7 +215,8 @@ def run_fast_regression(df, target, reference_date="2026-01-01"):
             "columns": int(df.shape[1]),
         },
         "method": {
-            "feature_engineering": policy["feature_engineering"],
+            "feature_engineering": "browser_prepared_matrix" if browser_managed else policy["feature_engineering"],
+            "model_preprocessing": "CV-safe median imputation + one-hot encoding",
             "model": policy["model"],
             "architecture": policy["architecture"],
             "selection_source": policy["selection_source"],
@@ -221,5 +242,6 @@ def run_fast_regression(df, target, reference_date="2026-01-01"):
         "oof_predictions": pred,
         "target_values": y,
         "target_encoding": target_encoding,
+        "browser_feature_engineering": browser_managed,
     }
     return result, artifacts
