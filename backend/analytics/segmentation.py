@@ -9,20 +9,23 @@ from sklearn.metrics import silhouette_score, calinski_harabasz_score, davies_bo
 from .shared import _structural_exclusions, _derive_customer_fields
 from .policies import FAST_POLICY_REGISTRY
 
-def run_fast_segmentation(df, reference_date="2026-01-01"):
+
+def run_fast_segmentation(df, reference_date="2026-01-01", feature_context=None):
     t0 = time.perf_counter()
     policy = FAST_POLICY_REGISTRY["segmentation"]
+    browser_managed = bool((feature_context or {}).get('provided'))
 
     X = df.copy()
     outcome_like = [
         c for c in X.columns
         if c.lower().startswith("acceptedcmp")
-        or c.lower() in {"response","complain"}
+        or c.lower() in {"response", "complain"}
     ]
     exclude = _structural_exclusions(X) + outcome_like
 
     X = X.drop(columns=list(dict.fromkeys(exclude)), errors="ignore")
-    X = _derive_customer_fields(X, reference_date)
+    if not browser_managed:
+        X = _derive_customer_fields(X, reference_date)
     X = X.select_dtypes(include=np.number)
 
     if X.shape[1] < 2:
@@ -40,7 +43,7 @@ def run_fast_segmentation(df, reference_date="2026-01-01"):
     model = KMeans(
         n_clusters=int(policy["k"]),
         n_init=20,
-        random_state=42
+        random_state=42,
     )
     labels = model.fit_predict(Xp)
 
@@ -51,7 +54,7 @@ def run_fast_segmentation(df, reference_date="2026-01-01"):
         "calinski_harabasz": float(calinski_harabasz_score(Xp, labels)),
         "davies_bouldin": float(davies_bouldin_score(Xp, labels)),
         "pca_dimensions": int(Xp.shape[1]),
-        "pca_variance": float(pca.explained_variance_ratio_.sum())
+        "pca_variance": float(pca.explained_variance_ratio_.sum()),
     }
 
     profile = X.copy()
@@ -64,14 +67,18 @@ def run_fast_segmentation(df, reference_date="2026-01-01"):
 
     for seg in means.index:
         z = ((means.loc[seg] - overall) / sd).dropna()
-
         descriptors[str(seg)] = {
             "high": z.sort_values(ascending=False).head(3).index.tolist(),
             "low": z.sort_values().head(3).index.tolist(),
-            "size_pct": float(counts.loc[seg] / len(labels) * 100)
+            "size_pct": float(counts.loc[seg] / len(labels) * 100),
         }
 
     elapsed = time.perf_counter() - t0
+    warnings = []
+    if browser_managed:
+        warnings.append(
+            "Deterministic feature construction was supplied by the reviewed browser preparation contract; median imputation, scaling and PCA remained in the validated backend pipeline."
+        )
 
     result = {
         "status": "COMPLETE",
@@ -81,19 +88,21 @@ def run_fast_segmentation(df, reference_date="2026-01-01"):
         "mode": "fast",
         "dataset": {
             "rows": int(df.shape[0]),
-            "columns": int(df.shape[1])
+            "columns": int(df.shape[1]),
         },
         "method": {
+            "feature_engineering": "browser_prepared_matrix" if browser_managed else "legacy_customer_derivation",
+            "model_preprocessing": "median imputation + StandardScaler + PCA90",
             "representation": f"PCA90_{Xp.shape[1]}D",
             "algorithm": "KMeans",
             "clusters": int(policy["k"]),
-            "selection_source": policy["selection_source"]
+            "selection_source": policy["selection_source"],
         },
         "evidence": evidence,
         "findings": descriptors,
-        "warnings": [],
+        "warnings": warnings,
         "readiness": "FAST_EXECUTION_READY",
-        "runtime_seconds": elapsed
+        "runtime_seconds": elapsed,
     }
 
     artifacts = {
@@ -103,7 +112,8 @@ def run_fast_segmentation(df, reference_date="2026-01-01"):
         "scaler": scaler,
         "pca": pca,
         "model": model,
-        "labels": labels
+        "labels": labels,
+        "browser_feature_engineering": browser_managed,
     }
 
     return result, artifacts
