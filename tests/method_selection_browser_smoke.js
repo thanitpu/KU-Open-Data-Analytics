@@ -9,8 +9,8 @@ const {chromium}=require('playwright');
   await page.evaluate(()=>{
     document.getElementById('paste').value=[
       'Age,Spend,Income,Segment,Churn',
-      '20,10,30,A,No','21,12,32,A,No','22,14,35,B,No','23,18,39,B,Yes','24,20,42,A,No',
-      '25,24,47,B,Yes','26,30,52,A,No','27,36,58,B,Yes','28,44,67,A,No','29,70,67,B,Yes'
+      '20,10,30,A,No','20,10,32,A,No','21,14,35,B,No','21,14,39,B,Yes','22,20,42,A,No',
+      '22,20,47,B,Yes','23,30,52,A,No','23,30,58,B,Yes','24,44,67,A,No','24,44,67,B,Yes'
     ].join('\n');
     usePaste();
   });
