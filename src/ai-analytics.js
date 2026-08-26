@@ -43,7 +43,7 @@ function analyticalDataset(p=currentPlan()){
   const base=baseCsvFields(p),fe=p.preparation?.featureEngineering||{},hasSelected=Boolean(fe.reviewed&&(fe.selectedIds||[]).length);
   if(hasSelected&&!root.KUFeatureEngineeringExecutor?.buildAnalyticalDataset)throw new Error('Reviewed feature engineering choices cannot be executed because the browser FE Executor is unavailable.');
   if(root.KUFeatureEngineeringExecutor?.buildAnalyticalDataset)return root.KUFeatureEngineeringExecutor.buildAnalyticalDataset({rows:data,plan:p,baseColumns:base});
-  return{columns:base,rows:data,lineage:[],manifest:{schema_version:'1.0',applied:false,derived_fields:[],lineage:[]}};
+  return{columns:base,rows:data,lineage:[],manifest:{schema_version:'1.0',executor_version:null,reviewed:Boolean(fe.reviewed),review_status:fe.status||null,applied:false,derived_fields:[],lineage:[]}};
 }
 function selectedCsvFields(p=currentPlan()){return analyticalDataset(p).columns}
 function datasetToCsv(dataset){const cols=dataset.columns||[];if(!cols.length)throw new Error('No executable fields are selected.');const q=v=>{const s=String(v??'');return /[",\n\r]/.test(s)?`"${s.replace(/"/g,'""')}"`:s};return[cols.map(q).join(','),...(dataset.rows||[]).map(r=>cols.map(h=>q(r[h])).join(','))].join('\n')}
@@ -51,7 +51,7 @@ function analyticsRowsToCsv(p=currentPlan()){return datasetToCsv(analyticalDatas
 async function runPlan(p=currentPlan()){
   p=reconcilePlanWithDataset();const r=deriveRoute(p.questionType,p.target),ready=planReadiness(p);if(!r||!ready.ready)throw new Error(ready.message||'Analysis Plan is incomplete.');
   const matrix=analyticalDataset(p),form=new FormData();form.append('file',new Blob([datasetToCsv(matrix)],{type:'text/csv'}),'dataset.csv');form.append('intent',r.intent);form.append('mode','fast');if(p.target)form.append('target',p.target);
-  const options={};if(matrix.manifest?.applied)options.browser_feature_engineering=matrix.manifest;
+  const options={},fe=p.preparation?.featureEngineering||{};if(fe.reviewed||fe.status==='skipped')options.browser_feature_engineering=matrix.manifest;
   if(p.route==='group-comparison'){const group=p.preparation?.groupField;if(!group)throw new Error('Grouping field must be reviewed in Step 4.');options.group=group}
   if(Object.keys(options).length)form.append('options_json',JSON.stringify(options));
   const response=await fetch(`${KU_ANALYTICS_API_BASE}/analyze`,{method:'POST',body:form});let payload=null;try{payload=await response.json()}catch(_){payload=null}if(!response.ok)throw new Error(payload?.detail||`HTTP ${response.status}`);root.KUAppState.setResultPayload(payload,{validated:true,source:'fastapi'});return payload
