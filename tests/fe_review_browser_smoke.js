@@ -17,7 +17,7 @@ const {chromium}=require('playwright');
     })});
   });
   await page.goto('http://127.0.0.1:4173/app.html',{waitUntil:'domcontentloaded'});
-  await page.waitForFunction(()=>window.KUFeatureEngineeringReview&&window.KUProfileManifest&&window.KUAppState);
+  await page.waitForFunction(()=>window.KUFeatureEngineeringReview&&window.KUFeatureEngineeringExecutor&&window.KUProfileManifest&&window.KUAppState);
   await page.evaluate(()=>{
     document.getElementById('paste').value=[
       'Birth_Year,Income,MntWines,MntMeatProducts,Response',
@@ -60,11 +60,26 @@ const {chromium}=require('playwright');
   const state=await page.evaluate(()=>window.KUAppState.getState().analysisPlan.preparation.featureEngineering);
   assert.deepStrictEqual(state.selectedIds,['fe_001']);
   assert.equal(state.recommenderVersion,'rule_based_v1');
+  assert.deepStrictEqual(state.derivedFields,['Age']);
+  assert.equal(state.lineage[0].executed_by,'browser');
+  assert.equal(state.lineage[0].recommended_by,'KU Analytical Intelligence');
+
+  text=await page.locator('#feRecommendationReview').innerText();
+  assert(text.includes('derived field'));
+  assert(text.includes('actual analytical matrix'));
+  const csv=await page.evaluate(()=>window.KUAnalyticsClient.analyticsRowsToCsv());
+  const lines=csv.trim().split(/\r?\n/);
+  assert(lines[0].split(',').includes('Age'),'Derived Age field must enter the actual analytical matrix');
+  const ageIndex=lines[0].split(',').indexOf('Age');
+  assert.equal(lines[1].split(',')[ageIndex],'46','Birth_Year 1980 must execute locally as Age 46 using reference year 2026');
+  const analytical=await page.evaluate(()=>window.KUAnalyticsClient.analyticalDataset());
+  assert.equal(analytical.manifest.applied,true);
+  assert.deepStrictEqual(analytical.manifest.derived_fields,['Age']);
 
   await page.click('[data-fe-edit]');
   await page.waitForFunction(()=>window.KUAppState.getState().analysisPlan.preparation.featureEngineering?.reviewed===false);
   assert.equal(await page.locator('#continueSetup').isDisabled(),true,'Editing FE choices re-opens the review gate');
 
   await browser.close();
-  console.log('[Feature Engineering review browser smoke completed]');
+  console.log('[Feature Engineering review + executor browser smoke completed]');
 })().catch(err=>{console.error(err);process.exit(1)});
