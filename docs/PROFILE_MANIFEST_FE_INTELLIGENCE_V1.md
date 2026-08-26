@@ -49,6 +49,20 @@ Initial rule-based operations:
 - `row_sum`
 - `group_rare_categories`
 
+## UX note — contextual parameter help
+
+Add a small **`?` help control** next to statistical parameters, diagnostics and technical terms so users can click to read a concise explanation without leaving the current step. This should be applied consistently across Data Profile, Analyze, Prepare, Setup and Results where parameters such as skewness, kurtosis, IQR, MAD, entropy, p-value, effect size, calibration and model metrics appear.
+
+The help content should explain, at minimum:
+
+- what the parameter measures
+- how to interpret higher/lower or positive/negative values when relevant
+- common rule-of-thumb ranges only when statistically defensible
+- important cautions or assumptions
+- why the parameter matters for the current analytical decision
+
+This is intentionally deferred from the current Step 2 implementation so contextual help can be designed once and reused consistently across the whole Product rather than added piecemeal.
+
 ## Current scope
 
 The foundation now covers Phase A/B, a minimal Phase C rule-based recommender, and the visible Step 2 profile-insight slice. It does **not** yet:
@@ -58,6 +72,7 @@ The foundation now covers Phase A/B, a minimal Phase C rule-based recommender, a
 - add Step 3 method selection
 - call the FE recommender from Step 4
 - perform numeric trend/seasonality/autocorrelation screening in the Temporal view
+- add reusable `?` contextual parameter help across analytical screens
 - use Kaggle/RAG knowledge
 - provide a Knowledge Admin UI
 
@@ -68,8 +83,9 @@ The foundation now covers Phase A/B, a minimal Phase C rule-based recommender, a
 3. Build the trusted browser FE executor + feature lineage; derived fields become real predictors.
 4. Move deterministic preparation/FE computation to the browser while keeping backend validation of the manifest/policy boundary.
 5. Extend Temporal profiling with local trend, seasonality, autocorrelation, lag and rolling-pattern screening where a usable time field and numeric measures coexist.
-6. Add curated Kaggle knowledge ingestion and hybrid retrieval after the recommendation schema stabilizes.
-7. Build internal Knowledge Admin UI only after the knowledge schema and evaluation workflow are stable.
+6. Add a reusable contextual-help component and parameter glossary for the `?` controls across Data Profile / Analyze / Prepare / Setup / Results.
+7. Add curated Kaggle knowledge ingestion and hybrid retrieval after the recommendation schema stabilizes.
+8. Build internal Knowledge Admin UI only after the knowledge schema and evaluation workflow are stable.
 
 ## UAT focus for the Step 2 slice
 
