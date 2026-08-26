@@ -22,6 +22,12 @@ async function installProfileInsightModules(){
     root.KUProfileInsights?.install?.();
   }catch(error){console.warn('KU Open DA profile insight module unavailable:',error?.message||error)}
 }
+async function installFeatureEngineeringReviewModule(){
+  try{
+    if(!root.KUFeatureEngineeringReview)await loadScriptOnce('src/fe-review.js','fe-review');
+    root.KUFeatureEngineeringReview?.install?.();
+  }catch(error){console.warn('KU Open DA feature engineering review module unavailable:',error?.message||error)}
+}
 function syncStickyShellOffset(){
   const header=document.querySelector('header');if(!header)return;
   const height=Math.max(0,Math.ceil(header.getBoundingClientRect().height));
@@ -71,8 +77,8 @@ function onTabKey(event){
   if(event.key==='Home')index=0;else if(event.key==='End')index=tabs.length-1;else index=(index+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
   const next=tabs[index],name=next.dataset.profileTab;if(typeof root.setProfileTab==='function')root.setProfileTab(name);else next.click();next.focus();setTimeout(syncProfileTabs,0);
 }
-function init(){ensurePreferenceStyles();installTextSizeControl();installStickyShellSync();syncProfileTabs();syncDynamicRegions();installProfileInsightModules();document.addEventListener('keydown',onTabKey);document.addEventListener('click',event=>{if(event.target.closest?.('.profile-tab'))setTimeout(syncProfileTabs,0)});document.addEventListener('ku:render-current-analysis',syncDynamicRegions);document.addEventListener('ku:statechange',()=>setTimeout(syncDynamicRegions,0))}
-root.KUAccessibility=Object.freeze({syncProfileTabs,syncDynamicRegions,applyTextSize,syncStickyShellOffset,installProfileInsightModules});
+function init(){ensurePreferenceStyles();installTextSizeControl();installStickyShellSync();syncProfileTabs();syncDynamicRegions();installProfileInsightModules();installFeatureEngineeringReviewModule();document.addEventListener('keydown',onTabKey);document.addEventListener('click',event=>{if(event.target.closest?.('.profile-tab'))setTimeout(syncProfileTabs,0)});document.addEventListener('ku:render-current-analysis',syncDynamicRegions);document.addEventListener('ku:statechange',()=>setTimeout(syncDynamicRegions,0))}
+root.KUAccessibility=Object.freeze({syncProfileTabs,syncDynamicRegions,applyTextSize,syncStickyShellOffset,installProfileInsightModules,installFeatureEngineeringReviewModule});
 ensurePreferenceStyles();
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })(window);
