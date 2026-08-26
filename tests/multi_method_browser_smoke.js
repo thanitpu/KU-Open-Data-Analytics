@@ -20,7 +20,7 @@ async function boot(browser,{mixed=false}={}){
   await page.route(`${api}/capabilities`,route=>{capabilityCalls++;return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(capabilities)})});
   await page.route(`${api}/analyze`,route=>{analyzeCalls++;return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(backendPayload)})});
   await page.goto(base,{waitUntil:'domcontentloaded'});
-  await page.waitForFunction(()=>window.KUMultiMethod&&window.KUMethodSelection&&window.KUFeatureEngineeringReview&&window.KUMethodPreparation&&window.KUAppState);
+  await page.waitForFunction(()=>window.KUMultiMethod&&window.KUMethodSelection&&window.KUFeatureEngineeringReview&&window.KUAppState);
   await page.evaluate(text=>{document.getElementById('paste').value=text;usePaste()},csv);
   await page.waitForFunction(()=>!document.querySelector('[data-journey-step="analyze"]').disabled);
   await page.click('[data-journey-step="analyze"]');
@@ -99,7 +99,7 @@ async function boot(browser,{mixed=false}={}){
       await page.addInitScript(base=>{window.KU_ANALYTICS_API_BASE=base},api);
       await page.route(`${api}/recommend/feature-engineering`,route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(feEmpty)}));
       await page.goto(base,{waitUntil:'domcontentloaded'});
-      await page.waitForFunction(()=>window.KUMultiMethod&&window.KUMethodSelection&&window.KUFeatureEngineeringReview&&window.KUMethodPreparation&&window.KUAppState);
+      await page.waitForFunction(()=>window.KUMultiMethod&&window.KUMethodSelection&&window.KUFeatureEngineeringReview&&window.KUAppState);
       const groupCsv=['Group,Score','A,10','A,11','A,12','B,20','B,21','B,22','C,30','C,31','C,32'].join('\n');
       await page.evaluate(text=>{document.getElementById('paste').value=text;usePaste()},groupCsv);
       await page.click('[data-journey-step="analyze"]');
@@ -113,11 +113,11 @@ async function boot(browser,{mixed=false}={}){
       await page.waitForFunction(()=>window.KUAppState.getState().currentStep==='prepare');
       await page.waitForSelector('#prepareGroupField');
       await page.waitForFunction(()=>document.getElementById('prepareGroupField')?.value==='Group');
-      await page.waitForFunction(()=>window.KUMethodPreparation.blockers(window.KUAppState.getState().analysisPlan).length>0);
-      await page.evaluate(()=>window.KUMethodPreparation.sync());
-      await page.waitForSelector('#methodPrepBlockers');
-      assert((await page.locator('#methodPrepBlockers').innerText()).includes('exactly 2 complete groups'));
+      await page.waitForSelector('#prepBlockers.workflow-blocker');
+      const blockers=await page.locator('#prepBlockers').innerText();
+      assert(blockers.includes('Welch t-test requires exactly 2 complete groups'));
       assert.equal(await page.locator('#continueSetup').isDisabled(),true);
+      assert((await page.locator('.route-prep-card .note').innerText()).includes('Selected method: Welch independent-samples t-test'));
       await context.close();
     }
 
