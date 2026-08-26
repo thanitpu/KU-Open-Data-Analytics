@@ -9,6 +9,7 @@ ALLOWED_BROWSER_OPERATIONS = {
     'log1p',
     'row_sum',
     'group_rare_categories',
+    'product',
 }
 
 
@@ -71,13 +72,14 @@ def recommend_features(payload):
     intent = payload.get('analysis_intent') or {}
     target = intent.get('target')
     question = str(intent.get('question_type') or intent.get('analytical_family') or '').lower()
+    route = str(intent.get('route') or '').lower()
     ref_year = _reference_year(payload)
     ref_date = str(payload.get('reference_date') or f'{ref_year}-12-31')
     candidates = []
 
     # Group comparison currently consumes only the reviewed outcome + grouping field.
     # Do not recommend derived predictors that the selected route would then ignore.
-    if question in {'compare-groups', 'compare groups'} or intent.get('route') == 'group-comparison':
+    if question in {'compare-groups', 'compare groups'} or route == 'group-comparison':
         return {
             'schema_version': '1.0',
             'recommender_version': 'rule_based_v1',
@@ -152,6 +154,8 @@ def recommend_features(payload):
             ))
 
     selected_fields = [f for f in fields if _selected_for_analysis(f) and not _is_target(f, target)]
+    selected_by_name = {f.get('name'): f for f in selected_fields if f.get('name')}
+
     spend_fields = [f['name'] for f in selected_fields if _is_numeric(f) and (re.match(r'^mnt', _norm(f.get('name'))) or 'spend' in _norm(f.get('name')))]
     if 2 <= len(spend_fields) <= 12:
         candidates.append(_recommendation(
@@ -167,6 +171,26 @@ def recommend_features(payload):
             'Multiple selected purchase-count fields were detected; their total can summarize overall purchase activity across channels.',
             ['field_semantics', 'domain_knowledge', 'analysis_objective'], .8
         ))
+
+    # Preserve the previously validated R3/parity interaction candidates, but
+    # move deterministic multiplication to the browser-owned FE layer. These
+    # are shown as reviewable recommendations instead of hidden server FE.
+    if route in {'regression', 'binary-classification', 'multiclass-classification'}:
+        validated_pairs = [
+            ('MntMeatProducts', 'NumCatalogPurchases'),
+            ('MntWines', 'NumCatalogPurchases'),
+            ('Income', 'MntWines'),
+            ('MntWines', 'MntMeatProducts'),
+            ('Income', 'MntMeatProducts'),
+        ]
+        for a, b in validated_pairs:
+            fa, fb = selected_by_name.get(a), selected_by_name.get(b)
+            if fa and fb and _is_numeric(fa) and _is_numeric(fb):
+                candidates.append(_recommendation(
+                    'product', [a, b], f'{a}__x__{b}',
+                    f'The validated predictive policy previously used the {a} × {b} interaction. It is now exposed for user review and local browser execution.',
+                    ['validated_policy', 'analysis_objective'], .78
+                ))
 
     deduped = {}
     for item in candidates:
@@ -184,6 +208,7 @@ def recommend_features(payload):
         'recommendations': ordered,
         'warnings': [
             'Recommendations are advisory and must be reviewed before browser execution.',
+            'Deterministic interaction construction from the validated predictive policy is now browser-owned when the browser FE manifest is supplied.',
             'This version uses curated rules only; external Kaggle/knowledge retrieval is not enabled yet.',
         ],
     }
