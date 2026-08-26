@@ -147,9 +147,9 @@ async function runViewport(browser,viewport){
   await page.locator('#runAnalysisBtn').click();
   await page.waitForSelector('.result-answer');
   assert.ok((await page.locator('.result-answer').innerText()).includes('One-way ANOVA'),`${viewport.name}: answer-first Results should render validated method`);
-  assert.ok((await page.locator('.multi-result-list').innerText()).includes('Validated Group Comparison'),`${viewport.name}: combined Results should preserve selected method identity`);
-  const groupDetails=await page.locator('.multi-detail-table').innerText();
-  assert.ok(groupDetails.includes('Group')&&groupDetails.includes('A')&&groupDetails.includes('B')&&groupDetails.includes('C'),`${viewport.name}: group summary should render in combined Results`);
+  const combinedText=await page.locator('.multi-result-list').innerText();
+  assert.ok(combinedText.includes('Validated Group Comparison'),`${viewport.name}: combined Results should preserve selected method identity`);
+  assert.ok(combinedText.includes('eta squared')&&combinedText.includes('groups'),`${viewport.name}: combined Results should render group-comparison evidence`);
   await screenshot(page,viewport,'results');
 
   const headerMain=await page.evaluate(()=>{
