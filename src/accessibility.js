@@ -8,6 +8,20 @@ function ensurePreferenceStyles(){
   if(document.querySelector('link[data-ku-ui-preferences]'))return;
   const link=document.createElement('link');link.rel='stylesheet';link.href='src/ui-preferences.css';link.dataset.kuUiPreferences='true';document.head.appendChild(link);
 }
+function loadScriptOnce(src,key){
+  return new Promise((resolve,reject)=>{
+    const existing=document.querySelector(`script[data-ku-module="${key}"]`);
+    if(existing){if(existing.dataset.loaded==='true')resolve();else{existing.addEventListener('load',resolve,{once:true});existing.addEventListener('error',reject,{once:true})}return}
+    const script=document.createElement('script');script.src=src;script.defer=true;script.dataset.kuModule=key;script.addEventListener('load',()=>{script.dataset.loaded='true';resolve()},{once:true});script.addEventListener('error',()=>reject(new Error(`Could not load ${src}`)),{once:true});document.head.appendChild(script);
+  });
+}
+async function installProfileInsightModules(){
+  try{
+    if(!root.KUProfileManifest)await loadScriptOnce('src/profile-manifest.js','profile-manifest');
+    if(!root.KUProfileInsights)await loadScriptOnce('src/profile-insights.js','profile-insights');
+    root.KUProfileInsights?.install?.();
+  }catch(error){console.warn('KU Open DA profile insight module unavailable:',error?.message||error)}
+}
 function syncStickyShellOffset(){
   const header=document.querySelector('header');if(!header)return;
   const height=Math.max(0,Math.ceil(header.getBoundingClientRect().height));
@@ -53,12 +67,12 @@ function syncDynamicRegions(){
 }
 function onTabKey(event){
   const tab=event.target.closest?.('.profile-tab');if(!tab||!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
-  const tabs=[...document.querySelectorAll('.profile-tab')];if(!tabs.length)return;event.preventDefault();let index=tabs.indexOf(tab);
+  const tabs=[...document.querySelectorAll('.profile-tab')].filter(x=>!x.hidden);if(!tabs.length)return;event.preventDefault();let index=tabs.indexOf(tab);
   if(event.key==='Home')index=0;else if(event.key==='End')index=tabs.length-1;else index=(index+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
   const next=tabs[index],name=next.dataset.profileTab;if(typeof root.setProfileTab==='function')root.setProfileTab(name);else next.click();next.focus();setTimeout(syncProfileTabs,0);
 }
-function init(){ensurePreferenceStyles();installTextSizeControl();installStickyShellSync();syncProfileTabs();syncDynamicRegions();document.addEventListener('keydown',onTabKey);document.addEventListener('click',event=>{if(event.target.closest?.('.profile-tab'))setTimeout(syncProfileTabs,0)});document.addEventListener('ku:render-current-analysis',syncDynamicRegions);document.addEventListener('ku:statechange',()=>setTimeout(syncDynamicRegions,0))}
-root.KUAccessibility=Object.freeze({syncProfileTabs,syncDynamicRegions,applyTextSize,syncStickyShellOffset});
+function init(){ensurePreferenceStyles();installTextSizeControl();installStickyShellSync();syncProfileTabs();syncDynamicRegions();installProfileInsightModules();document.addEventListener('keydown',onTabKey);document.addEventListener('click',event=>{if(event.target.closest?.('.profile-tab'))setTimeout(syncProfileTabs,0)});document.addEventListener('ku:render-current-analysis',syncDynamicRegions);document.addEventListener('ku:statechange',()=>setTimeout(syncDynamicRegions,0))}
+root.KUAccessibility=Object.freeze({syncProfileTabs,syncDynamicRegions,applyTextSize,syncStickyShellOffset,installProfileInsightModules});
 ensurePreferenceStyles();
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })(window);
