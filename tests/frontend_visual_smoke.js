@@ -22,6 +22,13 @@ const capabilities={
     }
   }
 };
+const feRecommendationPayload={
+  schema_version:'1.0',
+  recommender_version:'rule_based_v1',
+  domain_hints:['general_tabular'],
+  recommendations:[],
+  warnings:[]
+};
 const analysisPayload={
   result:{
     status:'COMPLETE',route:'compare_groups',analysis_type:'multi_group_comparison',target:'Score',mode:'fast',
@@ -69,6 +76,7 @@ async function mockNetwork(page){
   await page.route('**/favicon.ico',route=>route.fulfill({status:204,body:''}));
   await page.route('https://cdn.jsdelivr.net/**',route=>route.fulfill({status:200,contentType:'application/javascript',body:'window.XLSX=window.XLSX||{};'}));
   await page.route(`${analyticsBase}/capabilities`,route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(capabilities)}));
+  await page.route(`${analyticsBase}/recommend/feature-engineering`,route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(feRecommendationPayload)}));
   await page.route(`${analyticsBase}/analyze`,route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(analysisPayload)}));
 }
 async function runViewport(browser,viewport){
