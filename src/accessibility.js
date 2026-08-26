@@ -24,9 +24,10 @@ async function installProfileInsightModules(){
 }
 async function installFeatureEngineeringReviewModule(){
   try{
+    if(!root.KUFeatureEngineeringExecutor)await loadScriptOnce('src/fe-executor.js','fe-executor');
     if(!root.KUFeatureEngineeringReview)await loadScriptOnce('src/fe-review.js','fe-review');
     root.KUFeatureEngineeringReview?.install?.();
-  }catch(error){console.warn('KU Open DA feature engineering review module unavailable:',error?.message||error)}
+  }catch(error){console.warn('KU Open DA feature engineering module unavailable:',error?.message||error)}
 }
 function syncStickyShellOffset(){
   const header=document.querySelector('header');if(!header)return;
