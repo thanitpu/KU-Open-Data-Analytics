@@ -14,7 +14,12 @@ from .shared import _structural_exclusions, _derive_customer_fields, _top_model_
 from .policies import FAST_POLICY_REGISTRY
 
 
-def _prepare_classification_data(df, target, reference_date="2026-01-01"):
+def _prepare_classification_data(
+    df,
+    target,
+    reference_date="2026-01-01",
+    browser_managed=False,
+):
     if target not in df.columns:
         raise ValueError(f"Target '{target}' not found.")
 
@@ -22,7 +27,8 @@ def _prepare_classification_data(df, target, reference_date="2026-01-01"):
     y = d[target].copy()
     exclude = _structural_exclusions(d, target) + [target]
     X = d.drop(columns=list(dict.fromkeys(exclude)), errors="ignore")
-    X = _derive_customer_fields(X, reference_date)
+    if not browser_managed:
+        X = _derive_customer_fields(X, reference_date)
     return X, y.reset_index(drop=True), exclude
 
 
@@ -76,10 +82,14 @@ def run_fast_multiclass_classification(
     reference_date="2026-01-01",
     confidence_min=.60,
     margin_min=.05,
+    feature_context=None,
 ):
     t0 = time.perf_counter()
     policy = FAST_POLICY_REGISTRY["classification_multiclass"]
-    X, y_raw, excluded = _prepare_classification_data(df, target, reference_date)
+    browser_managed = bool((feature_context or {}).get('provided'))
+    X, y_raw, excluded = _prepare_classification_data(
+        df, target, reference_date, browser_managed=browser_managed
+    )
 
     classes = sorted(pd.Series(y_raw).dropna().unique().tolist())
     if len(classes) < 3:
@@ -90,7 +100,8 @@ def run_fast_multiclass_classification(
     class_to_int = {c: i for i, c in enumerate(classes)}
     int_to_class = {i: c for c, i in class_to_int.items()}
     y = y_raw.map(class_to_int).astype(int)
-    X = _build_fast_multiclass_features(X)
+    if not browser_managed:
+        X = _build_fast_multiclass_features(X)
 
     cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
     base_model = XGBClassifier(
@@ -165,6 +176,10 @@ def run_fast_multiclass_classification(
 
     findings = _top_model_importance(prep_full, model_full)
     warnings = []
+    if browser_managed:
+        warnings.append(
+            "Deterministic feature construction was supplied by the reviewed browser preparation contract; imputation and categorical encoding remained inside validation folds."
+        )
     if findings:
         warnings.append(
             "Feature importance is predictive model evidence and does not establish causal drivers."
@@ -181,6 +196,8 @@ def run_fast_multiclass_classification(
             "columns": int(df.shape[1]),
         },
         "method": {
+            "feature_engineering": "browser_prepared_matrix" if browser_managed else "validated_multiclass_FE",
+            "model_preprocessing": "CV-safe median/most-frequent imputation + one-hot encoding",
             "architecture": policy["architecture"],
             "model": policy["model"],
             "calibration": policy["calibration"],
@@ -209,5 +226,6 @@ def run_fast_multiclass_classification(
         "confidence": confidence,
         "margin": margin,
         "accepted_mask": accepted,
+        "browser_feature_engineering": browser_managed,
     }
     return result, artifacts
