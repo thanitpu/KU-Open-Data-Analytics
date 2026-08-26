@@ -1,0 +1,10 @@
+const assert=require('assert');
+const fs=require('fs');
+const path=require('path');
+const root=path.resolve(__dirname,'..');
+const html=fs.readFileSync(path.join(root,'app.html'),'utf8');
+const required=['src/profile-manifest.js','src/data-profile.js','src/profile-insights.js'];
+for(const src of required)assert(html.includes(`src="${src}"`),`app.html must directly load ${src}`);
+const positions=required.map(src=>html.indexOf(`src="${src}"`));
+assert(positions[0]<positions[1]&&positions[1]<positions[2],'Profile modules must load Profile Manifest → Data Profile → Profile Insights');
+console.log('[Profile shell wiring smoke completed]');

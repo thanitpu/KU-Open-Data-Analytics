@@ -11,7 +11,7 @@ const artifactDir=path.resolve(__dirname,'..','test-artifacts','visual-uat');
 fs.mkdirSync(artifactDir,{recursive:true});
 
 const capabilities={
-  service:{version:'0.3.0',mode:'fast',source:'validated_backend'},
+  service:{version:'0.5.0',mode:'fast',source:'validated_backend'},
   routes:{
     'group-comparison':{
       intent:'Compare Groups',target_required:true,options_required:['group'],
@@ -21,6 +21,13 @@ const capabilities={
       metrics:['p_value','mean_difference','hedges_g','eta_squared']
     }
   }
+};
+const feRecommendationPayload={
+  schema_version:'1.0',
+  recommender_version:'rule_based_v1',
+  domain_hints:['general_tabular'],
+  recommendations:[],
+  warnings:[]
 };
 const analysisPayload={
   result:{
@@ -69,6 +76,7 @@ async function mockNetwork(page){
   await page.route('**/favicon.ico',route=>route.fulfill({status:204,body:''}));
   await page.route('https://cdn.jsdelivr.net/**',route=>route.fulfill({status:200,contentType:'application/javascript',body:'window.XLSX=window.XLSX||{};'}));
   await page.route(`${analyticsBase}/capabilities`,route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(capabilities)}));
+  await page.route(`${analyticsBase}/recommend/feature-engineering`,route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(feRecommendationPayload)}));
   await page.route(`${analyticsBase}/analyze`,route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(analysisPayload)}));
 }
 async function runViewport(browser,viewport){
@@ -84,6 +92,10 @@ async function runViewport(browser,viewport){
   await page.waitForSelector('#workspaceView');
   assert.strictEqual(await page.locator('.text-size-control').count(),1,`${viewport.name}: Product header should expose one text-size control`);
   assert.strictEqual(await page.locator('html').getAttribute('data-ku-text-size'),'comfortable',`${viewport.name}: Product should default to comfortable text size`);
+  const productLogo=page.locator('header .logo img');
+  assert.strictEqual(await productLogo.count(),1,`${viewport.name}: Product header should use the KU logo image`);
+  assert.ok((await productLogo.getAttribute('src')).endsWith('assets/landing/brand/KU_Logo_AI.svg'),`${viewport.name}: Product and Landing should share the same KU logo asset`);
+  assert.strictEqual(await page.locator('header .logo').getAttribute('href'),'index.html',`${viewport.name}: Product logo should return to Landing`);
 
   const shell=await page.evaluate(()=>({
     asidePosition:getComputedStyle(document.querySelector('aside')).position,
@@ -122,19 +134,22 @@ async function runViewport(browser,viewport){
 
   await page.locator('#continueSetup').click();
   await page.waitForSelector('#runAnalysisBtn:not([disabled])');
-  const setupText=await page.locator('#setupBody').innerText();
-  assert.ok(setupText.includes('One-way ANOVA'),`${viewport.name}: backend capability metadata should render in Setup`);
+  const setupText=await page.locator('#multiSetupBody').innerText();
+  assert.ok(setupText.includes('Validated Group Comparison'),`${viewport.name}: selected backend method should render in Setup`);
+  assert.ok(setupText.includes('One-way ANOVA'),`${viewport.name}: backend group-comparison policy should render in Setup`);
   const technical=page.locator('.technical-run-spec');
   assert.strictEqual(await technical.evaluate(node=>node.open),false,`${viewport.name}: Technical Run Specification should be collapsed by default`);
   await screenshot(page,viewport,'setup');
   await page.locator('.technical-run-spec > summary').click();
-  assert.ok((await technical.innerText()).includes('v0.3.0'),`${viewport.name}: opening Technical Run Specification should show backend version`);
+  assert.ok((await technical.innerText()).includes('v0.5.0'),`${viewport.name}: opening Technical Run Specification should show backend version`);
   await page.locator('.technical-run-spec > summary').click();
 
   await page.locator('#runAnalysisBtn').click();
   await page.waitForSelector('.result-answer');
   assert.ok((await page.locator('.result-answer').innerText()).includes('One-way ANOVA'),`${viewport.name}: answer-first Results should render validated method`);
-  assert.ok((await page.locator('#familyResultDetails').innerText()).includes('Group Summary'),`${viewport.name}: family-specific group summary should render`);
+  const combinedText=await page.locator('.multi-result-list').innerText();
+  assert.ok(combinedText.includes('Validated Group Comparison'),`${viewport.name}: combined Results should preserve selected method identity`);
+  assert.ok(await page.locator('.multi-result-method .result-metric').count()>=1,`${viewport.name}: combined Results should render evidence metrics for the selected method`);
   await screenshot(page,viewport,'results');
 
   const headerMain=await page.evaluate(()=>{

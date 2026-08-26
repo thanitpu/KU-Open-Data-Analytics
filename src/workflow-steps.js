@@ -18,6 +18,12 @@ const resultState=()=>root.KUAppState?.getState().result||{};
 function selectedFields(p=plan()){
   return [...new Set([p.target,...(p.predictors||[])].filter(Boolean))];
 }
+function executionFields(p=plan()){
+  try{return root.KUAnalyticsClient?.selectedCsvFields?.(p)||selectedFields(p)}catch(_){return selectedFields(p)}
+}
+function derivedFields(p=plan()){
+  return [...new Set((p.preparation?.featureEngineering?.derivedFields||[]).filter(Boolean))];
+}
 function isPresent(v){return v!==''&&v!==null&&v!==undefined}
 function observed(h){return data.map(r=>r[h]).filter(isPresent)}
 function summary(h){
@@ -145,6 +151,23 @@ function candidateGroups(p){
     return h!==p.target&&(s.level==='Nominal'||s.level==='Ordinal')&&s.unique>=2;
   });
 }
+function selectedPreparationMethods(p){
+  if(p.methodMode==='custom')return [...new Set((p.selectedMethods||[]).filter(Boolean))];
+  try{return root.KUMethodSelection?.effectiveMethodIds?.(p,root.KUProfileInsights?.getManifest?.())||[]}
+  catch(_){return[]}
+}
+function groupMethodNote(p,groupCounts=[]){
+  const methods=new Set(selectedPreparationMethods(p));
+  if(p.methodMode==='custom'){
+    const labels=[];
+    if(methods.has('welch-t-test'))labels.push('Welch independent-samples t-test');
+    if(methods.has('one-way-anova'))labels.push('One-way ANOVA');
+    if(methods.has('validated-group-comparison'))labels.push('Validated Group Comparison');
+    const selected=labels.length?`Selected method${labels.length===1?'':'s'}: ${labels.join(', ')}.`:'Selected methods will be validated against the observed groups.';
+    return `${selected}${groupCounts.length?` Complete observations by group: ${groupCounts.map(([name,n])=>`${name}=${n}`).join(', ')}.`:''}`;
+  }
+  return `Two observed groups will use Welch t-test; three or more will use one-way ANOVA in the validated backend.${groupCounts.length?` Complete observations by group: ${groupCounts.map(([name,n])=>`${name}=${n}`).join(', ')}.`:''}`;
+}
 function prepareBlockers(p,group){
   const blockers=[];
   if(p.route==='regression'&&p.target){
@@ -179,10 +202,16 @@ function prepareBlockers(p,group){
     if(!group){
       blockers.push('Select one grouping field before continuing.');
     }else{
-      const counts=completeGroupCounts(p.target,group);
+      const counts=completeGroupCounts(p.target,group),methods=new Set(selectedPreparationMethods(p));
       if(counts.length<2)blockers.push('Compare Groups requires at least two observed groups after complete-case filtering.');
       const small=counts.filter(([,n])=>n<2);
       if(small.length)blockers.push(`Each compared group needs at least 2 complete observations. Too small: ${small.map(([name,n])=>`${name} (${n})`).join(', ')}.`);
+      if(methods.has('welch-t-test')&&counts.length!==2){
+        blockers.push(`Welch t-test requires exactly 2 complete groups; ${counts.length} are currently observed. Choose a compatible grouping field or method.`);
+      }
+      if(methods.has('one-way-anova')&&counts.length<3){
+        blockers.push(`One-way ANOVA requires 3 or more complete groups; ${counts.length} are currently observed. Choose a compatible grouping field or method.`);
+      }
     }
   }
   return blockers;
@@ -208,7 +237,7 @@ function renderPrepare(){
 
   view.innerHTML=`<div class="step-kicker">STEP 4 · PREPARE</div><h1>Review Data Preparation</h1><p class="lead">Review what the selected production route will do with the real fields before confirming execution.</p>${currentBar()}
   <section class="card prep-summary-card"><div class="head">Preparation Summary</div><div class="body"><div class="prep-route"><span>Selected route</span><b>${safe(routeLabel(p.route))}</b><small>${fields.length} selected field${fields.length===1?'':'s'}</small></div><div class="prep-status-grid"><section class="prep-status-panel automatic"><div class="prep-status-title"><span>Automatically handled</span><b>${entries.filter(x=>x.rule[3]==='ok').length}</b></div>${automaticPreparation(entries)}</section><section class="prep-status-panel review"><div class="prep-status-title"><span>Needs review</span><b>${blockers.length}</b></div>${reviewPreparation(blockers)}</section></div></div></section>
-  ${p.route==='group-comparison'?`<section class="card route-prep-card"><div class="head">Group comparison setup</div><div class="body"><label class="field-control"><span>Grouping field</span><select id="prepareGroupField"><option value="">Choose grouping field…</option>${groups.map(h=>`<option value="${safe(h)}" ${h===group?'selected':''}>${safe(h)} · ${summary(h).unique} groups</option>`).join('')}</select></label><div class="note">Two observed groups will use Welch t-test; three or more will use one-way ANOVA in the validated backend.${groupCounts.length?` Complete observations by group: ${safe(groupCounts.map(([name,n])=>`${name}=${n}`).join(', '))}.`:''}</div></div></section>`:''}
+  ${p.route==='group-comparison'?`<section class="card route-prep-card"><div class="head">Group comparison setup</div><div class="body"><label class="field-control"><span>Grouping field</span><select id="prepareGroupField"><option value="">Choose grouping field…</option>${groups.map(h=>`<option value="${safe(h)}" ${h===group?'selected':''}>${safe(h)} · ${summary(h).unique} groups</option>`).join('')}</select></label><div class="note">${safe(groupMethodNote(p,groupCounts))}</div></div></section>`:''}
   <details class="card field-review-details"><summary>View Field-by-Field Preparation Details</summary><div class="body"><div class="prep-table"><table><thead><tr><th>Field</th><th>Recommended Action</th><th>Detected Issues</th><th>Planned Action</th><th>Reason</th></tr></thead><tbody>${entries.map(({field,rule})=>`<tr class="${rule[3]==='block'?'prep-block-row':''}"><td><b>${safe(field.name)}</b><small>${safe(field.storage)} · ${safe(field.level)}</small></td><td>${safe(rule[0])}</td><td>${safe(rule[1])}</td><td>${safe(rule[0])}</td><td>${safe(rule[2])}</td></tr>`).join('')}</tbody></table></div></div></details>
   ${blockers.length?`<div id="prepBlockers" class="workflow-blocker"><b>Preparation cannot be approved yet</b>${blockers.map(x=>`<p>${safe(x)}</p>`).join('')}</div>`:'<div id="prepBlockers"></div>'}
   <div class="workflow-footer"><button class="btn ghost" onclick="goToJourneyStep('analyze')">← Edit Question</button><button id="continueSetup" class="btn primary" ${blockers.length?'disabled':''}>Approve Preparation →</button></div>`;
@@ -257,8 +286,10 @@ async function renderSetup(){
     const caps=await loadCapabilities(),cap=caps.routes?.[p.route];
     if(!cap)throw new Error(`Backend capability metadata does not include route ${p.route}.`);
     const group=p.preparation?.groupField||null,metrics=(cap.metrics||[]).join(', '),serviceVersion=caps.service?.version||'—';
-    el('setupBody').innerHTML=`<div class="setup-grid"><div class="setup-hero"><span>Recommended route</span><b>${safe(routeLabel(p.route))}</b><small>${safe(cap.intent||'Validated backend')}</small></div><div class="setup-kv"><span>Target</span><b>${safe(p.target||'Not required')}</b></div><div class="setup-kv"><span>Predictors / inputs</span><b>${(p.predictors||[]).length}</b></div>${group?`<div class="setup-kv"><span>Grouping field</span><b>${safe(group)}</b></div>`:''}</div><div class="setup-policy">${capabilityRows(cap)}</div><details class="technical-run-spec"><summary>Technical Run Specification</summary><div class="body"><div class="setup-kv"><span>Backend API</span><b>${serviceVersion==='—'?'—':`v${safe(serviceVersion)}`}</b></div><div class="setup-kv"><span>Endpoint</span><b>POST /analyze</b></div><div class="setup-kv"><span>Mode</span><b>fast</b></div><div class="setup-kv"><span>Metrics returned</span><b>${safe(metrics||'Route-defined evidence')}</b></div><div class="setup-kv"><span>Fields uploaded</span><b>${safe(selectedFields(p).join(', '))}</b></div></div></details>`;
-    root.KUAppState.setSetup({mode:'recommended',confirmed:false,configuration:{intent:cap.intent,route:p.route,groupField:group,capability:cap,serviceVersion}});
+    const derived=derivedFields(p),runFields=executionFields(p),originalPredictors=(p.predictors||[]).length;
+    const feOwner=p.preparation?.featureEngineering?.reviewed?'Browser · reviewed FE manifest':'Backend legacy compatibility';
+    el('setupBody').innerHTML=`<div class="setup-grid"><div class="setup-hero"><span>Recommended route</span><b>${safe(routeLabel(p.route))}</b><small>${safe(cap.intent||'Validated backend')}</small></div><div class="setup-kv"><span>Target</span><b>${safe(p.target||'Not required')}</b></div><div class="setup-kv"><span>Original predictors / inputs</span><b>${originalPredictors}</b></div><div class="setup-kv"><span>Derived fields</span><b>${derived.length?safe(derived.join(', ')):'None selected'}</b></div><div class="setup-kv"><span>Deterministic feature construction</span><b>${safe(feOwner)}</b></div><div class="setup-kv"><span>Validation-safe preprocessing</span><b>Backend pipeline</b></div>${group?`<div class="setup-kv"><span>Grouping field</span><b>${safe(group)}</b></div>`:''}</div><div class="setup-policy">${capabilityRows(cap)}</div><details class="technical-run-spec"><summary>Technical Run Specification</summary><div class="body"><div class="setup-kv"><span>Backend API</span><b>${serviceVersion==='—'?'—':`v${safe(serviceVersion)}`}</b></div><div class="setup-kv"><span>Endpoint</span><b>POST /analyze</b></div><div class="setup-kv"><span>Mode</span><b>fast</b></div><div class="setup-kv"><span>Metrics returned</span><b>${safe(metrics||'Route-defined evidence')}</b></div><div class="setup-kv"><span>Fields uploaded</span><b>${safe(runFields.join(', '))}</b></div><div class="setup-kv"><span>Prepared matrix contract</span><b>${p.preparation?.featureEngineering?.reviewed?'Browser FE Manifest v1':'Legacy client compatibility'}</b></div></div></details>`;
+    root.KUAppState.setSetup({mode:'recommended',confirmed:false,configuration:{intent:cap.intent,route:p.route,groupField:group,capability:cap,serviceVersion,executionFields:runFields,derivedFields:derived,featureOwner:feOwner}});
     const run=el('runAnalysisBtn');
     run.disabled=false;
     run.addEventListener('click',runAnalysisFromSetup);

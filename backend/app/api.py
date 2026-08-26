@@ -7,8 +7,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from .orchestrator import execute_analysis
 from .reporting import build_executive_report
 from .capabilities import get_capabilities
+from .schemas import FeatureEngineeringRecommendationRequest, FeatureEngineeringRecommendationResponse
+from intelligence.fe_recommender import recommend_features
 
-app = FastAPI(title='Automated Analytics Service', version='0.3.0')
+app = FastAPI(title='Automated Analytics Service', version='0.5.0')
 
 cors_origins = [
     x.strip() for x in os.getenv(
@@ -33,6 +35,13 @@ def health():
 @app.get('/capabilities')
 def capabilities():
     return get_capabilities()
+
+@app.post('/recommend/feature-engineering', response_model=FeatureEngineeringRecommendationResponse)
+def recommend_feature_engineering(request: FeatureEngineeringRecommendationRequest):
+    try:
+        return recommend_features(request.model_dump())
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=str(ex))
 
 @app.post('/analyze')
 async def analyze(
