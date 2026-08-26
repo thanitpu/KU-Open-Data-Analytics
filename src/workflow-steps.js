@@ -18,6 +18,12 @@ const resultState=()=>root.KUAppState?.getState().result||{};
 function selectedFields(p=plan()){
   return [...new Set([p.target,...(p.predictors||[])].filter(Boolean))];
 }
+function executionFields(p=plan()){
+  try{return root.KUAnalyticsClient?.selectedCsvFields?.(p)||selectedFields(p)}catch(_){return selectedFields(p)}
+}
+function derivedFields(p=plan()){
+  return [...new Set((p.preparation?.featureEngineering?.derivedFields||[]).filter(Boolean))];
+}
 function isPresent(v){return v!==''&&v!==null&&v!==undefined}
 function observed(h){return data.map(r=>r[h]).filter(isPresent)}
 function summary(h){
@@ -257,8 +263,10 @@ async function renderSetup(){
     const caps=await loadCapabilities(),cap=caps.routes?.[p.route];
     if(!cap)throw new Error(`Backend capability metadata does not include route ${p.route}.`);
     const group=p.preparation?.groupField||null,metrics=(cap.metrics||[]).join(', '),serviceVersion=caps.service?.version||'—';
-    el('setupBody').innerHTML=`<div class="setup-grid"><div class="setup-hero"><span>Recommended route</span><b>${safe(routeLabel(p.route))}</b><small>${safe(cap.intent||'Validated backend')}</small></div><div class="setup-kv"><span>Target</span><b>${safe(p.target||'Not required')}</b></div><div class="setup-kv"><span>Predictors / inputs</span><b>${(p.predictors||[]).length}</b></div>${group?`<div class="setup-kv"><span>Grouping field</span><b>${safe(group)}</b></div>`:''}</div><div class="setup-policy">${capabilityRows(cap)}</div><details class="technical-run-spec"><summary>Technical Run Specification</summary><div class="body"><div class="setup-kv"><span>Backend API</span><b>${serviceVersion==='—'?'—':`v${safe(serviceVersion)}`}</b></div><div class="setup-kv"><span>Endpoint</span><b>POST /analyze</b></div><div class="setup-kv"><span>Mode</span><b>fast</b></div><div class="setup-kv"><span>Metrics returned</span><b>${safe(metrics||'Route-defined evidence')}</b></div><div class="setup-kv"><span>Fields uploaded</span><b>${safe(selectedFields(p).join(', '))}</b></div></div></details>`;
-    root.KUAppState.setSetup({mode:'recommended',confirmed:false,configuration:{intent:cap.intent,route:p.route,groupField:group,capability:cap,serviceVersion}});
+    const derived=derivedFields(p),runFields=executionFields(p),originalPredictors=(p.predictors||[]).length;
+    const feOwner=p.preparation?.featureEngineering?.reviewed?'Browser · reviewed FE manifest':'Backend legacy compatibility';
+    el('setupBody').innerHTML=`<div class="setup-grid"><div class="setup-hero"><span>Recommended route</span><b>${safe(routeLabel(p.route))}</b><small>${safe(cap.intent||'Validated backend')}</small></div><div class="setup-kv"><span>Target</span><b>${safe(p.target||'Not required')}</b></div><div class="setup-kv"><span>Original predictors / inputs</span><b>${originalPredictors}</b></div><div class="setup-kv"><span>Derived fields</span><b>${derived.length?safe(derived.join(', ')):'None selected'}</b></div><div class="setup-kv"><span>Deterministic feature construction</span><b>${safe(feOwner)}</b></div><div class="setup-kv"><span>Validation-safe preprocessing</span><b>Backend pipeline</b></div>${group?`<div class="setup-kv"><span>Grouping field</span><b>${safe(group)}</b></div>`:''}</div><div class="setup-policy">${capabilityRows(cap)}</div><details class="technical-run-spec"><summary>Technical Run Specification</summary><div class="body"><div class="setup-kv"><span>Backend API</span><b>${serviceVersion==='—'?'—':`v${safe(serviceVersion)}`}</b></div><div class="setup-kv"><span>Endpoint</span><b>POST /analyze</b></div><div class="setup-kv"><span>Mode</span><b>fast</b></div><div class="setup-kv"><span>Metrics returned</span><b>${safe(metrics||'Route-defined evidence')}</b></div><div class="setup-kv"><span>Fields uploaded</span><b>${safe(runFields.join(', '))}</b></div><div class="setup-kv"><span>Prepared matrix contract</span><b>${p.preparation?.featureEngineering?.reviewed?'Browser FE Manifest v1':'Legacy client compatibility'}</b></div></div></details>`;
+    root.KUAppState.setSetup({mode:'recommended',confirmed:false,configuration:{intent:cap.intent,route:p.route,groupField:group,capability:cap,serviceVersion,executionFields:runFields,derivedFields:derived,featureOwner:feOwner}});
     const run=el('runAnalysisBtn');
     run.disabled=false;
     run.addEventListener('click',runAnalysisFromSetup);
