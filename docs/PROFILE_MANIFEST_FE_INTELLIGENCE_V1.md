@@ -18,6 +18,17 @@ The browser creates an aggregated manifest from the loaded dataset. It contains:
 
 Raw dataset rows are not part of the manifest. High-cardinality identifier-like or sensitive-like categorical fields suppress raw frequency values.
 
+## Step 2 browser profile views
+
+The live Product now consumes the same Profile Manifest computation for four additional Data Profile views:
+
+- **Distribution** — distribution shape, skewness, kurtosis, quartiles and local histogram summaries
+- **Outliers** — IQR and MAD robust outlier signals by numeric field
+- **Categorical** — top-frequency summaries, dominance, rare levels and normalized entropy
+- **Temporal** — shown only when a usable temporal field is detected; reports date coverage, granularity and interval regularity
+
+These views are computed in the browser. They do not require the analytics API. `KUProfileInsights.getManifest()` exposes the current aggregate manifest for later Step 4 intelligence calls without attaching raw rows.
+
 ## FE recommendation contract
 
 `POST /recommend/feature-engineering`
@@ -38,23 +49,30 @@ Initial rule-based operations:
 
 ## Current scope
 
-This first slice establishes Phase A/B and a minimal Phase C rule-based recommender. It does **not** yet:
+The foundation now covers Phase A/B, a minimal Phase C rule-based recommender, and the visible Step 2 profile-insight slice. It does **not** yet:
 
-- change the Step 2 visible tabs
 - execute FE in the browser
 - add derived fields to the predictor pool
+- add Step 3 method selection
+- call the FE recommender from Step 4
 - use Kaggle/RAG knowledge
 - provide a Knowledge Admin UI
 
 ## Next implementation slices
 
-1. Wire Profile Manifest generation into the live Product state and add Distribution / Outliers / Categorical / Temporal views to Step 2.
-2. Add Step 3 suitable-method selection while preserving the recommended family.
-3. Add Step 4 call to the FE recommender and review UI.
-4. Build the trusted browser FE executor + feature lineage; derived fields become real predictors.
+1. Add Step 3 suitable-method selection while preserving the recommended analytical family.
+2. Add Step 4 call to the FE recommender and review UI.
+3. Build the trusted browser FE executor + feature lineage; derived fields become real predictors.
+4. Move deterministic preparation/FE computation to the browser while keeping backend validation of the manifest/policy boundary.
 5. Add curated Kaggle knowledge ingestion and hybrid retrieval after the recommendation schema stabilizes.
 6. Build internal Knowledge Admin UI only after the knowledge schema and evaluation workflow are stable.
 
-## UAT focus for this slice
+## UAT focus for the Step 2 slice
 
-This slice is intentionally non-visible in the Product UI. Regression checks are automated: existing Product journey must remain unchanged; frontend Profile Manifest smoke and backend FE recommendation tests must pass before any UI wiring begins.
+1. Load a dataset, then open **Step 2 · Data Profile**.
+2. Confirm tabs are ordered as Overview, Fields, Data Quality, Distribution, Outliers, Categorical, Relationships, plus Temporal when a temporal field is detected.
+3. Distribution must show field-specific shape metrics and histogram summaries.
+4. Outliers must show IQR and MAD signals without describing outliers as automatic errors.
+5. Categorical must show frequency structure; identifier/sensitive-like values remain redacted from the manifest.
+6. Temporal must appear only for datasets with a detected date/time field and show coverage/granularity/regularity.
+7. Key regression checks: Start→Profile→Analyze still works; existing Relationships still works; no page-level horizontal overflow; no raw row array is present in `KUProfileInsights.getManifest()`.
