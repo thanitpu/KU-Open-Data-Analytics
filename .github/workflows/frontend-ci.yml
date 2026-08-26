@@ -21,6 +21,7 @@ jobs:
           node --check src/relationship-stats.js
           node --check src/profile-manifest.js
           node --check src/profile-insights.js
+          node --check src/method-selection.js
           node --check src/data-profile.js
           node --check src/ai-analytics.js
           node --check src/workflow-steps.js
@@ -43,6 +44,8 @@ jobs:
           node --check tests/profile_insights_smoke.js
           node --check tests/profile_insights_browser_smoke.js
           node --check tests/profile_shell_wiring_smoke.js
+          node --check tests/method_selection_smoke.js
+          node --check tests/method_selection_browser_smoke.js
           node --check tests/public_product_visual_smoke.js
           node --check tests/responsive_sticky_smoke.js
           node --check tests/frontend_visual_smoke.js
@@ -58,6 +61,8 @@ jobs:
         run: node tests/profile_manifest_smoke.js
       - name: Local Profile Insights smoke
         run: node tests/profile_insights_smoke.js
+      - name: Analyze method selection smoke
+        run: node tests/method_selection_smoke.js
       - name: Install frontend test dependencies
         run: npm install --no-save jsdom@24 playwright@1.55.0
       - name: Text-size preference smoke
@@ -82,6 +87,8 @@ jobs:
           exit 1
       - name: Step 2 profile insights browser smoke
         run: node tests/profile_insights_browser_smoke.js
+      - name: Step 3 method selection browser smoke
+        run: node tests/method_selection_browser_smoke.js
       - name: Responsive sticky shell smoke
         run: node tests/responsive_sticky_smoke.js
       - name: Public to Product browser integration smoke
