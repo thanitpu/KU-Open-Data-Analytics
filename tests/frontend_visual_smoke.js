@@ -11,7 +11,7 @@ const artifactDir=path.resolve(__dirname,'..','test-artifacts','visual-uat');
 fs.mkdirSync(artifactDir,{recursive:true});
 
 const capabilities={
-  service:{version:'0.3.0',mode:'fast',source:'validated_backend'},
+  service:{version:'0.4.0',mode:'fast',source:'validated_backend'},
   routes:{
     'group-comparison':{
       intent:'Compare Groups',target_required:true,options_required:['group'],
@@ -136,7 +136,7 @@ async function runViewport(browser,viewport){
   assert.strictEqual(await technical.evaluate(node=>node.open),false,`${viewport.name}: Technical Run Specification should be collapsed by default`);
   await screenshot(page,viewport,'setup');
   await page.locator('.technical-run-spec > summary').click();
-  assert.ok((await technical.innerText()).includes('v0.3.0'),`${viewport.name}: opening Technical Run Specification should show backend version`);
+  assert.ok((await technical.innerText()).includes('v0.4.0'),`${viewport.name}: opening Technical Run Specification should show backend version`);
   await page.locator('.technical-run-spec > summary').click();
 
   await page.locator('#runAnalysisBtn').click();
