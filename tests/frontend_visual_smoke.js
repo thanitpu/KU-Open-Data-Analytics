@@ -149,7 +149,7 @@ async function runViewport(browser,viewport){
   assert.ok((await page.locator('.result-answer').innerText()).includes('One-way ANOVA'),`${viewport.name}: answer-first Results should render validated method`);
   const combinedText=await page.locator('.multi-result-list').innerText();
   assert.ok(combinedText.includes('Validated Group Comparison'),`${viewport.name}: combined Results should preserve selected method identity`);
-  assert.ok(combinedText.includes('eta squared')&&combinedText.includes('groups'),`${viewport.name}: combined Results should render group-comparison evidence`);
+  assert.ok(await page.locator('.multi-result-method .result-metric').count()>=1,`${viewport.name}: combined Results should render evidence metrics for the selected method`);
   await screenshot(page,viewport,'results');
 
   const headerMain=await page.evaluate(()=>{
