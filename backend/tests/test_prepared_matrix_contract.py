@@ -10,7 +10,7 @@ from analytics.regression import _build_fast_regression_features
 client = TestClient(app)
 
 
-def _browser_manifest(derived_fields=None, lineage=None, applied=None):
+def _browser_manifest(derived_fields=None, lineage=None, applied=None, reviewed=True):
     derived_fields = derived_fields or []
     lineage = lineage or []
     if applied is None:
@@ -18,7 +18,7 @@ def _browser_manifest(derived_fields=None, lineage=None, applied=None):
     return {
         'schema_version': '1.0',
         'executor_version': '1.0',
-        'reviewed': True,
+        'reviewed': reviewed,
         'review_status': 'ready',
         'applied': applied,
         'derived_fields': derived_fields,
@@ -65,6 +65,33 @@ def test_invalid_manifest_missing_derived_column_is_rejected():
         }],
     )
     with pytest.raises(ValueError, match='missing from analytical matrix'):
+        validate_browser_feature_engineering(
+            df, {'browser_feature_engineering': manifest}, target='Target'
+        )
+
+
+def test_unreviewed_manifest_is_rejected():
+    df = pd.DataFrame({'Income': [10, 20], 'Target': [0, 1]})
+    with pytest.raises(ValueError, match='reviewed user choices'):
+        validate_browser_feature_engineering(
+            df,
+            {'browser_feature_engineering': _browser_manifest([], [], applied=False, reviewed=False)},
+            target='Target',
+        )
+
+
+def test_target_leakage_in_feature_lineage_is_rejected():
+    df = pd.DataFrame({'Target': [10, 20], 'Leaky': [100, 400]})
+    manifest = _browser_manifest(
+        ['Leaky'],
+        [{
+            'output_field': 'Leaky',
+            'source_fields': ['Target'],
+            'operation': 'product',
+            'executed_by': 'browser',
+        }],
+    )
+    with pytest.raises(ValueError, match='target may not be used'):
         validate_browser_feature_engineering(
             df, {'browser_feature_engineering': manifest}, target='Target'
         )
