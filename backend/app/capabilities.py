@@ -1,12 +1,23 @@
 from analytics.policies import FAST_POLICY_REGISTRY
+from intelligence.fe_recommender import ALLOWED_BROWSER_OPERATIONS
 
 
 def get_capabilities():
     return {
         'service': {
-            'version': '0.3.0',
+            'version': '0.4.0',
             'mode': 'fast',
             'source': 'validated_backend',
+        },
+        'intelligence': {
+            'feature_engineering': {
+                'endpoint': '/recommend/feature-engineering',
+                'input': 'Profile Manifest v1 aggregated metadata; row-level dataset not required',
+                'recommender': 'rule_based_v1',
+                'recommendation_execution': 'browser',
+                'arbitrary_code_returned': False,
+                'allowed_browser_operations': sorted(ALLOWED_BROWSER_OPERATIONS),
+            }
         },
         'routes': {
             'clustering': {
