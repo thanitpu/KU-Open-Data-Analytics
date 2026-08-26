@@ -75,7 +75,7 @@ Step 4 now requests FE recommendations from KU Analytical Intelligence using onl
 - handles service errors with Retry or an explicit **Continue without FE recommendations** path
 - automatically marks the review complete when no additional derived features are recommended
 
-This slice is **review only**. Selected recommendations are not yet executed and do not yet enter the analytical matrix. Browser FE execution and feature lineage are the next implementation slice.
+**Review-only boundary:** selected recommendations are not executed in this slice and do not yet enter the analytical matrix. Browser FE execution, feature lineage, and use of derived fields in the actual statistical/ML run are the next implementation slice.
 
 ## UX note — contextual parameter help
 
