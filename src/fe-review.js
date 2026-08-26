@@ -1,4 +1,4 @@
-// KU Open DA — Step 4 Feature Engineering Intelligence review. Backend recommends; browser execution is a later slice.
+// KU Open DA — Step 4 Feature Engineering Intelligence review + browser execution plan.
 (function(root,factory){
   const api=factory(root);
   if(typeof module==='object'&&module.exports)module.exports=api;
@@ -62,22 +62,43 @@ function updateReview(patch){
   const p=plan(),before=currentReview(p)||{};
   root.KUAppState?.setPreparation?.({featureEngineering:{...before,...patch}});
 }
+function executionPlanFor(review=currentReview(),p=plan()){
+  if(!root.KUFeatureEngineeringExecutor?.compilePlan)throw new Error('Browser Feature Engineering Executor is unavailable.');
+  const fe={...(review||{}),reviewed:true};
+  const preparedPlan={...p,preparation:{...(p.preparation||{}),featureEngineering:fe}};
+  const base=[...new Set([p.target,...(p.predictors||[])].filter(Boolean))];
+  return root.KUFeatureEngineeringExecutor.compilePlan({plan:preparedPlan,baseColumns:base});
+}
+function confirmChoices(){
+  try{
+    const executionPlan=executionPlanFor();
+    updateReview({reviewed:true,executionPlan,lineage:executionPlan.lineage,derivedFields:executionPlan.derived_fields,executionError:null});
+  }catch(error){
+    updateReview({reviewed:false,executionPlan:null,lineage:[],derivedFields:[],executionError:error?.message||String(error)});
+  }
+  render();syncApprovalGate();
+}
 function hasPreparationBlockers(){return Boolean(root.document?.getElementById('prepBlockers')?.classList.contains('workflow-blocker'))}
 function isApprovalReady(p=plan()){
   const review=currentReview(p);
   if(!review)return false;
   if(review.status===STATUS_SKIPPED)return Boolean(review.reviewed);
-  if(review.status!==STATUS_READY)return false;
-  return Boolean(review.reviewed);
+  if(review.status!==STATUS_READY||!review.reviewed)return false;
+  return !review.executionError;
 }
 function syncApprovalGate(){
   const button=root.document?.getElementById('continueSetup');if(!button)return;
   button.disabled=hasPreparationBlockers()||!isApprovalReady();
-  button.title=!isApprovalReady()?'Review the feature engineering recommendations before approving preparation.':'';
+  button.title=!isApprovalReady()?'Review and validate the feature engineering choices before approving preparation.':'';
 }
 function recommendationCard(item,selected,locked){
   const sources=(item.source_fields||[]).join(', '),output=item.output_field||'Derived feature';
   return `<label class="fe-rec-item${selected?' selected':''}${locked?' locked':''}"><input type="checkbox" data-fe-rec="${safe(item.id)}" ${selected?'checked':''} ${locked?'disabled':''}><span class="fe-rec-copy"><span class="fe-rec-head"><b>${safe(output)}</b><em>${safe(confidenceLabel(item.confidence))} confidence</em></span><span class="fe-rec-transform">${safe(sources)} → ${safe(operationLabel(item.operation))}</span><span>${safe(item.reason)}</span><small>${safe(basisLabel(item.basis||[]))} · Browser execution</small></span></label>`;
+}
+function lineageHtml(review){
+  const rows=Array.isArray(review?.lineage)?review.lineage:[];
+  if(!rows.length)return '<div class="fe-confirmed"><b>No derived fields selected</b><span>The analytical matrix will use the original reviewed predictors only.</span></div>';
+  return `<div class="fe-confirmed"><b>${rows.length} derived field${rows.length===1?'':'s'} ready for local execution</b><span>They will be materialized in the browser and automatically added to the analytical matrix sent to the selected analysis/ML engine.</span></div><div class="fe-rec-list">${rows.map(x=>`<div class="fe-rec-item locked selected"><span class="fe-rec-copy"><span class="fe-rec-head"><b>${safe(x.output_field)}</b><em>Derived predictor</em></span><span class="fe-rec-transform">${safe((x.source_fields||[]).join(', '))} → ${safe(operationLabel(x.operation))}</span><small>Lineage · recommended by KU Analytical Intelligence · executed by browser</small></span></div>`).join('')}</div>`;
 }
 function render(){
   ensureStyles();
@@ -96,7 +117,7 @@ function render(){
   if(review.status===STATUS_ERROR){
     host.innerHTML=`<div class="head">Feature Engineering Recommendations</div><div class="body"><div class="fe-error"><b>Recommendation service unavailable</b><span>${safe(review.error||'The recommendation request could not be completed.')}</span></div><div class="fe-actions"><button type="button" class="btn" data-fe-retry>Retry recommendations</button><button type="button" class="btn ghost" data-fe-skip>Continue without FE recommendations</button></div></div>`;
     host.querySelector('[data-fe-retry]')?.addEventListener('click',()=>ensureRecommendations({force:true}));
-    host.querySelector('[data-fe-skip]')?.addEventListener('click',()=>{updateReview({status:STATUS_SKIPPED,reviewed:true,selectedIds:[],skippedReason:'service_unavailable'});render();syncApprovalGate()});
+    host.querySelector('[data-fe-skip]')?.addEventListener('click',()=>{updateReview({status:STATUS_SKIPPED,reviewed:true,selectedIds:[],executionPlan:{schema_version:'1.0',lineage:[],derived_fields:[]},lineage:[],derivedFields:[],skippedReason:'service_unavailable'});render();syncApprovalGate()});
     syncApprovalGate();return;
   }
   if(review.status===STATUS_SKIPPED){
@@ -106,16 +127,16 @@ function render(){
   const locked=Boolean(review.reviewed),domain=(review.domainHints||[]).map(x=>String(x).replaceAll('_',' ')).join(', ')||'general tabular';
   if(!items.length){
     host.innerHTML=`<div class="head">Feature Engineering Recommendations</div><div class="body"><div class="fe-intro"><div><b>No additional derived features recommended</b><span>KU Analytical Intelligence reviewed the current question and Profile Manifest and did not find a rule-based feature engineering recommendation that requires review.</span></div><span class="fe-domain">Domain hint · ${safe(domain)}</span></div><div class="fe-privacy-note">Profile-only request · field names and aggregate distribution/frequency summaries were sent; raw rows were not sent.</div></div>`;
-    if(!review.reviewed)updateReview({reviewed:true,selectedIds:[]});syncApprovalGate();return;
+    if(!review.reviewed)updateReview({reviewed:true,selectedIds:[],executionPlan:{schema_version:'1.0',lineage:[],derived_fields:[]},lineage:[],derivedFields:[]});syncApprovalGate();return;
   }
-  host.innerHTML=`<div class="head">Feature Engineering Recommendations</div><div class="body"><div class="fe-intro"><div><b>${locked?'Feature choices confirmed':'Review suggested derived features'}</b><span>Recommendations use field semantics, the analytical objective, and each field’s observed profile. Selected features will be created locally in the browser in the execution slice.</span></div><span class="fe-domain">Domain hint · ${safe(domain)}</span></div><div class="fe-privacy-note">Profile-only request · field names and aggregate distribution/frequency summaries were sent; raw rows were not sent.</div><div class="fe-rec-list">${items.map(item=>recommendationCard(item,selected.has(item.id),locked)).join('')}</div>${locked?`<div class="fe-confirmed"><b>${selected.size} feature recommendation${selected.size===1?'':'s'} approved</b><span>Your reviewed choices are stored in the Preparation Plan.</span></div><div class="fe-actions"><button type="button" class="btn ghost" data-fe-edit>Edit feature choices</button></div>`:`<div class="fe-actions"><button type="button" class="btn ghost" data-fe-all>Select all</button><button type="button" class="btn ghost" data-fe-none>Clear all</button><button type="button" class="btn primary" data-fe-confirm>Confirm feature choices</button></div>`}</div>`;
+  host.innerHTML=`<div class="head">Feature Engineering Recommendations</div><div class="body"><div class="fe-intro"><div><b>${locked?'Feature choices confirmed':'Review suggested derived features'}</b><span>Recommendations use field semantics, the analytical objective, and each field’s observed profile. Confirmed features are executed locally in the browser and enter the actual analytical matrix.</span></div><span class="fe-domain">Domain hint · ${safe(domain)}</span></div><div class="fe-privacy-note">Profile-only request · field names and aggregate distribution/frequency summaries were sent; raw rows were not sent.</div>${review.executionError?`<div class="fe-error"><b>Browser execution plan could not be compiled</b><span>${safe(review.executionError)}</span></div>`:''}<div class="fe-rec-list">${items.map(item=>recommendationCard(item,selected.has(item.id),locked)).join('')}</div>${locked?`${lineageHtml(review)}<div class="fe-actions"><button type="button" class="btn ghost" data-fe-edit>Edit feature choices</button></div>`:`<div class="fe-actions"><button type="button" class="btn ghost" data-fe-all>Select all</button><button type="button" class="btn ghost" data-fe-none>Clear all</button><button type="button" class="btn primary" data-fe-confirm>Confirm feature choices</button></div>`}</div>`;
   host.querySelectorAll('[data-fe-rec]').forEach(box=>box.addEventListener('change',()=>{
-    const next=new Set(unique(currentReview()?.selectedIds||[]));box.checked?next.add(box.dataset.feRec):next.delete(box.dataset.feRec);updateReview({selectedIds:[...next],reviewed:false});render();
+    const next=new Set(unique(currentReview()?.selectedIds||[]));box.checked?next.add(box.dataset.feRec):next.delete(box.dataset.feRec);updateReview({selectedIds:[...next],reviewed:false,executionPlan:null,lineage:[],derivedFields:[],executionError:null});render();
   }));
-  host.querySelector('[data-fe-all]')?.addEventListener('click',()=>{updateReview({selectedIds:items.map(x=>x.id),reviewed:false});render()});
-  host.querySelector('[data-fe-none]')?.addEventListener('click',()=>{updateReview({selectedIds:[],reviewed:false});render()});
-  host.querySelector('[data-fe-confirm]')?.addEventListener('click',()=>{updateReview({reviewed:true});render();syncApprovalGate()});
-  host.querySelector('[data-fe-edit]')?.addEventListener('click',()=>{updateReview({reviewed:false});render();syncApprovalGate()});
+  host.querySelector('[data-fe-all]')?.addEventListener('click',()=>{updateReview({selectedIds:items.map(x=>x.id),reviewed:false,executionPlan:null,lineage:[],derivedFields:[],executionError:null});render()});
+  host.querySelector('[data-fe-none]')?.addEventListener('click',()=>{updateReview({selectedIds:[],reviewed:false,executionPlan:null,lineage:[],derivedFields:[],executionError:null});render()});
+  host.querySelector('[data-fe-confirm]')?.addEventListener('click',confirmChoices);
+  host.querySelector('[data-fe-edit]')?.addEventListener('click',()=>{updateReview({reviewed:false,executionPlan:null,lineage:[],derivedFields:[],executionError:null});render();syncApprovalGate()});
   syncApprovalGate();
 }
 async function ensureRecommendations({force=false}={}){
@@ -125,7 +146,7 @@ async function ensureRecommendations({force=false}={}){
   const fp=fingerprintRequest(request),existing=currentReview();
   if(!force&&existing?.requestFingerprint===fp&&[STATUS_LOADING,STATUS_READY,STATUS_SKIPPED].includes(existing.status)){render();return existing}
   const serial=++requestSerial;
-  updateReview({status:STATUS_LOADING,reviewed:false,requestFingerprint:fp,recommendations:[],selectedIds:[],domainHints:[],error:null,recommenderVersion:null});render();
+  updateReview({status:STATUS_LOADING,reviewed:false,requestFingerprint:fp,recommendations:[],selectedIds:[],domainHints:[],error:null,recommenderVersion:null,executionPlan:null,lineage:[],derivedFields:[],executionError:null});render();
   try{
     const base=String(root.KU_ANALYTICS_API_BASE||'').replace(/\/$/,'');if(!base)throw new Error('Analytics API base is unavailable.');
     const response=await fetch(`${base}/recommend/feature-engineering`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(request)});
@@ -133,10 +154,10 @@ async function ensureRecommendations({force=false}={}){
     if(!response.ok)throw new Error(payload?.detail||`HTTP ${response.status}`);
     if(serial!==requestSerial||root.KUAppState?.getState?.().currentStep!=='prepare')return null;
     const recs=Array.isArray(payload?.recommendations)?payload.recommendations:[];
-    updateReview({status:STATUS_READY,reviewed:recs.length===0,requestFingerprint:fp,recommendations:recs,selectedIds:recs.map(x=>x.id),domainHints:payload?.domain_hints||[],warnings:payload?.warnings||[],recommenderVersion:payload?.recommender_version||null,error:null});render();return payload;
+    updateReview({status:STATUS_READY,reviewed:recs.length===0,requestFingerprint:fp,recommendations:recs,selectedIds:recs.map(x=>x.id),domainHints:payload?.domain_hints||[],warnings:payload?.warnings||[],recommenderVersion:payload?.recommender_version||null,error:null,executionPlan:recs.length?null:{schema_version:'1.0',lineage:[],derived_fields:[]},lineage:[],derivedFields:[],executionError:null});render();return payload;
   }catch(error){
     if(serial!==requestSerial)return null;
-    updateReview({status:STATUS_ERROR,reviewed:false,requestFingerprint:fp,error:error?.message||String(error),recommendations:[],selectedIds:[]});render();return null;
+    updateReview({status:STATUS_ERROR,reviewed:false,requestFingerprint:fp,error:error?.message||String(error),recommendations:[],selectedIds:[],executionPlan:null,lineage:[],derivedFields:[]});render();return null;
   }
 }
 function sync(){
@@ -151,5 +172,5 @@ function install(){
   },true);
   sync();
 }
-return Object.freeze({STATUS_LOADING,STATUS_READY,STATUS_ERROR,STATUS_SKIPPED,analysisIntent,buildRequest,fingerprintRequest,currentReview,isApprovalReady,ensureRecommendations,render,syncApprovalGate,install});
+return Object.freeze({STATUS_LOADING,STATUS_READY,STATUS_ERROR,STATUS_SKIPPED,analysisIntent,buildRequest,fingerprintRequest,currentReview,executionPlanFor,confirmChoices,isApprovalReady,ensureRecommendations,render,syncApprovalGate,install});
 });
