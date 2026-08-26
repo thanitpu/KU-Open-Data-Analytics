@@ -50,7 +50,7 @@ const {chromium}=require('playwright');
   assert.equal(target.analysis_role,'target');
 
   let text=await page.locator('#feRecommendationReview').innerText();
-  assert(text.includes('KU Analytical Intelligence'));
+  assert(text.includes('Review suggested derived features'));
   assert(text.includes('Profile-only request'));
   assert(text.includes('customer analytics'));
   assert.equal(await page.locator('#continueSetup').isDisabled(),true,'Preparation approval waits for FE review');
