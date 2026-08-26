@@ -18,7 +18,7 @@ const {chromium}=require('playwright');
   await page.click('[data-journey-step="analyze"]');
   await page.click('[data-question-type="predict-outcome"]');
   await page.selectOption('#analysisTarget','Income');
-  await page.waitForSelector('#kuMethodChoice');
+  await page.waitForFunction(()=>document.querySelector('#kuMethodChoice')?.innerText.includes('XGBoost Regression'));
   let text=await page.locator('#kuMethodChoice').innerText();
   assert(text.includes('Recommended method'));
   assert(text.includes('XGBoost Regression'));
@@ -28,6 +28,7 @@ const {chromium}=require('playwright');
 
   await page.check('input[name="analysisMethodMode"][value="custom"]');
   await page.waitForFunction(()=>window.KUAppState.getState().analysisPlan.methodMode==='custom');
+  await page.waitForFunction(()=>document.querySelector('#continuePrepare')?.disabled===true);
   assert.equal(await page.locator('#continuePrepare').isDisabled(),true,'custom mode with no methods should block Continue');
   await page.check('[data-analysis-method="linear-regression"]');
   await page.waitForFunction(()=>window.KUAppState.getState().analysisPlan.selectedMethods.includes('linear-regression'));
@@ -38,7 +39,7 @@ const {chromium}=require('playwright');
 
   await page.click('[data-question-type="explain-drivers"]');
   await page.selectOption('#analysisTarget','Income');
-  await page.waitForSelector('#kuMethodChoice');
+  await page.waitForFunction(()=>document.querySelector('#kuMethodChoice')?.innerText.includes('Spearman Correlation'));
   text=await page.locator('#kuMethodChoice').innerText();
   assert(text.includes('Pearson Correlation'));
   assert(text.includes('Spearman Correlation'));
