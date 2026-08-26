@@ -32,7 +32,7 @@ const RECOMMENDED_BY_ROUTE=Object.freeze({
   clustering:'kmeans-clustering',
   association:'mixed-association-screen'
 });
-const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const safe=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]));
 const unique=a=>[...new Set((Array.isArray(a)?a:[]).filter(Boolean))];
 const same=(a,b)=>JSON.stringify(unique(a).sort())===JSON.stringify(unique(b).sort());
 function manifestFromRoot(){
@@ -124,7 +124,7 @@ let observer=null,installed=false;
 function install(){
   if(installed||!root.document)return;installed=true;ensureStyles();
   const host=root.document.getElementById('aiAnalyticsView');
-  if(host&&typeof MutationObserver!=='undefined'){observer=new MutationObserver(()=>queueMicrotask(sync));observer.observe(host,{childList:true,subtree:true})}
+  if(host&&typeof MutationObserver!=='undefined'){observer=new MutationObserver(()=>queueMicrotask(sync));observer.observe(host,{childList:true,subtree:false})}
   root.document.addEventListener('ku:statechange',()=>queueMicrotask(sync));
   sync();
 }
