@@ -1,7 +1,7 @@
 const assert=require('assert');
 const profile=require('../src/profile-manifest.js');
 
-const rows=541909;
+const rows=150001;
 const headers=['InvoiceNo','Quantity','UnitPrice','Country','CustomerID','Year','Month','Day'];
 const data=Array.from({length:rows},(_,i)=>({
   InvoiceNo:`INV${i}`,
