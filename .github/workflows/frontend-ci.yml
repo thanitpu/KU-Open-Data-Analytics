@@ -22,6 +22,7 @@ jobs:
           node --check src/profile-manifest.js
           node --check src/profile-insights.js
           node --check src/method-selection.js
+          node --check src/fe-review.js
           node --check src/data-profile.js
           node --check src/ai-analytics.js
           node --check src/workflow-steps.js
@@ -46,6 +47,7 @@ jobs:
           node --check tests/profile_shell_wiring_smoke.js
           node --check tests/method_selection_smoke.js
           node --check tests/method_selection_browser_smoke.js
+          node --check tests/fe_review_browser_smoke.js
           node --check tests/public_product_visual_smoke.js
           node --check tests/responsive_sticky_smoke.js
           node --check tests/frontend_visual_smoke.js
@@ -89,6 +91,8 @@ jobs:
         run: node tests/profile_insights_browser_smoke.js
       - name: Step 3 method selection browser smoke
         run: node tests/method_selection_browser_smoke.js
+      - name: Step 4 FE recommendation review browser smoke
+        run: node tests/fe_review_browser_smoke.js
       - name: Responsive sticky shell smoke
         run: node tests/responsive_sticky_smoke.js
       - name: Public to Product browser integration smoke
