@@ -124,4 +124,4 @@ The foundation now covers Profile Manifest, visible Step 2 profile intelligence,
 7. Click **Edit feature choices**; approval becomes blocked again until reconfirmed.
 8. Existing group-comparison setup and route-specific preparation blockers must remain authoritative.
 9. When the recommendation service is unavailable, Retry and explicit Continue-without-FE paths must work.
-10. Remember: approved FE is stored only as a reviewed plan in this slice. Derived columns are not created or sent into ML until the browser FE executor slice.
+10. Approved FE is stored only as a reviewed plan in this slice. Derived columns are not created or sent into ML until the browser FE executor slice.
