@@ -81,12 +81,16 @@ def test_unreviewed_manifest_is_rejected():
 
 
 def test_target_leakage_in_feature_lineage_is_rejected():
-    df = pd.DataFrame({'Target': [10, 20], 'Leaky': [100, 400]})
+    df = pd.DataFrame({
+        'Target': [10, 20],
+        'Other': [2, 3],
+        'Leaky': [20, 60],
+    })
     manifest = _browser_manifest(
         ['Leaky'],
         [{
             'output_field': 'Leaky',
-            'source_fields': ['Target'],
+            'source_fields': ['Target', 'Other'],
             'operation': 'product',
             'executed_by': 'browser',
         }],
