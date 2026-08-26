@@ -88,6 +88,13 @@ function effectiveMethodIds(plan={},manifest=null){
   if(plan.methodMode===METHOD_MODE_CUSTOM)return unique(plan.selectedMethods).filter(id=>allowed.has(id));
   const rec=methods.find(m=>m.recommended);return rec?[rec.id]:[];
 }
+function planReadyForMethods(plan={}){
+  if(!plan.questionType||!plan.route)return false;
+  const targetOptional=['discover-segments','discover-association-rules'].includes(plan.questionType);
+  if(!targetOptional&&!plan.target)return false;
+  const need=targetOptional?2:1;
+  return unique(plan.predictors).length>=need;
+}
 function ensureStyles(){
   if(!root.document||root.document.querySelector('link[data-ku-method-selection]'))return;
   const link=root.document.createElement('link');link.rel='stylesheet';link.href='src/method-selection.css';link.dataset.kuMethodSelection='true';root.document.head.appendChild(link);
@@ -109,7 +116,7 @@ function renderInto(section,plan,manifest){
     const now=root.KUAppState?.getState?.().analysisPlan||plan,set=new Set(unique(now.selectedMethods));c.checked?set.add(c.dataset.analysisMethod):set.delete(c.dataset.analysisMethod);root.KUAppState?.updateAnalysisPlan({methodMode:METHOD_MODE_CUSTOM,selectedMethods:[...set]});
   }));
   const continueButton=root.document.getElementById('continuePrepare');
-  if(continueButton&&mode===METHOD_MODE_CUSTOM&&selected.size===0)continueButton.disabled=true;
+  if(continueButton)continueButton.disabled=!planReadyForMethods(plan)||(mode===METHOD_MODE_CUSTOM&&selected.size===0);
 }
 function sync(){
   ensureStyles();
@@ -128,5 +135,5 @@ function install(){
   root.document.addEventListener('ku:statechange',()=>queueMicrotask(sync));
   sync();
 }
-return Object.freeze({CATALOG,RECOMMENDED_BY_ROUTE,METHOD_MODE_RECOMMENDED,METHOD_MODE_CUSTOM,targetKind,suitableMethods,recommendedMethod,effectiveMethodIds,install,sync});
+return Object.freeze({CATALOG,RECOMMENDED_BY_ROUTE,METHOD_MODE_RECOMMENDED,METHOD_MODE_CUSTOM,targetKind,suitableMethods,recommendedMethod,effectiveMethodIds,planReadyForMethods,install,sync});
 });
