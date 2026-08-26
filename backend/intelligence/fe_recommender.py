@@ -17,7 +17,12 @@ def _norm(name):
 
 
 def _is_target(field, target):
-    return field.get('role') == 'target' or (target and field.get('name') == target)
+    return field.get('role') == 'target' or field.get('analysis_role') == 'target' or (target and field.get('name') == target)
+
+
+def _selected_for_analysis(field):
+    selected = field.get('selected_for_analysis')
+    return selected is not False and field.get('analysis_role') != 'context'
 
 
 def _is_numeric(field):
@@ -72,7 +77,7 @@ def recommend_features(payload):
 
     for field in fields:
         name = field.get('name')
-        if not name or _is_target(field, target):
+        if not name or _is_target(field, target) or not _selected_for_analysis(field):
             continue
         norm = _norm(name)
         profile = field.get('profile') or {}
@@ -133,19 +138,20 @@ def recommend_features(payload):
                 {'rare_threshold_pct': 1.0, 'replacement': 'Other'}
             ))
 
-    spend_fields = [f['name'] for f in fields if not _is_target(f, target) and _is_numeric(f) and (re.match(r'^mnt', _norm(f.get('name'))) or 'spend' in _norm(f.get('name')))]
+    selected_fields = [f for f in fields if _selected_for_analysis(f) and not _is_target(f, target)]
+    spend_fields = [f['name'] for f in selected_fields if _is_numeric(f) and (re.match(r'^mnt', _norm(f.get('name'))) or 'spend' in _norm(f.get('name')))]
     if 2 <= len(spend_fields) <= 12:
         candidates.append(_recommendation(
             'row_sum', spend_fields, 'Total_Spend',
-            'Several numeric fields appear to represent spending components; an aggregate can capture overall spending intensity while retaining the original components.',
+            'Several selected numeric fields appear to represent spending components; an aggregate can capture overall spending intensity while retaining the original components.',
             ['field_semantics', 'domain_knowledge', 'analysis_objective'], .82
         ))
 
-    purchase_fields = [f['name'] for f in fields if not _is_target(f, target) and _is_numeric(f) and ('purchase' in _norm(f.get('name')) and any(t in _norm(f.get('name')) for t in ['num', 'count', 'purchases']))]
+    purchase_fields = [f['name'] for f in selected_fields if _is_numeric(f) and ('purchase' in _norm(f.get('name')) and any(t in _norm(f.get('name')) for t in ['num', 'count', 'purchases']))]
     if 2 <= len(purchase_fields) <= 10:
         candidates.append(_recommendation(
             'row_sum', purchase_fields, 'Total_Purchases',
-            'Multiple purchase-count fields were detected; their total can summarize overall purchase activity across channels.',
+            'Multiple selected purchase-count fields were detected; their total can summarize overall purchase activity across channels.',
             ['field_semantics', 'domain_knowledge', 'analysis_objective'], .8
         ))
 
