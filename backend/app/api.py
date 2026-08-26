@@ -10,7 +10,7 @@ from .capabilities import get_capabilities
 from .schemas import FeatureEngineeringRecommendationRequest, FeatureEngineeringRecommendationResponse
 from intelligence.fe_recommender import recommend_features
 
-app = FastAPI(title='Automated Analytics Service', version='0.4.0')
+app = FastAPI(title='Automated Analytics Service', version='0.5.0')
 
 cors_origins = [
     x.strip() for x in os.getenv(
