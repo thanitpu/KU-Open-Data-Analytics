@@ -10,7 +10,7 @@ const {chromium}=require('playwright');
     document.getElementById('paste').value=[
       'Age,Spend,Income,Segment,Churn',
       '20,10,30,A,No','21,12,32,A,No','22,14,35,B,No','23,18,39,B,Yes','24,20,42,A,No',
-      '25,24,47,B,Yes','26,30,52,A,No','27,36,58,B,Yes','28,44,67,A,No','29,70,140,B,Yes'
+      '25,24,47,B,Yes','26,30,52,A,No','27,36,58,B,Yes','28,44,67,A,No','29,70,67,B,Yes'
     ].join('\n');
     usePaste();
   });
