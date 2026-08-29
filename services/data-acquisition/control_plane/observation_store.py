@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import sqlite3
+from contextlib import closing
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
@@ -42,7 +43,10 @@ class ObservationStore:
         return con
 
     def _init_schema(self) -> None:
-        with self.connect() as con:
+        # sqlite3.Connection.__exit__ commits/rolls back but does not itself
+        # guarantee an immediate close. Explicit closing is important on Windows,
+        # where an open SQLite handle prevents TemporaryDirectory cleanup.
+        with closing(self.connect()) as con, con:
             con.executescript(
                 """
                 CREATE TABLE IF NOT EXISTS acquisition_evidence (
@@ -105,7 +109,7 @@ class ObservationStore:
         raw_text = None
         if keep_raw:
             raw_text = raw.decode("utf-8", errors="replace") if isinstance(raw, bytes) else raw
-        with self.connect() as con:
+        with closing(self.connect()) as con, con:
             con.execute(
                 """INSERT INTO acquisition_evidence(
                     evidence_id,source_id,source_url,observed_at,lifecycle_stage,
@@ -132,7 +136,7 @@ class ObservationStore:
         digest = content_hash(canonical)
         observation_id = self._id("observation", source_id, source_url, observed_at,
                                   record_type, entity_key, technique, profile_fingerprint, digest)
-        with self.connect() as con:
+        with closing(self.connect()) as con, con:
             con.execute(
                 """INSERT INTO acquisition_observation(
                     observation_id,source_id,source_url,observed_at,lifecycle_stage,record_type,
@@ -150,7 +154,7 @@ class ObservationStore:
 
     def observations(self, source_id: str | None = None, limit: int = 1000) -> list[dict[str, Any]]:
         limit = max(1, min(int(limit), 10000))
-        with self.connect() as con:
+        with closing(self.connect()) as con, con:
             if source_id:
                 rows = con.execute("SELECT * FROM acquisition_observation WHERE source_id=? ORDER BY observed_at DESC LIMIT ?", (source_id, limit)).fetchall()
             else:
@@ -162,7 +166,7 @@ class ObservationStore:
 
     def summary(self, source_id: str | None = None) -> dict[str, Any]:
         where=" WHERE source_id=?" if source_id else ""; args=(source_id,) if source_id else ()
-        with self.connect() as con:
+        with closing(self.connect()) as con, con:
             total=con.execute("SELECT COUNT(*) c FROM acquisition_observation"+where,args).fetchone()["c"]
             groups=con.execute("SELECT validation_status,record_type,COUNT(*) c FROM acquisition_observation"+where+" GROUP BY validation_status,record_type",args).fetchall()
         return {"path":str(self.path),"source_id":source_id,"observations":total,
