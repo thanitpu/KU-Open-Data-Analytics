@@ -6,6 +6,7 @@ import re
 import socket
 import ssl
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -149,9 +150,18 @@ def main():
     ap.add_argument('--domains', default='ota,coffee,q_diving,beauty,it_retail')
     ap.add_argument('--output', default='validation/domain-live-probe.json')
     ap.add_argument('--timeout', type=int, default=12)
+    ap.add_argument('--workers', type=int, default=6)
     args = ap.parse_args()
     domains = {x.strip().lower().replace('-', '_') for x in args.domains.split(',') if x.strip()}
-    rows = [probe(x, timeout=args.timeout) for x in candidates(domains)]
+    items = candidates(domains)
+    rows = []
+    # One URL per candidate; bounded parallelism accelerates multi-domain screening
+    # without increasing repeated request frequency against any individual source.
+    with ThreadPoolExecutor(max_workers=max(1, min(args.workers, 8, len(items) or 1))) as ex:
+        futs = {ex.submit(probe, item, args.timeout): item for item in items}
+        for f in as_completed(futs):
+            rows.append(f.result())
+    rows.sort(key=lambda x: (str(x.get('domain')), str(x.get('candidate_id')), str(x.get('url'))))
     summary = {}
     for domain in sorted(domains):
         rr = [x for x in rows if x.get('domain') == domain]
@@ -165,6 +175,7 @@ def main():
         'schema': 'ku2d.domain-live-surface-probe.v1', 'generated_at': datetime.now(timezone.utc).isoformat(),
         'execution_environment': 'cloud-hosted-public-read-only',
         'policy': 'No login, CAPTCHA solving, proxy rotation or access-control bypass. Probe discovers public-readable surfaces only.',
+        'probe_concurrency': max(1, min(args.workers, 8, len(items) or 1)),
         'summary': summary, 'results': rows,
     }
     out = ROOT / args.output
