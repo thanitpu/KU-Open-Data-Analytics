@@ -1,0 +1,44 @@
+name: Gourmet Product Detail Access Probe
+
+on:
+  push:
+    branches:
+      - integration/data-acquisition-platform
+    paths:
+      - '.github/workflows/gourmet-product-probe.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: integration/data-acquisition-platform
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        working-directory: services/data-acquisition
+        run: python -m pip install -r requirements.txt
+      - name: Probe indexed official product details
+        working-directory: services/data-acquisition
+        env:
+          PYTHONPATH: .
+        run: python tools/LIVE_GOURMET_PRODUCT_PROBE.py
+      - name: Upload evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: gourmet-product-probe
+          path: docs/validation/gourmet-product-probe.json
+          retention-days: 30
+      - name: Commit compact evidence
+        run: |
+          git config user.name 'ku2d-acquisition-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add docs/validation/gourmet-product-probe.json
+          git commit -m 'Record Gourmet product detail access probe' || exit 0
+          git push origin HEAD:integration/data-acquisition-platform
