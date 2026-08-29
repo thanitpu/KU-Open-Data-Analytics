@@ -1,0 +1,13 @@
+{
+  "active_repository_path": "data/ku2d_repository.sqlite3",
+  "repositories": [
+    {
+      "name": "KU2D Default Data Repository",
+      "path": "data/ku2d_repository.sqlite3",
+      "last_used_at": null,
+      "is_default": true
+    }
+  ],
+  "default_repository_path": "data/ku2d_repository.sqlite3",
+  "note": "Portable repository defaults for development. Production uses KU2D_COMMERCE_REPOSITORY."
+}

@@ -1,0 +1,12 @@
+{
+  "schema": "ku2d.acquisition-operations.v2",
+  "operations_db": "data/ku2d_acquisition_ops.sqlite3",
+  "env_override": "KU2D_OPERATIONS_DB",
+  "local_fallback": "data/ku2d_acquisition_ops.sqlite3",
+  "observation_db": "data/ku2d_observations.sqlite3",
+  "observation_env_override": "KU2D_OBSERVATION_DB",
+  "scheduler_poll_minutes": 15,
+  "default_explore_sample_pages": 3,
+  "default_discovery_candidates": 10,
+  "note": "Runtime database paths are portable defaults. Production/staging should provide environment overrides and persistent storage."
+}

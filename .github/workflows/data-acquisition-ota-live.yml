@@ -1,0 +1,41 @@
+name: Data Acquisition OTA Live Validation
+
+on:
+  push:
+    branches:
+      - integration/data-acquisition-platform
+    paths:
+      - 'services/data-acquisition/acquisition/ota_techniques.py'
+      - 'services/data-acquisition/tools/LIVE_OTA_BOOKING_PROBE.py'
+      - 'services/data-acquisition/tools/SELF_TEST_OTA_BOOKING_v0.1.py'
+      - '.github/workflows/data-acquisition-ota-live.yml'
+  workflow_dispatch:
+
+jobs:
+  booking-public-search:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/data-acquisition
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Deterministic OTA regression
+        env:
+          PYTHONPATH: .
+        run: python tools/SELF_TEST_OTA_BOOKING_v0.1.py
+      - name: Explore and repeat-audit Booking public search
+        env:
+          PYTHONPATH: .
+        run: python tools/LIVE_OTA_BOOKING_PROBE.py --destination Bangkok --days-ahead 30 --nights 1 --output validation/ota-booking-live.json
+      - name: Upload OTA evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ku2d-ota-booking-live
+          path: services/data-acquisition/validation/ota-booking-live.json
+          if-no-files-found: error
+          retention-days: 14

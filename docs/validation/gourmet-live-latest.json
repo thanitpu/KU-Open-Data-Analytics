@@ -1,0 +1,615 @@
+{
+  "kind": "ku2d-live-source-validation",
+  "source_id": "SRC-003",
+  "source_name": "Gourmet Market",
+  "source_url": "https://gourmetmarketthailand.com/",
+  "started_at": "2026-08-29T07:33:30.468504+00:00",
+  "environment": "github-hosted-public-staging",
+  "safety": "public official-site access only; no authentication/challenge bypass",
+  "explore": {
+    "quality": {
+      "label": "usable",
+      "score": 41,
+      "technique_count": 8,
+      "techniques_with_evidence": 1
+    },
+    "record_count": 1,
+    "record_types": [
+      {
+        "type": "EndpointCandidate",
+        "count": 1
+      }
+    ],
+    "assigned_techniques": [
+      "gourmet_catalog_network"
+    ],
+    "track_recommendations": null,
+    "recommended_techniques": [
+      {
+        "technique": "gourmet_catalog_network",
+        "label": "Gourmet GraphQL / Network Catalog Discovery",
+        "score": 47,
+        "role": "discovery",
+        "materializable_records": 0,
+        "record_count": 1,
+        "record_types": [
+          {
+            "type": "EndpointCandidate",
+            "count": 1
+          }
+        ],
+        "potential": {
+          "api_candidates": 1,
+          "product_identity_candidates": 0,
+          "discovered_urls": 37,
+          "graphql_probe_ok": false,
+          "confidence": "medium",
+          "candidate_sample": [
+            "https://api-stark.gourmetmarketthailand.com/graphql"
+          ],
+          "gtin_sample": [],
+          "basis": "browser network on official Gourmet Market commerce infrastructure + read-only GraphQL probe"
+        },
+        "elapsed_seconds": 0,
+        "pages_checked": 1,
+        "tracks": [
+          "discovery"
+        ],
+        "track_scores": {
+          "discovery": 47
+        },
+        "track_evidence": {
+          "discovery": {
+            "track": "discovery",
+            "label": "Coverage / Discovery",
+            "technique": "gourmet_catalog_network",
+            "technique_label": "Gourmet GraphQL / Network Catalog Discovery",
+            "score": 47,
+            "discovered": 37,
+            "confidence": "medium",
+            "reason": "tracks the broadest official product universe/coverage surface without treating URL enumeration alone as product facts"
+          }
+        },
+        "engine_version": "0.24"
+      }
+    ],
+    "technique_results": [
+      {
+        "technique": "generic_sitemap",
+        "label": "Robots / Sitemap Discovery",
+        "status": "completed",
+        "record_count": 0,
+        "record_types": [],
+        "pages_checked": 0,
+        "elapsed_seconds": 0.23,
+        "potential": {
+          "discovered_urls": 0,
+          "estimated_extractable_records_low": 0,
+          "estimated_extractable_records_high": null,
+          "confidence": "low",
+          "data_fields": [
+            "official detail URL"
+          ],
+          "basis": "official robots.txt and sitemap XML"
+        },
+        "sample_records": [],
+        "diagnostics": [
+          {
+            "url": "https://gourmetmarketthailand.com/robots.txt",
+            "status": "failed",
+            "error": "HTTPError: HTTP Error 403: Forbidden"
+          },
+          {
+            "url": "https://gourmetmarketthailand.com/sitemap.xml",
+            "status": "failed",
+            "error": "HTTPError: HTTP Error 403: Forbidden"
+          },
+          {
+            "url": "https://gourmetmarketthailand.com/sitemap_index.xml",
+            "status": "failed",
+            "error": "HTTPError: HTTP Error 403: Forbidden"
+          }
+        ]
+      },
+      {
+        "technique": "generic_app_bundle",
+        "label": "JavaScript / App Bundle Mining",
+        "status": "completed",
+        "record_count": 0,
+        "record_types": [],
+        "pages_checked": 0,
+        "elapsed_seconds": 0.12,
+        "potential": {
+          "discovered_urls": 0,
+          "api_candidates": 0,
+          "reported_total": null,
+          "largest_embedded_array": null,
+          "estimated_extractable_records_low": 0,
+          "estimated_extractable_records_high": null,
+          "confidence": "low",
+          "data_fields": [
+            "structured objects",
+            "detail URLs",
+            "API candidates",
+            "pagination/count metadata"
+          ],
+          "basis": "official HTML/application JSON/JavaScript bundles"
+        },
+        "sample_records": [],
+        "diagnostics": [
+          {
+            "url": "https://gourmetmarketthailand.com/",
+            "error": "HTTPError: HTTP Error 403: Forbidden"
+          }
+        ]
+      },
+      {
+        "technique": "generic_browser_network",
+        "label": "Browser Network / API Discovery",
+        "status": "completed",
+        "record_count": 0,
+        "record_types": [],
+        "pages_checked": 1,
+        "elapsed_seconds": 7.74,
+        "potential": {
+          "discovered_urls": 3,
+          "api_candidates": 0,
+          "estimated_extractable_records_low": 0,
+          "estimated_extractable_records_high": null,
+          "confidence": "low",
+          "data_fields": [
+            "XHR/fetch URL",
+            "API/search/catalog endpoint candidate"
+          ],
+          "basis": "local Chrome/Edge network log"
+        },
+        "sample_records": [],
+        "diagnostics": [
+          {
+            "url": "https://gourmetmarketthailand.com/",
+            "browser": "/usr/bin/google-chrome",
+            "network_urls": 3,
+            "api_candidates": 0,
+            "error": "829/073337.054302:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[2318:2318:0829/073337.061197:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2318:2388:0829/073337.061517:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2318:2318:0829/073337.105776:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2318:2388:0829/073337.105844:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2318:2318:0829/073337.167007:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n"
+          }
+        ]
+      },
+      {
+        "technique": "generic_api_probe",
+        "label": "Discovered JSON/API Probe",
+        "status": "completed",
+        "record_count": 0,
+        "record_types": [],
+        "pages_checked": 0,
+        "elapsed_seconds": 0.04,
+        "potential": {
+          "discovered_urls": 0,
+          "api_candidates_probed": 0,
+          "reported_total": null,
+          "reported_pages": null,
+          "estimated_extractable_records_low": 0,
+          "estimated_extractable_records_high": null,
+          "confidence": "low",
+          "data_fields": [
+            "structured API records",
+            "pagination/count metadata"
+          ],
+          "basis": "successful JSON responses from official same-site endpoints"
+        },
+        "sample_records": [],
+        "diagnostics": [
+          {
+            "url": "https://gourmetmarketthailand.com/",
+            "error": "HTTPError: HTTP Error 403: Forbidden"
+          }
+        ]
+      },
+      {
+        "technique": "gourmet_graphql_catalog",
+        "label": "Gourmet Market GraphQL Product Catalog",
+        "status": "completed",
+        "record_count": 0,
+        "record_types": [],
+        "pages_checked": 1,
+        "elapsed_seconds": 0,
+        "potential": {
+          "product_records": 0,
+          "price_completeness_pct": 0,
+          "sku_completeness_pct": 0,
+          "graphql_documents_discovered": 0,
+          "graphql_operations_probed": 0,
+          "graphql_probe_ok": false,
+          "confidence": "low",
+          "operational_config": {
+            "graphql_endpoint": "https://api-stark.gourmetmarketthailand.com/graphql",
+            "graphql_operation": "",
+            "graphql_query_hash": "",
+            "graphql_query": "",
+            "graphql_variables": {},
+            "commerce_surface": "https://gourmetmarketthailand.com/",
+            "official_domain": "gourmetmarketthailand.com"
+          },
+          "data_fields": [
+            "product name",
+            "SKU/GTIN",
+            "brand",
+            "category",
+            "current price",
+            "regular price",
+            "product URL"
+          ],
+          "basis": "official Gourmet Market GraphQL endpoint + public Next.js query documents"
+        },
+        "sample_records": [],
+        "diagnostics": [
+          {
+            "stage": "graphql-probe",
+            "url": "https://api-stark.gourmetmarketthailand.com/graphql",
+            "status": "failed",
+            "http_status": 403,
+            "error": "HTTPError: HTTP Error 403: Forbidden",
+            "bytes": 0
+          },
+          {
+            "stage": "gourmet-bundle",
+            "status": "failed",
+            "error": "HTTPError: HTTP Error 403: Forbidden"
+          }
+        ]
+      },
+      {
+        "technique": "gourmet_rendered_catalog",
+        "label": "Gourmet Market Rendered Product Cards",
+        "status": "completed",
+        "record_count": 0,
+        "record_types": [],
+        "pages_checked": 1,
+        "elapsed_seconds": 0,
+        "potential": {
+          "product_records": 0,
+          "price_completeness_pct": 0,
+          "sku_completeness_pct": 0,
+          "rendered_product_images": 0,
+          "confidence": "low",
+          "operational_config": {
+            "catalog_url": "https://gourmetmarketthailand.com/",
+            "identity_source": "official-product-image-gtin",
+            "commerce_surface": "https://gourmetmarketthailand.com/",
+            "official_domain": "gourmetmarketthailand.com"
+          },
+          "data_fields": [
+            "product name",
+            "SKU/GTIN",
+            "current price",
+            "regular price",
+            "product URL",
+            "image URL"
+          ],
+          "basis": "rendered Gourmet Market product cards + GTIN-bearing official product images"
+        },
+        "sample_records": [],
+        "diagnostics": [
+          {
+            "stage": "gourmet-rendered",
+            "status": "fetched",
+            "browser": "/usr/bin/google-chrome",
+            "dom_bytes": 925,
+            "product_images": 0,
+            "gtin_images": 0,
+            "cards_with_price": 0,
+            "product_links": 0
+          }
+        ]
+      },
+      {
+        "technique": "gourmet_promotion_surface",
+        "label": "Gourmet Market Official Promotion Surface",
+        "status": "completed",
+        "record_count": 0,
+        "record_types": [],
+        "pages_checked": 1,
+        "elapsed_seconds": 0,
+        "potential": {
+          "promotion_records": 0,
+          "confidence": "low",
+          "basis": "official Gourmet Market rendered promotion/brochure surfaces + source-stated product price promotions"
+        },
+        "sample_records": [],
+        "diagnostics": [
+          {
+            "stage": "gourmet-promotion",
+            "status": "fetched",
+            "promotion_records": 0,
+            "browser": "/usr/bin/google-chrome",
+            "dom_bytes": 925
+          }
+        ]
+      },
+      {
+        "technique": "gourmet_catalog_network",
+        "label": "Gourmet GraphQL / Network Catalog Discovery",
+        "status": "completed",
+        "record_count": 1,
+        "record_types": [
+          {
+            "type": "EndpointCandidate",
+            "count": 1
+          }
+        ],
+        "pages_checked": 1,
+        "elapsed_seconds": 0,
+        "potential": {
+          "api_candidates": 1,
+          "product_identity_candidates": 0,
+          "discovered_urls": 37,
+          "graphql_probe_ok": false,
+          "confidence": "medium",
+          "candidate_sample": [
+            "https://api-stark.gourmetmarketthailand.com/graphql"
+          ],
+          "gtin_sample": [],
+          "basis": "browser network on official Gourmet Market commerce infrastructure + read-only GraphQL probe"
+        },
+        "sample_records": [
+          {
+            "record_type": "EndpointCandidate",
+            "title": "https://api-stark.gourmetmarketthailand.com/graphql",
+            "source_url": "https://api-stark.gourmetmarketthailand.com/graphql",
+            "source_tag": "Technical",
+            "provenance": "gourmet-network"
+          }
+        ],
+        "diagnostics": [
+          {
+            "stage": "gourmet-network",
+            "status": "captured",
+            "network_urls": 3,
+            "all_network_urls": 37,
+            "graphql_candidates": 1,
+            "product_gtin_candidates": 0,
+            "graphql_probe_ok": false,
+            "graphql_http_status": 403,
+            "browser": "/usr/bin/google-chrome",
+            "error": null
+          }
+        ]
+      }
+    ]
+  },
+  "persisted_assignment": [
+    {
+      "track_name": null,
+      "technique": "gourmet_catalog_network",
+      "label": "Gourmet GraphQL / Network Catalog Discovery",
+      "score": 47,
+      "record_count": 1,
+      "engine_version": null
+    }
+  ],
+  "audit": {
+    "audit_passed": false,
+    "quality_score": 45,
+    "quality_label": "moderate",
+    "hard_failures": [
+      "usable_records",
+      "product_price_track",
+      "product_catalog_coverage",
+      "product_price",
+      "product_semantic_quality",
+      "repeatability",
+      "product_track_repeatability",
+      "provenance"
+    ],
+    "gate_checks": {
+      "best_technique_profile": {
+        "passed": true,
+        "value": [
+          "gourmet_catalog_network"
+        ],
+        "required": "at least one assigned Best Acquisition Technique"
+      },
+      "technique_execution": {
+        "passed": true,
+        "value": 100.0,
+        "required": ">=80% assigned techniques completed"
+      },
+      "usable_records": {
+        "passed": false,
+        "value": 0,
+        "required": ">0 repository-ready records from assigned techniques"
+      },
+      "product_price_track": {
+        "passed": false,
+        "value": null,
+        "required": "Retail catalog source must have an assigned Product & Price acquisition track"
+      },
+      "product_catalog_coverage": {
+        "passed": false,
+        "value": 0,
+        "required": ">=5 product records for this retail catalog audit sample"
+      },
+      "product_price": {
+        "passed": false,
+        "value": 0.0,
+        "required": ">=80% price completeness; retail catalog source also requires product records"
+      },
+      "product_semantic_quality": {
+        "passed": false,
+        "value": 0.0,
+        "required": ">=80% product rows must have plausible product identity + price and must not be coupon/marketing text"
+      },
+      "promotion_track_yield": {
+        "passed": true,
+        "value": {
+          "track": null,
+          "records": 0
+        },
+        "required": "If a Promotion track is assigned, it must materialize at least one promotion record"
+      },
+      "repeatability": {
+        "passed": false,
+        "value": 0.0,
+        "required": ">=70% using the same technique profile"
+      },
+      "product_track_repeatability": {
+        "passed": false,
+        "value": 0.0,
+        "required": ">=70% Product & Price repeatability for retail catalog sources"
+      },
+      "provenance": {
+        "passed": false,
+        "value": 0.0,
+        "required": ">=95% source URL"
+      }
+    },
+    "warnings": [
+      {
+        "code": "promotion-track-not-assigned",
+        "message": "No Promotion acquisition track is currently assigned for this retail source; product/price acquisition may still pass, but promotion coverage is incomplete."
+      }
+    ],
+    "field_stats": null,
+    "repeatability": {
+      "first_records": 0,
+      "second_records": 0,
+      "key_overlap": 0,
+      "repeatability_pct": 0.0,
+      "set_similarity_pct": 0.0,
+      "product": {
+        "first_records": 0,
+        "second_records": 0,
+        "key_overlap": 0,
+        "repeatability_pct": 0.0,
+        "set_similarity_pct": 0.0
+      },
+      "promotion": {
+        "first_records": 0,
+        "second_records": 0,
+        "key_overlap": 0,
+        "repeatability_pct": 0.0,
+        "set_similarity_pct": 0.0
+      },
+      "product_repeatability_pct": 0.0,
+      "promotion_repeatability_pct": 0.0,
+      "technique_profile_fingerprint": "eaa30c908d0a03b8"
+    },
+    "technique_profile": {
+      "source_of_truth": "Best Acquisition Technique(s)",
+      "assigned_techniques": [
+        "gourmet_catalog_network"
+      ],
+      "fingerprint": "eaa30c908d0a03b8",
+      "assignments": [
+        {
+          "source_id": "SRC-003",
+          "technique": "gourmet_catalog_network",
+          "label": "Gourmet GraphQL / Network Catalog Discovery",
+          "score": 47,
+          "rank_no": 1,
+          "assigned": 1,
+          "record_count": 1,
+          "tested_at": "2026-08-29T07:33:38.364835+00:00",
+          "updated_at": "2026-08-29T07:33:38.364835+00:00",
+          "evidence": {
+            "technique": "gourmet_catalog_network",
+            "label": "Gourmet GraphQL / Network Catalog Discovery",
+            "score": 47,
+            "role": "discovery",
+            "materializable_records": 0,
+            "record_count": 1,
+            "record_types": [
+              {
+                "type": "EndpointCandidate",
+                "count": 1
+              }
+            ],
+            "potential": {
+              "api_candidates": 1,
+              "product_identity_candidates": 0,
+              "discovered_urls": 37,
+              "graphql_probe_ok": false,
+              "confidence": "medium",
+              "candidate_sample": [
+                "https://api-stark.gourmetmarketthailand.com/graphql"
+              ],
+              "gtin_sample": [],
+              "basis": "browser network on official Gourmet Market commerce infrastructure + read-only GraphQL probe"
+            },
+            "elapsed_seconds": 0,
+            "pages_checked": 1,
+            "tracks": [
+              "discovery"
+            ],
+            "track_scores": {
+              "discovery": 47
+            },
+            "track_evidence": {
+              "discovery": {
+                "track": "discovery",
+                "label": "Coverage / Discovery",
+                "technique": "gourmet_catalog_network",
+                "technique_label": "Gourmet GraphQL / Network Catalog Discovery",
+                "score": 47,
+                "discovered": 37,
+                "confidence": "medium",
+                "reason": "tracks the broadest official product universe/coverage surface without treating URL enumeration alone as product facts"
+              }
+            },
+            "engine_version": "0.24"
+          }
+        }
+      ],
+      "tracks": {
+        "discovery": {
+          "technique": "gourmet_catalog_network",
+          "label": "Gourmet GraphQL / Network Catalog Discovery",
+          "score": 47,
+          "evidence": {
+            "track": "discovery",
+            "label": "Coverage / Discovery",
+            "technique": "gourmet_catalog_network",
+            "technique_label": "Gourmet GraphQL / Network Catalog Discovery",
+            "score": 47,
+            "discovered": 37,
+            "confidence": "medium",
+            "reason": "tracks the broadest official product universe/coverage surface without treating URL enumeration alone as product facts"
+          }
+        }
+      },
+      "execution": {
+        "assigned_count": 1,
+        "executed_count": 1,
+        "techniques_with_output": 1,
+        "execution_pct": 100.0,
+        "details": [
+          {
+            "technique": "gourmet_catalog_network",
+            "label": "Gourmet GraphQL / Network Catalog Discovery",
+            "status": "completed",
+            "record_count": 1,
+            "pages_checked": 1,
+            "potential": {
+              "api_candidates": 1,
+              "product_identity_candidates": 0,
+              "discovered_urls": 36,
+              "graphql_probe_ok": false,
+              "confidence": "medium",
+              "candidate_sample": [
+                "https://api-stark.gourmetmarketthailand.com/graphql"
+              ],
+              "gtin_sample": [],
+              "basis": "browser network on official Gourmet Market commerce infrastructure + read-only GraphQL probe"
+            }
+          }
+        ]
+      },
+      "adapter": "best-technique:gourmet_catalog_network",
+      "legacy_fallback_used": false
+    },
+    "technique_tracks": null,
+    "sample_records": []
+  },
+  "approved": false,
+  "approval_withheld_reason": "Deep Audit did not pass all hard gates.",
+  "finished_at": "2026-08-29T07:33:39.635371+00:00"
+}

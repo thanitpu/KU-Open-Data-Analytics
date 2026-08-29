@@ -1,0 +1,69 @@
+{
+  "schema": "ku2d.accessibility-levels.v1",
+  "version": 1,
+  "levels": [
+    {
+      "level": 0,
+      "name": "Unknown",
+      "description": "Not yet verified",
+      "default_policy": {
+        "cadence": "manual-preflight",
+        "max_pages": 1,
+        "retry": "none"
+      }
+    },
+    {
+      "level": 1,
+      "name": "Open",
+      "description": "Public content is consistently accessible with a verified low-friction method.",
+      "default_policy": {
+        "cadence": "daily",
+        "max_pages": 25,
+        "retry": "conservative",
+        "min_delay_seconds": 1.5
+      }
+    },
+    {
+      "level": 2,
+      "name": "Tuned",
+      "description": "Public but requires source-specific adapter, headers, endpoint choice, pagination or rendering strategy.",
+      "default_policy": {
+        "cadence": "daily-or-weekly",
+        "max_pages": 15,
+        "retry": "low",
+        "min_delay_seconds": 3
+      }
+    },
+    {
+      "level": 3,
+      "name": "Sensitive",
+      "description": "Public but access is unstable, rate-limited, challenged or block-prone.",
+      "default_policy": {
+        "cadence": "weekly-or-manual",
+        "max_pages": 8,
+        "retry": "very-low",
+        "min_delay_seconds": 8
+      }
+    },
+    {
+      "level": 4,
+      "name": "Authenticated",
+      "description": "Authorized API/login/session is required; cadence follows granted policy.",
+      "default_policy": {
+        "cadence": "policy-defined",
+        "max_pages": 50,
+        "retry": "policy-defined"
+      }
+    },
+    {
+      "level": 5,
+      "name": "Restricted",
+      "description": "Automated acquisition is unsuitable or not approved; metadata/manual/approved channel only.",
+      "default_policy": {
+        "cadence": "manual",
+        "max_pages": 0,
+        "retry": "none"
+      }
+    }
+  ]
+}

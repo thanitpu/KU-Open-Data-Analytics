@@ -1,0 +1,22 @@
+{
+  "schema": "ku2d.repository-profiles.v2",
+  "active_profile": "commerce",
+  "profiles": [
+    {
+      "profile_id": "commerce",
+      "name": "KU2D Commerce Repository",
+      "repository_type": "commerce",
+      "path": "data/ku2d_repository.sqlite3",
+      "env_override": "KU2D_COMMERCE_REPOSITORY",
+      "description": "Primary acquired data repository. Use a persistent production path via environment override."
+    },
+    {
+      "profile_id": "q-diving",
+      "name": "Q Diving Knowledge",
+      "repository_type": "knowledge-diving",
+      "path": "data/q_diving_repository.sqlite3",
+      "env_override": "KU2D_Q_DIVING_REPOSITORY",
+      "description": "Specialized knowledge repository; use a persistent path via environment override."
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+from __future__ import annotations
+import re,sys
+from pathlib import Path
+from urllib.parse import urlparse
+ROOT=Path(__file__).resolve().parents[1]
+PROV=ROOT/"acquisition"/"providers"
+for p in (ROOT/"acquisition",ROOT/"repository",PROV):
+    if str(p) not in sys.path:sys.path.insert(0,str(p))
+from unified_acquisition import acquire as generic_acquire
+from actual_acquisition import discover as commerce_discover
+from acquisition_quality import quality_report
+from source_adapters import adapter_for
+from serper_provider import search as serper_search, key_status as serper_key_status
+from source_discovery import search_web as public_search_web
+from technique_strategy import explore_with_strategy
+
+
+def explain_failure(result,url):
+    err=str((result or {}).get("error") or "")
+    low=err.lower()
+    if "certificate_verify_failed" in low or "certificate verify failed" in low:
+        return {"reason_code":"ssl-certificate-verification",
+          "reason":"KU2D could not verify the site's TLS/SSL certificate chain from this Python environment.",
+          "blocked":False,
+          "next_step":"This does not by itself mean the website blocked KU2D. Fix/update the local CA certificate bundle or use a trusted HTTP client configuration; do not disable certificate verification as the default."}
+    if "403" in low or "forbidden" in low:
+        return {"reason_code":"http-403","reason":"The server refused this request (HTTP 403).",
+          "blocked":True,"next_step":"The site may require browser headers, cookies, authentication, anti-bot handling, or an official API."}
+    if "429" in low:
+        return {"reason_code":"http-429","reason":"The source rate-limited the request (HTTP 429).",
+          "blocked":True,"next_step":"Reduce acquisition frequency/back off and prefer an official API/feed when available."}
+    if "401" in low:
+        return {"reason_code":"http-401","reason":"Authentication is required (HTTP 401).","blocked":True,
+          "next_step":"Use an authorized API/session rather than public-page acquisition."}
+    if "timed out" in low or "timeout" in low:
+        return {"reason_code":"timeout","reason":"The source did not respond before the acquisition timeout.","blocked":None,
+          "next_step":"Retry later or use a source-specific adapter/browser/API if the site is JavaScript-heavy."}
+    return {"reason_code":"fetch-failed","reason":err or "The source could not be fetched.","blocked":None,
+      "next_step":"Inspect HTTP/network diagnostics and try a source-specific adapter or alternate public URL."}
+
+def content_quality(text,title=""):
+    t=(text or "").strip();low=t.lower()
+    nav_terms=["sign in","sign up","privacy","cookie","support","contact","forum rules","view new content","all activity",
+               "facebook","instagram","tiktok","youtube"]
+    nav_hits=sum(low.count(x) for x in nav_terms)
+    words=re.findall(r"[A-Za-z\u0E00-\u0E7F]+",t)
+    unique=len(set(w.lower() for w in words));n=len(words)
+    substantive=max(0,n-nav_hits*3)
+    score=0
+    if len(t)>=500:score+=20
+    if len(t)>=2000:score+=15
+    if n>=100:score+=15
+    if unique>=60:score+=15
+    if title:score+=10
+    nav_ratio=min(1,(nav_hits*3)/max(1,n))
+    score+=max(0,25-round(nav_ratio*50))
+    label="good" if score>=75 else ("usable" if score>=50 else "weak")
+    warnings=[]
+    if nav_ratio>.12:warnings.append("High navigation/chrome content; page extraction may include menus rather than the target article.")
+    if n<80:warnings.append("Very little substantive text was extracted.")
+    return {"score":min(100,score),"label":label,"word_count":n,"unique_words":unique,
+            "navigation_ratio":round(nav_ratio,3),"warnings":warnings}
+
+def _host(url):
+    try:return urlparse(url).netloc.lower().removeprefix("www.")
+    except:return ""
+def _tags(text,limit=20):
+    words=re.findall(r"[A-Za-z][A-Za-z0-9+-]{2,}|[\u0E00-\u0E7F]{3,}",text or "")
+    stop={"https","www","com","the","and","for","with","this","that","จาก","และ","ของ","ที่","ใน","เป็น"}
+    freq={}
+    for w in words:
+        k=w.lower()
+        if k in stop:continue
+        freq[k]=freq.get(k,0)+1
+    return [{"tag":k,"count":v} for k,v in sorted(freq.items(),key=lambda kv:(-kv[1],kv[0]))[:limit]]
+
+def explore_url(url,domain="General",purpose="research_evidence",max_pages=3,techniques=None,progress_callback=None):
+    m=explore_with_strategy(url,domain,purpose,max(1,min(max_pages,8)),techniques,progress_callback=progress_callback)
+    total=m.get("record_count",0); unique=m.get("unique_sample_record_count",0)
+    useful=sum(1 for x in m.get("technique_results") or [] if x.get("record_count",0)>0)
+    q={"label":"good" if useful>=2 and total>0 else ("usable" if useful else "weak"),
+       "score":min(95,30+useful*10+min(25,total)) if useful else 20,
+       "technique_count":len(m.get("technique_results") or []),"techniques_with_evidence":useful}
+    text=" ".join(str(r) for r in (m.get("sample_records") or [])[:30])
+    best=m.get("recommended_techniques") or []
+    return {"status":"completed","mode":"adaptive-technique-explore","url":url,"domain":domain,
+      "purpose":purpose,"adapter":"adaptive-technique-bench",
+      "pages_checked":sum(x.get("pages_checked",0) for x in m.get("technique_results") or []),
+      "record_count":total,"unique_sample_record_count":unique,"record_types":m.get("record_types"),"quality":q,"tags":_tags(text),
+      "sample_records":m.get("sample_records") or [],"diagnostics":[],
+      "techniques_available":m.get("techniques_available"),"techniques_selected":m.get("techniques_selected"),
+      "technique_results":m.get("technique_results"),"recommended_techniques":best,"assigned_techniques":m.get("assigned_techniques") or [],
+      "potential_coverage":m.get("potential_coverage") or [],
+      "recommendation":"add-to-monitoring" if best else "review-source"}
+
+def discovery_queries(query_text,query_type="topic",domain="General"):
+    q=(query_text or "").strip()
+    base=[
+      f'{q} official',
+      f'{q} Thailand',
+      f'{q} review experience',
+      f'{q} price promotion' if query_type in {"product","domain","source"} else f'{q} guide reference',
+    ]
+    if query_type=="product":base += [f'{q} retailer Thailand',f'{q} marketplace Thailand']
+    if query_type=="topic":base += [f'{q} forum discussion',f'{q} expert guidance']
+    if query_type=="domain":base += [f'best {q} websites Thailand',f'{q} brands retailers']
+    seen=[] 
+    for x in base:
+        if x not in seen:seen.append(x)
+    return seen
+
+def discover_sources(query_text,query_type="topic",domain="General",num_per_query=5,max_candidates=20):
+    queries=discovery_queries(query_text,query_type,domain);merged={};diag=[]
+    serper_ready=bool(serper_key_status().get("configured")); provider="serper" if serper_ready else "public-web-fallback"
+    # Public fallback is intentionally bounded; it keeps Discovery useful without copying API secrets.
+    effective_queries=queries if serper_ready else queries[:4]
+    for q in effective_queries:
+        try:
+            if serper_ready:
+                raw=(serper_search(q,num=max(1,min(num_per_query,10))).get("organic") or [])
+            else:
+                raw=public_search_web(q,limit=max(1,min(num_per_query,6)),timeout=15)
+            diag.append({"query":q,"status":"ok","count":len(raw),"provider":provider})
+            for i,x in enumerate(raw,1):
+                u=x.get("url")
+                if not u:continue
+                host=_host(u); pos=x.get("position") or i
+                if u not in merged:
+                    merged[u]={"url":u,"host":host,"title":x.get("title") or u,"snippet":x.get("snippet") or "",
+                               "found_by_queries":[q],"position":pos,"provider":provider}
+                else:merged[u]["found_by_queries"].append(q)
+        except Exception as e:diag.append({"query":q,"status":"error","error":str(e),"provider":provider})
+    rows=list(merged.values()); rows.sort(key=lambda x:(x.get("position") or 99,x["host"],x["url"]))
+    chosen=[];perhost={}
+    for x in rows:
+        if perhost.get(x["host"],0)>=3:continue
+        chosen.append(x);perhost[x["host"]]=perhost.get(x["host"],0)+1
+        if len(chosen)>=max_candidates:break
+    return {"status":"completed","query_text":query_text,"query_type":query_type,"domain":domain,
+      "queries":effective_queries,"candidate_count":len(chosen),"candidates":chosen,"diagnostics":diag,"provider":provider,
+      "provider_note":"Serper configured." if serper_ready else "Serper key is not configured; using bounded public-web discovery fallback.",
+      "note":"Discovery results are candidates only. Explore/sample a URL before adding it to recurring monitoring."}

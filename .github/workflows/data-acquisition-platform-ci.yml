@@ -1,0 +1,108 @@
+name: Data Acquisition Platform CI
+
+on:
+  push:
+    branches:
+      - integration/data-acquisition-platform
+    paths:
+      - 'services/data-acquisition/**'
+      - 'docs/DATA_ACQUISITION_NORTH_STAR.md'
+      - '.github/workflows/data-acquisition-platform-ci.yml'
+  pull_request:
+    paths:
+      - 'services/data-acquisition/**'
+      - 'docs/DATA_ACQUISITION_NORTH_STAR.md'
+      - '.github/workflows/data-acquisition-platform-ci.yml'
+  workflow_dispatch:
+
+jobs:
+  contract-and-foundation:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/data-acquisition
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate architecture contract
+        working-directory: .
+        shell: bash
+        run: |
+          test -f docs/DATA_ACQUISITION_NORTH_STAR.md
+          test -f services/data-acquisition/README.md
+          grep -q 'Discover → Explore → Deep Audit → Human Approve → Scheduled Acquire' docs/DATA_ACQUISITION_NORTH_STAR.md
+      - name: Install service dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Compile adaptive platform
+        run: python -m compileall -q acquisition api repository control_plane service tools
+      - name: Test observation store, scheduler policy, domain playbooks and full lifecycle staging
+        env:
+          KU2D_OPERATIONS_DB: /tmp/ku2d_platform_ops.sqlite3
+          KU2D_OBSERVATION_DB: /tmp/ku2d_platform_obs.sqlite3
+          PYTHONPATH: .
+        run: |
+          rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
+          python tools/SELF_TEST_PLATFORM_FOUNDATION.py
+          rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
+          python tools/SELF_TEST_SCHEDULER_POLICY.py
+          python tools/SELF_TEST_EXECUTION_ENVIRONMENT.py
+          python tools/SELF_TEST_DOMAIN_PLAYBOOKS.py
+          python tools/SELF_TEST_OTA_BOOKING_v0.1.py
+          rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
+          python tools/SELF_TEST_LIFECYCLE_ACCEPTANCE.py
+          rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
+          python tools/SELF_TEST_PROFILE_INVALIDATION.py
+          python tools/SELF_TEST_GOURMET_APPROVAL_TRACKS.py
+
+  supermarket-regressions:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/data-acquisition
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install service dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Compile service
+        run: python -m compileall -q acquisition api repository control_plane service tools
+      - name: Run supermarket regression corpus
+        env:
+          KU2D_OPERATIONS_DB: /tmp/ku2d_acquisition_ops.sqlite3
+          KU2D_OBSERVATION_DB: /tmp/ku2d_acquisition_obs.sqlite3
+          PYTHONPATH: .
+        run: |
+          rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
+          python tools/SELF_TEST_LOTUS_v0.25.py
+          python tools/SELF_TEST_SUPERMARKETS_v0.25.py
+          python tools/SELF_TEST_TOPS_v0.27.py
+          python tools/SELF_TEST_TOPS_AUDIT_v0.27.py
+          python tools/SELF_TEST_GOURMET_v0.28.py
+          python tools/SELF_TEST_GOURMET_DETAIL_v0.29.py
+          python tools/SELF_TEST_GOURMET_APPROVAL_TRACKS.py
+
+  live-smoke:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    environment: data-acquisition-staging
+    defaults:
+      run:
+        working-directory: services/data-acquisition
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install service dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Live public-source smoke test
+        env:
+          KU2D_EXECUTION_ENVIRONMENT: cloud-hosted
+          KU2D_OPERATIONS_DB: /tmp/ku2d_live_ops.sqlite3
+          KU2D_OBSERVATION_DB: /tmp/ku2d_live_obs.sqlite3
+          PYTHONPATH: .
+        run: python tools/LIVE_SMOKE_SUPERMARKETS.py --no-approve --no-store

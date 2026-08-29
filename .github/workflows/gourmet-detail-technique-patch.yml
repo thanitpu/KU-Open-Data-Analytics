@@ -1,0 +1,54 @@
+name: Integrate Gourmet Product Detail Technique
+
+on:
+  push:
+    branches:
+      - integration/data-acquisition-platform
+    paths:
+      - services/data-acquisition/tools/PATCH_GOURMET_DETAIL_TECHNIQUE.py
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: integration/data-acquisition-platform
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply deterministic integration patch
+        working-directory: services/data-acquisition
+        run: python tools/PATCH_GOURMET_DETAIL_TECHNIQUE.py
+      - name: Install dependencies
+        working-directory: services/data-acquisition
+        run: python -m pip install -r requirements.txt
+      - name: Validate Gourmet detail integration
+        working-directory: services/data-acquisition
+        env:
+          PYTHONPATH: .
+          KU2D_OPERATIONS_DB: ${{ runner.temp }}/ku2d_patch_ops.sqlite3
+          KU2D_OBSERVATION_DB: ${{ runner.temp }}/ku2d_patch_obs.sqlite3
+        run: |
+          python -m compileall -q acquisition control_plane tools
+          python tools/SELF_TEST_GOURMET_DETAIL_v0.29.py
+          python tools/SELF_TEST_GOURMET_v0.28.py
+          python tools/SELF_TEST_SUPERMARKETS_v0.25.py
+          python tools/SELF_TEST_TOPS_AUDIT_v0.27.py
+      - name: Commit integrated source
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No patch changes required."
+            exit 0
+          fi
+          git config user.name "ku2d-acquisition-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add services/data-acquisition/acquisition/technique_strategy.py services/data-acquisition/acquisition/deep_audit.py
+          git commit -m "Integrate Gourmet official product-detail acquisition"
+          git push origin HEAD:integration/data-acquisition-platform

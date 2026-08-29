@@ -1,0 +1,48 @@
+{
+  "discovered_product_urls": [],
+  "targets_tested": 3,
+  "results": [
+    {
+      "url": "https://gourmetmarketthailand.com/en/allowrie_unsalted_butter_10g_pack_8_8850332162158",
+      "direct_ok": false,
+      "direct_status": 403,
+      "direct_bytes": 0,
+      "direct_error": "HTTPError: HTTP Error 403: Forbidden",
+      "browser_available": true,
+      "browser_ok": true,
+      "browser_dom_bytes": 925,
+      "browser_has_baht": false,
+      "browser_has_gtin": false,
+      "browser_title_match": false,
+      "browser_error": "asOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2268:2268:0829/073652.180482:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2268:2268:0829/073652.361806:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2268:2268:0829/073652.374891:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2268:2319:0829/073652.375456:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2268:2268:0829/073652.530576:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[2268:2268:0829/073652.531179:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2268:2319:0829/073652.531277:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2268:2268:0829/073652.586147:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2268:2319:0829/073652.586213:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2268:2268:0829/073652.632988:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n"
+    },
+    {
+      "url": "https://gourmetmarketthailand.com/th/gourmet_fresh_holy_basil_100g_63423",
+      "direct_ok": false,
+      "direct_status": 403,
+      "direct_bytes": 0,
+      "direct_error": "HTTPError: HTTP Error 403: Forbidden",
+      "browser_available": true,
+      "browser_ok": true,
+      "browser_dom_bytes": 925,
+      "browser_has_baht": false,
+      "browser_has_gtin": false,
+      "browser_title_match": false,
+      "browser_error": "asOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2442:2442:0829/073653.988853:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2442:2442:0829/073654.008972:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2442:2442:0829/073654.010601:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2442:2463:0829/073654.011459:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2442:2442:0829/073654.031874:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2442:2463:0829/073654.032028:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2442:2442:0829/073654.033416:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[2442:2442:0829/073654.046691:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2442:2463:0829/073654.048619:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2442:2442:0829/073654.064322:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n"
+    },
+    {
+      "url": "https://gourmetmarketthailand.com/en/doi_chang_roastground_espresso_supreme_250g_8856709000498",
+      "direct_ok": false,
+      "direct_status": 403,
+      "direct_bytes": 0,
+      "direct_error": "HTTPError: HTTP Error 403: Forbidden",
+      "browser_available": true,
+      "browser_ok": true,
+      "browser_dom_bytes": 925,
+      "browser_has_baht": false,
+      "browser_has_gtin": false,
+      "browser_title_match": false,
+      "browser_error": "asOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2588:2588:0829/073654.537809:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2588:2588:0829/073654.582061:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2588:2588:0829/073654.584116:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2588:2609:0829/073654.584163:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2588:2588:0829/073654.608189:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.Properties.GetAll: object_path= /org/freedesktop/UPower/devices/DisplayDevice: org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.UPower was not provided by any .service files\n[2588:2588:0829/073654.608238:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2588:2609:0829/073654.608351:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2588:2588:0829/073654.630781:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n[2588:2609:0829/073654.631034:ERROR:dbus/bus.cc:405] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are \"tcp\" and on UNIX \"unix\")\n[2588:2588:0829/073654.656631:ERROR:dbus/object_proxy.cc:572] Failed to call method: org.freedesktop.DBus.NameHasOwner: object_path= /org/freedesktop/DBus: unknown error type: \n"
+    }
+  ]
+}

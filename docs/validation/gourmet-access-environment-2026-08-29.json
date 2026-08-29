@@ -1,0 +1,46 @@
+{
+  "source": "Gourmet Market",
+  "source_url": "https://gourmetmarketthailand.com/",
+  "observed_at": "2026-08-29",
+  "purpose": "Execution-environment qualification for live public acquisition",
+  "policy": "No authentication, CAPTCHA solving, proxy rotation, anti-bot circumvention, or access-control bypass was used.",
+  "github_actions_run_id": 33241282652,
+  "environments": [
+    {
+      "runner": "ubuntu-latest",
+      "runner_region": "westus",
+      "homepage_http_status": 403,
+      "known_product_http_status": 403,
+      "graphql_http_status": 403,
+      "browser_available": true,
+      "browser_dom_bytes": 925,
+      "browser_product_detected": false,
+      "browser_price_detected": false
+    },
+    {
+      "runner": "windows-latest",
+      "runner_region": "northcentralus",
+      "homepage_http_status": 403,
+      "known_product_http_status": 403,
+      "graphql_http_status": 403,
+      "browser_available": true,
+      "browser_dom_bytes": 925,
+      "browser_product_detected": false,
+      "browser_price_detected": false
+    },
+    {
+      "runner": "macos-latest",
+      "runner_region": "westus",
+      "homepage_http_status": 403,
+      "known_product_http_status": 403,
+      "graphql_http_status": 403,
+      "browser_available": false,
+      "browser_dom_bytes": 0,
+      "browser_product_detected": false,
+      "browser_price_detected": false
+    }
+  ],
+  "conclusion": "GitHub-hosted runner environments are not qualified for Gourmet Market live acquisition at this time. Continue deterministic CI on GitHub-hosted runners and perform Gourmet live Explore/Deep Audit on an approved edge/self-hosted runner using a normal operating network.",
+  "approval_status": "withheld",
+  "approval_reason": "No GitHub-hosted environment could materialize current official product/price evidence; Deep Audit cannot truthfully pass from these runners."
+}
