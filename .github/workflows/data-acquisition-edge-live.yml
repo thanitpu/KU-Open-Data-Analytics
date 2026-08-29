@@ -1,0 +1,65 @@
+name: KU2D Edge Live Acquisition Validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Live source/domain target'
+        required: true
+        type: choice
+        options:
+          - gourmet
+          - supermarket-smoke
+        default: gourmet
+
+jobs:
+  edge-live:
+    runs-on: [self-hosted, ku2d-acquisition, windows, thailand]
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: integration/data-acquisition-platform
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        working-directory: services/data-acquisition
+        run: python -m pip install -r requirements.txt
+      - name: Verify deterministic platform contract
+        working-directory: services/data-acquisition
+        env:
+          PYTHONPATH: .
+          KU2D_OPERATIONS_DB: ${{ runner.temp }}\ku2d_edge_preflight_ops.sqlite3
+          KU2D_OBSERVATION_DB: ${{ runner.temp }}\ku2d_edge_preflight_obs.sqlite3
+        run: |
+          python tools/SELF_TEST_PLATFORM_FOUNDATION.py
+          python tools/SELF_TEST_SCHEDULER_POLICY.py
+          python tools/SELF_TEST_LIFECYCLE_ACCEPTANCE.py
+          python tools/SELF_TEST_PROFILE_INVALIDATION.py
+      - name: Gourmet Explore and Deep Audit
+        if: ${{ inputs.target == 'gourmet' }}
+        working-directory: services/data-acquisition
+        env:
+          PYTHONPATH: .
+          KU2D_OPERATIONS_DB: ${{ runner.temp }}\ku2d_gourmet_edge_ops.sqlite3
+          KU2D_OBSERVATION_DB: ${{ runner.temp }}\ku2d_gourmet_edge_obs.sqlite3
+          KU2D_GOURMET_RESULT: ${{ github.workspace }}\docs\validation\gourmet-edge-latest.json
+        run: python tools/LIVE_GOURMET_LIFECYCLE.py
+      - name: Supermarket live smoke
+        if: ${{ inputs.target == 'supermarket-smoke' }}
+        working-directory: services/data-acquisition
+        env:
+          PYTHONPATH: .
+          KU2D_OPERATIONS_DB: ${{ runner.temp }}\ku2d_supermarket_edge_ops.sqlite3
+          KU2D_OBSERVATION_DB: ${{ runner.temp }}\ku2d_supermarket_edge_obs.sqlite3
+        run: python tools/LIVE_SMOKE_SUPERMARKETS.py --no-approve --no-store
+      - name: Upload Edge evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ku2d-edge-live-${{ inputs.target }}
+          path: |
+            docs/validation/gourmet-edge-latest.json
+            ${{ runner.temp }}\ku2d_gourmet_edge_obs.sqlite3
+          if-no-files-found: warn
+          retention-days: 30
