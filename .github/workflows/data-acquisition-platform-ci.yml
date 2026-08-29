@@ -83,7 +83,7 @@ jobs:
           python tools/SELF_TEST_TOPS_AUDIT_v0.27.py
           python tools/SELF_TEST_GOURMET_v0.28.py
           python tools/SELF_TEST_GOURMET_DETAIL_v0.29.py
-          python tools/SELF_TEST_GOURMET_APPROVAL_TRACKS.py
+          python tools/SELF_TEST_SUPERMARKET_PATTERN_LIBRARY.py
 
   live-smoke:
     if: ${{ github.event_name == 'workflow_dispatch' }}
