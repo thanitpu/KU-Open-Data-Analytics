@@ -513,7 +513,7 @@ def replace_technique_assignments(source_id,recommendations):
         try:ev=json.loads(evidence or '{}') if isinstance(evidence,str) else (evidence or {})
         except:ev={}
         op=((ev.get('potential') or {}).get('operational_config') or ev.get('operational_config') or {})
-        stable_op=tuple((k,str(op.get(k))) for k in ('batch_endpoint','search_endpoint','seller_id','max_batch_size','catalog_url','category_urls','page_size','pagination_param','commerce_surface','official_related_domain','official_domain') if op.get(k) is not None)
+        stable_op=tuple((k,str(op.get(k))) for k in ('batch_endpoint','search_endpoint','seller_id','max_batch_size','catalog_url','category_urls','page_size','pagination_param','commerce_surface','official_related_domain','official_domain','graphql_endpoint','graphql_operation','graphql_query_hash','identity_source') if op.get(k) is not None)
         return (technique,tuple(ev.get('tracks') or []),str(ev.get('engine_version') or ''),stable_op)
     old_sig=[_profile_sig(r['technique'],r['evidence_json']) for r in old_rows]
     new_keys=[x.get('technique') for x in (recommendations or []) if x.get('technique')]
