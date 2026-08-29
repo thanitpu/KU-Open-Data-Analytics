@@ -1,0 +1,41 @@
+name: Data Acquisition Coffee Live Validation
+
+on:
+  push:
+    branches:
+      - integration/data-acquisition-platform
+    paths:
+      - 'services/data-acquisition/acquisition/coffee_techniques.py'
+      - 'services/data-acquisition/tools/LIVE_COFFEE_PUNTHAI_PROBE.py'
+      - 'services/data-acquisition/tools/SELF_TEST_COFFEE_PUNTHAI_v0.1.py'
+      - '.github/workflows/data-acquisition-coffee-live.yml'
+  workflow_dispatch:
+
+jobs:
+  punthai-official-menu:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/data-acquisition
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Deterministic Coffee regression
+        env:
+          PYTHONPATH: .
+        run: python tools/SELF_TEST_COFFEE_PUNTHAI_v0.1.py
+      - name: Explore and repeat-audit PunThai public menu
+        env:
+          PYTHONPATH: .
+        run: python tools/LIVE_COFFEE_PUNTHAI_PROBE.py --repeat-delay 10 --max-items 10 --output validation/coffee-punthai-live.json
+      - name: Upload Coffee evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ku2d-coffee-punthai-live
+          path: services/data-acquisition/validation/coffee-punthai-live.json
+          if-no-files-found: error
+          retention-days: 14
