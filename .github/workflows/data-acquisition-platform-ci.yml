@@ -37,7 +37,7 @@ jobs:
         run: python -m pip install -r requirements.txt
       - name: Compile adaptive platform
         run: python -m compileall -q acquisition api repository control_plane service tools
-      - name: Test observation store, scheduler policy and full lifecycle staging
+      - name: Test observation store, scheduler policy, domain playbooks and full lifecycle staging
         env:
           KU2D_OPERATIONS_DB: /tmp/ku2d_platform_ops.sqlite3
           KU2D_OBSERVATION_DB: /tmp/ku2d_platform_obs.sqlite3
@@ -47,6 +47,7 @@ jobs:
           python tools/SELF_TEST_PLATFORM_FOUNDATION.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
           python tools/SELF_TEST_SCHEDULER_POLICY.py
+          python tools/SELF_TEST_DOMAIN_PLAYBOOKS.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
           python tools/SELF_TEST_LIFECYCLE_ACCEPTANCE.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
