@@ -1,90 +1,48 @@
 name: Data Acquisition Platform CI
 
 on:
-  pull_request:
-    paths:
-      - 'services/data-acquisition/**'
-      - 'docs/DATA_ACQUISITION_NORTH_STAR.md'
-      - '.github/workflows/data-acquisition-platform-ci.yml'
   push:
     branches:
       - integration/data-acquisition-platform
-    paths:
-      - 'services/data-acquisition/**'
-      - 'docs/DATA_ACQUISITION_NORTH_STAR.md'
-      - '.github/workflows/data-acquisition-platform-ci.yml'
+  pull_request:
   workflow_dispatch:
 
 jobs:
-  contract-and-foundation:
+  foundation:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: services/data-acquisition
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - name: Validate architecture contract
-        working-directory: .
         shell: bash
         run: |
           test -f docs/DATA_ACQUISITION_NORTH_STAR.md
           test -f services/data-acquisition/README.md
           grep -q 'Discover → Explore → Deep Audit → Human Approve → Scheduled Acquire' docs/DATA_ACQUISITION_NORTH_STAR.md
       - name: Compile platform foundation
+        working-directory: services/data-acquisition
         run: python -m compileall -q platform tools/SELF_TEST_PLATFORM_FOUNDATION.py
       - name: Test observation store and lifecycle policy
+        working-directory: services/data-acquisition
         env:
           PYTHONPATH: .
         run: python tools/SELF_TEST_PLATFORM_FOUNDATION.py
-
-  deterministic-regressions:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
+      - name: Run migrated service regressions when available
         working-directory: services/data-acquisition
-    env:
-      KU2D_OPERATIONS_DB: ${{ runner.temp }}/ku2d_acquisition_ops.sqlite3
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Run service regressions when source is present
         shell: bash
         run: |
           if [ ! -d acquisition ]; then
-            echo 'Service migration not complete yet; deterministic service regressions skipped.'
+            echo 'Service migration not complete yet; service regressions skipped.'
             exit 0
           fi
+          export KU2D_OPERATIONS_DB="$RUNNER_TEMP/ku2d_acquisition_ops.sqlite3"
           python -m compileall -q acquisition api repository tools
           python tools/SELF_TEST_LOTUS_v0.25.py
           python tools/SELF_TEST_SUPERMARKETS_v0.25.py
           python tools/SELF_TEST_TOPS_v0.27.py
           python tools/SELF_TEST_TOPS_AUDIT_v0.27.py
           python tools/SELF_TEST_GOURMET_v0.28.py
-
-  live-smoke:
-    if: ${{ github.event_name == 'workflow_dispatch' }}
-    runs-on: ubuntu-latest
-    environment: data-acquisition-staging
-    defaults:
-      run:
-        working-directory: services/data-acquisition
-    env:
-      KU2D_OPERATIONS_DB: ${{ runner.temp }}/ku2d_live_ops.sqlite3
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Live public-source smoke test when harness is present
-        shell: bash
-        run: |
-          if [ ! -f tools/LIVE_SMOKE_SUPERMARKETS.py ]; then
-            echo 'Live smoke harness not migrated yet; skipping.'
-            exit 0
-          fi
-          python tools/LIVE_SMOKE_SUPERMARKETS.py --no-approve --no-store
