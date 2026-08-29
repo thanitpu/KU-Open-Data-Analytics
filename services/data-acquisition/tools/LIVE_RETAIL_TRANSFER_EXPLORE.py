@@ -42,8 +42,10 @@ def compact(result: dict) -> dict:
             "diagnostics": (x.get("diagnostics") or [])[:10],
             "sample_records": (x.get("sample_records") or [])[:5],
         })
+    selection = result.get("track_selection") or {}
     return {
         "status": result.get("status"),
+        "recommendation": result.get("recommendation"),
         "quality": result.get("quality"),
         "record_count": result.get("record_count"),
         "unique_sample_record_count": result.get("unique_sample_record_count"),
@@ -52,6 +54,10 @@ def compact(result: dict) -> dict:
         "learned_pattern_guidance": result.get("learned_pattern_guidance") or {},
         "recommended_techniques": result.get("recommended_techniques") or [],
         "assigned_techniques": result.get("assigned_techniques") or [],
+        "track_recommendations": result.get("track_recommendations") or {},
+        "required_track_gaps": selection.get("required_track_gaps") or {},
+        "track_candidates": selection.get("candidates") or {},
+        "global_recommendations_before_track_selection": selection.get("global_recommendations_before_track_selection") or [],
         "potential_coverage": result.get("potential_coverage") or [],
         "technique_results": tech,
     }
@@ -60,7 +66,7 @@ def compact(result: dict) -> dict:
 def main():
     sources = source_map()
     payload = {
-        "schema": "ku2d.retail-transfer-live-explore.v1",
+        "schema": "ku2d.retail-transfer-live-explore.v2",
         "generated_at": now(),
         "execution_environment": "cloud-hosted-public-read-only",
         "policy": "Public official-site access only; no authentication, CAPTCHA, proxy rotation or access-control bypass.",
@@ -101,7 +107,8 @@ def main():
     print(f"RESULT_FILE={out}")
     for x in payload["targets"]:
         r = x.get("result") or {}
-        print(f"{x.get('source_id')} {x.get('business')}: records={r.get('record_count')} recommendations={len(r.get('recommended_techniques') or [])} error={x.get('error')}")
+        gaps = sorted((r.get("required_track_gaps") or {}).keys())
+        print(f"{x.get('source_id')} {x.get('business')}: records={r.get('record_count')} assigned={r.get('assigned_techniques')} gaps={gaps} error={x.get('error')}")
 
 
 if __name__ == "__main__":
