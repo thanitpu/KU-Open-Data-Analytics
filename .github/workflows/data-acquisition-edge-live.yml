@@ -16,16 +16,25 @@ jobs:
   edge-live:
     runs-on: [self-hosted, ku2d-acquisition, windows, thailand]
     timeout-minutes: 30
+    env:
+      KU2D_PYTHON: C:\Users\KU-2023\AppData\Local\Programs\Python\Python312\python.exe
+      KU2D_VENV_PYTHON: ${{ runner.temp }}\ku2d-edge-venv\Scripts\python.exe
     steps:
       - uses: actions/checkout@v4
         with:
           ref: integration/data-acquisition-platform
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+      - name: Prepare Python 3.12 environment
+        shell: powershell
+        run: |
+          & "$env:KU2D_PYTHON" --version
+          if (Test-Path "$env:RUNNER_TEMP\ku2d-edge-venv") {
+            Remove-Item "$env:RUNNER_TEMP\ku2d-edge-venv" -Recurse -Force
+          }
+          & "$env:KU2D_PYTHON" -m venv "$env:RUNNER_TEMP\ku2d-edge-venv"
+          & "$env:KU2D_VENV_PYTHON" -m pip install --upgrade pip
       - name: Install dependencies
         working-directory: services/data-acquisition
-        run: python -m pip install -r requirements.txt
+        run: '& "$env:KU2D_VENV_PYTHON" -m pip install -r requirements.txt'
       - name: Verify deterministic platform contract
         working-directory: services/data-acquisition
         env:
@@ -33,10 +42,10 @@ jobs:
           KU2D_OPERATIONS_DB: ${{ runner.temp }}\ku2d_edge_preflight_ops.sqlite3
           KU2D_OBSERVATION_DB: ${{ runner.temp }}\ku2d_edge_preflight_obs.sqlite3
         run: |
-          python tools/SELF_TEST_PLATFORM_FOUNDATION.py
-          python tools/SELF_TEST_SCHEDULER_POLICY.py
-          python tools/SELF_TEST_LIFECYCLE_ACCEPTANCE.py
-          python tools/SELF_TEST_PROFILE_INVALIDATION.py
+          & "$env:KU2D_VENV_PYTHON" tools/SELF_TEST_PLATFORM_FOUNDATION.py
+          & "$env:KU2D_VENV_PYTHON" tools/SELF_TEST_SCHEDULER_POLICY.py
+          & "$env:KU2D_VENV_PYTHON" tools/SELF_TEST_LIFECYCLE_ACCEPTANCE.py
+          & "$env:KU2D_VENV_PYTHON" tools/SELF_TEST_PROFILE_INVALIDATION.py
       - name: Gourmet Explore and Deep Audit
         if: ${{ inputs.target == 'gourmet' }}
         working-directory: services/data-acquisition
@@ -45,7 +54,7 @@ jobs:
           KU2D_OPERATIONS_DB: ${{ runner.temp }}\ku2d_gourmet_edge_ops.sqlite3
           KU2D_OBSERVATION_DB: ${{ runner.temp }}\ku2d_gourmet_edge_obs.sqlite3
           KU2D_GOURMET_RESULT: ${{ github.workspace }}\docs\validation\gourmet-edge-latest.json
-        run: python tools/LIVE_GOURMET_LIFECYCLE.py
+        run: '& "$env:KU2D_VENV_PYTHON" tools/LIVE_GOURMET_LIFECYCLE.py'
       - name: Supermarket live smoke
         if: ${{ inputs.target == 'supermarket-smoke' }}
         working-directory: services/data-acquisition
@@ -53,8 +62,9 @@ jobs:
           PYTHONPATH: .
           KU2D_OPERATIONS_DB: ${{ runner.temp }}\ku2d_supermarket_edge_ops.sqlite3
           KU2D_OBSERVATION_DB: ${{ runner.temp }}\ku2d_supermarket_edge_obs.sqlite3
-        run: python tools/LIVE_SMOKE_SUPERMARKETS.py --no-approve --no-store
+        run: '& "$env:KU2D_VENV_PYTHON" tools/LIVE_SMOKE_SUPERMARKETS.py --no-approve --no-store'
       - name: Upload Edge evidence
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ku2d-edge-live-${{ inputs.target }}
