@@ -1,6 +1,11 @@
 name: KU2D Edge Live Acquisition Validation
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/data-acquisition-edge-live.yml'
   workflow_dispatch:
     inputs:
       target:
@@ -18,6 +23,7 @@ jobs:
     timeout-minutes: 30
     env:
       KU2D_PYTHON: C:\Users\KU-2023\AppData\Local\Programs\Python\Python312\python.exe
+      KU2D_EDGE_TARGET: ${{ github.event_name == 'workflow_dispatch' && inputs.target || 'gourmet' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -69,7 +75,7 @@ jobs:
           }
 
       - name: Gourmet Explore and Deep Audit
-        if: ${{ inputs.target == 'gourmet' }}
+        if: ${{ env.KU2D_EDGE_TARGET == 'gourmet' }}
         shell: powershell
         working-directory: services/data-acquisition
         env:
@@ -82,7 +88,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Supermarket live smoke
-        if: ${{ inputs.target == 'supermarket-smoke' }}
+        if: ${{ env.KU2D_EDGE_TARGET == 'supermarket-smoke' }}
         shell: powershell
         working-directory: services/data-acquisition
         env:
@@ -97,7 +103,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ku2d-edge-live-${{ inputs.target }}
+          name: ku2d-edge-live-${{ env.KU2D_EDGE_TARGET }}
           path: |
             docs/validation/gourmet-edge-latest.json
             ${{ runner.temp }}\ku2d_gourmet_edge_obs.sqlite3
