@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0",
+  "playbooks": {
+    "supermarket": {
+      "label": "Supermarket / Grocery Retail",
+      "required_business_tracks": ["product_price", "promotion", "discovery"],
+      "quality_gates": {
+        "minimum_product_records": 5,
+        "price_completeness_pct": 80,
+        "semantic_quality_pct": 80,
+        "product_repeatability_pct": 70,
+        "provenance_pct": 95,
+        "promotion_records_minimum": 1
+      },
+      "patterns": [
+        {
+          "pattern_id": "public_catalog_api",
+          "label": "Public Catalog API",
+          "track": "product_price",
+          "base_priority": 100,
+          "clues": ["json_api", "rest_api", "catalog_endpoint", "product_endpoint"],
+          "evidence": {"validated_sources": ["Lotus's"], "candidate_sources": []}
+        },
+        {
+          "pattern_id": "graphql_catalog",
+          "label": "Public GraphQL Catalog",
+          "track": "product_price",
+          "base_priority": 95,
+          "clues": ["graphql", "graphql_endpoint", "apollo", "urql"],
+          "evidence": {"validated_sources": [], "candidate_sources": ["Gourmet Market"]}
+        },
+        {
+          "pattern_id": "sitemap_product_detail",
+          "label": "Product Sitemap → Product Detail",
+          "track": "product_price",
+          "base_priority": 90,
+          "clues": ["product_sitemap", "sitemap_product_urls", "detail_pages"],
+          "evidence": {"validated_sources": ["Big C", "Tops"], "candidate_sources": []}
+        },
+        {
+          "pattern_id": "rendered_product_listing",
+          "label": "Rendered / SSR Product Listing",
+          "track": "product_price",
+          "base_priority": 80,
+          "clues": ["product_cards", "ssr_listing", "accessible_text", "gtin_images"],
+          "evidence": {"validated_sources": ["Makro"], "candidate_sources": ["Gourmet Market"]}
+        },
+        {
+          "pattern_id": "embedded_application_state",
+          "label": "Embedded Application State",
+          "track": "product_price",
+          "base_priority": 72,
+          "clues": ["next_data", "rsc", "hydration_state", "json_state"],
+          "evidence": {"validated_sources": ["Big C"], "candidate_sources": []}
+        },
+        {
+          "pattern_id": "browser_network_discovery",
+          "label": "Browser Network / API Discovery",
+          "track": "discovery",
+          "base_priority": 68,
+          "clues": ["xhr", "fetch", "graphql", "api_candidate", "network_urls"],
+          "evidence": {"validated_sources": [], "candidate_sources": ["Gourmet Market"]}
+        },
+        {
+          "pattern_id": "official_promotion_surface",
+          "label": "Official Campaign / Promotion Surface",
+          "track": "promotion",
+          "base_priority": 95,
+          "clues": ["campaign", "promotion", "brochure", "coupon", "offer"],
+          "evidence": {"validated_sources": ["Big C", "Tops", "Lotus's"], "candidate_sources": ["Gourmet Market"]}
+        },
+        {
+          "pattern_id": "sitemap_discovery",
+          "label": "Robots / Sitemap Discovery",
+          "track": "discovery",
+          "base_priority": 90,
+          "clues": ["robots", "sitemap", "sitemap_index"],
+          "evidence": {"validated_sources": ["Lotus's", "Big C", "Tops"], "candidate_sources": []}
+        },
+        {
+          "pattern_id": "search_index_discovery",
+          "label": "Search Index → Official Detail Discovery",
+          "track": "discovery",
+          "base_priority": 35,
+          "clues": ["cloud_access_blocked", "indexed_product_urls"],
+          "evidence": {"validated_sources": [], "candidate_sources": ["Gourmet Market"]},
+          "restriction": "Discovery only. Search-engine cached price/promotion data is not trusted as current acquisition data."
+        },
+        {
+          "pattern_id": "generic_html_last_resort",
+          "label": "Generic HTML Pattern Extraction",
+          "track": "fallback",
+          "base_priority": 10,
+          "clues": ["html"],
+          "evidence": {"validated_sources": [], "candidate_sources": []},
+          "restriction": "Last resort for supermarket business facts because generic marketing text can create false products/prices."
+        }
+      ],
+      "environment_rules": [
+        {
+          "condition": "cloud_access_blocked",
+          "action": "prefer_edge_runner",
+          "reason": "A public source that rejects datacenter IPs must be tested from an appropriate normal operating network; do not bypass access controls."
+        }
+      ]
+    }
+  }
+}
