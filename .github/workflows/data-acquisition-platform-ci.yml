@@ -16,19 +16,31 @@ on:
   workflow_dispatch:
 
 jobs:
-  contract:
+  contract-and-foundation:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/data-acquisition
     steps:
       - uses: actions/checkout@v4
-      - name: Validate acquisition source-of-truth contract
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate architecture contract
+        working-directory: .
         shell: bash
         run: |
           test -f docs/DATA_ACQUISITION_NORTH_STAR.md
           test -f services/data-acquisition/README.md
           grep -q 'Discover → Explore → Deep Audit → Human Approve → Scheduled Acquire' docs/DATA_ACQUISITION_NORTH_STAR.md
-          echo 'Data Acquisition North Star contract: PASS'
+      - name: Compile platform foundation
+        run: python -m compileall -q platform tools/SELF_TEST_PLATFORM_FOUNDATION.py
+      - name: Test observation store and lifecycle policy
+        env:
+          PYTHONPATH: .
+        run: python tools/SELF_TEST_PLATFORM_FOUNDATION.py
 
-  deterministic-tests:
+  deterministic-regressions:
     if: ${{ hashFiles('services/data-acquisition/acquisition/**/*.py') != '' }}
     runs-on: ubuntu-latest
     defaults:
@@ -41,7 +53,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Compile Python
+      - name: Compile service
         run: python -m compileall -q acquisition api repository tools
       - name: Supermarket regressions
         run: |
