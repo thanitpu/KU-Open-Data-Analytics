@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "profiles": {
+    "gourmetmarketthailand.com": {
+      "preferred_live_environment": "edge",
+      "cloud_hosted_status": "blocked",
+      "cloud_hosted_last_verified": "2026-08-29",
+      "cloud_hosted_evidence": {
+        "github_actions_run_id": 33241282652,
+        "runners_tested": ["ubuntu-latest", "windows-latest", "macos-latest"],
+        "homepage_statuses": [403, 403, 403],
+        "known_product_statuses": [403, 403, 403],
+        "graphql_statuses": [403, 403, 403]
+      },
+      "edge_status": "required-for-validation",
+      "reason": "All tested GitHub-hosted environments were denied while the prior normal Windows UAT environment had public-site visibility. Use an approved normal-network edge runner; do not bypass access controls."
+    }
+  }
+}
