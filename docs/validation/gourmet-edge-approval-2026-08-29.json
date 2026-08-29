@@ -1,0 +1,86 @@
+{
+  "schema": "ku2d.edge-approval-evidence.v1",
+  "source_id": "SRC-003",
+  "source_name": "Gourmet Market",
+  "validation_date": "2026-08-29",
+  "workflow": {
+    "name": "KU2D Edge Live Acquisition Validation",
+    "run_id": 33256486957,
+    "run_number": 5,
+    "launcher_commit": "8539be1fe7c29154b4ddbc3a70d1b9d0b30e7913",
+    "acquisition_branch_commit": "09c1b212408f14e6b19992a181281e4274de506b",
+    "runner_name": "KU2D-EDGE-TH",
+    "runner_version": "2.336.0",
+    "python": "3.12.0",
+    "result": "success"
+  },
+  "approval": {
+    "approved": true,
+    "continuous_enabled": true,
+    "approval_scope": "isolated-staging-db",
+    "quality_score": 88,
+    "quality_label": "strong",
+    "audit_passed": true,
+    "scheduler_action_after_approval": "scheduled-acquire"
+  },
+  "selected_profile": [
+    {
+      "track": "product_price",
+      "technique": "gourmet_rendered_catalog",
+      "label": "Gourmet Market Rendered Product Cards",
+      "score": 110,
+      "explore_record_count": 24,
+      "price_completeness_pct": 100.0,
+      "sku_completeness_pct": 100.0,
+      "basis": "rendered Gourmet Market product cards + GTIN-bearing official product images"
+    },
+    {
+      "track": "discovery",
+      "technique": "gourmet_catalog_network",
+      "label": "Gourmet GraphQL / Network Catalog Discovery",
+      "score": 56,
+      "discovered_urls": 215,
+      "product_identity_candidates": 53,
+      "graphql_probe_ok": true,
+      "basis": "browser network on official Gourmet Market commerce infrastructure + read-only GraphQL probe"
+    }
+  ],
+  "deep_audit": {
+    "usable_records": 20,
+    "product_catalog_sample_records": 20,
+    "price_completeness_pct": 100.0,
+    "product_semantic_quality_pct": 100.0,
+    "repeatability_pct": 100.0,
+    "product_track_repeatability_pct": 100.0,
+    "provenance_pct": 100.0,
+    "technique_execution_pct": 100.0,
+    "technique_profile_fingerprint": "7fe07fd079b1b812",
+    "promotion_track_assigned": false,
+    "promotion_gate": "passed because no promotion track is assigned"
+  },
+  "explore": {
+    "quality_score": 95,
+    "quality_label": "good",
+    "techniques_tested": 8,
+    "techniques_with_evidence": 4,
+    "total_records": 43,
+    "record_types": {
+      "EndpointCandidate": 17,
+      "ProductCandidate": 24
+    }
+  },
+  "execution_environment": {
+    "preferred_live_environment": "edge",
+    "cloud_hosted_status": "blocked",
+    "cloud_hosted_last_verified": "2026-08-29",
+    "github_hosted_runners_tested": ["ubuntu-latest", "windows-latest", "macos-latest"],
+    "homepage_statuses": [403, 403, 403],
+    "known_product_statuses": [403, 403, 403],
+    "graphql_statuses": [403, 403, 403],
+    "policy": "Use an approved normal-network edge runner only; do not bypass authentication, CAPTCHA, anti-bot challenges, or access controls."
+  },
+  "warnings": [
+    "No Promotion acquisition track is currently assigned; promotion coverage is incomplete but is optional under the supermarket approval contract.",
+    "Regular/original price was present in 0% of audited products; informational unless a discount is explicitly detected."
+  ]
+}
