@@ -50,6 +50,7 @@ assert "Promotion is optional" in policy["promotion_rule"]
 waterfall = obj["selection_waterfall"]
 assert len(waterfall) >= 6
 assert any("Deep Audit" in x for x in waterfall)
-assert any("Edge" in x for x in waterfall)
+assert any("SM-P09" in x or "edge" in x.lower() for x in waterfall)
+assert patterns["SM-P09"]["track"] == "execution_environment"
 
 print("Supermarket acquisition pattern library: PASS")
