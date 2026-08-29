@@ -21,6 +21,20 @@ def load_json(path: Path, default):
     return json.loads(path.read_text(encoding='utf-8')) if path.exists() else default
 
 
+def _registry_sector(domain: str, sector: str, purpose: str) -> list[dict]:
+    reg = load_json(CFG / 'source_registry.json', {'sources': []})
+    out = []
+    for x in reg.get('sources') or []:
+        if str(x.get('sector') or '').strip().lower() != sector.lower():
+            continue
+        out.append({
+            'domain': domain, 'candidate_id': x.get('source_id'), 'name': x.get('business'),
+            'url': x.get('url'), 'source_type': 'official-public-web', 'status': 'existing-source',
+            'purpose': purpose,
+        })
+    return out
+
+
 def candidates(domains: set[str]) -> list[dict]:
     out = []
     dc = load_json(CFG / 'domain_source_candidates.json', {'domains': {}})
@@ -28,15 +42,11 @@ def candidates(domains: set[str]) -> list[dict]:
         for x in (dc.get('domains') or {}).get('ota', []):
             out.append({'domain': 'ota', **x})
     if 'coffee' in domains:
-        reg = load_json(CFG / 'source_registry.json', {'sources': []})
-        for x in reg.get('sources') or []:
-            if str(x.get('sector') or '').strip().lower() != 'cafe':
-                continue
-            out.append({
-                'domain': 'coffee', 'candidate_id': x.get('source_id'), 'name': x.get('business'),
-                'url': x.get('url'), 'source_type': 'official-public-web', 'status': 'existing-source',
-                'purpose': 'retail_market_intelligence',
-            })
+        out.extend(_registry_sector('coffee', 'Cafe', 'retail_market_intelligence'))
+    if 'beauty' in domains:
+        out.extend(_registry_sector('beauty', 'Beauty', 'retail_market_intelligence'))
+    if 'it_retail' in domains:
+        out.extend(_registry_sector('it_retail', 'IT Retail', 'retail_market_intelligence'))
     if 'q_diving' in domains:
         reg = load_json(CFG / 'q_diving_source_registry.json', {'sources': []})
         for x in reg.get('sources') or []:
@@ -66,6 +76,8 @@ def clue_flags(html: str, headers: dict) -> list[str]:
         ('price_label', r'(?:฿|thb|price|ราคา)'), ('availability', r'(?:availability|available|check.?in|check.?out|เข้าพัก|เช็กอิน)'),
         ('promotion', r'(?:promotion|promo|deal|coupon|ส่วนลด|โปรโมชั่น)'),
         ('product_cards', r'(?:product-card|productcard|product_item|product-item)'),
+        ('variant', r'(?:variant|shade|สี|ขนาด|size|capacity|storage|memory|ความจุ)'),
+        ('sku_model', r'(?:sku|model|รหัสสินค้า|รุ่น)'),
         ('menu', r'(?:menu|เมนู)'), ('article', r'(?:article|blog|บทความ)'),
         ('video', r'(?:youtube|video)'), ('sitemap_hint', r'(?:sitemap\.xml|sitemapindex)'),
     ]
@@ -134,7 +146,7 @@ def probe(item: dict, timeout: int = 12) -> dict:
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--domains', default='ota,coffee,q_diving')
+    ap.add_argument('--domains', default='ota,coffee,q_diving,beauty,it_retail')
     ap.add_argument('--output', default='validation/domain-live-probe.json')
     ap.add_argument('--timeout', type=int, default=12)
     args = ap.parse_args()
