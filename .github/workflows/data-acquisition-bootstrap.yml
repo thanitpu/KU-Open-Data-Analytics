@@ -1,0 +1,87 @@
+name: Data Acquisition v0.28 Bootstrap
+
+on:
+  push:
+    branches:
+      - integration/data-acquisition-platform
+    paths:
+      - '.bootstrap/data-acquisition-v0.28/**'
+      - '.github/workflows/data-acquisition-bootstrap.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  migrate-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Reconstruct sanitized v0.28 archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .bootstrap/data-acquisition-v0.28/chunk_* > /tmp/da.b64
+          echo '0e8174e1a99a8a48122f90e1e12e75b07f3de5706a8aab938bae74d34ec191fc  /tmp/da.b64' | sha256sum -c -
+          base64 --decode /tmp/da.b64 > /tmp/da.tar.xz
+          echo 'd2648906e39cfa048bd8ab20380a45ddd060b9b37f8dec8b45a742496af988e7  /tmp/da.tar.xz' | sha256sum -c -
+          rm -rf /tmp/da-extract
+          mkdir -p /tmp/da-extract
+          tar -xJf /tmp/da.tar.xz -C /tmp/da-extract
+          cp -a /tmp/da-extract/da_sanitized/. services/data-acquisition/
+          rm -rf services/data-acquisition/data services/data-acquisition/platform
+          find services/data-acquisition/config -maxdepth 1 -type f -name '*_api_key.txt' -delete || true
+          find services/data-acquisition -type f -name '.env' -delete
+      - name: Safety check migrated source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e services/data-acquisition/data/ku2d_acquisition_ops.sqlite3
+          ! find services/data-acquisition -type f \( -name '*_api_key.txt' -o -name '*.sqlite3' -o -name '*.sqlite3-wal' -o -name '*.sqlite3-shm' \) -print -quit | grep -q .
+          test -f services/data-acquisition/acquisition/supermarket_techniques.py
+          test -f services/data-acquisition/control_plane/observation_store.py
+          test -f services/data-acquisition/control_plane/scheduler.py
+          test -f services/data-acquisition/tools/SELF_TEST_GOURMET_v0.28.py
+      - name: Install deterministic test dependencies
+        run: python -m pip install -r services/data-acquisition/requirements.txt
+      - name: Compile migrated service
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd services/data-acquisition
+          python -m compileall -q acquisition api repository control_plane service tools
+      - name: Run adaptive-platform and supermarket regressions
+        shell: bash
+        env:
+          KU2D_OPERATIONS_DB: ${{ runner.temp }}/ku2d_acquisition_ops.sqlite3
+        run: |
+          set -euo pipefail
+          cd services/data-acquisition
+          export PYTHONPATH="$PWD"
+          python tools/SELF_TEST_PLATFORM_FOUNDATION.py
+          python tools/SELF_TEST_SCHEDULER_POLICY.py
+          python tools/SELF_TEST_LOTUS_v0.25.py
+          python tools/SELF_TEST_SUPERMARKETS_v0.25.py
+          python tools/SELF_TEST_TOPS_v0.27.py
+          python tools/SELF_TEST_TOPS_AUDIT_v0.27.py
+          python tools/SELF_TEST_GOURMET_v0.28.py
+      - name: Commit migrated source of truth
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf .bootstrap/data-acquisition-v0.28
+          rm -f .github/workflows/data-acquisition-bootstrap.yml
+          git config user.name 'ku2d-acquisition-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add -A services/data-acquisition .bootstrap .github/workflows/data-acquisition-bootstrap.yml
+          if git diff --cached --quiet; then
+            echo 'No migration changes to commit.'
+            exit 0
+          fi
+          git commit -m 'Migrate KU2D Data Acquisition v0.28 source of truth'
+          git push origin HEAD:integration/data-acquisition-platform
