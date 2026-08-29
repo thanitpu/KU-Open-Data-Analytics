@@ -54,6 +54,7 @@ jobs:
           python tools/SELF_TEST_LIFECYCLE_ACCEPTANCE.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
           python tools/SELF_TEST_PROFILE_INVALIDATION.py
+          python tools/SELF_TEST_GOURMET_APPROVAL_TRACKS.py
 
   supermarket-regressions:
     runs-on: ubuntu-latest
@@ -82,6 +83,7 @@ jobs:
           python tools/SELF_TEST_TOPS_AUDIT_v0.27.py
           python tools/SELF_TEST_GOURMET_v0.28.py
           python tools/SELF_TEST_GOURMET_DETAIL_v0.29.py
+          python tools/SELF_TEST_GOURMET_APPROVAL_TRACKS.py
 
   live-smoke:
     if: ${{ github.event_name == 'workflow_dispatch' }}
