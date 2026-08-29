@@ -80,6 +80,7 @@ jobs:
           python tools/SELF_TEST_TOPS_v0.27.py
           python tools/SELF_TEST_TOPS_AUDIT_v0.27.py
           python tools/SELF_TEST_GOURMET_v0.28.py
+          python tools/SELF_TEST_GOURMET_DETAIL_v0.29.py
 
   live-smoke:
     if: ${{ github.event_name == 'workflow_dispatch' }}
