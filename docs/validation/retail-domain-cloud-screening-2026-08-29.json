@@ -1,0 +1,31 @@
+{
+  "schema": "ku2d.retail-domain-cloud-screening.v1",
+  "generated_at": "2026-08-29",
+  "workflow_run_id": 33257062242,
+  "artifact_id": 9716126154,
+  "execution_environment": "cloud-hosted-public-read-only",
+  "policy": "No login, CAPTCHA solving, proxy rotation or access-control bypass.",
+  "summary": {
+    "beauty": {"sources": 5, "public_readable": 2, "challenge_or_block": 3, "restricted_or_throttled": 0, "network_error": 0},
+    "it_retail": {"sources": 5, "public_readable": 2, "challenge_or_block": 1, "restricted_or_throttled": 2, "network_error": 0}
+  },
+  "beauty": [
+    {"source_id": "SRC-013", "business": "Watsons", "http_status": 200, "access_class": "public-readable", "clues": ["article", "availability", "json_ld", "menu", "price_label", "promotion", "variant", "video"], "next_action": "pattern-guided-explore"},
+    {"source_id": "SRC-014", "business": "Konvy", "http_status": 200, "access_class": "challenge-or-block", "clues": ["variant"], "next_action": "environment-comparison-before-deep-explore"},
+    {"source_id": "SRC-015", "business": "EVEANDBOY", "http_status": 200, "access_class": "challenge-or-block", "clues": ["availability", "menu", "product_cards", "promotion", "sku_model", "variant", "video"], "next_action": "environment-comparison-before-deep-explore"},
+    {"source_id": "SRC-016", "business": "Beautrium", "http_status": 200, "access_class": "public-readable", "clues": ["article", "availability", "promotion", "variant", "video"], "next_action": "secondary-pattern-guided-explore"},
+    {"source_id": "SRC-017", "business": "Boots", "http_status": 200, "access_class": "challenge-or-block", "clues": ["article", "availability", "menu", "price_label", "promotion", "sku_model", "variant", "video"], "next_action": "environment-comparison-before-deep-explore"}
+  ],
+  "it_retail": [
+    {"source_id": "SRC-018", "business": "JIB", "http_status": 200, "access_class": "public-readable", "clues": ["cloudflare", "menu", "price_label", "promotion", "variant", "video"], "next_action": "pattern-guided-explore"},
+    {"source_id": "SRC-019", "business": "Advice", "http_status": 200, "access_class": "challenge-or-block", "clues": ["article", "availability", "cloudflare", "json_ld", "menu", "price_label", "product_cards", "promotion", "sku_model", "variant", "video"], "next_action": "environment-comparison-before-deep-explore"},
+    {"source_id": "SRC-020", "business": "IT City", "http_status": 200, "access_class": "public-readable", "clues": ["article", "cloudflare", "menu", "price_label", "product_cards", "promotion", "sku_model", "variant", "video"], "next_action": "secondary-pattern-guided-explore"},
+    {"source_id": "SRC-021", "business": "iHaveCPU", "http_status": 403, "access_class": "restricted-or-throttled", "clues": ["cloudflare"], "next_action": "environment-comparison-before-deep-explore"},
+    {"source_id": "SRC-022", "business": "BaNANA", "http_status": 403, "access_class": "restricted-or-throttled", "clues": ["cloudflare"], "next_action": "environment-comparison-before-deep-explore"}
+  ],
+  "selection": {
+    "primary_beauty": "SRC-013",
+    "primary_it_retail": "SRC-018",
+    "reason": "Start cross-domain validation with public-readable official surfaces showing commerce clues; defer challenged/restricted sources until environment comparison is justified."
+  }
+}
