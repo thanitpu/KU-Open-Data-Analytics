@@ -26,20 +26,26 @@ jobs:
       - name: Prepare Python 3.12 environment
         shell: powershell
         run: |
+          $ErrorActionPreference = 'Stop'
           & "$env:KU2D_PYTHON" --version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $venvDir = Join-Path $env:RUNNER_TEMP 'ku2d-edge-venv'
           if (Test-Path $venvDir) {
             Remove-Item $venvDir -Recurse -Force
           }
           & "$env:KU2D_PYTHON" -m venv $venvDir
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $venvPython = Join-Path $venvDir 'Scripts\python.exe'
           & $venvPython -m pip install --upgrade pip
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           "KU2D_VENV_PYTHON=$venvPython" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Install dependencies
         shell: powershell
         working-directory: services/data-acquisition
-        run: '& "$env:KU2D_VENV_PYTHON" -m pip install -r requirements.txt'
+        run: |
+          & "$env:KU2D_VENV_PYTHON" -m pip install -r requirements.txt
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Verify deterministic platform contract
         shell: powershell
@@ -49,10 +55,18 @@ jobs:
           KU2D_OPERATIONS_DB: ${{ runner.temp }}\ku2d_edge_preflight_ops.sqlite3
           KU2D_OBSERVATION_DB: ${{ runner.temp }}\ku2d_edge_preflight_obs.sqlite3
         run: |
-          & "$env:KU2D_VENV_PYTHON" tools/SELF_TEST_PLATFORM_FOUNDATION.py
-          & "$env:KU2D_VENV_PYTHON" tools/SELF_TEST_SCHEDULER_POLICY.py
-          & "$env:KU2D_VENV_PYTHON" tools/SELF_TEST_LIFECYCLE_ACCEPTANCE.py
-          & "$env:KU2D_VENV_PYTHON" tools/SELF_TEST_PROFILE_INVALIDATION.py
+          $tests = @(
+            'tools/SELF_TEST_PLATFORM_FOUNDATION.py',
+            'tools/SELF_TEST_SCHEDULER_POLICY.py',
+            'tools/SELF_TEST_LIFECYCLE_ACCEPTANCE.py',
+            'tools/SELF_TEST_PROFILE_INVALIDATION.py',
+            'tools/SELF_TEST_GOURMET_APPROVAL_TRACKS.py'
+          )
+          foreach ($test in $tests) {
+            Write-Host "Running $test"
+            & "$env:KU2D_VENV_PYTHON" $test
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
 
       - name: Gourmet Explore and Deep Audit
         if: ${{ inputs.target == 'gourmet' }}
@@ -63,7 +77,9 @@ jobs:
           KU2D_OPERATIONS_DB: ${{ runner.temp }}\ku2d_gourmet_edge_ops.sqlite3
           KU2D_OBSERVATION_DB: ${{ runner.temp }}\ku2d_gourmet_edge_obs.sqlite3
           KU2D_GOURMET_RESULT: ${{ github.workspace }}\docs\validation\gourmet-edge-latest.json
-        run: '& "$env:KU2D_VENV_PYTHON" tools/LIVE_GOURMET_LIFECYCLE.py'
+        run: |
+          & "$env:KU2D_VENV_PYTHON" tools/LIVE_GOURMET_LIFECYCLE.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Supermarket live smoke
         if: ${{ inputs.target == 'supermarket-smoke' }}
@@ -73,7 +89,9 @@ jobs:
           PYTHONPATH: .
           KU2D_OPERATIONS_DB: ${{ runner.temp }}\ku2d_supermarket_edge_ops.sqlite3
           KU2D_OBSERVATION_DB: ${{ runner.temp }}\ku2d_supermarket_edge_obs.sqlite3
-        run: '& "$env:KU2D_VENV_PYTHON" tools/LIVE_SMOKE_SUPERMARKETS.py --no-approve --no-store'
+        run: |
+          & "$env:KU2D_VENV_PYTHON" tools/LIVE_SMOKE_SUPERMARKETS.py --no-approve --no-store
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Upload Edge evidence
         if: always()
