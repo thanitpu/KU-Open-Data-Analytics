@@ -1,0 +1,69 @@
+name: Data Acquisition Platform CI
+
+on:
+  pull_request:
+    paths:
+      - 'services/data-acquisition/**'
+      - 'docs/DATA_ACQUISITION_NORTH_STAR.md'
+      - '.github/workflows/data-acquisition-platform-ci.yml'
+  push:
+    branches:
+      - integration/data-acquisition-platform
+    paths:
+      - 'services/data-acquisition/**'
+      - 'docs/DATA_ACQUISITION_NORTH_STAR.md'
+      - '.github/workflows/data-acquisition-platform-ci.yml'
+  workflow_dispatch:
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate acquisition source-of-truth contract
+        shell: bash
+        run: |
+          test -f docs/DATA_ACQUISITION_NORTH_STAR.md
+          test -f services/data-acquisition/README.md
+          grep -q 'Discover → Explore → Deep Audit → Human Approve → Scheduled Acquire' docs/DATA_ACQUISITION_NORTH_STAR.md
+          echo 'Data Acquisition North Star contract: PASS'
+
+  deterministic-tests:
+    if: ${{ hashFiles('services/data-acquisition/acquisition/**/*.py') != '' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/data-acquisition
+    env:
+      KU2D_OPERATIONS_DB: ${{ runner.temp }}/ku2d_acquisition_ops.sqlite3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile Python
+        run: python -m compileall -q acquisition api repository tools
+      - name: Supermarket regressions
+        run: |
+          python tools/SELF_TEST_LOTUS_v0.25.py
+          python tools/SELF_TEST_SUPERMARKETS_v0.25.py
+          python tools/SELF_TEST_TOPS_v0.27.py
+          python tools/SELF_TEST_TOPS_AUDIT_v0.27.py
+          python tools/SELF_TEST_GOURMET_v0.28.py
+
+  live-smoke:
+    if: ${{ github.event_name == 'workflow_dispatch' && hashFiles('services/data-acquisition/acquisition/**/*.py') != '' }}
+    runs-on: ubuntu-latest
+    environment: data-acquisition-staging
+    defaults:
+      run:
+        working-directory: services/data-acquisition
+    env:
+      KU2D_OPERATIONS_DB: ${{ runner.temp }}/ku2d_live_ops.sqlite3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Live public-source smoke test
+        run: python tools/LIVE_SMOKE_SUPERMARKETS.py --no-approve --no-store
