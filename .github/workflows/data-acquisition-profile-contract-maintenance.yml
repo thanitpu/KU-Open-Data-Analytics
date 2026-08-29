@@ -1,0 +1,48 @@
+name: Data Acquisition Profile Contract Maintenance
+
+on:
+  push:
+    branches:
+      - integration/data-acquisition-platform
+    paths:
+      - '.github/workflows/data-acquisition-profile-contract-maintenance.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-profile-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: integration/data-acquisition-platform
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Extend technique assignment invalidation to GraphQL operational config
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('services/data-acquisition/acquisition/operations_store.py')
+          s=p.read_text(encoding='utf-8')
+          old="('batch_endpoint','search_endpoint','seller_id','max_batch_size','catalog_url','category_urls','page_size','pagination_param','commerce_surface','official_related_domain','official_domain')"
+          new="('batch_endpoint','search_endpoint','seller_id','max_batch_size','catalog_url','category_urls','page_size','pagination_param','commerce_surface','official_related_domain','official_domain','graphql_endpoint','graphql_operation','graphql_query_hash','identity_source')"
+          if old not in s:
+              raise SystemExit('Expected profile-signature key tuple not found; refusing ambiguous patch.')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          PY
+      - name: Verify profile invalidation regression
+        working-directory: services/data-acquisition
+        env:
+          PYTHONPATH: .
+        run: python tools/SELF_TEST_PROFILE_INVALIDATION.py
+      - name: Commit source fix
+        shell: bash
+        run: |
+          git config user.name 'ku2d-acquisition-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add services/data-acquisition/acquisition/operations_store.py
+          git commit -m 'Honor GraphQL config changes in technique profile invalidation'
+          git push origin HEAD:integration/data-acquisition-platform
