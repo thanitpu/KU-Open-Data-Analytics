@@ -18,8 +18,6 @@ on:
 jobs:
   contract-and-foundation:
     runs-on: ubuntu-latest
-    env:
-      KU2D_OPERATIONS_DB: ${{ runner.temp }}/ku2d_platform_ops.sqlite3
     defaults:
       run:
         working-directory: services/data-acquisition
@@ -41,6 +39,7 @@ jobs:
         run: python -m compileall -q acquisition api repository control_plane service tools
       - name: Test observation store and scheduler policy
         env:
+          KU2D_OPERATIONS_DB: /tmp/ku2d_platform_ops.sqlite3
           PYTHONPATH: .
         run: |
           python tools/SELF_TEST_PLATFORM_FOUNDATION.py
@@ -48,9 +47,6 @@ jobs:
 
   supermarket-regressions:
     runs-on: ubuntu-latest
-    env:
-      KU2D_OPERATIONS_DB: ${{ runner.temp }}/ku2d_acquisition_ops.sqlite3
-      PYTHONPATH: .
     defaults:
       run:
         working-directory: services/data-acquisition
@@ -64,6 +60,9 @@ jobs:
       - name: Compile service
         run: python -m compileall -q acquisition api repository control_plane service tools
       - name: Run supermarket regression corpus
+        env:
+          KU2D_OPERATIONS_DB: /tmp/ku2d_acquisition_ops.sqlite3
+          PYTHONPATH: .
         run: |
           python tools/SELF_TEST_LOTUS_v0.25.py
           python tools/SELF_TEST_SUPERMARKETS_v0.25.py
@@ -75,9 +74,6 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     environment: data-acquisition-staging
-    env:
-      KU2D_OPERATIONS_DB: ${{ runner.temp }}/ku2d_live_ops.sqlite3
-      PYTHONPATH: .
     defaults:
       run:
         working-directory: services/data-acquisition
@@ -89,4 +85,7 @@ jobs:
       - name: Install service dependencies
         run: python -m pip install -r requirements.txt
       - name: Live public-source smoke test
+        env:
+          KU2D_OPERATIONS_DB: /tmp/ku2d_live_ops.sqlite3
+          PYTHONPATH: .
         run: python tools/LIVE_SMOKE_SUPERMARKETS.py --no-approve --no-store
