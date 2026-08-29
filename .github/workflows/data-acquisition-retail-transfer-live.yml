@@ -1,0 +1,40 @@
+name: KU2D Retail Pattern Transfer Explore
+
+on:
+  push:
+    branches:
+      - integration/data-acquisition-platform
+    paths:
+      - 'services/data-acquisition/config/retail_commerce_core_patterns.json'
+      - 'services/data-acquisition/control_plane/domain_playbooks.py'
+      - 'services/data-acquisition/acquisition/source_explorer.py'
+      - 'services/data-acquisition/tools/LIVE_RETAIL_TRANSFER_EXPLORE.py'
+      - '.github/workflows/data-acquisition-retail-transfer-live.yml'
+  workflow_dispatch:
+
+jobs:
+  explore-retail-transfer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: services/data-acquisition
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Explore Watsons and JIB using learned retail patterns
+        env:
+          PYTHONPATH: .
+          KU2D_RETAIL_TRANSFER_RESULT: ${{ github.workspace }}/docs/validation/retail-transfer-live-explore.json
+        run: python tools/LIVE_RETAIL_TRANSFER_EXPLORE.py
+      - name: Upload retail-transfer evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: ku2d-retail-transfer-live-explore
+          path: docs/validation/retail-transfer-live-explore.json
+          if-no-files-found: error
+          retention-days: 14
