@@ -59,7 +59,7 @@ def _semantically_plausible_product(r):
       'lotus-public-catalog-api','bigc-sitemap-product-detail','bigc-category-card',
       'makro-pro-listing-card','makro-pro-product-detail','makro-pro-embedded-state','makro-pro-accessible-text',
       'tops-sitemap-product-detail','tops-campaign-product-card',
-      'gourmet-graphql-product','gourmet-rendered-product-card'}
+      'gourmet-graphql-product','gourmet-product-detail','gourmet-rendered-product-card'}
     return bool(identity and r.get('price') is not None)
 
 

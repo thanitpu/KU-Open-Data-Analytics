@@ -13,6 +13,7 @@ from supermarket_techniques import (bigc_product_catalog,bigc_promotion_surface,
     makro_pro_catalog,makro_promotion_catalogue,makro_pro_network,
     tops_product_catalog,tops_campaign_catalog,tops_promotion_surface,tops_catalog_network,
     gourmet_graphql_catalog,gourmet_rendered_catalog,gourmet_promotion_surface,gourmet_catalog_network)
+from gourmet_detail_technique import gourmet_product_detail_catalog
 
 GENERIC_TECHNIQUES=[
  {"key":"basic_crawler","label":"Basic HTML Crawler","kind":"content"},
@@ -42,6 +43,7 @@ TOPS_TECHNIQUES=[
 ]
 GOURMET_TECHNIQUES=[
  {"key":"gourmet_graphql_catalog","label":"Gourmet Market GraphQL Product Catalog","kind":"content"},
+ {"key":"gourmet_product_detail_catalog","label":"Gourmet Market Official Product Detail Catalog","kind":"content"},
  {"key":"gourmet_rendered_catalog","label":"Gourmet Market Rendered Product Cards","kind":"content"},
  {"key":"gourmet_promotion_surface","label":"Gourmet Market Official Promotion Surface","kind":"content"},
  {"key":"gourmet_catalog_network","label":"Gourmet GraphQL / Network Catalog Discovery","kind":"discovery"},
@@ -191,6 +193,7 @@ def generic_run(url,domain,purpose,max_pages=3,techniques=None,progress_callback
       'tops_promotion_surface':lambda: _special_result('tops_promotion_surface','Tops Official Campaign Surface',tops_promotion_surface(max_pages)),
       'tops_catalog_network':lambda: _special_result('tops_catalog_network','Tops Catalog API / App Discovery',tops_catalog_network(max_pages)),
       'gourmet_graphql_catalog':lambda: _special_result('gourmet_graphql_catalog','Gourmet Market GraphQL Product Catalog',gourmet_graphql_catalog(url,max_pages)),
+      'gourmet_product_detail_catalog':lambda: _special_result('gourmet_product_detail_catalog','Gourmet Market Official Product Detail Catalog',gourmet_product_detail_catalog(url,max_pages)),
       'gourmet_rendered_catalog':lambda: _special_result('gourmet_rendered_catalog','Gourmet Market Rendered Product Cards',gourmet_rendered_catalog(url,max_pages)),
       'gourmet_promotion_surface':lambda: _special_result('gourmet_promotion_surface','Gourmet Market Official Promotion Surface',gourmet_promotion_surface(max_pages)),
       'gourmet_catalog_network':lambda: _special_result('gourmet_catalog_network','Gourmet GraphQL / Network Catalog Discovery',gourmet_catalog_network(max_pages)),
@@ -417,7 +420,7 @@ def recommend_supermarket_tracks(results,family):
         # Big C's generic text crawler is explicitly excluded because it previously
         # promoted coupon thresholds such as 'ซื้อครบ = 1' into product records.
         if family=='bigc' and key=='basic_crawler':continue
-        if key not in ('bigc_product_catalog','bigc_catalog_network','makro_pro_catalog','makro_pro_network','tops_product_catalog','tops_campaign_catalog','tops_catalog_network','gourmet_graphql_catalog','gourmet_rendered_catalog','gourmet_catalog_network') and z.get('identity_pct',0)<75:continue
+        if key not in ('bigc_product_catalog','bigc_catalog_network','makro_pro_catalog','makro_pro_network','tops_product_catalog','tops_campaign_catalog','tops_catalog_network','gourmet_graphql_catalog','gourmet_product_detail_catalog','gourmet_rendered_catalog','gourmet_catalog_network') and z.get('identity_pct',0)<75:continue
         score=min(45,18+_log_component(z['products'],27,10))+round(min(20,z['price_pct']*.20))+z['confidence']
         score+=round(min(12,z.get('identity_pct',0)*.12))
         if family=='bigc':
@@ -433,6 +436,7 @@ def recommend_supermarket_tracks(results,family):
             elif key=='basic_crawler':score-=25
         if family=='gourmet':
             if key=='gourmet_graphql_catalog':score+=60
+            elif key=='gourmet_product_detail_catalog':score+=48
             elif key=='gourmet_rendered_catalog':score+=32
             elif key=='gourmet_catalog_network':score+=18
             elif key in ('generic_browser_rendered','basic_crawler'):score-=28
@@ -697,6 +701,11 @@ def materialize_for_run(source,techniques,max_pages=8,assignment_rows=None,stabl
             x=gourmet_graphql_catalog(url,max_pages=max_pages,source_id=source.get('source_id'),progressive=True,operational_config=cfg,stable_sample=stable_sample)
             rr=x.get('rows') or [];rows.extend(rr)
             results.append(_tech_result('gourmet_graphql_catalog','Gourmet Market GraphQL Product Catalog',rr,len(x.get('urls_checked') or []),x.get('urls_checked') or [],x.get('potential') or {},x.get('diagnostics') or []))
+        if 'gourmet_product_detail_catalog' in tset:
+            cfg=_assignment_operational_config(assignment_rows,'gourmet_product_detail_catalog')
+            x=gourmet_product_detail_catalog(url,max_pages=max_pages,source_id=source.get('source_id'),progressive=True,operational_config=cfg,stable_sample=stable_sample)
+            rr=x.get('rows') or [];rows.extend(rr)
+            results.append(_tech_result('gourmet_product_detail_catalog','Gourmet Market Official Product Detail Catalog',rr,len(x.get('urls_checked') or []),x.get('urls_checked') or [],x.get('potential') or {},x.get('diagnostics') or []))
         if 'gourmet_rendered_catalog' in tset:
             cfg=_assignment_operational_config(assignment_rows,'gourmet_rendered_catalog')
             x=gourmet_rendered_catalog(url,max_pages=max_pages,source_id=source.get('source_id'),progressive=True,operational_config=cfg,stable_sample=stable_sample)
@@ -709,7 +718,7 @@ def materialize_for_run(source,techniques,max_pages=8,assignment_rows=None,stabl
             x=gourmet_catalog_network(max_pages=max_pages);rr=x.get('rows') or []
             results.append(_tech_result('gourmet_catalog_network','Gourmet GraphQL / Network Catalog Discovery',rr,len(x.get('urls_checked') or []),x.get('urls_checked') or [],x.get('potential') or {},x.get('diagnostics') or [],role='discovery'))
         if 'generic_sitemap' in tset:results.append(generic_sitemap(url,max_pages))
-        handled={'gourmet_graphql_catalog','gourmet_rendered_catalog','gourmet_promotion_surface','gourmet_catalog_network','generic_sitemap'}
+        handled={'gourmet_graphql_catalog','gourmet_product_detail_catalog','gourmet_rendered_catalog','gourmet_promotion_surface','gourmet_catalog_network','generic_sitemap'}
         remaining=[x for x in (techniques or []) if x not in handled]
         if remaining:
             extra=generic_run(url,domain,purpose,max_pages,remaining);results.extend(extra.get('technique_results') or [])
@@ -748,7 +757,7 @@ def technique_profile_fingerprint(techniques,assignment_rows=None):
     for row in assignment_rows or []:
         ev=row.get('evidence') or {}
         op=((ev.get('potential') or {}).get('operational_config') or ev.get('operational_config') or {})
-        stable_op={k:op.get(k) for k in ('batch_endpoint','search_endpoint','seller_id','max_batch_size','catalog_url','category_urls','page_size','pagination_param','commerce_surface','official_related_domain','official_domain','graphql_endpoint','graphql_operation','graphql_query_hash','identity_source') if op.get(k) is not None}
+        stable_op={k:op.get(k) for k in ('batch_endpoint','search_endpoint','seller_id','max_batch_size','catalog_url','category_urls','page_size','pagination_param','commerce_surface','official_related_domain','official_domain','graphql_endpoint','graphql_operation','graphql_query_hash','identity_source','seed_urls','crawl_mode') if op.get(k) is not None}
         extras.append({'technique':row.get('technique'),'tracks':ev.get('tracks') or [],
                        'engine_version':ev.get('engine_version') or TECHNIQUE_ENGINE_VERSION,
                        'operational_config':stable_op})
