@@ -7,25 +7,28 @@ from typing import Iterable
 ROOT = Path(__file__).resolve().parents[1]
 PLAYBOOK_FILE = ROOT / "config" / "domain_playbooks.json"
 SUPERMARKET_PATTERN_FILE = ROOT / "config" / "supermarket_acquisition_patterns.json"
+RETAIL_CORE_FILE = ROOT / "config" / "retail_commerce_core_patterns.json"
 
 
 def load_playbooks() -> dict:
     return json.loads(PLAYBOOK_FILE.read_text(encoding="utf-8"))
 
 
-def load_supermarket_patterns() -> dict:
-    if not SUPERMARKET_PATTERN_FILE.is_file():
+def _load_json(path: Path) -> dict:
+    if not path.is_file():
         return {}
-    return json.loads(SUPERMARKET_PATTERN_FILE.read_text(encoding="utf-8"))
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def load_supermarket_patterns() -> dict:
+    return _load_json(SUPERMARKET_PATTERN_FILE)
+
+
+def load_retail_core() -> dict:
+    return _load_json(RETAIL_CORE_FILE)
 
 
 def _supermarket_overlay(pb: dict) -> dict:
-    """Overlay learned supermarket policy/evidence without duplicating the whole playbook.
-
-    The pattern registry is the learned source of truth for required/optional business
-    tracks and validated cross-site evidence. Domain playbooks still own generic clue
-    ranking and quality-gate definitions.
-    """
     lib = load_supermarket_patterns()
     policy = lib.get("policy") or {}
     out = dict(pb)
@@ -38,9 +41,6 @@ def _supermarket_overlay(pb: dict) -> dict:
         "validated_sources": [x.get("business") for x in (lib.get("validated_sources") or []) if x.get("business")],
         "selection_waterfall": lib.get("selection_waterfall") or [],
     }
-
-    # Promote learned evidence into the generic playbook patterns so ranking can learn
-    # from the five-source supermarket phase while preserving existing clue logic.
     learned = {
         "public_catalog_api": ["Lotus's"],
         "sitemap_product_detail": ["Big C", "Tops"],
@@ -55,12 +55,69 @@ def _supermarket_overlay(pb: dict) -> dict:
         ev = dict(item.get("evidence") or {})
         if item.get("pattern_id") in learned:
             ev["validated_sources"] = learned[item["pattern_id"]]
-            candidates = [x for x in (ev.get("candidate_sources") or []) if x not in set(ev["validated_sources"])]
-            ev["candidate_sources"] = candidates
+            ev["candidate_sources"] = [x for x in (ev.get("candidate_sources") or []) if x not in set(ev["validated_sources"])]
         item["evidence"] = ev
         patterns.append(item)
     out["patterns"] = patterns
     return out
+
+
+def _retail_specialized_playbook(domain: str) -> dict:
+    core = load_retail_core()
+    spec = (core.get("domain_specializations") or {}).get(domain) or {}
+    if not spec:
+        return {}
+    labels = {"beauty": "Beauty / Personal Care Retail", "it_retail": "IT / Electronics Retail"}
+    clue_map = {
+        "RC-P01": ["json_api", "rest_api", "catalog_endpoint", "product_endpoint", "graphql"],
+        "RC-P02": ["product_sitemap", "sitemap_product_urls", "detail_pages", "canonical_product"],
+        "RC-P03": ["product_cards", "ssr_listing", "accessible_text", "rendered"],
+        "RC-P04": ["robots", "sitemap", "sitemap_index", "reported_total", "pagination", "graphql", "api_candidate", "network_urls"],
+        "RC-P05": ["promotion", "campaign", "coupon", "offer", "sale"],
+        "RC-P06": ["split_track"],
+        "RC-P07": ["cloud_access_blocked", "edge_required"],
+    }
+    rows = []
+    for p in core.get("core_patterns") or []:
+        if domain not in (p.get("applicable_domains") or []):
+            continue
+        tracks = p.get("tracks") or []
+        for track in tracks:
+            if track in {"orchestration", "execution_environment"}:
+                continue
+            rows.append({
+                "pattern_id": p.get("pattern_id"),
+                "label": p.get("name"),
+                "track": track,
+                "base_priority": p.get("priority"),
+                "clues": clue_map.get(p.get("pattern_id"), []),
+                "evidence": {
+                    "validated_sources": [],
+                    "transferred_from_domain": "supermarket",
+                    "upstream_validated_sources": (core.get("derived_from") or {}).get("validated_sources") or [],
+                },
+                "transfer_status": "cross-domain-candidate",
+            })
+    return {
+        "label": labels[domain],
+        "required_business_tracks": list((core.get("shared_tracks") or {}).get("required") or []),
+        "optional_business_tracks": list((core.get("shared_tracks") or {}).get("optional") or []),
+        "quality_gates": spec.get("quality_gates") or {},
+        "observation_context_required": spec.get("required_context") or [],
+        "variant_dimensions": spec.get("variant_dimensions") or [],
+        "patterns": rows,
+        "environment_rules": [{
+            "condition": "cloud_access_blocked",
+            "action": "prefer_edge_runner",
+            "reason": "Use a qualified normal operating network only after public cloud/datacenter access failure is evidenced; do not bypass access controls."
+        }],
+        "learned_pattern_library": {
+            "schema": core.get("schema"),
+            "version": core.get("version"),
+            "transfer_status": "inherited-not-yet-domain-validated",
+            "derived_from": core.get("derived_from") or {},
+        },
+    }
 
 
 def playbook(domain: str) -> dict:
@@ -78,8 +135,17 @@ def playbook(domain: str) -> dict:
         "qdiving": "q_diving",
         "scuba": "q_diving",
         "scuba_diving": "q_diving",
+        "beauty_retail": "beauty",
+        "cosmetics": "beauty",
+        "personal_care": "beauty",
+        "it": "it_retail",
+        "electronics": "it_retail",
+        "electronics_retail": "it_retail",
+        "computer_retail": "it_retail",
     }
     key = aliases.get(key, key)
+    if key in {"beauty", "it_retail"}:
+        return _retail_specialized_playbook(key)
     pb = (load_playbooks().get("playbooks") or {}).get(key) or {}
     return _supermarket_overlay(pb) if key == "supermarket" and pb else pb
 
@@ -96,7 +162,9 @@ def ranked_patterns(domain: str, clues: Iterable[str] | None = None, track: str 
         evidence = p.get("evidence") or {}
         validated = len(evidence.get("validated_sources") or [])
         candidates = len(evidence.get("candidate_sources") or [])
-        score = float(p.get("base_priority") or 0) + 4 * len(matched) + min(8, validated * 2) + min(2, candidates)
+        upstream = len(evidence.get("upstream_validated_sources") or [])
+        transfer_bonus = min(4, upstream) if not validated else 0
+        score = float(p.get("base_priority") or 0) + 4 * len(matched) + min(8, validated * 2) + min(2, candidates) + transfer_bonus
         rows.append({**p, "matched_clues": matched, "learned_score": round(score, 2)})
     return sorted(rows, key=lambda x: (-x["learned_score"], str(x.get("pattern_id") or "")))
 
@@ -112,6 +180,7 @@ def recommended_sequence(domain: str, clues: Iterable[str] | None = None) -> dic
         "optional_tracks": optional,
         "quality_gates": pb.get("quality_gates") or {},
         "observation_context_required": pb.get("observation_context_required") or [],
+        "variant_dimensions": pb.get("variant_dimensions") or [],
         "tracks": {t: ranked_patterns(domain, clues=clues, track=t) for t in tracks},
         "optional_track_patterns": {t: ranked_patterns(domain, clues=clues, track=t) for t in optional},
         "environment_rules": pb.get("environment_rules") or [],
