@@ -49,6 +49,7 @@ jobs:
           python tools/SELF_TEST_SCHEDULER_POLICY.py
           python tools/SELF_TEST_EXECUTION_ENVIRONMENT.py
           python tools/SELF_TEST_DOMAIN_PLAYBOOKS.py
+          python tools/SELF_TEST_OTA_BOOKING_v0.1.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
           python tools/SELF_TEST_LIFECYCLE_ACCEPTANCE.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
