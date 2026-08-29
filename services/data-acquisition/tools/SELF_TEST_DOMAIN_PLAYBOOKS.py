@@ -10,19 +10,33 @@ if str(ROOT) not in sys.path:
 from control_plane.domain_playbooks import playbook, ranked_patterns, recommended_sequence
 
 pb = playbook('Supermarket')
-assert pb.get('required_business_tracks') == ['product_price', 'promotion', 'discovery']
+assert pb.get('required_business_tracks') == ['product_price', 'discovery']
+assert pb.get('optional_business_tracks') == ['promotion']
+assert set((pb.get('learned_pattern_library') or {}).get('validated_sources') or []) >= {"Lotus's", 'Big C', 'Makro', 'Tops', 'Gourmet Market'}
+
 product = ranked_patterns('supermarket', clues=['graphql', 'api_candidate'], track='product_price')
 ids = [x['pattern_id'] for x in product]
 assert ids[0] in {'graphql_catalog', 'public_catalog_api'}
 assert ids.index('generic_html_last_resort') == len(ids) - 1
+rendered = next(x for x in product if x['pattern_id'] == 'rendered_product_listing')
+assert set(rendered['evidence']['validated_sources']) >= {'Makro', 'Gourmet Market'}
 
 discovery = ranked_patterns('supermarket', clues=['cloud_access_blocked', 'indexed_product_urls'], track='discovery')
 search = next(x for x in discovery if x['pattern_id'] == 'search_index_discovery')
 assert 'Discovery only' in search.get('restriction', '')
+network = next(x for x in discovery if x['pattern_id'] == 'browser_network_discovery')
+assert 'Gourmet Market' in network['evidence']['validated_sources']
+
 seq = recommended_sequence('supermarket', clues=['product_sitemap'])
-assert set(seq['tracks']) == {'product_price', 'promotion', 'discovery'}
+assert set(seq['tracks']) == {'product_price', 'discovery'}
+assert set(seq['optional_track_patterns']) == {'promotion'}
 assert seq['quality_gates']['price_completeness_pct'] == 80
 assert any(x.get('action') == 'prefer_edge_runner' for x in seq['environment_rules'])
+assert len((seq.get('learned_pattern_library') or {}).get('selection_waterfall') or []) >= 6
+
+promo = seq['optional_track_patterns']['promotion']
+official = next(x for x in promo if x['pattern_id'] == 'official_promotion_surface')
+assert set(official['evidence']['validated_sources']) >= {"Lotus's", 'Big C', 'Makro', 'Tops'}
 
 ota = recommended_sequence('Online Travel Agencies', clues=['search_api', 'availability', 'promotion'])
 assert set(ota['tracks']) == {'property_offer', 'rate_availability', 'promotion_benefit', 'discovery'}
