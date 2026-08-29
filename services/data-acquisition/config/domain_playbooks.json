@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "playbooks": {
     "supermarket": {
       "label": "Supermarket / Grocery Retail",
@@ -13,95 +13,92 @@
         "promotion_records_minimum": 1
       },
       "patterns": [
-        {
-          "pattern_id": "public_catalog_api",
-          "label": "Public Catalog API",
-          "track": "product_price",
-          "base_priority": 100,
-          "clues": ["json_api", "rest_api", "catalog_endpoint", "product_endpoint"],
-          "evidence": {"validated_sources": ["Lotus's"], "candidate_sources": []}
-        },
-        {
-          "pattern_id": "graphql_catalog",
-          "label": "Public GraphQL Catalog",
-          "track": "product_price",
-          "base_priority": 95,
-          "clues": ["graphql", "graphql_endpoint", "apollo", "urql"],
-          "evidence": {"validated_sources": [], "candidate_sources": ["Gourmet Market"]}
-        },
-        {
-          "pattern_id": "sitemap_product_detail",
-          "label": "Product Sitemap → Product Detail",
-          "track": "product_price",
-          "base_priority": 90,
-          "clues": ["product_sitemap", "sitemap_product_urls", "detail_pages"],
-          "evidence": {"validated_sources": ["Big C", "Tops"], "candidate_sources": []}
-        },
-        {
-          "pattern_id": "rendered_product_listing",
-          "label": "Rendered / SSR Product Listing",
-          "track": "product_price",
-          "base_priority": 80,
-          "clues": ["product_cards", "ssr_listing", "accessible_text", "gtin_images"],
-          "evidence": {"validated_sources": ["Makro"], "candidate_sources": ["Gourmet Market"]}
-        },
-        {
-          "pattern_id": "embedded_application_state",
-          "label": "Embedded Application State",
-          "track": "product_price",
-          "base_priority": 72,
-          "clues": ["next_data", "rsc", "hydration_state", "json_state"],
-          "evidence": {"validated_sources": ["Big C"], "candidate_sources": []}
-        },
-        {
-          "pattern_id": "browser_network_discovery",
-          "label": "Browser Network / API Discovery",
-          "track": "discovery",
-          "base_priority": 68,
-          "clues": ["xhr", "fetch", "graphql", "api_candidate", "network_urls"],
-          "evidence": {"validated_sources": [], "candidate_sources": ["Gourmet Market"]}
-        },
-        {
-          "pattern_id": "official_promotion_surface",
-          "label": "Official Campaign / Promotion Surface",
-          "track": "promotion",
-          "base_priority": 95,
-          "clues": ["campaign", "promotion", "brochure", "coupon", "offer"],
-          "evidence": {"validated_sources": ["Big C", "Tops", "Lotus's"], "candidate_sources": ["Gourmet Market"]}
-        },
-        {
-          "pattern_id": "sitemap_discovery",
-          "label": "Robots / Sitemap Discovery",
-          "track": "discovery",
-          "base_priority": 90,
-          "clues": ["robots", "sitemap", "sitemap_index"],
-          "evidence": {"validated_sources": ["Lotus's", "Big C", "Tops"], "candidate_sources": []}
-        },
-        {
-          "pattern_id": "search_index_discovery",
-          "label": "Search Index → Official Detail Discovery",
-          "track": "discovery",
-          "base_priority": 35,
-          "clues": ["cloud_access_blocked", "indexed_product_urls"],
-          "evidence": {"validated_sources": [], "candidate_sources": ["Gourmet Market"]},
-          "restriction": "Discovery only. Search-engine cached price/promotion data is not trusted as current acquisition data."
-        },
-        {
-          "pattern_id": "generic_html_last_resort",
-          "label": "Generic HTML Pattern Extraction",
-          "track": "fallback",
-          "base_priority": 10,
-          "clues": ["html"],
-          "evidence": {"validated_sources": [], "candidate_sources": []},
-          "restriction": "Last resort for supermarket business facts because generic marketing text can create false products/prices."
-        }
+        {"pattern_id":"public_catalog_api","label":"Public Catalog API","track":"product_price","base_priority":100,"clues":["json_api","rest_api","catalog_endpoint","product_endpoint"],"evidence":{"validated_sources":["Lotus's"],"candidate_sources":[]}},
+        {"pattern_id":"graphql_catalog","label":"Public GraphQL Catalog","track":"product_price","base_priority":95,"clues":["graphql","graphql_endpoint","apollo","urql"],"evidence":{"validated_sources":[],"candidate_sources":["Gourmet Market"]}},
+        {"pattern_id":"sitemap_product_detail","label":"Product Sitemap → Product Detail","track":"product_price","base_priority":90,"clues":["product_sitemap","sitemap_product_urls","detail_pages"],"evidence":{"validated_sources":["Big C","Tops"],"candidate_sources":[]}},
+        {"pattern_id":"rendered_product_listing","label":"Rendered / SSR Product Listing","track":"product_price","base_priority":80,"clues":["product_cards","ssr_listing","accessible_text","gtin_images"],"evidence":{"validated_sources":["Makro"],"candidate_sources":["Gourmet Market"]}},
+        {"pattern_id":"embedded_application_state","label":"Embedded Application State","track":"product_price","base_priority":72,"clues":["next_data","rsc","hydration_state","json_state"],"evidence":{"validated_sources":["Big C"],"candidate_sources":[]}},
+        {"pattern_id":"browser_network_discovery","label":"Browser Network / API Discovery","track":"discovery","base_priority":68,"clues":["xhr","fetch","graphql","api_candidate","network_urls"],"evidence":{"validated_sources":[],"candidate_sources":["Gourmet Market"]}},
+        {"pattern_id":"official_promotion_surface","label":"Official Campaign / Promotion Surface","track":"promotion","base_priority":95,"clues":["campaign","promotion","brochure","coupon","offer"],"evidence":{"validated_sources":["Big C","Tops","Lotus's"],"candidate_sources":["Gourmet Market"]}},
+        {"pattern_id":"sitemap_discovery","label":"Robots / Sitemap Discovery","track":"discovery","base_priority":90,"clues":["robots","sitemap","sitemap_index"],"evidence":{"validated_sources":["Lotus's","Big C","Tops"],"candidate_sources":[]}},
+        {"pattern_id":"search_index_discovery","label":"Search Index → Official Detail Discovery","track":"discovery","base_priority":35,"clues":["cloud_access_blocked","indexed_product_urls"],"evidence":{"validated_sources":[],"candidate_sources":["Gourmet Market"]},"restriction":"Discovery only. Search-engine cached price/promotion data is not trusted as current acquisition data."},
+        {"pattern_id":"generic_html_last_resort","label":"Generic HTML Pattern Extraction","track":"fallback","base_priority":10,"clues":["html"],"evidence":{"validated_sources":[],"candidate_sources":[]},"restriction":"Last resort for supermarket business facts because generic marketing text can create false products/prices."}
+      ],
+      "environment_rules": [{"condition":"cloud_access_blocked","action":"prefer_edge_runner","reason":"A public source that rejects datacenter IPs must be tested from an appropriate normal operating network; do not bypass access controls."}]
+    },
+    "ota": {
+      "label": "Online Travel Agency / Accommodation Marketplace",
+      "required_business_tracks": ["property_offer", "rate_availability", "promotion_benefit", "discovery"],
+      "quality_gates": {
+        "minimum_offer_records": 5,
+        "rate_completeness_pct": 70,
+        "query_context_completeness_pct": 100,
+        "semantic_quality_pct": 85,
+        "repeatability_pct": 70,
+        "provenance_pct": 95
+      },
+      "observation_context_required": ["destination_or_property", "check_in", "check_out", "occupancy", "currency", "observed_at"],
+      "patterns": [
+        {"pattern_id":"ota_public_search_api","label":"Public Search / Availability API","track":"rate_availability","base_priority":100,"clues":["search_api","availability_api","rate_api","graphql","json_api"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
+        {"pattern_id":"ota_embedded_search_state","label":"Embedded Search Result State","track":"property_offer","base_priority":92,"clues":["next_data","hydration_state","apollo_state","search_state","json_state"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
+        {"pattern_id":"ota_rendered_result_cards","label":"Rendered Search Result Cards","track":"property_offer","base_priority":86,"clues":["property_cards","hotel_cards","rendered_results","accessible_text"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
+        {"pattern_id":"ota_property_detail","label":"Official Property Detail Surface","track":"property_offer","base_priority":82,"clues":["property_detail","room_types","property_id","hotel_id"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
+        {"pattern_id":"ota_rate_calendar","label":"Rate / Calendar / Room Availability Surface","track":"rate_availability","base_priority":94,"clues":["calendar","room_rate","availability","occupancy","stay_dates"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
+        {"pattern_id":"ota_official_promotion","label":"Official Promotion / Member Benefit Surface","track":"promotion_benefit","base_priority":90,"clues":["promotion","deal","coupon","member_price","genius","loyalty","package"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
+        {"pattern_id":"ota_sitemap_discovery","label":"Sitemap / Destination / Property Discovery","track":"discovery","base_priority":78,"clues":["sitemap","destination_pages","property_urls"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
+        {"pattern_id":"ota_network_discovery","label":"Browser Network / API Discovery","track":"discovery","base_priority":72,"clues":["xhr","fetch","graphql","api_candidate"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
+        {"pattern_id":"ota_generic_html_last_resort","label":"Generic HTML Extraction","track":"fallback","base_priority":8,"clues":["html"],"evidence":{"validated_sources":[],"candidate_sources":[]},"restriction":"Never infer a comparable room rate without stay dates, occupancy, currency and the OTA's stated pricing context."}
       ],
       "environment_rules": [
-        {
-          "condition": "cloud_access_blocked",
-          "action": "prefer_edge_runner",
-          "reason": "A public source that rejects datacenter IPs must be tested from an appropriate normal operating network; do not bypass access controls."
-        }
+        {"condition":"login_or_member_rate_required","action":"exclude_restricted_rate","reason":"Only acquire rates publicly available without authentication unless the user has explicitly configured an authorized account workflow."},
+        {"condition":"cloud_access_blocked","action":"prefer_edge_runner","reason":"Use a qualified normal operating network; do not solve CAPTCHAs or bypass anti-bot controls."}
+      ]
+    },
+    "coffee": {
+      "label": "Coffee Chain / Cafe",
+      "required_business_tracks": ["menu_price", "promotion", "discovery"],
+      "quality_gates": {
+        "minimum_menu_records": 5,
+        "price_completeness_pct": 70,
+        "semantic_quality_pct": 85,
+        "repeatability_pct": 70,
+        "provenance_pct": 95
+      },
+      "patterns": [
+        {"pattern_id":"coffee_public_menu_api","label":"Public Menu / Product API","track":"menu_price","base_priority":100,"clues":["menu_api","product_api","json_api","graphql"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
+        {"pattern_id":"coffee_structured_menu","label":"Structured Menu / Embedded Application State","track":"menu_price","base_priority":92,"clues":["menu_json","next_data","hydration_state","structured_menu"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
+        {"pattern_id":"coffee_rendered_menu","label":"Rendered Menu Cards","track":"menu_price","base_priority":86,"clues":["menu_cards","product_cards","accessible_text","menu_page"],"evidence":{"validated_sources":[],"candidate_sources":["Starbucks","Café Amazon","PunThai Coffee","Inthanin Coffee","Black Canyon","DEAN & DELUCA","All Café"]}},
+        {"pattern_id":"coffee_official_promotion","label":"Official Promotion / Campaign Surface","track":"promotion","base_priority":94,"clues":["promotion","campaign","coupon","member","seasonal"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
+        {"pattern_id":"coffee_location_menu","label":"Store / Location-specific Menu Surface","track":"menu_price","base_priority":78,"clues":["store_id","location","branch_menu","delivery_menu"],"evidence":{"validated_sources":[],"candidate_sources":[]},"restriction":"Preserve branch/location context when price or availability can vary by store."},
+        {"pattern_id":"coffee_sitemap_discovery","label":"Sitemap / Menu Discovery","track":"discovery","base_priority":82,"clues":["sitemap","menu_urls","product_urls"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
+        {"pattern_id":"coffee_network_discovery","label":"Browser Network / API Discovery","track":"discovery","base_priority":70,"clues":["xhr","fetch","api_candidate","graphql"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
+        {"pattern_id":"coffee_generic_html_last_resort","label":"Generic HTML Extraction","track":"fallback","base_priority":10,"clues":["html"],"evidence":{"validated_sources":[],"candidate_sources":[]},"restriction":"Reject quantities, calorie values, loyalty points and marketing numerals as prices unless explicitly price-labelled."}
+      ],
+      "environment_rules": [{"condition":"delivery_platform_only","action":"mark_secondary_source","reason":"Third-party delivery menus may be useful observations but should not replace the cafe's official source when the research question requires official menu pricing."}]
+    },
+    "q_diving": {
+      "label": "Q-diving / Scuba Knowledge and Community",
+      "required_business_tracks": ["content_index", "content_metadata", "discovery"],
+      "quality_gates": {
+        "minimum_content_records": 5,
+        "title_or_topic_completeness_pct": 90,
+        "published_or_observed_time_pct": 80,
+        "semantic_quality_pct": 85,
+        "provenance_pct": 95
+      },
+      "patterns": [
+        {"pattern_id":"diving_rss_feed","label":"RSS / Atom Feed","track":"content_index","base_priority":100,"clues":["rss","atom","feed"],"evidence":{"validated_sources":[],"candidate_sources":["PADI Blog","SSI Blog"]}},
+        {"pattern_id":"diving_structured_article_index","label":"Structured Article / Blog Index","track":"content_index","base_priority":92,"clues":["article_cards","blog_index","json_ld","article_list"],"evidence":{"validated_sources":[],"candidate_sources":["PADI Blog","SSI Blog"]}},
+        {"pattern_id":"diving_community_listing","label":"Public Community Discussion Listing","track":"content_index","base_priority":88,"clues":["discussion_list","topic_cards","forum","pantip"],"evidence":{"validated_sources":[],"candidate_sources":["Pantip · Diving discussions"]},"restriction":"Acquire only public discussion content and metadata; do not collect private-account data."},
+        {"pattern_id":"diving_video_search","label":"Public Video Search / Channel Listing","track":"content_index","base_priority":84,"clues":["youtube","video_cards","video_search","channel_feed"],"evidence":{"validated_sources":[],"candidate_sources":["YouTube · Scuba beginner search","YouTube · Koh Tao diving search"]}},
+        {"pattern_id":"diving_article_metadata","label":"Article / Discussion Metadata","track":"content_metadata","base_priority":94,"clues":["title","published_at","author","tags","description","canonical_url"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
+        {"pattern_id":"diving_sitemap_discovery","label":"Sitemap Discovery","track":"discovery","base_priority":86,"clues":["sitemap","article_urls","topic_urls"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
+        {"pattern_id":"diving_search_discovery","label":"Site Search / Tag / Category Discovery","track":"discovery","base_priority":82,"clues":["tag_page","category_page","site_search"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
+        {"pattern_id":"diving_generic_html","label":"Generic Public HTML Article Extraction","track":"fallback","base_priority":35,"clues":["article_html","public_html"],"evidence":{"validated_sources":[],"candidate_sources":[]}}
+      ],
+      "environment_rules": [
+        {"condition":"personal_profile_surface","action":"minimize_personal_data","reason":"Keep only public metadata needed for content provenance; avoid unnecessary personal profile attributes."},
+        {"condition":"platform_api_requires_key","action":"use_authorized_connector_or_public_surface","reason":"Do not scrape around authentication or API access controls."}
       ]
     }
   }
