@@ -51,6 +51,7 @@ jobs:
           python tools/SELF_TEST_DOMAIN_PLAYBOOKS.py
           python tools/SELF_TEST_PATTERN_GUIDED_EXPLORE.py
           python tools/SELF_TEST_RETAIL_COMMERCE_TRANSFER.py
+          python tools/SELF_TEST_TRACK_AWARE_SELECTION.py
           python tools/SELF_TEST_OTA_BOOKING_v0.1.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
           python tools/SELF_TEST_LIFECYCLE_ACCEPTANCE.py
