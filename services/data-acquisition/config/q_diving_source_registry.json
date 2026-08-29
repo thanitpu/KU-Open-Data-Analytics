@@ -1,0 +1,51 @@
+{
+  "schema": "q-diving.source-registry.v1",
+  "version": 1,
+  "sources": [
+    {
+      "source_id": "Q-001",
+      "group": "Community",
+      "name": "Pantip · Diving discussions",
+      "source_type": "pantip",
+      "url": "https://pantip.com/tag/%E0%B8%94%E0%B8%B3%E0%B8%99%E0%B9%89%E0%B8%B3",
+      "enabled": true,
+      "cadence": "weekly"
+    },
+    {
+      "source_id": "Q-002",
+      "group": "Training / Reference",
+      "name": "PADI Blog",
+      "source_type": "padi",
+      "url": "https://blog.padi.com/",
+      "enabled": true,
+      "cadence": "weekly"
+    },
+    {
+      "source_id": "Q-003",
+      "group": "Training / Reference",
+      "name": "SSI Blog",
+      "source_type": "ssi",
+      "url": "https://www.divessi.com/en/blog",
+      "enabled": true,
+      "cadence": "weekly"
+    },
+    {
+      "source_id": "Q-004",
+      "group": "Video",
+      "name": "YouTube · Scuba beginner search",
+      "source_type": "youtube",
+      "url": "https://www.youtube.com/results?search_query=scuba+diving+beginner",
+      "enabled": true,
+      "cadence": "weekly"
+    },
+    {
+      "source_id": "Q-005",
+      "group": "Video",
+      "name": "YouTube · Koh Tao diving search",
+      "source_type": "youtube",
+      "url": "https://www.youtube.com/results?search_query=koh+tao+scuba+diving",
+      "enabled": true,
+      "cadence": "weekly"
+    }
+  ]
+}

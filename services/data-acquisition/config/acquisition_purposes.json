@@ -1,0 +1,119 @@
+{
+  "purposes": [
+    {
+      "id": "evidence_verification",
+      "label": "Evidence Verification",
+      "domains": [
+        "knowledge",
+        "retail",
+        "travel",
+        "general"
+      ],
+      "outputs": [
+        "claim",
+        "support_against",
+        "source_provenance"
+      ]
+    },
+    {
+      "id": "retail_market_intelligence",
+      "label": "Retail / Market Intelligence",
+      "domains": [
+        "retail",
+        "commerce"
+      ],
+      "outputs": [
+        "business",
+        "product",
+        "listing",
+        "price",
+        "promotion",
+        "availability",
+        "marketplace_signal"
+      ]
+    },
+    {
+      "id": "knowledge_learning",
+      "label": "Knowledge / Learning",
+      "domains": [
+        "knowledge",
+        "diving",
+        "general"
+      ],
+      "outputs": [
+        "content",
+        "topic",
+        "entity",
+        "opinion",
+        "claim",
+        "journey"
+      ]
+    },
+    {
+      "id": "voice_of_customer",
+      "label": "Voice of Customer / Community",
+      "domains": [
+        "retail",
+        "knowledge",
+        "service",
+        "general"
+      ],
+      "outputs": [
+        "opinion",
+        "pain_point",
+        "question",
+        "recommendation",
+        "sentiment",
+        "claim"
+      ]
+    },
+    {
+      "id": "competitive_intelligence",
+      "label": "Competitive Intelligence",
+      "domains": [
+        "retail",
+        "commerce",
+        "service"
+      ],
+      "outputs": [
+        "business",
+        "offering",
+        "price",
+        "promotion",
+        "positioning",
+        "claim"
+      ]
+    },
+    {
+      "id": "destination_service_intelligence",
+      "label": "Destination / Service Intelligence",
+      "domains": [
+        "travel",
+        "service",
+        "diving"
+      ],
+      "outputs": [
+        "place",
+        "service",
+        "price",
+        "experience",
+        "claim",
+        "availability"
+      ]
+    },
+    {
+      "id": "research_evidence",
+      "label": "Research / Documentary Evidence",
+      "domains": [
+        "research",
+        "general"
+      ],
+      "outputs": [
+        "document",
+        "claim",
+        "citation",
+        "provenance"
+      ]
+    }
+  ]
+}

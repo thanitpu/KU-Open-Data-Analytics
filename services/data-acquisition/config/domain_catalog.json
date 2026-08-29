@@ -1,0 +1,56 @@
+{
+  "domains": [
+    {
+      "domain_id": "OTA",
+      "label": "Online Travel Agencies (OTAs)",
+      "acquisition_purposes": [
+        "destination_service_intelligence",
+        "competitive_intelligence",
+        "retail_market_intelligence"
+      ],
+      "data_interests": [
+        "property/offer",
+        "room/rate observation",
+        "promotion",
+        "availability signal",
+        "member/loyalty benefit",
+        "bundle/package",
+        "destination",
+        "review/experience where publicly accessible"
+      ],
+      "sources": [
+        {
+          "name": "Agoda",
+          "url": "https://www.agoda.com/",
+          "positioning_note": "Asia-Pacific/Thailand-focused OTA; promotions and discounts are important acquisition signals."
+        },
+        {
+          "name": "Booking.com",
+          "url": "https://www.booking.com/",
+          "positioning_note": "Global OTA; long-stay and Genius/member benefits are useful acquisition signals."
+        },
+        {
+          "name": "Trip.com",
+          "url": "https://www.trip.com/",
+          "positioning_note": "Asia/China-linked travel platform spanning hotels and flights."
+        },
+        {
+          "name": "Traveloka",
+          "url": "https://www.traveloka.com/th-th/",
+          "positioning_note": "Southeast Asian OTA covering hotels, flights, car rental and activities."
+        },
+        {
+          "name": "Expedia",
+          "url": "https://www.expedia.co.th/",
+          "positioning_note": "Global OTA; flight+hotel bundle/package offers are important signals."
+        },
+        {
+          "name": "Airbnb",
+          "url": "https://www.airbnb.co.th/",
+          "positioning_note": "Alternative accommodation marketplace focused on homes, apartments and host-listed stays."
+        }
+      ],
+      "note": "Positioning notes are seeded from the user's domain definition; acquisition output should be verified from live source evidence."
+    }
+  ]
+}

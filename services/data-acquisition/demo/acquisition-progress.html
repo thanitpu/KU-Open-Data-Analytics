@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KU2D Data Acquisition Service · Progress & Health · v0.28</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#f6f8f7;color:#183028}.wrap{max-width:1220px;margin:auto;padding:24px}
+h1{margin:0 0 6px}.sub{color:#5b6b65}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:20px 0}
+.card,.panel{background:white;border:1px solid #dfe7e2;border-radius:14px;padding:16px}.big{font-size:30px;font-weight:700}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.barrow{display:grid;grid-template-columns:180px 1fr 60px;gap:10px;align-items:center;margin:7px 0}
+.bar{height:11px;background:#e7ece9;border-radius:8px;overflow:hidden}.fill{height:100%;background:#2a7b55}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:9px;border-bottom:1px solid #edf1ee;text-align:left;vertical-align:top}th{position:sticky;top:0;background:#fff}
+.badge{display:inline-block;padding:3px 8px;border-radius:999px;background:#edf5f0}.scroll{max-height:520px;overflow:auto}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}button,a.btn{border:0;border-radius:9px;padding:9px 13px;background:#1d6c48;color:white;text-decoration:none;cursor:pointer}
+small{color:#607069}.warn{background:#fff8e5;border:1px solid #f0d98d;padding:10px;border-radius:10px}
+@media(max-width:800px){.grid2{grid-template-columns:1fr}.barrow{grid-template-columns:120px 1fr 45px}}
+</style><link rel="stylesheet" href="assets/ku2d-data-acquisition-service.css"><meta name="ku2d-product" content="KU2D Data Acquisition Service"><meta name="ku2d-version" content="0.28"></head>
+<body><header class="appbar"><a class="brand" href="acquisition-operations.html">KU2D Data Acquisition Service<small>Operational acquisition workspace · v0.28</small></a><nav class="nav"><a href="acquisition-operations.html">Operations</a><a class="secondary" href="acquisition-progress.html">Progress &amp; Health</a><a class="secondary" href="view-acquired-data.html">Acquired Data</a></nav></header><div class="wrap">
+<div class="toolbar"><button id="refresh">Refresh Dashboard</button></div>
+<h1>Acquisition Progress & Health <span class="badge">v0.28</span></h1>
+<p class="sub">What Data Acquisition monitors, through which channels, and how much structured data has accumulated.</p>
+<div id="status"></div><div id="summary" class="cards"></div>
+<div class="grid2"><div class="panel"><h2>Monitored Domains</h2><div id="domains"></div></div>
+<div class="panel"><h2>Monitored Channels</h2><div id="channels"></div></div></div>
+<div class="panel" style="margin-top:16px"><h2>Monitored Sources / URLs</h2>
+<div class="scroll"><table><thead><tr><th>Domain</th><th>Source</th><th>Channel</th><th>URL</th><th>Cadence</th><th>Status</th></tr></thead><tbody id="sources"></tbody></table></div></div>
+<div class="panel" style="margin-top:16px"><h2>Repository Data Growth</h2><p><small>Counts represent records currently stored in each structured data group. Coverage is the proportion of available data types that already contain data; it is not a claim that KU2D has captured a percentage of all available knowledge.</small></p><div id="progress"></div></div>
+<div class="panel" style="margin-top:16px"><h2>Acquisition Health & 50–100 Record Targets</h2>
+<p><small>Each monitored source has a minimum/target/maximum usable-record quota. Only real, source-traceable records count. Sources that cannot yield enough public data remain below target with an explicit gap.</small></p>
+<div id="healthSummary" class="cards"></div>
+<div class="scroll"><table><thead><tr><th>Priority</th><th>Source</th><th>Domain / Channel</th><th>Records</th><th>Quota</th><th>Freshness</th><th>Gap</th></tr></thead><tbody id="healthRows"></tbody></table></div>
+</div>
+<div class="panel" style="margin-top:16px"><h2>Bulk Fill Plan</h2>
+<p><small>Prioritized plan for the next acquisition run. This is a real-data target plan, not synthetic backfill.</small></p>
+<button id="loadPlan">Refresh Bulk Fill Plan</button><div id="fillPlan"></div></div>
+</div>
+<script>
+const API="http://127.0.0.1:8090";const esc=x=>String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+function bars(obj,target){const max=Math.max(1,...Object.values(obj||{}));document.getElementById(target).innerHTML=Object.entries(obj||{}).map(([k,v])=>`<div class="barrow"><span>${esc(k)}</span><div class="bar"><div class="fill" style="width:${100*v/max}%"></div></div><b>${v}</b></div>`).join("")||"<small>No data</small>"}
+function card(label,value,note=""){return `<div class="card"><div class="big">${esc(value)}</div><b>${esc(label)}</b><br><small>${esc(note)}</small></div>`}
+async function load(){
+ const st=document.getElementById("status");st.textContent="Loading…";
+ try{
+  const [mr,pr,hr]=await Promise.all([fetch(`${API}/acquisition/dashboard/monitors`),fetch(`${API}/acquisition/dashboard/progress`),fetch(`${API}/acquisition/dashboard/health`)]);
+  const m=await mr.json(),p=await pr.json(),hh=await hr.json();if(!mr.ok||!pr.ok||!hr.ok)throw new Error(m.detail||p.detail||hh.detail||"Dashboard API failed");
+  document.getElementById("summary").innerHTML=
+   card("Monitored URLs",m.total_sources)+card("Enabled Sources",m.enabled_sources)+
+   card("Structured Records",p.combined_records)+card("Repository Profiles",p.profiles?.length||0);
+  bars(m.by_domain,"domains");bars(m.by_channel,"channels");
+  document.getElementById("sources").innerHTML=(m.sources||[]).map(x=>`<tr><td>${esc(x.domain)}</td><td><b>${esc(x.name)}</b><br><small>${esc(x.registry)}</small></td><td><span class="badge">${esc(x.channel)}</span></td><td><a href="${esc(x.url)}" target="_blank">${esc(x.url)}</a></td><td>${esc(x.cadence||"-")}</td><td>${x.enabled?"Enabled":"Disabled"}</td></tr>`).join("");
+  const prof=(p.profiles||[]).map(x=>`<div class="panel" style="margin:10px 0"><h3>${esc(x.profile_id)} · ${x.grand_total_records} records</h3>
+   <p>Populated data types: <b>${x.populated_data_types}/${x.available_data_types}</b> (${Math.round(100*x.coverage_ratio)}%)</p>
+   ${(x.groups||[]).map(g=>`<details ${g.subtotal?"open":""}><summary><b>${esc(g.group)}</b> · ${g.subtotal}</summary><table><tbody>${(g.items||[]).map(i=>`<tr><td>${esc(i.label)}</td><td style="text-align:right"><b>${i.available?i.count:"—"}</b></td></tr>`).join("")}</tbody></table></details>`).join("")}</div>`).join("");
+  const unavailable=(p.unavailable_profiles||[]).length?`<div class="warn"><b>Unavailable profiles:</b> ${(p.unavailable_profiles||[]).map(x=>esc(x.profile_id)).join(", ")}. Start with the configured repository drive mounted.</div>`:"";
+  document.getElementById("progress").innerHTML=unavailable+prof;
+  document.getElementById("healthSummary").innerHTML=
+   card("Sources at Target",`${hh.summary?.target_met||0}/${hh.summary?.sources||0}`)+
+   card("At Least Minimum",hh.summary?.minimum_met||0)+
+   card("Below Minimum",hh.summary?.below_minimum||0)+
+   card("Overdue / Never Seen",hh.summary?.overdue||0)+
+   card("Records Needed to Target",hh.summary?.total_gap_to_target||0);
+  document.getElementById("healthRows").innerHTML=(hh.sources||[]).map(x=>`<tr>
+   <td><b>${x.priority_score}</b></td><td><b>${esc(x.name)}</b><br><small>${esc(x.source_id||"")}</small></td>
+   <td>${esc(x.domain)}<br><small>${esc(x.channel)}</small></td>
+   <td><b>${x.observed_usable_records}</b><br><small>${esc(x.quota_state)}</small></td>
+   <td>${x.quota.minimum} / ${x.quota.target} / ${x.quota.maximum}</td>
+   <td>${esc(x.freshness.state)}${x.freshness.age_days==null?"":` · ${x.freshness.age_days}d`}</td>
+   <td><b>${x.gap_to_target}</b></td></tr>`).join("");
+  st.textContent=""; 
+ }catch(e){st.innerHTML=`<div class="warn">${esc(e.message)}<br><small>Make sure the local Data Acquisition API is running.</small></div>`}
+}
+document.getElementById("refresh").onclick=load;load();
+
+async function loadPlan(){
+ const out=document.getElementById("fillPlan");out.textContent="Building prioritized fill plan…";
+ try{const r=await fetch(`${API}/acquisition/dashboard/bulk-fill-plan`),j=await r.json();if(!r.ok)throw new Error(j.detail||"Plan failed");
+ out.innerHTML=`<p><b>${j.task_count||0}</b> source tasks · approximately <b>${j.estimated_records_needed||0}</b> additional usable records needed to reach current targets.</p>
+ <div class="scroll"><table><thead><tr><th>Priority</th><th>Source</th><th>Current</th><th>Target</th><th>Need</th><th>Freshness</th></tr></thead><tbody>
+ ${(j.tasks||[]).map(x=>`<tr><td>${x.priority_score}</td><td><b>${esc(x.name)}</b><br><small>${esc(x.domain)} · ${esc(x.channel)}</small></td><td>${x.current_records}</td><td>${x.target}</td><td><b>${x.records_needed}</b></td><td>${esc(x.freshness_state)}</td></tr>`).join("")}
+ </tbody></table></div>`}catch(e){out.textContent=e.message}
+}
+document.getElementById("loadPlan").onclick=loadPlan;
+
+</script></body></html>

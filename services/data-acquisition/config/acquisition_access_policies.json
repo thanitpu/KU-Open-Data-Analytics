@@ -1,0 +1,12 @@
+{
+  "schema": "ku2d.acquisition-access-policy.v1",
+  "principle": "Maximize useful change coverage, not request frequency.",
+  "levels": {
+    "1": {"min_delay_seconds": 1.5, "max_pages_per_run": 40, "max_retries": 1, "default_cadence": "daily", "continuous_allowed": true},
+    "2": {"min_delay_seconds": 3.0, "max_pages_per_run": 20, "max_retries": 1, "default_cadence": "daily", "continuous_allowed": true},
+    "3": {"min_delay_seconds": 8.0, "max_pages_per_run": 8, "max_retries": 0, "default_cadence": "weekly", "continuous_allowed": false},
+    "4": {"min_delay_seconds": 0.5, "max_pages_per_run": 100, "max_retries": 2, "default_cadence": "daily", "continuous_allowed": true, "note": "Actual limits must follow granted API/session policy."},
+    "5": {"min_delay_seconds": 0, "max_pages_per_run": 0, "max_retries": 0, "default_cadence": "manual", "continuous_allowed": false}
+  },
+  "quality_guardrails": {"min_audit_score": 65, "min_repeatability_pct": 70, "stop_on_403_429": true, "store_requires_approval": true}
+}

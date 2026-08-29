@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KU2D Data Acquisition Service · Operations · v0.28</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f6f8f7;color:#183028;margin:0}.wrap{max-width:1250px;margin:auto;padding:24px}
+h1{margin:0}.sub{color:#5e7067}.panel{background:#fff;border:1px solid #dfe7e2;border-radius:14px;padding:16px;margin:16px 0}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.btn,button{border:0;border-radius:9px;padding:9px 13px;background:#176c48;color:#fff;cursor:pointer;text-decoration:none}
+button.secondary,.secondary{background:#53645d}button:disabled{background:#aab5b0!important;color:#f4f6f5;cursor:not-allowed;opacity:.7}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0}.card{border:1px solid #e2e9e5;border-radius:10px;padding:12px;background:#fbfcfb}
+@media(max-width:900px){.cards{grid-template-columns:1fr 1fr}}@media(max-width:600px){.cards{grid-template-columns:1fr}}input,select,textarea{padding:9px;border:1px solid #ccd7d1;border-radius:8px}input.url{min-width:480px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:9px;border-bottom:1px solid #edf1ee;text-align:left;vertical-align:top}th{position:sticky;top:0;background:#fff}
+.scroll{max-height:500px;overflow:auto}.badge{padding:3px 7px;border-radius:999px;background:#edf5f0}.warn{padding:10px;border-radius:9px;background:#fff8e5;border:1px solid #eed486}
+.good{padding:10px;border-radius:9px;background:#edf8f1}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}pre{white-space:pre-wrap;max-height:360px;overflow:auto;background:#f7f9f8;padding:10px;border-radius:9px}
+small{color:#66766f}@media(max-width:850px){.grid2{grid-template-columns:1fr}input.url{min-width:0;width:100%}}
+.pbar{height:12px;background:#e5ebe8;border-radius:999px;overflow:hidden;min-width:120px}.pfill{height:100%;background:#176c48;transition:width .25s}
+.running{background:#e9f4ff;border:1px solid #b8d8f2;padding:10px;border-radius:9px}.muted{opacity:.65}
+tr.approved-source{background:#eaf7ee}
+.source-url-col{width:235px;max-width:235px}.source-url-cell{width:235px;max-width:235px}.source-url-cell a{display:block;max-width:235px;overflow-wrap:anywhere;word-break:break-word}
+.tech-score{font-size:11px;color:#53645d}.log-table td{vertical-align:top}.compact-note{padding:9px 11px;border-radius:9px;background:#f3f7f5;border:1px solid #e1e9e4}
+
+.monitor-filters{display:grid;grid-template-columns:1.1fr 1.5fr repeat(5,minmax(120px,.8fr)) auto;gap:8px;margin:10px 0 12px}
+.monitor-filters input,.monitor-filters select{min-width:0;width:100%;box-sizing:border-box}
+@media(max-width:1100px){.monitor-filters{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){.monitor-filters{grid-template-columns:1fr}}
+button.approved-state:disabled{background:#c8d0cc!important;color:#176c48!important;opacity:1;font-weight:700}
+button.audit-gate-failed:disabled{background:#c8d0cc!important;color:#fff!important;opacity:1}
+.audit-failure-note{margin-top:6px;padding:7px 9px;border-radius:8px;background:#fff8e5;border:1px solid #eed486;font-size:12px}
+</style><link rel="stylesheet" href="assets/ku2d-data-acquisition-service.css"><meta name="ku2d-product" content="KU2D Data Acquisition Service"><meta name="ku2d-version" content="0.28"></head><body><header class="appbar"><a class="brand" href="acquisition-operations.html">KU2D Data Acquisition Service<small>Operational acquisition workspace · v0.28</small></a><nav class="nav"><a href="acquisition-operations.html">Operations</a><a class="secondary" href="acquisition-progress.html">Progress &amp; Health</a><a class="secondary" href="view-acquired-data.html">Acquired Data</a></nav></header><div class="wrap">
+
+<h1>Acquisition Operations <span class="badge">v0.28</span></h1>
+<p class="sub">Monitor approved sources, explore new URLs, discover new sources, sample them, and promote approved sources into recurring acquisition.</p>
+
+<div id="apiHealth" class="warn"><b>Data Acquisition API:</b> checking...</div><div class="panel"><h2>1 · Monitoring Queue</h2>
+<p><small>Use <b>Run Due Sources</b> for normal operation. Run Selected and Run All Enabled are manual overrides.</small></p>
+<div class="toolbar"><button id="selectAllSources" class="secondary">Select All</button><button id="unselectAllSources" class="secondary">Unselect All</button><button id="runDue">Run Due Sources</button><button id="runSelected">Run Selected</button><button id="runAll">Run All Enabled</button><button id="cancelRun" class="secondary" disabled>Cancel Run</button><button id="findBestTechniques" style="background:#0B6E75">Find Best Data Acquisition Techniques</button><button id="cancelFindBest" class="secondary" disabled>Cancel Find Best</button><button id="exportMonitoring" class="secondary">Export Monitoring Queue</button><button id="refreshMonitoring" class="secondary">Refresh</button><button id="deepAudit" style="background:#7B1FA2">Deep Audit Selected</button><button id="cancelDeepAudit" class="secondary" disabled>Cancel Deep Audit</button>
+<button id="batchAcquire" style="background:#176c48">Deep Acquire Approved Selected</button><button id="cancelDeepAcquire" class="secondary" disabled>Cancel Deep Acquire</button><button id="changeCheck" style="background:#005A8D">Coverage &amp; Change Check</button></div>
+<div id="campaignStatus"></div><div id="techniqueScanStatus"></div><div id="monitorSummary"></div><div class="monitor-filters">
+<input id="filterName" placeholder="Filter name…">
+<input id="filterUrl" placeholder="Filter URL…">
+<select id="filterDomain"><option value="">All domains</option></select>
+<select id="filterAccess"><option value="">All Access / Quality</option><option value="audit-passed">Audit Passed</option><option value="audit-failed">Audit Failed</option><option value="approved">Approved</option><option value="not-approved">Not Approved</option><option value="strong">Quality: strong</option><option value="good">Quality: good</option><option value="moderate">Quality: moderate</option><option value="weak">Quality: weak</option><option value="not-audited">Not audited</option></select>
+<select id="filterCadence"><option value="">All cadence</option></select>
+<select id="filterDue"><option value="">All due states</option><option value="yes">Due now</option><option value="no">Not due</option></select>
+<select id="filterLastStatus"><option value="">All last status</option></select>
+<button id="resetFilters" class="secondary">Reset Filters</button>
+</div>
+<div id="filterSummary"><small>Showing all monitoring sources.</small></div>
+<div class="compact-note"><small><b>Best Acquisition Technique(s)</b> answers <i>how to extract</i>. <b>Access / Quality</b> comes from Deep Audit and answers <i>whether the source is accessible, repeatable, and approved for repository storage</i>. A technique assignment does not by itself approve storage.</small></div><div class="scroll"><table><thead><tr><th></th><th>#</th><th class="source-url-col">Source URL</th><th>Domain</th><th>Best Acquisition Technique(s)</th><th title="Independent Deep Audit gate: accessibility and extraction quality, not technique ranking.">Access / Quality</th><th>Store</th><th>Cadence</th><th>Due</th><th>Progress</th><th>Last Status</th><th title="Most recent finished acquisition attempt">Last Completed</th><th title="Most recent successful acquisition">Last Success</th><th title="Records extracted in the most recently completed run.">Last Found</th><th title="New analytical rows added to the repository in the most recently completed run.">Last Added to Repo</th></tr></thead><tbody id="monitorRows"></tbody></table></div>
+<div id="runResult"></div>
+<div class="warn" style="margin-top:12px"><b>Automatic daily monitoring:</b> run <code>tools\INSTALL_KU2D_DATA_ACQUISITION_SERVICE_MONITORING_v0.28.bat</code> once on Windows. Windows Task Scheduler then starts the worker hourly; Data Acquisition runs only sources whose cadence is due. The browser and KU2D server do not need to remain open, but the PC, internet connection, Python, and repository drive must be available.</div>
+<details id="monitoringActivityPanel" style="margin-top:10px"><summary><b>Show / Hide Monitoring Activity Log</b></summary><div id="monitoringActivityLog"><small>Loading activity log…</small></div></details>
+</div>
+
+<div id="deepAuditPanel" class="panel" style="display:none"><div class="toolbar" style="justify-content:space-between"><h2 style="margin:0">Deep Acquisition &amp; Data Quality Audit</h2><button id="exportDeepAuditResults" class="secondary" disabled>Export Results (.json)</button></div>
+<p><small>Deep Audit uses the persisted Best Acquisition Technique(s) for each selected source. If the technique profile changes, prior audit/store approval becomes stale and a new audit is required.</small></p><div id="deepAuditBody"></div></div>
+<div id="deepAcquirePanel" class="panel" style="display:none"><div class="toolbar" style="justify-content:space-between"><h2 style="margin:0">Deep Acquire &amp; Store Results</h2><button id="exportDeepAcquireResults" class="secondary" disabled>Export Acquire Results (.json)</button></div>
+<p><small>This panel remains on the Acquire result after storage completes. Export uses the actual Deep Acquire batch, not the preceding Audit batch.</small></p><div id="deepAcquireBody"></div></div>
+<div id="changePanel" class="panel" style="display:none"><h2>Pagination Coverage &amp; Change Monitor</h2>
+<p><small>Checks known canonical pages for content changes and reports pagination completeness. A baseline page is a first observation, not proof of change. Unknown total pages remain explicitly unverified.</small></p>
+<div id="changeBody"></div></div>
+<div class="panel"><h2>2 · Explore a New URL</h2>
+<div class="toolbar"><input id="exploreUrl" class="url" placeholder="https://..." value="https://www.lotuss.com/th">
+<select id="exploreDomain"><option selected>Retail</option><option>OTA</option><option>Diving</option><option>Travel</option><option>Service</option><option>Research</option><option>General</option></select>
+<select id="explorePurpose">
+<option value="retail_market_intelligence" selected>Retail / Market Intelligence</option>
+<option value="evidence_verification">Evidence Verification</option>
+<option value="knowledge_learning">Knowledge / Learning</option>
+<option value="voice_of_customer">Voice of Customer</option>
+<option value="competitive_intelligence">Competitive Intelligence</option>
+<option value="destination_service_intelligence">Destination / Service Intelligence</option>
+<option value="research_evidence">Research / Documentary Evidence</option></select>
+<button id="exploreBtn">Explore URL</button><button id="approveExplored" disabled>Add to Monitoring</button></div>
+<div style="margin-top:12px;padding:12px;border:1px solid #e2e9e5;border-radius:10px;background:#fbfcfb">
+<b>Automatic Acquisition Technique Bench</b><br><small>Explore automatically tests all applicable general and source-specific techniques. Technique names are intentionally hidden while testing; only techniques that produce output are shown afterward. Full successes and failures remain available through <b>Copy All Technique Results</b>.</small>
+<div id="exploreBenchProgress" style="margin-top:9px"><small>Ready to test applicable techniques.</small></div>
+</div>
+<div id="exploreResult"></div></div>
+
+<div class="panel"><h2>3 · Discover New Sources</h2>
+<p><small>Describe a domain, source, product, or topic. Data Acquisition proposes candidate URLs and automatically performs a lightweight access preflight on discovered candidates. Preflight does not store source data. Select a promising candidate only when you want a fuller Explore sample before approval.</small></p>
+<div class="toolbar"><select id="queryType"><option value="domain">Domain</option><option value="source">Source</option><option value="product">Specific Product</option><option value="topic" selected>Topic</option></select>
+<input id="discoverQuery" class="url" placeholder="e.g. beginner scuba mask Thailand / OLED TV prices / pet food retail">
+<input id="discoverDomain" placeholder="Domain label" value="General"><button id="discoverBtn">Discover Sources</button></div>
+<div id="discoverResult"></div><div class="toolbar"><button id="sampleCandidate" disabled>Full Explore Selected Candidate</button><button id="approveCandidate" disabled>Add Sampled Candidate to Monitoring</button></div>
+<div id="candidateSample"></div></div>
+</div>
+<script>
+let API="http://127.0.0.1:8090";window.KU2D_API=API;const esc=x=>String(x??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+let lastExplored=null,lastExploreResult=null,lastCandidates=[],sampledCandidate=null,monitoringSources=[],exploreMonitoringContext=null;const selectedSourceIds=new Set();
+async function jfetch(url,opt={},timeoutMs=30000){
+ const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),timeoutMs);
+ try{
+  let r;try{r=await fetch(url,{...opt,signal:ctl.signal})}catch(e){if(e?.name==="AbortError")throw new Error(`Request timed out after ${Math.round(timeoutMs/1000)}s`);throw new Error(`Cannot reach local Data Acquisition API: ${e.message||"network request failed"}`)}
+  let j={};try{j=await r.json()}catch{j={detail:`HTTP ${r.status} returned a non-JSON response`}}
+  if(!r.ok)throw new Error(j.detail||j.error||`HTTP ${r.status}`);return j;
+ }finally{clearTimeout(timer)}
+}
+async function copyDiagnosticsData(data,btn){
+ const payload=JSON.stringify(data??{},null,2);let ok=false;
+ try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(payload);ok=true}}catch(e){}
+ if(!ok){try{const ta=document.createElement("textarea");ta.value=payload;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.left="-9999px";ta.style.top="0";document.body.appendChild(ta);ta.focus();ta.select();ok=document.execCommand("copy");ta.remove()}catch(e){}}
+ if(btn){const old=btn.textContent;btn.textContent=ok?"Copied ✓":"Copy failed";setTimeout(()=>btn.textContent=old,1600)}
+ if(!ok)throw new Error("Clipboard copy was blocked by the browser. Use Export Monitoring Queue or open this page on localhost and retry.");
+}
+const normUrl=u=>(u||"").trim().replace(/\/+$/," ").trim().toLowerCase();
+function existingMonitoringSource(url){const n=normUrl(url);return monitoringSources.find(x=>normUrl(x.url)===n)}
+function updateMonitoringActionButton(url){const b=document.getElementById("approveExplored"),ex=existingMonitoringSource(url);b.textContent=ex?"Update Monitoring Techniques":"Add to Monitoring";b.dataset.existingSourceId=ex?.source_id||"";return ex}
+function selectOrAddOption(id,value){const el=document.getElementById(id);if(!el||!value)return;if(![...el.options].some(o=>o.value===value)){const o=document.createElement("option");o.value=value;o.textContent=value;el.appendChild(o)}el.value=value}
+function startExploreFromMonitoring(sourceId){
+ const x=monitoringSources.find(s=>s.source_id===sourceId);if(!x)return;
+ exploreMonitoringContext={source_id:x.source_id,name:x.name||x.raw?.business||x.source_id,url:x.url,domain:x.domain,purpose:x.purpose,adapter:x.raw?.adapter||x.source_type||"generic"};
+ document.getElementById("exploreUrl").value=x.url||"";selectOrAddOption("exploreDomain",x.domain||"Retail");
+ if(x.purpose)selectOrAddOption("explorePurpose",x.purpose);
+ lastExplored=null;lastExploreResult=null;document.getElementById("approveExplored").disabled=true;updateMonitoringActionButton(x.url);
+ const panel=document.getElementById("exploreUrl").closest(".panel");panel?.scrollIntoView({behavior:"smooth",block:"start"});
+ setTimeout(()=>runExploreForm(),180);
+}
+let activityResultMap={};
+async function loadActivityLog(){
+ const out=document.getElementById("monitoringActivityLog");if(!out)return;
+ try{const j=await jfetch(`${API}/monitoring/activity-log?limit=25`,{},12000),rows=j.activities||[];activityResultMap={};
+ if(!rows.length){out.innerHTML='<p><small>No monitoring activity logged yet.</small></p>';return}
+ out.innerHTML=`<div class="scroll" style="max-height:340px"><table class="log-table"><thead><tr><th>When</th><th>Action</th><th>Sources</th><th>Result</th><th>Found</th><th>Added to Repo</th><th>Details</th></tr></thead><tbody>${rows.map((x,i)=>{activityResultMap[x.activity_id]=x.result||{};const sum=x.summary||{};return `<tr><td>${esc(shortDT(x.finished_at||x.started_at))}</td><td><b>${esc(x.action)}</b></td><td>${esc(x.source_count)}</td><td>${esc(x.success_count)} success · ${esc(x.failed_count)} failed${sum.unresolved_sources!=null?` · ${esc(sum.unresolved_sources)} unresolved`:""}</td><td>${esc(x.records_found||0)}</td><td><b>${esc(x.records_added||0)}</b></td><td><button class="secondary activityCopy" data-id="${esc(x.activity_id)}">Copy Results</button><details><summary>Show</summary><pre>${esc(JSON.stringify(x.result||{},null,2))}</pre></details></td></tr>`}).join("")}</tbody></table></div>`;
+ document.querySelectorAll(".activityCopy").forEach(b=>b.onclick=()=>copyDiagnosticsData(activityResultMap[b.dataset.id],b));
+ }catch(e){out.innerHTML=`<div class="warn">${esc(e.message)}</div>`}
+}
+async function exportMonitoringQueue(){
+ const btn=document.getElementById("exportMonitoring");btn.disabled=true;
+ try{const j=await jfetch(`${API}/monitoring/export`,{},20000),blob=new Blob([JSON.stringify(j,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`KU2D_Monitoring_Queue_${new Date().toISOString().slice(0,10)}.json`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}finally{btn.disabled=false}
+}
+
+async function checkApiHealth(){
+ const el=document.getElementById("apiHealth");el.className="warn";el.innerHTML="<b>Data Acquisition API:</b> connecting to local API…";
+ const candidates=["http://127.0.0.1:8090","http://localhost:8090"];
+ let last="";
+ for(const base of candidates){
+  try{
+   const j=await jfetch(`${base}/health`,{},3500);window.KU2D_API=base;API=base;
+   el.className="good";el.innerHTML=`<b>Data Acquisition API:</b> READY · v${esc(j.version||"")} · ${esc(base)}`;return true;
+  }catch(e){last=e.message}
+ }
+ el.className="warn";el.innerHTML=`<b>Data Acquisition API:</b> OFFLINE · local API did not answer.<br><small>${esc(last)} Restart with RUN_KU2D_DATA_ACQUISITION_SERVICE_v0.28.bat and inspect the Data Acquisition API window if this persists.</small>`;return false;
+}
+const shortDT=x=>{if(!x)return "—";const d=new Date(x);if(Number.isNaN(d.getTime()))return x;return new Intl.DateTimeFormat(undefined,{day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).format(d)};
+
+function setFilterOptions(id,values,allLabel){
+ const el=document.getElementById(id);if(!el)return;const prev=el.value;
+ el.innerHTML=`<option value="">${esc(allLabel)}</option>`+[...new Set(values.filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b))).map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("");
+ if([...el.options].some(o=>o.value===prev))el.value=prev;
+}
+function monitoringFilterValues(){
+ return {
+   name:(document.getElementById("filterName")?.value||"").trim().toLowerCase(),
+   url:(document.getElementById("filterUrl")?.value||"").trim().toLowerCase(),
+   domain:document.getElementById("filterDomain")?.value||"",
+   access:document.getElementById("filterAccess")?.value||"",
+   cadence:document.getElementById("filterCadence")?.value||"",
+   due:document.getElementById("filterDue")?.value||"",
+   last:document.getElementById("filterLastStatus")?.value||""
+ };
+}
+function monitoringSourceMatches(x,f){
+ if(f.name && !String(x.name||"").toLowerCase().includes(f.name))return false;
+ if(f.url && !String(x.url||"").toLowerCase().includes(f.url))return false;
+ if(f.domain && x.domain!==f.domain)return false;
+ if(f.cadence && x.cadence!==f.cadence)return false;
+ if(f.due==="yes" && !x.due)return false;
+ if(f.due==="no" && x.due)return false;
+ if(f.last && String(x.run_state?.last_status||"never")!==f.last)return false;
+ if(f.access){
+   const q=x.quality_profile;
+   if(f.access==="not-audited" && q)return false;
+   else if(f.access==="audit-passed" && !q?.audit_passed)return false;
+   else if(f.access==="audit-failed" && (!q || q.audit_passed))return false;
+   else if(f.access==="approved" && !q?.approved_for_store)return false;
+   else if(f.access==="not-approved" && q?.approved_for_store)return false;
+   else if(["strong","good","moderate","weak"].includes(f.access) && q?.quality_label!==f.access)return false;
+ }
+ return true;
+}
+function downloadJson(filename,obj){
+ const blob=new Blob([JSON.stringify(obj,null,2)],{type:"application/json"}),a=document.createElement("a");
+ a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();
+ setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+}
+function auditFailureSummary(a){
+ const f=a?.hard_failures||[],labels={
+  usable_records:"No repository-ready records were materialized",
+  repeatability:"No repeatable repository-ready records",
+  provenance:"No storable records with source provenance",
+  product_price:"Product records do not meet price completeness",
+  product_price_track:"No approved Product & Price acquisition track is assigned",
+  product_catalog_coverage:"The Product & Price track produced zero products",
+  product_semantic_quality:"Product rows are not sufficiently product-like (SKU/product URL + price); coupon/marketing text is rejected"
+ };
+ return f.map(x=>labels[x]||x).join(" · ");
+}
+async function exportLastDeepAudit(){
+ const btn=document.getElementById("exportDeepAuditResults"),bid=window.lastDeepAuditBatchId;
+ if(!bid)return;btn.disabled=true;
+ try{
+   const j=await jfetch(`${API}/monitoring/deep-batch/${encodeURIComponent(bid)}/export`,{},30000);
+   downloadJson(`KU2D_Deep_Audit_Results_${new Date().toISOString().replaceAll(":","-").slice(0,19)}.json`,j);
+ }catch(e){alert(`Export failed: ${e.message}`)}
+ finally{btn.disabled=false}
+}
+async function exportLastDeepAcquire(){
+ const btn=document.getElementById("exportDeepAcquireResults"),bid=window.lastDeepStoreBatchId;
+ if(!bid)return;btn.disabled=true;
+ try{
+   const j=await jfetch(`${API}/monitoring/deep-batch/${encodeURIComponent(bid)}/export`,{},30000);
+   downloadJson(`KU2D_Deep_Acquire_Results_${new Date().toISOString().replaceAll(":","-").slice(0,19)}.json`,j);
+ }catch(e){alert(`Export failed: ${e.message}`)}
+ finally{btn.disabled=false}
+}
+async function loadMonitoring(){
+ const j=await jfetch(`${API}/monitoring/sources`,{},15000); monitoringSources=j.sources||[];
+ setFilterOptions("filterDomain",monitoringSources.map(x=>x.domain),"All domains");
+ setFilterOptions("filterCadence",monitoringSources.map(x=>x.cadence),"All cadence");
+ setFilterOptions("filterLastStatus",monitoringSources.map(x=>String(x.run_state?.last_status||"never")),"All last status");
+ const f=monitoringFilterValues(),visibleSources=monitoringSources.filter(x=>monitoringSourceMatches(x,f));
+ document.getElementById("monitorSummary").innerHTML=`<p><b>${j.summary.total}</b> sources · <b>${j.summary.enabled}</b> enabled · <b>${j.summary.due}</b> due now</p>`;
+ document.getElementById("filterSummary").innerHTML=`<small>Showing <b>${visibleSources.length}</b> of ${monitoringSources.length} sources.</small>`;
+ const active=window.activeCampaign?.sources||[],pm=Object.fromEntries(active.map(x=>[x.source_id,x]));
+ const groups={};for(const x of visibleSources){(groups[x.name||"(Unnamed)"]??=[]).push(x)}
+ const names=Object.keys(groups).sort((a,b)=>a.localeCompare(b));
+ let rows="",rowNo=0;
+ for(const name of names){
+   const xs=groups[name].sort((a,b)=>(a.url||"").localeCompare(b.url||""));
+   rows+=`<tr class="bizgroup"><td><input type="checkbox" class="bizsel" data-biz="${esc(name)}"></td><td colspan="14"><b>${esc(name)}</b> <small>(${xs.length} URL${xs.length===1?"":"s"})</small></td></tr>`;
+   for(const x of xs){rowNo++;const p=pm[x.source_id],st=x.stage?.stage||"not-audited";
+    rows+=`<tr class="${p?.status==="running"?"running":(x.quality_profile?.approved_for_store?"approved-source":"")}"><td><input type="checkbox" class="srcsel" data-biz="${esc(name)}" value="${esc(x.source_id)}" ${selectedSourceIds.has(x.source_id)?"checked":""}></td>
+    <td>${rowNo}</td><td class="source-url-cell" style="padding-left:28px"><small>${esc(x.source_id)} · ${esc(x.registry)}</small><br><a href="${esc(x.url)}" target="_blank">${esc(x.url)}</a> <a href="#" class="monitorExplore" data-source-id="${esc(x.source_id)}" style="margin-left:8px;text-decoration:underline;text-underline-offset:2px;font-weight:600">Explore</a></td><td>${esc(x.domain)}</td>
+    <td>${(x.technique_assignments||[]).length?(x.technique_assignments||[]).map((t,i)=>{const e=t.evidence||{},b=e.score_breakdown||{},tracks=(e.tracks||[]).map(z=>z==="product_price"?"Product & Price":z==="promotion"?"Promotions":z==="discovery"?"Discovery":z);return `<span class="badge" title="Tracks: ${esc(tracks.join(", ")||"general")} · Role: ${esc(e.role||'—')} · Score ${esc(t.score)} · Yield ${esc(b.data_yield??'—')} · Coverage ${esc(b.coverage??'—')}">${tracks.length?esc(tracks.join(" + "))+" → ":""}${esc(t.label||t.technique)}</span>`}).join(" "):`<small class="muted">Not assigned yet</small>`}</td>
+    <td>${x.quality_profile?`L${esc(x.quality_profile.accessibility_level??'?')} · ${esc(x.quality_profile.quality_label||'—')} ${x.quality_profile.audit_passed?'✓':'⚠'}`:`L${esc(x.raw?.accessibility_level??0)} · not audited`}</td>
+    <td><b>${esc(st)}</b>${x.quality_profile?.approved_for_store?' · Approved':''}${x.quality_profile?.continuous_enabled?' · Continuous':''}</td>
+    <td>${esc(x.cadence)}</td><td>${x.due?"YES":"—"}</td><td>${p?`<div class="pbar"><div class="pfill" style="width:${p.progress_pct}%"></div></div><small>${esc(p.phase)} · ${p.progress_pct}%</small>`:`<small>${x.run_state?.last_completed_at?"Idle · last run complete":"Not run yet"}</small>`}</td>
+    <td>${esc(p?.status||x.run_state?.last_status||"never")}</td><td>${esc(shortDT(x.run_state?.last_completed_at))}</td><td>${esc(shortDT(x.run_state?.last_success_at))}</td><td>${esc(x.run_state?.last_completed_at?(x.run_state?.last_records??0):"No history")}</td><td><b>${esc(x.run_state?.last_completed_at?(x.run_state?.last_stored_records??0):"No history")}</b></td></tr>`;
+   }
+ }
+ document.getElementById("monitorRows").innerHTML=rows;
+ document.querySelectorAll(".bizsel").forEach(b=>{
+   const members=[...document.querySelectorAll(`.srcsel[data-biz="${CSS.escape(b.dataset.biz)}"]`)];
+   b.checked=members.length>0&&members.every(x=>x.checked);
+   b.indeterminate=members.some(x=>x.checked)&&!b.checked;
+   b.onchange=()=>members.forEach(x=>{x.checked=b.checked;if(b.checked)selectedSourceIds.add(x.value);else selectedSourceIds.delete(x.value)});
+ });
+ document.querySelectorAll(".monitorExplore").forEach(b=>b.onclick=e=>{e.preventDefault();startExploreFromMonitoring(b.dataset.sourceId)});
+ document.querySelectorAll(".srcsel").forEach(x=>x.onchange=()=>{
+   if(x.checked){selectedSourceIds.add(x.value);showSavedStage(x.value)}else selectedSourceIds.delete(x.value);
+   const b=document.querySelector(`.bizsel[data-biz="${CSS.escape(x.dataset.biz)}"]`);
+   if(b){const members=[...document.querySelectorAll(`.srcsel[data-biz="${CSS.escape(x.dataset.biz)}"]`)];b.checked=members.every(z=>z.checked);b.indeterminate=members.some(z=>z.checked)&&!b.checked}
+ });
+}
+async function showSavedStage(sid){
+ const x=monitoringSources.find(z=>z.source_id===sid);if(!x)return;
+ try{
+  const j=await jfetch(`${API}/monitoring/source-stage/${encodeURIComponent(sid)}`);
+  const panel=document.getElementById("deepAuditPanel"),body=document.getElementById("deepAuditBody");panel.style.display="block";
+  if(j.audit){renderDeepAuditResult(j.audit,body);body.insertAdjacentHTML("afterbegin",`<div class="good"><b>Restored saved stage:</b> ${esc(j.stage)} · ${esc(x.name)} · ${esc(x.url)}</div>`)}
+  else body.innerHTML=`<div class="warn"><b>${esc(x.name)}</b> · ${esc(x.url)}<br><small>No saved Deep Audit yet.</small></div>`;
+  if(j.last_store?.result){body.insertAdjacentHTML("beforeend",`<details open><summary><b>Latest Deep Acquire & Store</b> · ${esc(shortDT(j.last_store.finished_at))}</summary><pre>${esc(JSON.stringify(j.last_store.result,null,2))}</pre></details>`)}
+ }catch(e){}
+}
+
+async function run(mode){
+ let ids=null,due=false;if(mode==="selected")ids=[...document.querySelectorAll(".srcsel:checked")].map(x=>x.value);if(mode==="due")due=true;
+ if(mode==="selected"&&!ids.length){document.getElementById("runResult").innerHTML='<div class="warn">Select at least one source.</div>';return}
+ const out=document.getElementById("runResult"),cancelBtn=document.getElementById("cancelRun");out.innerHTML='<div class="running">Starting acquisition campaign…</div>';
+ try{const j=await jfetch(`${API}/monitoring/campaign/start`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({source_ids:ids,due_only:due,store:true})});
+ if(!j.ok)throw new Error(j.detail||"Could not start campaign");window.activeCampaignId=j.campaign_id;cancelBtn.disabled=false;
+ out.innerHTML=`<div class="good">Campaign <b>${esc(j.campaign_id)}</b> started for ${j.source_count} sources. Progress updates automatically.</div>`;pollCampaign()}
+ catch(e){out.innerHTML=`<div class="warn">${esc(e.message)}</div>`;cancelBtn.disabled=true}
+}
+async function cancelActiveCampaign(){
+ const btn=document.getElementById("cancelRun");if(!window.activeCampaignId)return;btn.disabled=true;btn.textContent="Cancel requested…";
+ try{await jfetch(`${API}/monitoring/campaign/${encodeURIComponent(window.activeCampaignId)}/cancel`,{method:"POST"},15000);document.getElementById("campaignStatus").insertAdjacentHTML("beforeend",'<div class="warn" style="margin-top:7px"><b>Cancellation requested.</b> The current source is allowed to finish safely; no new source will start.</div>')}
+ catch(e){document.getElementById("runResult").innerHTML+=`<div class="warn">Cancel failed: ${esc(e.message)}</div>`;btn.disabled=false}
+}
+async function pollCampaign(){
+ try{
+  let j;if(window.activeCampaignId)j=await jfetch(`${API}/monitoring/campaign/${window.activeCampaignId}`);else j=await jfetch(`${API}/monitoring/campaign-active`);
+  const c=j.campaign;if(!c){window.activeCampaign=null;document.getElementById("campaignStatus").innerHTML="";document.getElementById("cancelRun").disabled=true;await loadMonitoring();return}
+  window.activeCampaign=c;window.activeCampaignId=c.campaign_id;
+  const pct=c.total_sources?Math.round(100*c.completed_sources/c.total_sources):100;
+  const done=c.sources?.filter(x=>x.status==="success").reduce((a,x)=>a+(x.records_stored||0),0)||0;
+  const terminal=["completed","failed","cancelled"].includes(c.status),cls=c.status==="completed"?"good":c.status==="cancelled"?"warn":"running";
+  document.getElementById("campaignStatus").innerHTML=`<div class="${cls}"><b>${esc(c.status.toUpperCase())}</b> · ${c.completed_sources}/${c.total_sources} sources · current: <b>${esc(c.current_source_name||"—")}</b> · stored this campaign: <b>${done}</b>
+  <div class="pbar" style="margin-top:7px"><div class="pfill" style="width:${pct}%"></div></div><small>${pct}% overall · ${esc(c.message||"")}</small></div>`;
+  document.getElementById("cancelRun").disabled=terminal||c.status==="cancel-requested";
+  await loadMonitoring();
+  if(terminal){const added=(c.sources||[]).reduce((a,x)=>a+(x.delta_records||0),0),found=(c.sources||[]).reduce((a,x)=>a+(x.records_found||0),0);document.getElementById("runResult").innerHTML+=`<div class="${c.status==="completed"?"good":"warn"}">Campaign ${esc(c.status)}: ${c.success_sources} success · ${c.failed_sources} failed · <b>${found}</b> records found · <b>${added}</b> new analytical rows added to Repo.</div>`;window.activeCampaignId=null;const cb=document.getElementById("cancelRun");cb.disabled=true;cb.textContent="Cancel Run";await loadActivityLog();setTimeout(()=>{window.activeCampaign=null;document.getElementById("campaignStatus").innerHTML="";loadMonitoring()},3000)}
+  else setTimeout(pollCampaign,1500);
+ }catch(e){document.getElementById("campaignStatus").innerHTML=`<div class="warn">Progress polling error: ${esc(e.message)}. Retrying…</div>`;setTimeout(pollCampaign,3000)}
+}
+async function findBestTechniques(){
+ const btn=document.getElementById("findBestTechniques"),cancelBtn=document.getElementById("cancelFindBest"),out=document.getElementById("techniqueScanStatus");btn.disabled=true;cancelBtn.disabled=false;
+ out.innerHTML=`<div class="running"><b>Finding best acquisition techniques for all enabled monitoring sources…</b><br><small>Cancellation stops new source tests after currently active tests finish safely.</small></div>`;
+ try{const j=await jfetch(`${API}/monitoring/techniques/start`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({enabled_only:true,max_pages:4})},20000);if(!j.ok)throw new Error(j.detail||"Could not start technique scan");window.techniqueJobId=j.job.job_id;pollTechniqueScan()}
+ catch(e){out.innerHTML=`<div class="warn">${esc(e.message)}</div>`;btn.disabled=false;cancelBtn.disabled=true}
+}
+async function cancelTechniqueScan(){
+ const btn=document.getElementById("cancelFindBest");if(!window.techniqueJobId)return;btn.disabled=true;btn.textContent="Cancel requested…";
+ try{await jfetch(`${API}/monitoring/techniques/cancel/${encodeURIComponent(window.techniqueJobId)}`,{method:"POST"},15000)}catch(e){document.getElementById("techniqueScanStatus").insertAdjacentHTML("beforeend",`<div class="warn">Cancel failed: ${esc(e.message)}</div>`);btn.disabled=false}
+}
+async function pollTechniqueScan(){
+ const out=document.getElementById("techniqueScanStatus"),btn=document.getElementById("findBestTechniques"),cancelBtn=document.getElementById("cancelFindBest");
+ try{const j=await jfetch(`${API}/monitoring/techniques/status/${window.techniqueJobId}`,{},20000),x=j.job;window.lastTechniqueScanResult=x;const terminal=["completed","failed","cancelled"].includes(x.status);
+ if(!terminal)out.innerHTML=`<div class="running"><b>Finding best acquisition techniques…</b> · ${x.completed_sources}/${x.total_sources} tested · ${x.assigned_sources} assigned · ${x.failed_sources} failed<div class="pbar" style="margin-top:7px"><div class="pfill" style="width:${x.progress_pct||0}%"></div></div><small>${x.progress_pct||0}% complete${x.status==="cancel-requested"?" · cancellation requested":""}.</small></div>`;
+ else{out.innerHTML=`<div class="${x.status==="completed"?"good":"warn"}"><b>Technique benchmark ${esc(x.status)}.</b> ${x.completed_sources} sources tested · ${x.assigned_sources} assigned · ${x.failed_sources} failed. <button id="copyTechniqueScan" class="secondary">Copy All Technique Results</button><br><small>The run has been archived to Monitoring Activity Log below.</small></div>`;document.getElementById("copyTechniqueScan").onclick=()=>copyDiagnosticsData(window.lastTechniqueScanResult,document.getElementById("copyTechniqueScan"));}
+ await loadMonitoring();if(!terminal)setTimeout(pollTechniqueScan,1800);else{btn.disabled=false;cancelBtn.disabled=true;cancelBtn.textContent="Cancel Find Best";await loadActivityLog();setTimeout(()=>{out.innerHTML=""},6000)}
+ }catch(e){out.innerHTML=`<div class="warn">Technique scan polling error: ${esc(e.message)}. Retrying…</div>`;setTimeout(pollTechniqueScan,3000)}
+}
+document.getElementById("selectAllSources").onclick=()=>{document.querySelectorAll(".srcsel").forEach(x=>{x.checked=true;selectedSourceIds.add(x.value)});document.querySelectorAll(".bizsel").forEach(x=>{x.checked=true;x.indeterminate=false})};
+document.getElementById("unselectAllSources").onclick=()=>{selectedSourceIds.clear();document.querySelectorAll(".srcsel,.bizsel").forEach(x=>{x.checked=false;x.indeterminate=false})};
+document.getElementById("exportMonitoring").onclick=exportMonitoringQueue;
+document.getElementById("exportDeepAuditResults").onclick=exportLastDeepAudit;
+document.getElementById("exportDeepAcquireResults").onclick=exportLastDeepAcquire;
+["filterDomain","filterAccess","filterCadence","filterDue","filterLastStatus"].forEach(id=>document.getElementById(id).onchange=()=>loadMonitoring());
+let monitorFilterTimer=null;["filterName","filterUrl"].forEach(id=>document.getElementById(id).oninput=()=>{clearTimeout(monitorFilterTimer);monitorFilterTimer=setTimeout(()=>loadMonitoring(),220)});
+document.getElementById("resetFilters").onclick=()=>{["filterName","filterUrl"].forEach(id=>document.getElementById(id).value="");["filterDomain","filterAccess","filterCadence","filterDue","filterLastStatus"].forEach(id=>document.getElementById(id).value="");loadMonitoring()};
+document.getElementById("findBestTechniques").onclick=findBestTechniques;document.getElementById("cancelFindBest").onclick=cancelTechniqueScan;
+document.getElementById("runDue").onclick=()=>run("due");document.getElementById("runSelected").onclick=()=>run("selected");document.getElementById("runAll").onclick=()=>run("all");document.getElementById("cancelRun").onclick=cancelActiveCampaign;document.getElementById("refreshMonitoring").onclick=loadMonitoring;
+
+function techniqueHasEvidence(x){return (x.record_count||0)>0}
+function techniqueSummaryHtml(x){
+ const types=(x.record_types||[]).map(t=>`<span class="badge">${esc(t.type)} ${t.count}</span>`).join(" ")||"—";
+ const cls=x.status==="failed"?"warn":x.record_count>0?"good":"card",p=x.potential||{};
+ const fields=(p.data_fields||[]).map(v=>`<span class="badge">${esc(v)}</span>`).join(" ")||"—";
+ const range=(p.estimated_extractable_records_low!=null||p.estimated_extractable_records_high!=null)?`${esc(p.estimated_extractable_records_low??"?")} – ${esc(p.estimated_extractable_records_high??"?")}`:"not yet bounded";
+ const by=p.by_surface?`<br><small><b>Discovered by surface:</b> ${Object.entries(p.by_surface).map(([k,v])=>`${esc(k)} ${esc(v)}`).join(" · ")}</small>`:"";
+ const evidence=[["visible listing items",p.visible_listing_items],["product records",p.product_records],["product URLs discovered",p.product_urls_discovered],["product details tested",p.product_detail_urls_tested],["detail materialization success %",p.detail_materialization_success_pct],["price completeness %",p.price_completeness_pct],["regular price completeness %",p.regular_price_completeness_pct],["SKU completeness %",p.sku_completeness_pct],["category URLs discovered",p.category_urls_discovered],["category pages tested",p.category_pages_tested],["promotion records",p.promotion_records],["API candidates",p.api_candidates],["API probes",p.api_candidates_probed],["API product records",p.api_product_records],["batch SKUs tested",p.batch_skus_tested],["API materialization success %",p.api_materialization_success_pct],["full catalog product URLs",p.full_catalog_product_urls_from_sitemap],["reported total",p.reported_total],["reported pages",p.reported_pages],["largest embedded array",p.largest_embedded_array]].filter(([,v])=>v!=null);
+ const ev=evidence.length?`<br><small><b>Coverage evidence:</b> ${evidence.map(([k,v])=>`${esc(k)} ${esc(v)}`).join(" · ")}</small>`:"";
+ return `<div class="${cls}" style="margin:8px 0"><b>${esc(x.label||x.technique)}</b> · ${esc(x.status||"—")} · sample records <b>${esc(x.record_count??0)}</b> · pages tested ${esc(x.pages_checked??0)} · ${esc(x.elapsed_seconds??0)}s<br><small><b>Sample data:</b> ${types}</small>${p.discovered_urls!=null?`<br><small><b>Potential:</b> ${esc(p.discovered_urls)} official URLs discovered · estimated extractable records ${range} · confidence ${esc(p.confidence||"—")}</small>`:""}${by}${ev}${p.data_fields?`<br><small><b>Potential fields:</b> ${fields}</small>`:""}${p.basis?`<br><small><b>Estimate basis:</b> ${esc(p.basis)}</small>`:""}${x.note?`<br><small>${esc(x.note)}</small>`:""}<details><summary>Method sample & diagnostics</summary><pre>${esc(JSON.stringify({potential:x.potential,sample_records:x.sample_records,urls_checked:x.urls_checked,diagnostics:x.diagnostics},null,2))}</pre></details></div>`;
+}
+async function explore(url,domain,purpose,target){
+ const out=document.getElementById(target),prog=document.getElementById("exploreBenchProgress");
+ out.innerHTML="";prog.innerHTML='<div class="running"><b>Testing acquisition techniques…</b><div class="pbar" style="margin-top:7px"><div class="pfill" style="width:0%"></div></div><small>0 techniques tested</small></div>';
+ const st=await jfetch(`${API}/explore/url/start`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({url,domain,purpose,max_pages:6})},60000);let job=st.job;
+ let pollErrors=0;
+ while(job.status==="queued"||job.status==="running"){
+   const pct=job.progress_pct||0;prog.innerHTML=`<div class="running"><b>Testing acquisition techniques…</b><div class="pbar" style="margin-top:7px"><div class="pfill" style="width:${pct}%"></div></div><small>${esc(job.completed_techniques||0)} / ${esc(job.total_techniques||0)} techniques tested · ${pct}%</small></div>`;
+   await new Promise(r=>setTimeout(r,650));
+   try{
+     job=(await jfetch(`${API}/explore/url/status/${encodeURIComponent(job.job_id)}`,{},60000)).job;
+     pollErrors=0;
+   }catch(e){
+     pollErrors++;
+     if(pollErrors>=3)throw e;
+     prog.innerHTML=`<div class="running"><b>Current technique is still working…</b><div class="pbar" style="margin-top:7px"><div class="pfill" style="width:${pct}%"></div></div><small>Local API was busy responding; KU2D will retry automatically (${pollErrors}/3).</small></div>`;
+     await new Promise(r=>setTimeout(r,1000));
+   }
+ }
+ if(job.status!=="completed")throw new Error(job.error||"Explore technique bench failed");
+ prog.innerHTML="";const j=job.result;lastExploreResult=j;
+ const failure=j.failure?`<div class="warn"><b>Why acquisition failed:</b> ${esc(j.failure.reason)}<br><b>Blocked?</b> ${j.failure.blocked===true?"Likely request refused":j.failure.blocked===false?"No evidence of blocking":"Unknown"}<br><small>Next: ${esc(j.failure.next_step)}</small></div>`:"";
+ const visibleMethods=(j.technique_results||[]).filter(techniqueHasEvidence),methods=visibleMethods.map(techniqueSummaryHtml).join("");
+ const types=(j.record_types||[]).map(t=>`<span class="badge">${esc(t.type)} ${t.count}</span>`).join(" ")||"—";
+ const recs=(j.recommended_techniques||[]).map((t,i)=>{const tracks=(t.tracks||[]).map(z=>z==="product_price"?"Product & Price":z==="promotion"?"Promotions":z==="discovery"?"Discovery":z);const tip=`${tracks.join(", ")||t.role||"technique"} · score ${t.score??"—"}`;return `<span class="badge" title="${esc(tip)}">${tracks.length?esc(tracks.join(" + "))+" → ":""}${esc(t.label||t.technique)} · score ${esc(t.score)}</span>`}).join(" ")||"—";
+ const tr=j.track_recommendations||{},trackOrder=["product_price","promotion","discovery"],trackHtml=trackOrder.filter(k=>tr[k]).map(k=>{const q=tr[k];return `<div class="card"><b>${esc(q.label)}</b><br><strong>${esc(q.technique_label||q.technique)}</strong><br><small>${q.records!=null?esc(q.records)+" records · ":""}${q.price_completeness_pct!=null?"price "+esc(q.price_completeness_pct)+"% · ":""}score ${esc(q.score)}<br>${esc(q.reason||"")}</small></div>`}).join("");
+ out.innerHTML=`${failure}<div class="${(j.recommended_techniques||[]).length?"good":"warn"}"><b>Explore completed</b> · ${esc(job.completed_techniques||0)} techniques tested · ${esc(visibleMethods.length)} produced output · unique sample ${esc(j.unique_sample_record_count??0)} · quality ${esc(j.quality?.label||j.quality?.score||"—")}</div>
+ <div style="margin:10px 0 12px"><button class="btn secondary" type="button" id="copyExploreAll">Copy ALL Technique Results</button></div>
+ <p><b>Combined data types:</b> ${types}</p><p><b>Recommended / assigned techniques:</b> ${recs}</p>
+ ${trackHtml?`<div class="cards">${trackHtml}</div>`:""}
+ <p><small><b>Selection rule:</b> for multi-surface retail sources such as Lotus’s, Big C, and Makro, KU2D selects the best technique separately for Product & Price, Promotions, and Coverage / Discovery. A promotion technique can no longer displace a product-price technique merely because it returns more rows.</small></p>
+ ${methods||'<p><small>No technique produced output yet. Full failures remain in Copy ALL Technique Results.</small></p>'}
+ <details><summary><b>Show / Hide Combined Sample & Diagnostics</b></summary><pre>${esc(JSON.stringify({sample_records:j.sample_records,quality:j.quality,diagnostics:j.diagnostics,failure:j.failure},null,2))}</pre></details>`;
+ document.getElementById("copyExploreAll").onclick=()=>copyDiagnosticsData(lastExploreResult,document.getElementById("copyExploreAll"));updateMonitoringActionButton(url);return j;
+}
+async function runExploreForm(){
+ const url=document.getElementById("exploreUrl").value.trim();if(!url)return;
+ try{lastExplored=await explore(url,document.getElementById("exploreDomain").value,document.getElementById("explorePurpose").value,"exploreResult");
+ updateMonitoringActionButton(url);document.getElementById("approveExplored").disabled=false}catch(e){document.getElementById("exploreResult").innerHTML=`<div class="warn">${esc(e.message)}</div>`}
+}
+document.getElementById("exploreBtn").onclick=runExploreForm;
+async function approve(source){
+ return jfetch(`${API}/monitoring/approve`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({source})});
+}
+document.getElementById("approveExplored").onclick=async()=>{
+ if(!lastExplored)return;try{const url=document.getElementById("exploreUrl").value.trim(),domain=document.getElementById("exploreDomain").value,purpose=document.getElementById("explorePurpose").value;
+ const ctx=exploreMonitoringContext&&normUrl(exploreMonitoringContext.url)===normUrl(url)?exploreMonitoringContext:null;
+ const j=await approve({url,source_id:ctx?.source_id||undefined,name:ctx?.name||lastExplored.title||new URL(url).hostname,domain:ctx?.domain||domain,purpose:ctx?.purpose||purpose,cadence:(ctx?.purpose||purpose)==="retail_market_intelligence"?"daily":"weekly",adapter:ctx?.adapter||lastExplored.adapter||"generic",recommended_techniques:lastExplored.recommended_techniques||[]});
+ document.getElementById("exploreResult").innerHTML+=`<div class="good">${j.action==="techniques-updated"?"Monitoring techniques updated for existing source":"Added to monitoring"}: <b>${esc(j.source.source_id)}</b> (${esc(j.source.registry)})</div>`;document.getElementById("approveExplored").disabled=true;exploreMonitoringContext=null;loadMonitoring()}
+ catch(e){document.getElementById("exploreResult").innerHTML+=`<div class="warn">${esc(e.message)}</div>`}
+};
+document.getElementById("discoverBtn").onclick=async()=>{
+ const out=document.getElementById("discoverResult");out.textContent="Discovering candidate sources…";
+ try{const body={query_text:document.getElementById("discoverQuery").value.trim(),query_type:document.getElementById("queryType").value,domain:document.getElementById("discoverDomain").value,num_per_query:5,max_candidates:20};
+ body.auto_preflight=true;body.preflight_limit=20;
+ const j=await jfetch(`${API}/discover/sources`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)},90000);lastCandidates=j.candidates||[];
+ const ps=j.preflight_summary||{};
+ out.innerHTML=`<div class="info"><b>Discovery provider:</b> ${esc(j.provider||"unknown")} · ${esc(j.provider_note||"")}</div><div class="good"><b>Automatic access preflight:</b> checked ${ps.checked??0} · accessible ${ps.accessible??0} · inaccessible ${ps.inaccessible??0} · recommended for full explore ${ps.full_explore_recommended??0}</div>
+ <p><b>${j.candidate_count}</b> unique candidate URLs. <small>Preflight only checks lightweight public access/content; it does not add data to the repository.</small></p>
+ <div class="scroll"><table><thead><tr><th></th><th>Candidate</th><th>Host</th><th>Access</th><th>Quality</th><th>Sample</th><th>Why found</th></tr></thead><tbody>${lastCandidates.map((x,i)=>{const p=x.preflight||{},f=p.failure||{};return `<tr><td><input type="radio" name="cand" value="${i}"></td>
+ <td><b>${esc(x.title)}</b><br><small>${esc(x.url)}</small></td><td>${esc(x.host)}</td>
+ <td><span class="badge">${esc(p.status||"not checked")}</span><br><small>${p.http_status?`HTTP ${p.http_status}`:""} ${p.elapsed_seconds!=null?`· ${p.elapsed_seconds}s`:""}${f.reason?`<br>${esc(f.reason)}`:""}</small></td>
+ <td>${esc(p.quality?.label||"—")} ${p.quality?.score!=null?`(${p.quality.score})`:""}<br><small>${esc(p.access_assessment||"")}${p.likely_js_heavy?" · JS-heavy":""}</small></td>
+ <td><small>${p.bytes_sampled!=null?`${p.bytes_sampled} bytes`: "—"}${p.text_length!=null?` · text ${p.text_length}`:""}</small></td>
+ <td><small>${esc((x.found_by_queries||[]).join(" · "))}</small></td></tr>`}).join("")}</tbody></table></div>
+ <details><summary><b>Show / Hide Discovery Diagnostics</b></summary><pre>${esc(JSON.stringify({queries:j.queries,diagnostics:j.diagnostics,preflight_summary:j.preflight_summary,candidates:lastCandidates.map(x=>({url:x.url,preflight:x.preflight}))},null,2))}</pre></details>`;
+ document.getElementById("sampleCandidate").disabled=!lastCandidates.length}catch(e){out.innerHTML=`<div class="warn">${esc(e.message)}</div>`}
+};
+document.getElementById("sampleCandidate").onclick=async()=>{
+ const r=document.querySelector('input[name="cand"]:checked');if(!r)return;const x=lastCandidates[Number(r.value)],domain=document.getElementById("discoverDomain").value;
+ let purpose=document.getElementById("queryType").value==="product"?"retail_market_intelligence":"research_evidence";
+ try{const sample=await explore(x.url,domain,purpose,"candidateSample");sampledCandidate={candidate:x,sample,domain,purpose};document.getElementById("approveCandidate").disabled=false}catch(e){document.getElementById("candidateSample").innerHTML=`<div class="warn">${esc(e.message)}</div>`}
+};
+document.getElementById("approveCandidate").onclick=async()=>{
+ if(!sampledCandidate)return;const x=sampledCandidate.candidate,s=sampledCandidate.sample;
+ try{const j=await approve({url:x.url,name:x.title||x.host,domain:sampledCandidate.domain,purpose:sampledCandidate.purpose,cadence:sampledCandidate.purpose==="retail_market_intelligence"?"daily":"weekly",adapter:s.adapter||"generic",recommended_techniques:s.recommended_techniques||[]});
+ document.getElementById("candidateSample").innerHTML+=`<div class="good">${j.action==="techniques-updated"?"Updated techniques for existing monitored URL":"Added to recurring monitoring"} as <b>${esc(j.source.source_id)}</b></div>`;document.getElementById("approveCandidate").disabled=true;loadMonitoring()}
+ catch(e){document.getElementById("candidateSample").innerHTML+=`<div class="warn">${esc(e.message)}</div>`}
+};
+loadMonitoring().then(()=>pollCampaign()).catch(e=>document.getElementById("monitorSummary").innerHTML=`<div class="warn">${esc(e.message)}</div>`);
+
+function deepJobProgress(job,label="Deep Audit"){
+ const pct=Math.max(0,Math.min(100,Number(job.progress_pct||0)));
+ const detail=[job.pages_done!=null?`${job.pages_done}/${job.pages_target||"?"} pages`:null,
+               job.records_found!=null?`${job.records_found} records found`:null,
+               job.records_stored!=null?`${job.records_stored} records stored`:null].filter(Boolean).join(" · ");
+ return `<div class="good"><b>${esc(label)}: ${esc(job.source_name||job.source_id||"Source")}</b><br>
+ <small>${esc(job.phase||"running")} · ${esc(job.message||"Working...")}${detail?" · "+esc(detail):""}</small></div>
+ <div style="height:16px;background:#e6ece9;border-radius:9px;overflow:hidden;margin:12px 0">
+   <div style="height:100%;width:${pct}%;background:#176c48;transition:width .35s"></div>
+ </div><div><b>${pct}%</b>${job.current_url?` <small>· ${esc(job.current_url)}</small>`:""}</div>`;
+}
+function deepAuditProgress(job){return deepJobProgress(job,"Deep Audit")}
+function renderDeepAuditResult(a,body){
+ const ac=a.accessibility||{},y=a.yield||{},fq=a.field_quality||{},rp=a.repeatability||{},cv=a.coverage||{},tp=a.technique_profile||{};
+ const gates=a.gate_checks||{},warnings=a.warnings||[],fails=a.hard_failures||[];
+ const statusLabel=a.audit_status==="pass-with-warnings"?"PASS WITH WARNINGS":a.audit_passed?"PASS":"NOT PASSED";
+ const statusClass=a.audit_passed?(warnings.length?"warn":"good"):"warn";
+ const gateRows=Object.entries(gates).map(([k,v])=>`<tr><td>${esc(k.replaceAll("_"," "))}</td><td>${v.passed?"✓ PASS":"✕ FAIL"}</td><td>${esc(v.value)}</td><td>${esc(v.required)}</td></tr>`).join("");
+ const warningHtml=warnings.length?`<div class="warn"><b>Quality warnings</b><ul>${warnings.map(w=>`<li><b>${esc(w.code)}</b> — ${esc(w.message)}</li>`).join("")}</ul></div>`:"";
+ body.innerHTML=`<div class="good"><b>${esc(a.source?.name)}</b> · Deep Audit completed · Extraction Quality ${esc(a.quality_label)} (${a.quality_score}/100)</div>
+ <p><b>Best Acquisition Technique(s) audited:</b> ${(tp.assignments||[]).map((x,i)=>{const e=x.evidence||{},tr=(e.tracks||[]).map(z=>z==="product_price"?"Product & Price":z==="promotion"?"Promotions":z==="discovery"?"Discovery":z);return `<span class="badge">${tr.length?esc(tr.join(" + "))+" → ":""}${esc(x.label||x.technique)}</span>`}).join(" ")||"—"}<br><small>Profile fingerprint ${esc(tp.fingerprint||"—")} · Deep Acquire must use this same audited track profile.</small></p>
+ <div class="cards">
+  <div class="card"><b>Accessibility</b><br><strong>L${esc(ac.proposed_level)}</strong><br><small>Preflight ${esc(ac.preflight?.status||"—")} · 403/429 events ${esc(ac.blocked_or_rate_limited_events??0)}</small></div>
+  <div class="card"><b>Best-Tech Execution</b><br><strong>${esc(cv.technique_execution_pct??0)}%</strong><br><small>${esc(cv.pages_tested??0)} pages tested</small></div>
+  <div class="card"><b>Data Yield</b><br><strong>${esc(y.records??0)} records</strong><br><small>products ${esc(y.products??0)} · promotions ${esc(y.promotions??0)} · duplicate ${esc(y.duplicate_records??0)}</small></div>
+  <div class="card"><b>Current Product Price</b><br><strong>${esc(fq.product_price_pct??0)}%</strong><br><small>core repository-readiness metric</small></div>
+  <div class="card"><b>Regular / Original Price</b><br><strong>${esc(fq.product_regular_price_pct??0)}%</strong><br><small>informational unless discount is explicitly detected</small></div>
+  <div class="card"><b>Promotion Validity</b><br><strong>${esc(fq.promotion_validity_pct??0)}%</strong><br><small>source-stated validity completeness; observed_at remains separate</small></div>
+  <div class="card"><b>Provenance</b><br><strong>${esc(fq.provenance_pct??0)}%</strong><br><small>records carrying source URL</small></div>
+  <div class="card"><b>Repeatability</b><br><strong>${esc(rp.repeatability_pct??"—")}%</strong><br><small>bounded second pass: ${esc(rp.second_records??"—")} records</small></div>
+ </div>
+ <div class="${statusClass}"><b>Repository Readiness: ${statusLabel}</b>${a.audit_passed?'<br><small>All hard gates passed. Warnings remain visible and do not silently disappear.</small>':'<br><small>Repository storage remains locked until failed hard gates are resolved.</small>'}</div>
+ ${warningHtml}
+ <details open><summary><b>Repository Readiness Gate Checks</b></summary><table><thead><tr><th>Gate</th><th>Status</th><th>Observed</th><th>Required</th></tr></thead><tbody>${gateRows}</tbody></table></details>
+ <p><b>Recommended safe cadence:</b> ${esc(a.safe_cadence_recommendation)} · elapsed ${esc(a.elapsed_seconds)}s</p>
+ <div class="toolbar">
+  <button id="approveDeepStore" ${a.audit_passed?'':'disabled'}>Approve Source for Repository Store</button>
+  <button id="deepAcquireStore" disabled style="background:#176c48">Deep Acquire &amp; Store</button>
+  <button id="enableContinuous" disabled class="secondary">Enable Continuous Collection</button>
+ </div>
+ <small id="approvalHint">${a.audit_passed?'Audit passed. Approve repository storage before Deep Acquire & Store.':'Resolve failed hard gates before approval.'}</small>
+ <div id="deepStoreStatus"></div>
+ <details><summary><b>Show / Hide Page Coverage</b></summary><pre>${esc(JSON.stringify(cv,null,2))}</pre></details>
+ <details><summary><b>Show / Hide Field Quality</b></summary><pre>${esc(JSON.stringify(fq,null,2))}</pre></details>
+ <details><summary><b>Show / Hide Sample Records</b></summary><pre>${esc(JSON.stringify(a.sample_records||[],null,2))}</pre></details>
+ <details><summary><b>Show / Hide Diagnostics</b></summary><pre>${esc(JSON.stringify({accessibility:ac,gate_checks:gates,warnings,hard_failures:fails,technique_profile:tp,diagnostics:a.diagnostics,guardrail:a.guardrail},null,2))}</pre></details>`;
+ const sid=a.source?.source_id,status=document.getElementById("deepStoreStatus");
+ const approveBtn=document.getElementById("approveDeepStore"),storeBtn=document.getElementById("deepAcquireStore"),continuousBtn=document.getElementById("enableContinuous");
+ approveBtn.onclick=async()=>{
+  try{
+   await jfetch(`${API}/monitoring/deep-approve-store`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({source_id:sid,approved:true})});
+   status.innerHTML=`<div class="good">Repository Store approved. Deep Acquire & Store is now enabled.</div>`;
+   approveBtn.disabled=true;approveBtn.textContent="Approved";approveBtn.classList.add("approved-state");storeBtn.disabled=false;document.getElementById("approvalHint").textContent="Repository storage approved. Run Deep Acquire & Store before enabling continuous collection.";
+   loadMonitoring();
+  }catch(e){status.innerHTML=`<div class="warn">${esc(e.message)}</div>`}
+ };
+ storeBtn.onclick=async()=>{
+  storeBtn.disabled=true;
+  status.innerHTML=deepJobProgress({source_name:a.source?.name||sid,progress_pct:0,phase:"starting",message:"Starting Deep Acquire & Store"},"Deep Acquire & Store");
+  try{
+   const started=await jfetch(`${API}/monitoring/deep-acquire-store/start`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({source_id:sid,max_pages:20})});
+   const jobId=started.job.job_id;window.activeSingleDeepStoreJobId=jobId;status.innerHTML=deepJobProgress(started.job,"Deep Acquire & Store")+`<div class="toolbar" style="margin-top:8px"><button id="cancelSingleDeepStore" class="secondary">Cancel Deep Acquire</button></div>`;document.getElementById("cancelSingleDeepStore").onclick=async()=>{await jfetch(`${API}/monitoring/deep-acquire-store/cancel/${encodeURIComponent(jobId)}`,{method:"POST"});document.getElementById("cancelSingleDeepStore").disabled=true;document.getElementById("cancelSingleDeepStore").textContent="Cancel requested…"};
+   while(true){
+    await new Promise(r=>setTimeout(r,1200));
+    const j=await jfetch(`${API}/monitoring/deep-acquire-store/status/${encodeURIComponent(jobId)}`),job=j.job||{};
+    if(job.status==="complete"){
+      const result=job.result||{},m=result.metrics||{};
+      status.innerHTML=`<div class="good"><b>Deep Acquire & Store completed</b></div>
+      <div class="cards">
+       <div class="card"><b>Pages</b><br><strong>${esc(m.pages??0)}</strong></div>
+       <div class="card"><b>Records Found</b><br><strong>${esc(m.records_found??0)}</strong></div>
+       <div class="card"><b>Records Stored</b><br><strong>${esc(m.records_stored??0)}</strong></div>
+       <div class="card"><b>New Listings</b><br><strong>${esc(m.new_listings??0)}</strong></div>
+       <div class="card"><b>New Price Versions</b><br><strong>${esc(m.new_price_versions??0)}</strong></div>
+       <div class="card"><b>Extended Prices</b><br><strong>${esc(m.extended_prices??0)}</strong></div>
+      </div>
+      <p><b>Repository change:</b> <code>${esc(JSON.stringify(m.delta||{}))}</code> · elapsed ${esc(m.elapsed_seconds??"—")}s</p>
+      <p><b>Page observations:</b> baseline ${esc(m.page_change_observation?.baseline??0)} · changed ${esc(m.page_change_observation?.changed??0)} · unchanged ${esc(m.page_change_observation?.unchanged??0)}
+      &nbsp; | &nbsp; <b>Product price observations:</b> new products ${esc(m.product_change_observation?.new_products??0)} · price changes ${esc(m.product_change_observation?.price_changes??0)} · unchanged prices ${esc(m.product_change_observation?.unchanged_prices??0)}</p>
+      <details><summary><b>Show / Hide Full Store Result</b></summary><pre>${esc(JSON.stringify(result,null,2))}</pre></details>`;
+      storeBtn.disabled=false;continuousBtn.disabled=false;
+      document.getElementById("approvalHint").textContent="Deep Acquire & Store completed. Continuous Collection may now be enabled if the Accessibility policy allows it.";
+      loadMonitoring();break;
+    }
+    if(job.status==="failed"||job.status==="cancelled"){status.innerHTML=`<div class="warn"><b>Deep Acquire & Store ${esc(job.status)}</b><br>${esc(job.error||job.message||"Unknown error")}</div>`;storeBtn.disabled=false;break}
+    status.innerHTML=deepJobProgress(job,"Deep Acquire & Store");
+   }
+  }catch(e){status.innerHTML=`<div class="warn"><b>Deep Acquire & Store could not start</b><br>${esc(e.message)}</div>`;storeBtn.disabled=false}
+ };
+ continuousBtn.onclick=async()=>{try{await jfetch(`${API}/monitoring/continuous-collection`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({source_id:sid,enabled:true,cadence:a.safe_cadence_recommendation})});status.innerHTML=`<div class="good">Continuous Collection enabled with ${esc(a.safe_cadence_recommendation)} policy.</div>`;continuousBtn.disabled=true;loadMonitoring()}catch(e){status.innerHTML=`<div class="warn">${esc(e.message)}</div>`}};
+}
+
+// Backward-compatible single-source Deep Audit progress helper/endpoints retained for regression and API clients.
+const deepAuditStartEndpoint="/monitoring/deep-audit/start";
+const deepAuditStatusEndpoint="/monitoring/deep-audit/status/{job_id}";
+function deepAuditProgress(job){return deepJobProgress(job,"Deep Audit");}
+function renderChangeProgress(job){
+ return deepJobProgress(job,"Coverage & Change Check");
+}
+function renderCoverageResult(r,body){
+ const s=r.stats||{},pc=(r.pagination_coverage||{}).summary||{},groups=(r.pagination_coverage||{}).groups||[],po=r.product_observations||{};
+ const totalKnown=pc.known_pages||0,totalFetched=pc.fetched_pages||0,totalDetected=pc.detected_total_pages||0;
+ const groupRows=groups.map(g=>`<tr><td>${esc(g.pagination_group)}</td><td>${esc(g.detected_total_pages??"Unknown")}</td><td>${esc(g.known_pages)}</td><td>${esc(g.fetched_pages)}</td><td>${g.coverage_pct==null?"Unverified":esc(g.coverage_pct)+"%"}</td><td>${esc(g.completeness)}</td></tr>`).join("");
+ body.innerHTML=`<div class="good"><b>${esc(r.source_name||r.source_id)}</b> · Coverage & Change Check completed</div>
+ <div class="cards">
+  <div class="card"><b>Pages Checked</b><br><strong>${esc(s.checked??0)}</strong></div>
+  <div class="card"><b>Changed</b><br><strong>${esc(s.changed??0)}</strong></div>
+  <div class="card"><b>Unchanged</b><br><strong>${esc(s.unchanged??0)}</strong></div>
+  <div class="card"><b>First Baseline</b><br><strong>${esc(s.baseline??0)}</strong></div>
+  <div class="card"><b>Known Pagination Pages</b><br><strong>${esc(totalKnown)}</strong><br><small>fetched ${esc(totalFetched)}</small></div>
+  <div class="card"><b>Detected Total Pages</b><br><strong>${totalDetected?esc(totalDetected):"Unknown"}</strong><br><small>${totalDetected?"across detected groups":"completeness cannot yet be verified"}</small></div>
+  <div class="card"><b>Known Products</b><br><strong>${esc(po.total_products??0)}</strong><br><small>price changes ${esc(po.total_price_changes??0)} · multi-surface ${esc(po.multi_surface_products??0)}</small></div>
+ </div>
+ <div class="${r.acquisition_required?"warn":"good"}"><b>${r.acquisition_required?"Acquisition recommended":"No changed/baseline pages require acquisition from this check"}</b><br>
+ <small>${esc(r.interpretation||"")}</small></div>
+ <details open><summary><b>Pagination Groups</b></summary>
+ <table><thead><tr><th>Pagination Group</th><th>Detected Total</th><th>Known</th><th>Fetched</th><th>Coverage</th><th>Status</th></tr></thead><tbody>${groupRows||'<tr><td colspan="6">No explicit pagination groups detected yet. Total-page completeness remains unverified.</td></tr>'}</tbody></table></details>
+ <details><summary><b>Changed URLs</b></summary><pre>${esc(JSON.stringify(r.changed_urls||[],null,2))}</pre></details>
+ <details><summary><b>Check Details</b></summary><pre>${esc(JSON.stringify(r.details||[],null,2))}</pre></details>
+ <details><summary><b>Product Observation Index</b></summary><pre>${esc(JSON.stringify(po,null,2))}</pre></details>`;
+}
+document.getElementById("changeCheck").onclick=async()=>{
+ if(!(await checkApiHealth()))return;
+ const checked=[...document.querySelectorAll(".srcsel:checked")],panel=document.getElementById("changePanel"),body=document.getElementById("changeBody");
+ panel.style.display="block";panel.scrollIntoView({behavior:"smooth",block:"start"});
+ if(checked.length!==1){body.innerHTML=`<div class="warn"><b>Select exactly one source</b><br><small>Select one Monitoring Queue row and click Coverage & Change Check again.</small></div>`;return}
+ const sid=checked[0].value,x=monitoringSources.find(s=>s.source_id===sid);
+ body.innerHTML=renderChangeProgress({source_name:x?.name||sid,progress_pct:0,phase:"starting",message:"Preparing known-page change check"});
+ try{
+  const started=await jfetch(`${API}/monitoring/change-check/start`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({source_id:sid,max_pages:25})});
+  const jobId=started.job.job_id;body.innerHTML=renderChangeProgress(started.job);
+  while(true){
+   await new Promise(r=>setTimeout(r,1200));
+   const j=await jfetch(`${API}/monitoring/change-check/status/${encodeURIComponent(jobId)}`),job=j.job||{};
+   if(job.status==="complete"){renderCoverageResult(job.result||{},body);break}
+   if(job.status==="failed"){body.innerHTML=`<div class="warn"><b>Coverage & Change Check failed</b><br>${esc(job.error||job.message||"Unknown error")}</div>`;break}
+   body.innerHTML=renderChangeProgress(job);
+  }
+ }catch(e){body.innerHTML=`<div class="warn"><b>Coverage & Change Check could not start</b><br>${esc(e.message)}</div>`}
+};
+
+
+function batchProgressHtml(label,b,totalFallback){
+ const rr=b.result?.sources||[],cur=b.result?.current||null,total=Number(b.total_sources||totalFallback||1),done=Number(b.completed_sources||0);
+ const currentPct=cur?Math.max(0,Math.min(100,Number(cur.progress_pct||0))):0;
+ const overall=Math.max(0,Math.min(100,Math.round(((done+(cur?currentPct/100:0))/Math.max(1,total))*100)));
+ const detail=cur?`${esc(cur.source_name||cur.source_id)} · ${esc(cur.phase||"running")} · ${esc(cur.message||"Working...")}`:`${done}/${total} completed`;
+ return `<div class="${b.status==="complete"?"good":b.status==="cancelled"?"warn":"running"}"><b>${esc(label)}</b> · ${done}/${total} completed</div>
+ <div style="height:16px;background:#e6ece9;border-radius:9px;overflow:hidden;margin:12px 0"><div style="height:100%;width:${overall}%;background:#176c48;transition:width .35s"></div></div>
+ <div><b>${overall}% overall</b><br><small>${detail}${cur?.current_url?` · ${esc(cur.current_url)}`:""}</small></div>`;
+}
+async function startBatchAcquireForIds(ids,body){
+ if(!ids.length){body.innerHTML='<div class="warn">No approved URL is available for Deep Acquire.</div>';return}
+ body.innerHTML=`<div class="running"><b>Batch Deep Acquire & Store</b> · preparing ${ids.length} URL(s)…</div>`;
+ const st=await jfetch(`${API}/monitoring/deep-store/batch/start`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({source_ids:ids,max_pages:20})});window.activeDeepStoreBatchId=st.batch_id;window.lastDeepStoreBatchId=st.batch_id;document.getElementById("exportDeepAcquireResults").disabled=false;const cancelBtn=document.getElementById("cancelDeepAcquire");cancelBtn.disabled=false;
+ while(true){
+  await new Promise(r=>setTimeout(r,1200));
+  const j=await jfetch(`${API}/monitoring/deep-batch/${encodeURIComponent(st.batch_id)}`),b=j.batch||{},rr=b.result?.sources||[];
+  body.innerHTML=batchProgressHtml("Batch Deep Acquire & Store",b,ids.length)+
+   rr.map(z=>`<div class="${z.status==="success"?"good":"warn"}"><b>${esc(z.source_name||z.source_id)}</b> · ${esc(z.url||"")} · ${esc(z.status)}${z.error?`<br><small>${esc(z.error)}</small>`:""}${z.result?`<br><small>Best Tech: ${esc((z.result.metrics?.technique_profile?.assignments||[]).map(x=>x.label||x.technique).join(" + ")||"—")} · found ${esc(z.result.metrics?.records_found??0)} · added ${esc(z.result.metrics?.records_stored??0)} · new listings ${esc(z.result.metrics?.new_listings??0)} · new prices ${esc(z.result.metrics?.new_price_versions??0)} · new promotions ${esc(z.result.metrics?.new_promotions??0)}</small>`:""}</div>`).join("");
+  if(["complete","failed","cancelled"].includes(b.status)){cancelBtn.disabled=true;cancelBtn.textContent="Cancel Deep Acquire";window.activeDeepStoreBatchId=null;await loadMonitoring();break}
+ }
+}
+document.getElementById("deepAudit").onclick=async()=>{
+ if(!(await checkApiHealth()))return;
+ const ids=[...document.querySelectorAll(".srcsel:checked")].map(x=>x.value),panel=document.getElementById("deepAuditPanel"),body=document.getElementById("deepAuditBody");
+ panel.style.display="block";panel.scrollIntoView({behavior:"smooth",block:"start"});
+ if(!ids.length){body.innerHTML=`<div class="warn">Select at least one business/URL.</div>`;return}
+ ids.forEach(x=>selectedSourceIds.add(x));
+ try{
+  const st=await jfetch(`${API}/monitoring/deep-audit/batch/start`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({source_ids:ids,max_pages:20,repeat_check:true})});window.activeDeepAuditBatchId=st.batch_id;window.lastDeepAuditBatchId=st.batch_id;document.getElementById("cancelDeepAudit").disabled=false;document.getElementById("exportDeepAuditResults").disabled=false;
+  while(true){
+   await new Promise(r=>setTimeout(r,1200));
+   const j=await jfetch(`${API}/monitoring/deep-batch/${encodeURIComponent(st.batch_id)}`),b=j.batch||{},rr=b.result?.sources||[];
+   body.innerHTML=batchProgressHtml("Batch Deep Audit",b,ids.length)+
+    rr.map(z=>{if(z.status==="failed"||z.status==="cancelled")return `<div class="warn"><b>${esc(z.source_name||z.source_id)}</b> · ${esc(z.url||"")} · ${esc(z.status)}<br>${esc(z.error||"")}</div>`;
+      const a=z.audit||{},already=monitoringSources.find(x=>x.source_id===z.source_id)?.quality_profile?.approved_for_store;
+      return `<div class="card"><b>${esc(z.source_name||z.source_id)}</b><br><small>${esc(z.url||"")}</small><br>
+      <b>Best Tech audited:</b> ${esc((a.technique_profile?.assignments||[]).map(x=>{const e=x.evidence||{},tr=(e.tracks||[]).map(z=>z==="product_price"?"Product & Price":z==="promotion"?"Promotions":z==="discovery"?"Discovery":z);return (tr.length?tr.join("+")+" → ":"")+(x.label||x.technique)}).join(" · ")||"—")}<br><b>Audit:</b> ${a.audit_status==="pass-with-warnings"?"PASS WITH WARNINGS":a.audit_passed?"PASS":"NOT PASSED"} · Quality ${esc(a.quality_score??"—")}/100
+      ${!a.audit_passed?`<div class="audit-failure-note"><b>Why not passed:</b> ${esc(auditFailureSummary(a)||"One or more repository-readiness gates failed.")}<br><small>v0.28 Find Best evaluates source-specific commerce surfaces before accepting weak generic extraction. If the source still produces no repository-ready records, a source-specific adapter or different official surface is required.</small></div>`:""}
+      <br><button class="approveOne ${already?"approved-state":(!a.audit_passed?"audit-gate-failed":"")}" data-sid="${esc(z.source_id)}" ${(!a.audit_passed||already)?"disabled":""}>${already?"Already Approved":a.audit_passed?"Approve this URL":"Audit gate not passed"}</button></div>`}).join("")+
+    `<div class="toolbar" style="margin-top:14px"><button id="acquireApprovedThisBatch" style="background:#176c48" ${b.status==="complete"?"":"disabled"}>Deep Acquire Approved from This Audit</button></div>
+     <small>Only approved URLs from this audit selection will be acquired; failed/unapproved URLs are skipped.</small>`;
+   document.querySelectorAll(".approveOne").forEach(btn=>btn.onclick=async()=>{
+     await jfetch(`${API}/monitoring/deep-approve-store`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({source_id:btn.dataset.sid,approved:true})});
+     btn.disabled=true;btn.textContent="Approved";btn.classList.add("approved-state");await loadMonitoring();
+   });
+   const batchBtn=document.getElementById("acquireApprovedThisBatch");
+   if(batchBtn)batchBtn.onclick=async()=>{
+      const latest=await jfetch(`${API}/monitoring/sources`,{},15000),approved=new Set((latest.sources||[]).filter(x=>x.quality_profile?.approved_for_store).map(x=>x.source_id));
+      const approvedIds=ids.filter(x=>approved.has(x));
+      const ap=document.getElementById("deepAcquirePanel"),ab=document.getElementById("deepAcquireBody");ap.style.display="block";ap.scrollIntoView({behavior:"smooth",block:"start"});
+      await startBatchAcquireForIds(approvedIds,ab);
+   };
+   if(["complete","failed","cancelled"].includes(b.status)){document.getElementById("cancelDeepAudit").disabled=true;document.getElementById("cancelDeepAudit").textContent="Cancel Deep Audit";window.activeDeepAuditBatchId=null;await loadMonitoring();break}
+  }
+ }catch(e){body.innerHTML=`<div class="warn">${esc(e.message)}</div>`}
+};
+document.getElementById("cancelDeepAudit").onclick=async()=>{
+ const btn=document.getElementById("cancelDeepAudit");if(!window.activeDeepAuditBatchId)return;btn.disabled=true;btn.textContent="Cancel requested…";try{await jfetch(`${API}/monitoring/deep-batch/${encodeURIComponent(window.activeDeepAuditBatchId)}/cancel`,{method:"POST"})}catch(e){btn.disabled=false;btn.textContent="Cancel Deep Audit"}
+};
+document.getElementById("cancelDeepAcquire").onclick=async()=>{
+ const btn=document.getElementById("cancelDeepAcquire");if(!window.activeDeepStoreBatchId)return;btn.disabled=true;btn.textContent="Cancel requested…";try{await jfetch(`${API}/monitoring/deep-batch/${encodeURIComponent(window.activeDeepStoreBatchId)}/cancel`,{method:"POST"})}catch(e){btn.disabled=false;btn.textContent="Cancel Deep Acquire"}
+};
+document.getElementById("batchAcquire").onclick=async()=>{
+ if(!(await checkApiHealth()))return;
+ const ids=[...document.querySelectorAll(".srcsel:checked")].map(x=>x.value),panel=document.getElementById("deepAcquirePanel"),body=document.getElementById("deepAcquireBody");
+ panel.style.display="block";panel.scrollIntoView({behavior:"smooth",block:"start"});
+ if(!ids.length){body.innerHTML='<div class="warn">Select at least one URL. Only approved URLs will be acquired.</div>';return}
+ ids.forEach(x=>selectedSourceIds.add(x));
+ try{await startBatchAcquireForIds(ids,body)}
+ catch(e){body.innerHTML=`<div class="warn">${esc(e.message)}</div>`}
+};
+async function initializeOperations(){
+ const el=document.getElementById("apiHealth");
+ try{
+  const ok=await checkApiHealth();if(!ok)return;
+  await loadMonitoring();await loadActivityLog();await pollCampaign();
+ }catch(e){
+  document.getElementById("monitorSummary").innerHTML=`<div class="warn"><b>Monitoring Queue could not load</b><br><small>${esc(e?.message||e)}</small></div>`;
+ }
+}
+// compatibility marker for v2.52 regression: initializeOperations();
+window.addEventListener("DOMContentLoaded",()=>initializeOperations());
+</script>
+<div style="position:fixed;right:18px;bottom:18px"><a href="view-acquired-data.html" style="background:#176c48;color:white;padding:9px 12px;border-radius:9px;text-decoration:none;font:13px Arial">View Acquired Data</a></div>
+</body></html>
+

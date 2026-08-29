@@ -1,0 +1,69 @@
+{
+  "default": {
+    "minimum_usable_records_per_source": 50,
+    "target_usable_records_per_source": 75,
+    "maximum_usable_records_per_source": 100
+  },
+  "rules": [
+    {
+      "match": {
+        "channel": "Marketplace"
+      },
+      "minimum": 50,
+      "target": 100,
+      "maximum": 100
+    },
+    {
+      "match": {
+        "channel": "Official / Brand Website"
+      },
+      "minimum": 50,
+      "target": 75,
+      "maximum": 100
+    },
+    {
+      "match": {
+        "channel": "Community / Forum"
+      },
+      "minimum": 50,
+      "target": 100,
+      "maximum": 100
+    },
+    {
+      "match": {
+        "channel": "Blog / Reference"
+      },
+      "minimum": 50,
+      "target": 75,
+      "maximum": 100
+    },
+    {
+      "match": {
+        "channel": "Video"
+      },
+      "minimum": 50,
+      "target": 75,
+      "maximum": 100
+    }
+  ],
+  "record_definition": {
+    "usable_record": "A successfully extracted, source-traceable unit appropriate to its acquisition purpose; not merely a fetched page.",
+    "retail_examples": [
+      "product/listing",
+      "price observation",
+      "promotion/offer",
+      "marketplace signal"
+    ],
+    "knowledge_examples": [
+      "content item/segment",
+      "claim",
+      "opinion",
+      "entity mention"
+    ],
+    "evidence_examples": [
+      "relevant passage",
+      "claim-evidence link"
+    ],
+    "important": "Do not fabricate records to meet quota. A source can remain below target with an explicit constraint reason."
+  }
+}
