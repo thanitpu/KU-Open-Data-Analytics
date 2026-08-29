@@ -13,6 +13,7 @@ from source_adapters import adapter_for
 from serper_provider import search as serper_search, key_status as serper_key_status
 from source_discovery import search_web as public_search_web
 from technique_strategy import explore_with_strategy
+from track_selection import select_track_profile
 from control_plane.domain_playbooks import recommended_sequence
 
 
@@ -79,8 +80,9 @@ def _tags(text,limit=20):
 def _pattern_clues(strategy_result):
     """Infer generic domain-playbook clues from observed technique evidence.
 
-    These clues do not replace source-specific evidence. They let Explore compare a
-    new source with patterns learned from previously validated sources.
+    Technique-level 403s are marked as partial surface blocking only. Whole-source
+    cloud blocking is an execution-environment conclusion and must come from the
+    environment probe, not from one failed subrequest inside Explore.
     """
     clues=set()
     for tr in strategy_result.get("technique_results") or []:
@@ -107,7 +109,7 @@ def _pattern_clues(strategy_result):
         if potential.get("reported_total") or potential.get("reported_products") or potential.get("reported_pages"):
             clues.add("catalog_endpoint")
         if "403" in text or "forbidden" in text:
-            clues.add("cloud_access_blocked")
+            clues.add("partial_surface_blocking")
     return sorted(clues)
 
 
@@ -119,9 +121,31 @@ def explore_url(url,domain="General",purpose="research_evidence",max_pages=3,tec
        "score":min(95,30+useful*10+min(25,total)) if useful else 20,
        "technique_count":len(m.get("technique_results") or []),"techniques_with_evidence":useful}
     text=" ".join(str(r) for r in (m.get("sample_records") or [])[:30])
-    best=m.get("recommended_techniques") or []
     clues=_pattern_clues(m)
     guidance=recommended_sequence(domain,clues=clues)
+
+    # Source-specific supermarket selectors already own their validated track logic.
+    # Generic retail domains use conservative output-based track inference so a
+    # promotion-heavy or document-heavy method cannot win Product & Price merely by
+    # returning many rows.
+    original_best=m.get("recommended_techniques") or []
+    track_selection={}
+    if purpose in {"retail_market_intelligence","competitive_intelligence"} and guidance.get("required_tracks") and not (m.get("track_recommendations") or {}):
+        picked,tracks,selection=select_track_profile(
+            m.get("technique_results") or [],
+            required_tracks=guidance.get("required_tracks") or [],
+            optional_tracks=guidance.get("optional_tracks") or [],
+            quality_gates=guidance.get("quality_gates") or {},
+        )
+        best=picked
+        m["recommended_techniques"]=picked
+        m["assigned_techniques"]=[x.get("technique") for x in picked if x.get("technique")]
+        m["track_recommendations"]=tracks
+        track_selection={**selection,"global_recommendations_before_track_selection":original_best}
+    else:
+        best=original_best
+        track_selection={"required_track_gaps":{},"candidates":{}}
+
     return {"status":"completed","mode":"adaptive-technique-explore","url":url,"domain":domain,
       "purpose":purpose,"adapter":"adaptive-technique-bench",
       "pages_checked":sum(x.get("pages_checked",0) for x in m.get("technique_results") or []),
@@ -129,9 +153,10 @@ def explore_url(url,domain="General",purpose="research_evidence",max_pages=3,tec
       "sample_records":m.get("sample_records") or [],"diagnostics":[],
       "techniques_available":m.get("techniques_available"),"techniques_selected":m.get("techniques_selected"),
       "technique_results":m.get("technique_results"),"recommended_techniques":best,"assigned_techniques":m.get("assigned_techniques") or [],
+      "track_recommendations":m.get("track_recommendations") or {},"track_selection":track_selection,
       "potential_coverage":m.get("potential_coverage") or [],
       "pattern_clues":clues,"learned_pattern_guidance":guidance,
-      "recommendation":"add-to-monitoring" if best else "review-source"}
+      "recommendation":"add-to-monitoring" if best and not (track_selection.get("required_track_gaps") or {}) else "review-required-track-gaps" if (track_selection.get("required_track_gaps") or {}) else "review-source"}
 
 def discovery_queries(query_text,query_type="topic",domain="General"):
     q=(query_text or "").strip()
@@ -144,7 +169,7 @@ def discovery_queries(query_text,query_type="topic",domain="General"):
     if query_type=="product":base += [f'{q} retailer Thailand',f'{q} marketplace Thailand']
     if query_type=="topic":base += [f'{q} forum discussion',f'{q} expert guidance']
     if query_type=="domain":base += [f'best {q} websites Thailand',f'{q} brands retailers']
-    seen=[] 
+    seen=[]
     for x in base:
         if x not in seen:seen.append(x)
     return seen
@@ -152,7 +177,6 @@ def discovery_queries(query_text,query_type="topic",domain="General"):
 def discover_sources(query_text,query_type="topic",domain="General",num_per_query=5,max_candidates=20):
     queries=discovery_queries(query_text,query_type,domain);merged={};diag=[]
     serper_ready=bool(serper_key_status().get("configured")); provider="serper" if serper_ready else "public-web-fallback"
-    # Public fallback is intentionally bounded; it keeps Discovery useful without copying API secrets.
     effective_queries=queries if serper_ready else queries[:4]
     for q in effective_queries:
         try:
