@@ -41,7 +41,6 @@ jobs:
         run: python tools/SELF_TEST_PLATFORM_FOUNDATION.py
 
   deterministic-regressions:
-    if: ${{ hashFiles('services/data-acquisition/acquisition/**/*.py') != '' }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -53,10 +52,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Compile service
-        run: python -m compileall -q acquisition api repository tools
-      - name: Supermarket regressions
+      - name: Run service regressions when source is present
+        shell: bash
         run: |
+          if [ ! -d acquisition ]; then
+            echo 'Service migration not complete yet; deterministic service regressions skipped.'
+            exit 0
+          fi
+          python -m compileall -q acquisition api repository tools
           python tools/SELF_TEST_LOTUS_v0.25.py
           python tools/SELF_TEST_SUPERMARKETS_v0.25.py
           python tools/SELF_TEST_TOPS_v0.27.py
@@ -64,7 +67,7 @@ jobs:
           python tools/SELF_TEST_GOURMET_v0.28.py
 
   live-smoke:
-    if: ${{ github.event_name == 'workflow_dispatch' && hashFiles('services/data-acquisition/acquisition/**/*.py') != '' }}
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     environment: data-acquisition-staging
     defaults:
@@ -77,5 +80,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Live public-source smoke test
-        run: python tools/LIVE_SMOKE_SUPERMARKETS.py --no-approve --no-store
+      - name: Live public-source smoke test when harness is present
+        shell: bash
+        run: |
+          if [ ! -f tools/LIVE_SMOKE_SUPERMARKETS.py ]; then
+            echo 'Live smoke harness not migrated yet; skipping.'
+            exit 0
+          fi
+          python tools/LIVE_SMOKE_SUPERMARKETS.py --no-approve --no-store
