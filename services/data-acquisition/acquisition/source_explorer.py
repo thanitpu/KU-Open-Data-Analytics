@@ -13,6 +13,7 @@ from source_adapters import adapter_for
 from serper_provider import search as serper_search, key_status as serper_key_status
 from source_discovery import search_web as public_search_web
 from technique_strategy import explore_with_strategy
+from control_plane.domain_playbooks import recommended_sequence
 
 
 def explain_failure(result,url):
@@ -74,6 +75,42 @@ def _tags(text,limit=20):
         freq[k]=freq.get(k,0)+1
     return [{"tag":k,"count":v} for k,v in sorted(freq.items(),key=lambda kv:(-kv[1],kv[0]))[:limit]]
 
+
+def _pattern_clues(strategy_result):
+    """Infer generic domain-playbook clues from observed technique evidence.
+
+    These clues do not replace source-specific evidence. They let Explore compare a
+    new source with patterns learned from previously validated sources.
+    """
+    clues=set()
+    for tr in strategy_result.get("technique_results") or []:
+        tech=str(tr.get("technique") or "").lower()
+        label=str(tr.get("label") or "").lower()
+        potential=tr.get("potential") or {}
+        diag=" ".join(str(x) for x in (tr.get("diagnostics") or [])).lower()
+        text=" ".join([tech,label,diag,str(potential).lower()])
+        if "sitemap" in text:
+            clues.update(["sitemap","sitemap_index"])
+            if "product" in text:clues.add("product_sitemap")
+        if "graphql" in text:
+            clues.update(["graphql","graphql_endpoint","api_candidate"])
+        if "api" in text or "endpoint" in text:
+            clues.update(["json_api","api_candidate"])
+        if "product" in text and ("api" in text or "endpoint" in text):
+            clues.add("product_endpoint")
+        if "rendered" in text or "product card" in text or "product_cards" in text:
+            clues.update(["product_cards","ssr_listing"])
+        if "next" in text or "rsc" in text or "hydration" in text:
+            clues.update(["next_data","rsc","hydration_state"])
+        if "promotion" in text or "campaign" in text or "catalogue" in text:
+            clues.update(["promotion","campaign"])
+        if potential.get("reported_total") or potential.get("reported_products") or potential.get("reported_pages"):
+            clues.add("catalog_endpoint")
+        if "403" in text or "forbidden" in text:
+            clues.add("cloud_access_blocked")
+    return sorted(clues)
+
+
 def explore_url(url,domain="General",purpose="research_evidence",max_pages=3,techniques=None,progress_callback=None):
     m=explore_with_strategy(url,domain,purpose,max(1,min(max_pages,8)),techniques,progress_callback=progress_callback)
     total=m.get("record_count",0); unique=m.get("unique_sample_record_count",0)
@@ -83,6 +120,8 @@ def explore_url(url,domain="General",purpose="research_evidence",max_pages=3,tec
        "technique_count":len(m.get("technique_results") or []),"techniques_with_evidence":useful}
     text=" ".join(str(r) for r in (m.get("sample_records") or [])[:30])
     best=m.get("recommended_techniques") or []
+    clues=_pattern_clues(m)
+    guidance=recommended_sequence(domain,clues=clues)
     return {"status":"completed","mode":"adaptive-technique-explore","url":url,"domain":domain,
       "purpose":purpose,"adapter":"adaptive-technique-bench",
       "pages_checked":sum(x.get("pages_checked",0) for x in m.get("technique_results") or []),
@@ -91,6 +130,7 @@ def explore_url(url,domain="General",purpose="research_evidence",max_pages=3,tec
       "techniques_available":m.get("techniques_available"),"techniques_selected":m.get("techniques_selected"),
       "technique_results":m.get("technique_results"),"recommended_techniques":best,"assigned_techniques":m.get("assigned_techniques") or [],
       "potential_coverage":m.get("potential_coverage") or [],
+      "pattern_clues":clues,"learned_pattern_guidance":guidance,
       "recommendation":"add-to-monitoring" if best else "review-source"}
 
 def discovery_queries(query_text,query_type="topic",domain="General"):
