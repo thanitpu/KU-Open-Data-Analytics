@@ -30,6 +30,13 @@ TECHNIQUES = [
     "generic_api_probe",
 ]
 
+# A supermarket must have a reliable product/price acquisition path and a
+# coverage/discovery path before approval. Promotion is intentionally optional:
+# when a promotion technique is assigned, Deep Audit already requires it to
+# materialize real PromotionCandidate evidence; absence of a promotion surface
+# must not force fabricated/heuristic promotion records.
+REQUIRED_SUPERMARKET_APPROVAL_TRACKS = {"product_price", "discovery"}
+
 
 def now():
     return datetime.now(timezone.utc).isoformat()
@@ -51,6 +58,27 @@ def compact_technique(x):
     }
 
 
+def resolved_assigned_tracks(rows):
+    """Resolve acquisition tracks from the persisted recommendation evidence.
+
+    source_technique_assignment intentionally stores the complete recommendation
+    JSON in evidence_json rather than duplicating a single track_name column.
+    A technique may support more than one track, so evidence.tracks is the
+    canonical persisted representation.
+    """
+    tracks = set()
+    for row in rows or []:
+        evidence = row.get("evidence") or {}
+        for track in evidence.get("tracks") or []:
+            if track:
+                tracks.add(str(track))
+        # Backward/diagnostic compatibility for callers that may already supply
+        # a normalized single-track field.
+        if row.get("track_name"):
+            tracks.add(str(row["track_name"]))
+    return tracks
+
+
 def main():
     sources = {s["source_id"]: s for s in normalized_sources()}
     source = sources.get(SOURCE_ID)
@@ -64,7 +92,7 @@ def main():
         "source_name": source.get("name"),
         "source_url": source.get("url"),
         "started_at": now(),
-        "environment": "github-hosted-public-staging",
+        "environment": "ku2d-edge-live",
         "safety": "public official-site access only; no authentication/challenge bypass",
     }
 
@@ -96,7 +124,14 @@ def main():
 
     rows = replace_technique_assignments(SOURCE_ID, recs)
     result["persisted_assignment"] = [
-        {k: r.get(k) for k in ("track_name", "technique", "label", "score", "record_count", "engine_version")}
+        {
+            "technique": r.get("technique"),
+            "label": r.get("label"),
+            "score": r.get("score"),
+            "record_count": r.get("record_count"),
+            "engine_version": (r.get("evidence") or {}).get("engine_version"),
+            "tracks": (r.get("evidence") or {}).get("tracks") or [],
+        }
         for r in rows
     ]
 
@@ -118,9 +153,15 @@ def main():
     }
 
     assigned_rows = technique_assignments(SOURCE_ID)
-    tracks = {r.get("track_name") for r in assigned_rows if r.get("track_name")}
-    required_tracks = {"product_price", "promotion", "discovery"}
-    missing_tracks = sorted(required_tracks - tracks)
+    tracks = resolved_assigned_tracks(assigned_rows)
+    missing_tracks = sorted(REQUIRED_SUPERMARKET_APPROVAL_TRACKS - tracks)
+    result["approval_track_policy"] = {
+        "required": sorted(REQUIRED_SUPERMARKET_APPROVAL_TRACKS),
+        "optional": ["promotion"],
+        "resolved": sorted(tracks),
+        "missing_required": missing_tracks,
+        "promotion_note": "Promotion is optional unless assigned; Deep Audit enforces positive promotion yield when assigned.",
+    }
 
     if audit.get("audit_passed") and not missing_tracks:
         # This approval is intentionally in the isolated staging operations DB.
