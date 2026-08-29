@@ -6,6 +6,7 @@ on:
       - integration/data-acquisition-platform
     paths:
       - 'services/data-acquisition/config/domain_source_candidates.json'
+      - 'services/data-acquisition/config/retail_commerce_core_patterns.json'
       - 'services/data-acquisition/tools/LIVE_DOMAIN_SURFACE_PROBE.py'
       - '.github/workflows/data-acquisition-domain-probe.yml'
   workflow_dispatch:
@@ -22,7 +23,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Run safe public-read-only surface probes
-        run: python tools/LIVE_DOMAIN_SURFACE_PROBE.py --domains ota,coffee,q_diving --output validation/domain-live-probe.json
+        run: python tools/LIVE_DOMAIN_SURFACE_PROBE.py --domains ota,coffee,q_diving,beauty,it_retail --output validation/domain-live-probe.json
       - name: Summarize result
         run: python -c "import json; x=json.load(open('validation/domain-live-probe.json',encoding='utf-8')); print(json.dumps(x['summary'],ensure_ascii=False,indent=2))"
       - name: Upload live probe evidence
