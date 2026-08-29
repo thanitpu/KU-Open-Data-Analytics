@@ -1,0 +1,44 @@
+{
+  "schema": "ku2d.domain-source-candidates.v1",
+  "version": 1,
+  "domains": {
+    "ota": [
+      {
+        "candidate_id": "OTA-C001",
+        "name": "Booking.com · Bangkok city inventory",
+        "url": "https://www.booking.com/city/th/bangkok.html",
+        "source_type": "official-public-web",
+        "status": "discovery-candidate",
+        "purpose": "destination_service_intelligence",
+        "notes": "City inventory surface. Any rate observation must preserve dates, occupancy and currency; do not infer current rates from context-free directory data."
+      },
+      {
+        "candidate_id": "OTA-C002",
+        "name": "Traveloka · Thailand hotels",
+        "url": "https://www.traveloka.com/en-th/hotel/thailand",
+        "source_type": "official-public-web",
+        "status": "discovery-candidate",
+        "purpose": "destination_service_intelligence",
+        "notes": "Hotel listing surface. Prices are not comparable unless the acquisition run records the active stay-date/occupancy context."
+      },
+      {
+        "candidate_id": "OTA-C003",
+        "name": "Agoda · Bangkok destination",
+        "url": "https://www.agoda.com/destination/city/bangkok-th.html",
+        "source_type": "official-public-web",
+        "status": "discovery-candidate",
+        "purpose": "destination_service_intelligence",
+        "notes": "Destination/property discovery surface; rate/availability requires explicit query context."
+      },
+      {
+        "candidate_id": "OTA-C004",
+        "name": "Expedia Thailand · Bangkok hotels",
+        "url": "https://www.expedia.co.th/en/Bangkok-Hotels.d178236.Travel-Guide-Hotels",
+        "source_type": "official-public-web",
+        "status": "discovery-candidate",
+        "purpose": "destination_service_intelligence",
+        "notes": "Official Bangkok hotel inventory/search surface. Member-only rates are excluded unless an authorized account workflow is explicitly configured."
+      }
+    ]
+  }
+}
