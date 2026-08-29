@@ -9,6 +9,7 @@ from operations_store import states,quality_profile,technique_assignments,start_
 from technique_strategy import technique_profile_fingerprint
 from deep_collection import acquire_and_store
 from .lifecycle_policy import evaluate_source
+from .execution_environment import qualification
 
 
 def _audited_fingerprint(qp):
@@ -26,7 +27,8 @@ def scheduler_plan(source_ids=None):
         fp=technique_profile_fingerprint(assigned,rows) if assigned else None
         decision=evaluate_source(source=s,quality=qp,run_state=states_map.get(s['source_id'],{}),assigned_fingerprint=fp,audited_fingerprint=_audited_fingerprint(qp))
         due=cadence_due(states_map.get(s['source_id'],{}).get('last_success_at'),s.get('cadence')) if s.get('enabled') else False
-        out.append({'source_id':s['source_id'],'name':s.get('name'),'due':due,'decision':decision,'assigned_fingerprint':fp,'approved':bool(qp.get('approved_for_store'))})
+        envq=qualification(s)
+        out.append({'source_id':s['source_id'],'name':s.get('name'),'due':due,'decision':decision,'assigned_fingerprint':fp,'approved':bool(qp.get('approved_for_store')),'execution_environment':envq})
     return out
 
 
@@ -35,6 +37,10 @@ def run_scheduler_cycle(source_ids=None,max_pages=None,dry_run=False):
     for item in plan:
         if item['decision']['action']!='scheduled-acquire' or not item['due']:
             results.append({**item,'status':'skipped'});continue
+        if not (item.get('execution_environment') or {}).get('allowed',True):
+            # Environment constraints are not acquisition failures and must not increment
+            # source failure counters or trigger unnecessary technique churn.
+            results.append({**item,'status':'environment-blocked','error':(item.get('execution_environment') or {}).get('reason')});continue
         if dry_run:
             results.append({**item,'status':'would-acquire'});continue
         s=srcmap[item['source_id']]; rid=start_run(s)
