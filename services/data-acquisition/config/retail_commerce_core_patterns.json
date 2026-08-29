@@ -1,0 +1,106 @@
+{
+  "schema": "ku2d.retail-commerce-core-patterns.v1",
+  "version": 1,
+  "derived_from": {
+    "domain": "supermarket",
+    "validated_sources": ["Lotus's", "Big C", "Makro", "Tops", "Gourmet Market"],
+    "principle": "Generalize selection/orchestration patterns, not retailer-specific selectors or endpoints."
+  },
+  "shared_tracks": {
+    "required": ["product_price", "discovery"],
+    "optional": ["promotion"]
+  },
+  "core_patterns": [
+    {
+      "pattern_id": "RC-P01",
+      "name": "Official Structured Commerce API",
+      "inherits": "SM-P01",
+      "priority": 100,
+      "tracks": ["product_price", "discovery"],
+      "applicable_domains": ["supermarket", "beauty", "it_retail", "marketplace"],
+      "requirements": ["public official surface", "explicit product identity", "explicit price", "repeatable pagination or item retrieval"]
+    },
+    {
+      "pattern_id": "RC-P02",
+      "name": "Sitemap to Canonical Product Detail",
+      "inherits": "SM-P02",
+      "priority": 90,
+      "tracks": ["product_price", "discovery"],
+      "applicable_domains": ["supermarket", "beauty", "it_retail"],
+      "requirements": ["canonical product URLs", "focal product identity on detail page", "price attributable to focal product"]
+    },
+    {
+      "pattern_id": "RC-P03",
+      "name": "Rendered / SSR Product Listing",
+      "inherits": "SM-P03",
+      "priority": 80,
+      "tracks": ["product_price"],
+      "applicable_domains": ["supermarket", "beauty", "it_retail", "marketplace"],
+      "requirements": ["stable product-card boundaries or accessible SSR text", "identity + price pairing", "semantic rejection of marketing numerals"]
+    },
+    {
+      "pattern_id": "RC-P04",
+      "name": "Catalog Frontier Discovery",
+      "inherits": ["SM-P04", "SM-P05", "SM-P06"],
+      "priority": 90,
+      "tracks": ["discovery"],
+      "applicable_domains": ["supermarket", "beauty", "it_retail", "marketplace"],
+      "methods": ["robots/sitemap", "reported-total pagination", "first-party network/GraphQL discovery"]
+    },
+    {
+      "pattern_id": "RC-P05",
+      "name": "Official Promotion Surface",
+      "inherits": "SM-P07",
+      "priority": 95,
+      "tracks": ["promotion"],
+      "applicable_domains": ["supermarket", "beauty", "it_retail", "marketplace"],
+      "requirements": ["official campaign/catalogue/coupon surface", "explicit offer semantics", "source provenance"]
+    },
+    {
+      "pattern_id": "RC-P06",
+      "name": "Split-Track Commerce Acquisition",
+      "inherits": "SM-P08",
+      "priority": 100,
+      "tracks": ["orchestration"],
+      "applicable_domains": ["supermarket", "beauty", "it_retail", "marketplace"],
+      "principle": "Do not force one extraction technique to win product_price, discovery and promotion when different official surfaces are stronger."
+    },
+    {
+      "pattern_id": "RC-P07",
+      "name": "Execution Environment Escalation",
+      "inherits": "SM-P09",
+      "priority": 70,
+      "tracks": ["execution_environment"],
+      "applicable_domains": ["supermarket", "beauty", "it_retail", "marketplace"],
+      "principle": "Cloud CI is default. Use an approved Edge Runner only when the public official surface is demonstrably unavailable from cloud/datacenter execution and ordinary normal-network access succeeds without bypass."
+    }
+  ],
+  "domain_specializations": {
+    "beauty": {
+      "required_context": ["product_identity", "variant_identity", "price", "currency", "source_url", "observed_at"],
+      "variant_dimensions": ["shade", "color", "size", "volume", "pack", "formula"],
+      "quality_gates": {
+        "minimum_product_records": 5,
+        "price_completeness_pct": 80,
+        "variant_identity_when_present_pct": 90,
+        "semantic_quality_pct": 85,
+        "repeatability_pct": 70,
+        "provenance_pct": 95
+      },
+      "notes": "A beauty parent product is not interchangeable with a sellable shade/size variant when price or availability varies by variant."
+    },
+    "it_retail": {
+      "required_context": ["product_identity", "model_or_sku", "price", "currency", "source_url", "observed_at"],
+      "variant_dimensions": ["capacity", "memory", "storage", "color", "configuration", "bundle"],
+      "quality_gates": {
+        "minimum_product_records": 5,
+        "price_completeness_pct": 85,
+        "model_or_sku_completeness_pct": 90,
+        "semantic_quality_pct": 85,
+        "repeatability_pct": 70,
+        "provenance_pct": 95
+      },
+      "notes": "Model/configuration identity must be preserved so prices from different capacities or bundles are not merged."
+    }
+  }
+}
