@@ -1,0 +1,220 @@
+{
+  "schema": "ku2d.supermarket-acquisition-patterns.v1",
+  "version": 1,
+  "policy": {
+    "required_tracks": ["product_price", "discovery"],
+    "optional_tracks": ["promotion"],
+    "promotion_rule": "Promotion is optional for source approval, but any assigned promotion technique must produce credible official promotion evidence.",
+    "selection_principles": [
+      "Prefer official structured data over generic text extraction when both are available.",
+      "Use discovery and extraction as separate tracks when the strongest techniques differ.",
+      "Prefer canonical product identity, price completeness, repeatability, provenance, and catalog coverage over raw record count.",
+      "Use an approved edge execution environment only when ordinary cloud/datacenter execution cannot access the same public official surface.",
+      "Do not bypass authentication, CAPTCHA, anti-bot challenges, or access controls."
+    ]
+  },
+  "validated_sources": [
+    {
+      "source_id": "SRC-002",
+      "business": "Lotus's",
+      "status": "approved",
+      "tracks": {
+        "product_price": {
+          "technique_family": "official_product_api",
+          "label": "Lotus O2O Product API",
+          "evidence": "Official /product/v4/products representation with SKU, regular/final/member price, stock and canonical product URL."
+        },
+        "promotion": {
+          "technique_family": "official_campaign_surface",
+          "label": "My Lotus's Official Promotion Surface",
+          "evidence": "Official promotion listing cards and embedded structured promotion data."
+        },
+        "discovery": {
+          "technique_family": "structured_catalog_discovery",
+          "label": "Lotus O2O Structured Catalog Discovery",
+          "evidence": "Official category/API pagination and structured URLs provide catalog expansion."
+        }
+      }
+    },
+    {
+      "source_id": "SRC-004",
+      "business": "Big C",
+      "status": "approved",
+      "tracks": {
+        "product_price": {
+          "technique": "bigc_product_catalog",
+          "technique_family": "sitemap_product_detail",
+          "label": "Big C Sitemap Product Detail Catalog"
+        },
+        "promotion": {
+          "technique": "bigc_promotion_surface",
+          "technique_family": "official_campaign_surface",
+          "label": "Big C Official Campaign Surface"
+        },
+        "discovery": {
+          "technique": "generic_sitemap",
+          "technique_family": "robots_sitemap_discovery",
+          "label": "Robots / Sitemap Discovery"
+        }
+      }
+    },
+    {
+      "source_id": "SRC-005",
+      "business": "Makro",
+      "status": "approved",
+      "tracks": {
+        "product_price": {
+          "technique": "makro_pro_catalog",
+          "technique_family": "rendered_or_ssr_catalog",
+          "label": "Makro PRO Product Catalog Surface"
+        },
+        "promotion": {
+          "technique": "makro_promotion_catalogue",
+          "technique_family": "official_promotion_catalogue",
+          "label": "Makro Promotions Catalogue Surface"
+        },
+        "discovery": {
+          "technique": "makro_pro_catalog",
+          "technique_family": "reported_total_catalog_discovery",
+          "label": "Makro PRO Reported-Total Catalog Discovery"
+        }
+      }
+    },
+    {
+      "source_id": "SRC-001",
+      "business": "Tops",
+      "status": "approved",
+      "tracks": {
+        "product_price": {
+          "technique_family": "sitemap_product_detail",
+          "label": "Tops Sitemap Product Detail Catalog"
+        },
+        "promotion": {
+          "technique_family": "official_campaign_surface",
+          "label": "Tops Official Campaign Surface"
+        },
+        "discovery": {
+          "technique_family": "robots_sitemap_discovery",
+          "label": "Robots / Sitemap Discovery"
+        }
+      }
+    },
+    {
+      "source_id": "SRC-003",
+      "business": "Gourmet Market",
+      "status": "approved",
+      "quality_score": 88,
+      "execution_environment": "approved_edge_when_cloud_blocked",
+      "tracks": {
+        "product_price": {
+          "technique": "gourmet_rendered_catalog",
+          "technique_family": "rendered_product_cards",
+          "label": "Gourmet Market Rendered Product Cards",
+          "validated_record_count": 24
+        },
+        "discovery": {
+          "technique": "gourmet_catalog_network",
+          "technique_family": "network_graphql_discovery",
+          "label": "Gourmet GraphQL / Network Catalog Discovery"
+        },
+        "promotion": null
+      },
+      "notes": "Cloud-hosted public runners were blocked while the same public official site was reachable from an approved normal-network Edge Runner. No access-control bypass is used."
+    }
+  ],
+  "patterns": [
+    {
+      "pattern_id": "SM-P01",
+      "name": "Official Structured Product API",
+      "track": "product_price",
+      "priority": 100,
+      "when": ["Official public API or embedded structured catalog data is discoverable", "Product identity and price fields are explicit"],
+      "strengths": ["High field completeness", "Stable product identity", "Efficient pagination", "Easy repeatability checks"],
+      "validated_examples": ["Lotus's"],
+      "fallback_to": ["SM-P02", "SM-P03"]
+    },
+    {
+      "pattern_id": "SM-P02",
+      "name": "Sitemap to Canonical Product Detail",
+      "track": "product_price",
+      "priority": 90,
+      "when": ["Sitemap exposes many canonical product URLs", "Product detail pages expose focal SKU and price"],
+      "strengths": ["Strong provenance", "Canonical identity", "Broad deterministic coverage"],
+      "validated_examples": ["Big C", "Tops"],
+      "fallback_to": ["SM-P03"]
+    },
+    {
+      "pattern_id": "SM-P03",
+      "name": "Rendered or SSR Product Cards",
+      "track": "product_price",
+      "priority": 80,
+      "when": ["Catalog/search surface renders reliable product cards", "Cards expose identity and price without unsafe interaction"],
+      "strengths": ["Works with modern commerce frontends", "Can capture current/regular price pairs", "Useful when APIs are unavailable"],
+      "validated_examples": ["Makro", "Gourmet Market"]
+    },
+    {
+      "pattern_id": "SM-P04",
+      "name": "Robots / Sitemap Discovery",
+      "track": "discovery",
+      "priority": 90,
+      "when": ["Official robots.txt or sitemap exposes catalog URLs"],
+      "strengths": ["Low cost", "Deterministic", "Excellent frontier seeding"],
+      "validated_examples": ["Big C", "Tops"]
+    },
+    {
+      "pattern_id": "SM-P05",
+      "name": "Reported-Total Catalog Discovery",
+      "track": "discovery",
+      "priority": 85,
+      "when": ["Official catalog surface reports total products/pages", "Pagination can be mapped safely"],
+      "strengths": ["Coverage can be quantified", "Supports completeness auditing"],
+      "validated_examples": ["Makro", "Lotus's"]
+    },
+    {
+      "pattern_id": "SM-P06",
+      "name": "Network / GraphQL Catalog Discovery",
+      "track": "discovery",
+      "priority": 75,
+      "when": ["Public rendered commerce surface reveals an official first-party catalog endpoint", "Endpoint can be observed without authentication or challenge bypass"],
+      "strengths": ["Finds hidden catalog structure", "Useful for SPA commerce sites"],
+      "validated_examples": ["Gourmet Market"],
+      "constraints": ["Discovery evidence does not automatically make the endpoint the best extraction technique"]
+    },
+    {
+      "pattern_id": "SM-P07",
+      "name": "Official Campaign / Promotion Surface",
+      "track": "promotion",
+      "priority": 100,
+      "when": ["Official campaign, catalogue or promotion listing exists"],
+      "strengths": ["Best semantic source for promotion title, mechanic, validity and campaign provenance"],
+      "validated_examples": ["Lotus's", "Big C", "Makro", "Tops"]
+    },
+    {
+      "pattern_id": "SM-P08",
+      "name": "Split-Track Acquisition",
+      "track": "orchestration",
+      "priority": 100,
+      "when": ["No single technique is best for product_price, discovery and promotion"],
+      "strengths": ["Avoids forcing one crawler to do incompatible jobs", "Lets each track use its strongest evidence source"],
+      "validated_examples": ["Lotus's", "Big C", "Makro", "Tops", "Gourmet Market"]
+    },
+    {
+      "pattern_id": "SM-P09",
+      "name": "Approved Edge Execution",
+      "track": "execution_environment",
+      "priority": 70,
+      "when": ["Public official site works from a normal operating network but blocks cloud/datacenter runners", "No authentication, CAPTCHA or anti-bot bypass is required"],
+      "strengths": ["Reproduces legitimate end-user network conditions", "Separates live acquisition from deterministic cloud CI"],
+      "validated_examples": ["Gourmet Market"]
+    }
+  ],
+  "selection_waterfall": [
+    "Discover all credible official surfaces first.",
+    "For product_price prefer SM-P01, then SM-P02, then SM-P03 when quality gates pass.",
+    "For discovery prefer SM-P04 or SM-P05; use SM-P06 when modern frontend network structure provides better catalog coverage.",
+    "For promotion prefer SM-P07 and do not infer promotions from generic marketing text when an official campaign surface exists.",
+    "Use SM-P08 whenever track winners differ.",
+    "Use SM-P09 only after cloud access failure is evidenced and normal-network public access is verified.",
+    "Deep Audit each selected profile before approval; technique-profile changes invalidate prior approval."
+  ]
+}
