@@ -13,11 +13,20 @@ def load_playbooks() -> dict:
 
 
 def playbook(domain: str) -> dict:
-    key = (domain or "").strip().lower().replace("/", "_").replace(" ", "_")
+    key = (domain or "").strip().lower().replace("/", "_").replace("-", "_").replace(" ", "_")
     aliases = {
         "supermarket_grocery_retail": "supermarket",
         "retail_supermarket": "supermarket",
         "grocery": "supermarket",
+        "online_travel_agencies": "ota",
+        "online_travel_agency": "ota",
+        "travel_ota": "ota",
+        "cafe": "coffee",
+        "coffee_chain": "coffee",
+        "coffee_shop": "coffee",
+        "qdiving": "q_diving",
+        "scuba": "q_diving",
+        "scuba_diving": "q_diving",
     }
     key = aliases.get(key, key)
     return (load_playbooks().get("playbooks") or {}).get(key) or {}
@@ -45,8 +54,10 @@ def recommended_sequence(domain: str, clues: Iterable[str] | None = None) -> dic
     tracks = pb.get("required_business_tracks") or []
     return {
         "domain": domain,
+        "label": pb.get("label"),
         "required_tracks": tracks,
         "quality_gates": pb.get("quality_gates") or {},
+        "observation_context_required": pb.get("observation_context_required") or [],
         "tracks": {t: ranked_patterns(domain, clues=clues, track=t) for t in tracks},
         "environment_rules": pb.get("environment_rules") or [],
     }
