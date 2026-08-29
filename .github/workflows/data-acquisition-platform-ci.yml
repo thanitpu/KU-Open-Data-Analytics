@@ -47,6 +47,7 @@ jobs:
           python tools/SELF_TEST_PLATFORM_FOUNDATION.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
           python tools/SELF_TEST_SCHEDULER_POLICY.py
+          python tools/SELF_TEST_EXECUTION_ENVIRONMENT.py
           python tools/SELF_TEST_DOMAIN_PLAYBOOKS.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
           python tools/SELF_TEST_LIFECYCLE_ACCEPTANCE.py
@@ -96,6 +97,7 @@ jobs:
         run: python -m pip install -r requirements.txt
       - name: Live public-source smoke test
         env:
+          KU2D_EXECUTION_ENVIRONMENT: cloud-hosted
           KU2D_OPERATIONS_DB: /tmp/ku2d_live_ops.sqlite3
           KU2D_OBSERVATION_DB: /tmp/ku2d_live_obs.sqlite3
           PYTHONPATH: .
