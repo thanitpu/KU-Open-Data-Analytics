@@ -92,7 +92,8 @@ def _retail_specialized_playbook(domain: str) -> dict:
                     "source_id": source.get("source_id"),
                     "source_name": source.get("source_name"),
                     "status": source.get("status"),
-                    "validation_scope": source.get("validation_scope"),
+                    "workflow_scope": source.get("workflow_scope"),
+                    "approval_scope": source.get("approval_scope"),
                     "production_approved": bool(source.get("production_approved")),
                     "technique": track_validation.get("technique"),
                     "technique_label": track_validation.get("technique_label"),
@@ -128,7 +129,8 @@ def _retail_specialized_playbook(domain: str) -> dict:
             "source_id": source.get("source_id"),
             "source_name": source.get("source_name"),
             "status": source.get("status"),
-            "validation_scope": source.get("validation_scope"),
+            "workflow_scope": source.get("workflow_scope"),
+            "approval_scope": source.get("approval_scope"),
             "production_approved": bool(source.get("production_approved")),
         }
         for source in (domain_validation.get("live_validated_sources") or [])
@@ -197,12 +199,32 @@ def ranked_patterns(domain: str, clues: Iterable[str] | None = None, track: str 
         pattern_clues = {str(x).strip().lower() for x in (p.get("clues") or [])}
         matched = sorted(clueset & pattern_clues)
         evidence = p.get("evidence") or {}
-        validated = len(evidence.get("validated_sources") or [])
+        validated_names = {str(x) for x in (evidence.get("validated_sources") or []) if str(x)}
+        domain_validated_names = {
+            str(x.get("source_name"))
+            for x in (evidence.get("domain_validated_sources") or [])
+            if x.get("source_name")
+        }
+        # A domain source mirrored in validated_sources contributes only the
+        # domain-live bonus; promotion retains, rather than replaces, its prior.
+        general_validated_names = validated_names - domain_validated_names
         candidates = len(evidence.get("candidate_sources") or [])
         upstream = len(evidence.get("upstream_validated_sources") or [])
-        transfer_bonus = min(4, upstream) if not validated else 0
-        score = float(p.get("base_priority") or 0) + 4 * len(matched) + min(8, validated * 2) + min(2, candidates) + transfer_bonus
-        rows.append({**p, "matched_clues": matched, "learned_score": round(score, 2)})
+        components = {
+            "base_priority": float(p.get("base_priority") or 0),
+            "matched_clues": 4 * len(matched),
+            "upstream_transfer_prior": min(4, upstream),
+            "general_validated_sources": min(8, len(general_validated_names) * 2),
+            "domain_live_validation": min(8, len(domain_validated_names) * 4),
+            "candidate_sources": min(2, candidates),
+        }
+        score = sum(components.values())
+        rows.append({
+            **p,
+            "matched_clues": matched,
+            "learned_score_components": components,
+            "learned_score": round(score, 2),
+        })
     return sorted(rows, key=lambda x: (-x["learned_score"], str(x.get("pattern_id") or "")))
 
 

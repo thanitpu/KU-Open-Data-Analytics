@@ -45,7 +45,7 @@
       "priority": 90,
       "tracks": ["discovery"],
       "applicable_domains": ["supermarket", "beauty", "it_retail", "marketplace"],
-      "methods": ["robots/sitemap", "reported-total pagination", "first-party network/GraphQL discovery"]
+      "methods": ["robots/sitemap", "reported-total pagination", "first-party network/GraphQL discovery", "first-party JavaScript/app-bundle route discovery"]
     },
     {
       "pattern_id": "RC-P05",

@@ -28,7 +28,8 @@
   },
   "execution": {
     "environment": "cloud-hosted-public-read-only",
-    "validation_scope": "isolated-staging-db",
+    "workflow_scope": "isolated-staging",
+    "approval_scope": "isolated-staging-db",
     "safety_policy": "Official public surfaces only; no login, CAPTCHA solving, proxy rotation, challenge solving, or access-control bypass."
   },
   "result": {
