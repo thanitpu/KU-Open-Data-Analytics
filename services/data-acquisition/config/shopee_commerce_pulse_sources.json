@@ -1,0 +1,286 @@
+{
+  "schema": "ku2d.shopee-commerce-pulse-sources.v1",
+  "version": "1.0",
+  "platform": "shopee-thailand",
+  "domain_boundary": {
+    "domain": "Commerce Market Observation",
+    "separate_from": "Retail Product & Price Acquisition",
+    "public_official_surfaces_only": true,
+    "authentication_allowed": false,
+    "captcha_or_challenge_bypass_allowed": false,
+    "cookies_or_session_tokens_allowed": false,
+    "production_approved": false,
+    "production_storage_enabled": false,
+    "production_scheduling_enabled": false,
+    "national_transaction_truth_claimed": false
+  },
+  "bounded_access_audit": {
+    "observed_on": "2026-08-30",
+    "surfaces": [
+      {
+        "url": "https://shopee.co.th/",
+        "normal_local_http": "200 text/html application shell",
+        "usable_product_records_in_static_response": false
+      },
+      {
+        "url": "https://shopee.co.th/top.selected",
+        "normal_local_http": "200 text/html application shell",
+        "usable_product_records_in_static_response": false,
+        "search_index_rendered_surface_observed": true,
+        "search_index_observed_fields": [
+          "contextual TOP positions",
+          "product title",
+          "display price",
+          "rating",
+          "Thai sold-count display"
+        ]
+      }
+    ],
+    "static_shell_endpoint_finding": {
+      "path": "/api/v4/pages/is_short_url/",
+      "classification": "navigation-only",
+      "commerce_data_validated": false
+    },
+    "browser_context": "in-app browser redirected top.selected to /verify/traffic/error?type=4 and displayed Login Required; no login or bypass attempted",
+    "windows_edge_runner": "not-required-or-tested",
+    "github_hosted_runner": "not-tested",
+    "conclusion": "Public surfaces exist, but no acquisition technique is validated. Static HTTP returned an application shell and the bounded in-app browser check reached Shopee traffic verification requiring login. Do not select Edge or attempt circumvention."
+  },
+  "techniques": [
+    {
+      "technique_id": "shopee_public_collection_ranking",
+      "surface_name": "Public category, collection, campaign, and Top Selected surfaces",
+      "url_pattern": "https://shopee.co.th/collections/{collection_id} or https://shopee.co.th/top.selected",
+      "observed_fields": [
+        "product identity candidate",
+        "title",
+        "display price",
+        "rating",
+        "sold-count display",
+        "surface position",
+        "selected sort mode"
+      ],
+      "access_method": "public customer web surface; rendered observation may be required",
+      "access_class": "public-no-auth",
+      "browser_or_edge_requirement": "browser-candidate; Edge not yet required",
+      "stability": "campaign and collection identifiers may change",
+      "likely_anti_bot_behavior": "application shell is reachable by plain HTTP; rendered or network requests may receive challenges and must fail closed",
+      "legal_robots_terms_caution": "Review current Shopee terms and robots policy before recurring collection; use bounded read-only public access only.",
+      "sold_count_semantics": "display counter may be exact, rounded, or lower-bound; never a transaction ledger",
+      "ranking_semantics": "rank is contextual to the exact collection/campaign, sort, time, and user-visible surface",
+      "pagination_semantics": "unknown until controlled network/browser validation",
+      "reusability": "Shopee-specific surface; observation/ranking contract is reusable",
+      "validation_status": "surface-observed-technique-not-validated"
+    },
+    {
+      "technique_id": "shopee_public_keyword_search",
+      "surface_name": "Public keyword search",
+      "url_pattern": "https://shopee.co.th/search?keyword={url_encoded_query}",
+      "observed_fields": [
+        "product identity candidate",
+        "title",
+        "price",
+        "rating",
+        "sold-count display",
+        "query result position"
+      ],
+      "access_method": "public customer web search",
+      "access_class": "public-no-auth",
+      "browser_or_edge_requirement": "not established",
+      "stability": "query semantics and personalization may change",
+      "likely_anti_bot_behavior": "search is a higher-risk challenged surface; stop on challenge",
+      "legal_robots_terms_caution": "Do not crawl broadly or infer national truth from search ordering.",
+      "sold_count_semantics": "public display only; uncertainty must be preserved",
+      "ranking_semantics": "query and sort-context rank, potentially personalized; not national bestseller rank",
+      "pagination_semantics": "unknown until controlled validation; pilot is capped at 20 items",
+      "reusability": "marketplace-search pattern reusable; request details Shopee-specific",
+      "validation_status": "candidate"
+    },
+    {
+      "technique_id": "shopee_public_bestseller_sort",
+      "surface_name": "Bestseller, popular, or top-selling sort on a public surface",
+      "url_pattern": "platform UI sort on an observed search/category/collection URL",
+      "observed_fields": [
+        "selected sort label",
+        "ordered product identities",
+        "sold-count displays",
+        "observed ranks"
+      ],
+      "access_method": "public rendered UI or its directly observed public structured response",
+      "access_class": "public-no-auth-when-visible",
+      "browser_or_edge_requirement": "browser-candidate; do not assume Edge",
+      "stability": "sort keys and labels may change",
+      "likely_anti_bot_behavior": "unknown; stop on access challenge",
+      "legal_robots_terms_caution": "Preserve exact sort and surface provenance; no ranking claim outside that context.",
+      "sold_count_semantics": "independent public display signal",
+      "ranking_semantics": "strong marketplace rank only for the exact selected sort and surface",
+      "pagination_semantics": "first page only in initial pilot",
+      "reusability": "ranking-observation pattern reusable",
+      "validation_status": "candidate"
+    },
+    {
+      "technique_id": "shopee_public_product_detail",
+      "surface_name": "Public product detail",
+      "url_pattern": "official Shopee Thailand canonical product URL observed from a public listing",
+      "observed_fields": [
+        "platform product ID",
+        "shop ID",
+        "seller ID candidate",
+        "title",
+        "brand/category candidate",
+        "current/original price",
+        "rating/review count",
+        "sold-count display"
+      ],
+      "access_method": "follow only official product URLs discovered on the bounded source surface",
+      "access_class": "public-no-auth-when-visible",
+      "browser_or_edge_requirement": "not established",
+      "stability": "canonical route and hydration may change",
+      "likely_anti_bot_behavior": "detail surfaces may challenge automation; no retries around a challenge",
+      "legal_robots_terms_caution": "No account, cookie, session token, or checkout behavior.",
+      "sold_count_semantics": "detail-page display, not transaction ledger",
+      "ranking_semantics": "none unless linked to a separately preserved ranking observation",
+      "pagination_semantics": "not applicable",
+      "reusability": "detail-observation model reusable; extraction Shopee-specific",
+      "validation_status": "candidate"
+    },
+    {
+      "technique_id": "shopee_public_shop_popular",
+      "surface_name": "Public shop bestseller or popular-products surface",
+      "url_pattern": "official public shop URL and a user-visible popular/top-selling sort",
+      "observed_fields": [
+        "shop identity",
+        "ordered product identities",
+        "shop-context ranks",
+        "sold-count displays"
+      ],
+      "access_method": "public customer shop surface",
+      "access_class": "public-no-auth-when-visible",
+      "browser_or_edge_requirement": "not established",
+      "stability": "shop layouts and sort availability vary",
+      "likely_anti_bot_behavior": "unknown; stop on challenge",
+      "legal_robots_terms_caution": "Shop rank must never be represented as marketplace or national rank.",
+      "sold_count_semantics": "public display only",
+      "ranking_semantics": "shop-local and sort-local",
+      "pagination_semantics": "first page only in initial pilot",
+      "reusability": "marketplace shop pattern reusable",
+      "validation_status": "candidate"
+    },
+    {
+      "technique_id": "shopee_public_structured_network",
+      "surface_name": "Structured response directly used by an observed public web surface",
+      "url_pattern": "discover from bounded browser network evidence; do not pre-assume private endpoints",
+      "observed_fields": [
+        "stable product/shop identity",
+        "price fields with validated scaling",
+        "rating/review count",
+        "sold counter and display semantics",
+        "rank/order context",
+        "pagination cursor"
+      ],
+      "access_method": "read-only public response observed from the exact customer surface",
+      "access_class": "public-no-auth-only; seller credentials prohibited",
+      "browser_or_edge_requirement": "browser network discovery candidate; Edge only if separately justified",
+      "stability": "undocumented responses are unstable and require revalidation",
+      "likely_anti_bot_behavior": "may be protected; do not replay when auth, signatures, cookies, or challenges are required",
+      "legal_robots_terms_caution": "Prefer documented public interfaces. Preserve request provenance and review current terms before recurring use.",
+      "sold_count_semantics": "field meaning must be validated against the rendered public display; unknown until then",
+      "ranking_semantics": "array order is not a rank unless the surface and sort contract establish it",
+      "pagination_semantics": "must be discovered and capped; no wide crawl",
+      "reusability": "structured-response pattern reusable; endpoint details source-specific",
+      "validation_status": "not-discovered-in-bounded-commerce-audit"
+    }
+  ],
+  "pilot_seed_registry": {
+    "categories": [
+      {
+        "category_id": "beauty",
+        "label": "Beauty",
+        "thai_queries": [
+          "สกินแคร์",
+          "เครื่องสำอาง"
+        ]
+      },
+      {
+        "category_id": "mobile-accessories",
+        "label": "Mobile accessories",
+        "thai_queries": [
+          "อุปกรณ์เสริมมือถือ",
+          "สายชาร์จ"
+        ]
+      },
+      {
+        "category_id": "household",
+        "label": "Household",
+        "thai_queries": [
+          "ของใช้ในบ้าน",
+          "อุปกรณ์ทำความสะอาด"
+        ]
+      },
+      {
+        "category_id": "fashion",
+        "label": "Fashion",
+        "thai_queries": [
+          "เสื้อผ้าแฟชั่น",
+          "กระเป๋าแฟชั่น"
+        ]
+      },
+      {
+        "category_id": "food-snacks",
+        "label": "Food and snacks",
+        "thai_queries": [
+          "ขนม",
+          "ของกินเล่น"
+        ]
+      },
+      {
+        "category_id": "pet-supplies",
+        "label": "Pet supplies",
+        "thai_queries": [
+          "อาหารสัตว์เลี้ยง",
+          "ของใช้สัตว์เลี้ยง"
+        ]
+      }
+    ],
+    "first_pilot": {
+      "category_ids": [
+        "mobile-accessories"
+      ],
+      "max_surfaces": 1,
+      "max_items_total": 10,
+      "first_page_only": true,
+      "live_run_requires_human_review": true
+    }
+  },
+  "pilot_limits": {
+    "max_surfaces": 2,
+    "max_items": 20,
+    "max_pages_per_surface": 1
+  },
+  "scoring_contract": {
+    "version": "commerce-pulse-provisional-v1",
+    "authoritative": false,
+    "human_review_required": true,
+    "inputs": [
+      "normalized_sales_velocity",
+      "rank_strength",
+      "rank_improvement",
+      "review_growth",
+      "repeated_surface_presence"
+    ],
+    "provisional_weights": {
+      "normalized_sales_velocity": 0.3,
+      "rank_strength": 0.25,
+      "rank_improvement": 0.15,
+      "review_growth": 0.1,
+      "repeated_surface_presence": 0.2
+    },
+    "raw_cumulative_and_velocity_preserved_separately": true
+  },
+  "preferred_labels": [
+    "Highest Observable Sold Count",
+    "Fastest Rising",
+    "Strongest Marketplace Rank",
+    "Cross-observation Trending"
+  ]
+}

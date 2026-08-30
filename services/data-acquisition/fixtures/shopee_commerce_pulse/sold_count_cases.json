@@ -1,0 +1,16 @@
+{
+  "schema": "ku2d.shopee-commerce-pulse-sold-count-fixture.v1",
+  "cases": [
+    {"display": "123 sold", "count": 123, "precision": "exact"},
+    {"display": "1.2k sold", "count": 1200, "precision": "rounded"},
+    {"display": "1.2 thousand sold", "count": 1200, "precision": "rounded"},
+    {"display": "10k+", "count": 10000, "precision": "lower_bound"},
+    {"display": "300k+", "count": 300000, "precision": "lower_bound"},
+    {"display": "ขายแล้ว 123 ชิ้น", "count": 123, "precision": "exact"},
+    {"display": "ขายแล้ว 1.2พัน", "count": 1200, "precision": "rounded"},
+    {"display": "ขายแล้ว 3หมื่น", "count": 30000, "precision": "rounded"},
+    {"display": "ขายแล้ว 2แสน", "count": 200000, "precision": "rounded"},
+    {"display": "ขายแล้ว 300พัน+", "count": 300000, "precision": "lower_bound"},
+    {"display": "not available", "count": null, "precision": "unknown"}
+  ]
+}

@@ -6,6 +6,8 @@ Canonical lifecycle: **Discover → Explore → Deep Audit → Human Approve →
 
 Explore/Audit observations are preserved as evidence; approved scheduled acquisition produces trusted observations. Secrets and runtime SQLite files are never committed.
 
+Shopee Commerce Pulse is a separate, non-production marketplace-observation domain. Its public-signal semantics, isolated explorer, and controlled pilot boundary are documented in [docs/SHOPEE_COMMERCE_PULSE.md](docs/SHOPEE_COMMERCE_PULSE.md).
+
 ## Live validation status semantics
 
 Live workflow execution, lifecycle technical completion, source approval, isolated staging approval, and production Human Approve are different states:
