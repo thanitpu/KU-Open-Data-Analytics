@@ -40,6 +40,14 @@ The registration token is used only by `config.cmd`; it is never written into th
 
 After the runner shows **Idle** in GitHub, use the `KU2D Edge Live Acquisition Validation` workflow. The initial target is Gourmet Market. The workflow uses an isolated operations DB and observation DB and will only set staging approval if the actual Deep Audit passes.
 
+### Shopee access diagnostic bridge
+
+The manual `KU2D Shopee Edge Access Diagnostic` workflow uses `runs-on: [self-hosted, Windows, X64, ku2d-acquisition, thailand]`. Every label is evidenced by the existing runner registration: GitHub applies the default `self-hosted`, `Windows`, and `X64` labels to the Windows x64 runner installed by `SETUP_KU2D_EDGE_RUNNER_WINDOWS.ps1`, while that script configures the existing `ku2d-acquisition` and `thailand` custom labels. The default labels enforce the required operating system and architecture; the custom labels select the intended KU2D acquisition host and normal Thailand network. No new label is assumed.
+
+The Shopee workflow has only a `workflow_dispatch` trigger. It checks out the reviewed integration branch without persisting GitHub credentials, validates Python 3.12, Edge, dependencies, and the external runtime directory, then starts exactly one bounded diagnostic browser session. Exit 2 means evidence was correctly withheld and does not make the workflow technically red; it never means acquisition approval. Only the sanitized JSON result is retained for seven days. No browser profile, cache, NetLog, screenshot, raw response, credential, or production state is uploaded.
+
+After workflow review and integration, an authorized reviewer may open **Actions → KU2D Shopee Edge Access Diagnostic → Run workflow**, select `integration/data-acquisition-platform`, retain query `สายชาร์จ` and `max_items` `10`, and dispatch once. Do not retry traffic verification or Login Required outcomes.
+
 ## Production scheduling
 
 Do not use a user-interactive workstation as a long-term production scheduler if it is frequently powered off. After the technique profile and network requirements are understood, move the Edge Runner to an always-on, managed host on an appropriate network. Scheduled Acquire should remain governed by the approved profile fingerprint and drift checks.
