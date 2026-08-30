@@ -260,7 +260,7 @@ def run_lifecycle():
     sources = {x["source_id"]: x for x in normalized_sources()}
     source = sources.get(SOURCE_ID)
     if not source:
-        raise SystemExit(f"{SOURCE_ID} not found in monitoring registry")
+        raise RuntimeError(f"{SOURCE_ID} not found in monitoring registry")
     source = {**source, **(source.get("raw") or {})}
     domain = source.get("domain") or source.get("sector") or "IT Retail"
     playbook = recommended_sequence(domain, clues=[])

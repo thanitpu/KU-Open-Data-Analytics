@@ -159,6 +159,7 @@ with TemporaryDirectory() as td:
     old_env = {key: os.environ.get(key) for key in env_keys}
     original_run = lifecycle.run_lifecycle
     original_write = lifecycle.write_evidence
+    original_normalized_sources = lifecycle.normalized_sources
     try:
         os.environ["KU2D_APPROVAL_SCOPE"] = "isolated-staging"
         os.environ["KU2D_OPERATIONS_DB"] = str(temp / "isolated-ops.sqlite3")
@@ -202,6 +203,18 @@ with TemporaryDirectory() as td:
         assert technical_summary["technical_completion"] is False
         assert technical_summary["approved"] is False
 
+        lifecycle.run_lifecycle = original_run
+        lifecycle.normalized_sources = lambda: []
+        assert lifecycle.main(["--require-approved"]) == lifecycle.EXIT_TECHNICAL_FAILURE
+        missing_detail = json.loads(Path(os.environ["KU2D_JIB_RESULT"]).read_text(encoding="utf-8"))
+        missing_summary = json.loads(Path(os.environ["KU2D_JIB_SUMMARY"]).read_text(encoding="utf-8"))
+        assert missing_detail["technical_failure"]["type"] == "RuntimeError"
+        assert "SRC-018" in missing_detail["technical_failure"]["message"]
+        assert "not found" in missing_detail["technical_failure"]["message"]
+        assert missing_summary["technical_completion"] is False
+        assert missing_summary["approved"] is False
+        assert missing_summary["scheduler_action"] is None
+
         lifecycle.run_lifecycle = lambda: fixture(True)
 
         def fail_evidence_write(*args, **kwargs):
@@ -213,6 +226,7 @@ with TemporaryDirectory() as td:
     finally:
         lifecycle.run_lifecycle = original_run
         lifecycle.write_evidence = original_write
+        lifecycle.normalized_sources = original_normalized_sources
         for key, value in old_env.items():
             if value is None:
                 os.environ.pop(key, None)
