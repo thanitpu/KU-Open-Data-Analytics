@@ -1,0 +1,120 @@
+{
+  "surfaces": [
+    {
+      "context": {
+        "surface_type": "keyword-search",
+        "query_or_category": "สายชาร์จ",
+        "sort_mode": "default-relevance",
+        "sort_semantics_explicit": false
+      },
+      "capture": {
+        "observed_at": "2026-08-31T02:00:00+00:00",
+        "initial_url": "https://www.lazada.co.th/catalog/?q=fixture",
+        "final_url": "https://www.lazada.co.th/tag/fixture/?q=fixture",
+        "title": "Fixture search",
+        "visible_product_card_count": 1,
+        "visible_page_text": "ลงชื่อเข้าใช้ Fixture search",
+        "visible_cards": [
+          {
+            "product_url": "https://www.lazada.co.th/products/fixture-cable-i100001-s200001.html",
+            "explicit_product_id": "100001",
+            "visible_title": "Fixture Cable 100W",
+            "current_price_text": "฿159.00",
+            "visible_text": "Fixture Cable 100W ฿159.00 5.5K ชิ้น (714)",
+            "counter_text": "5.5K ชิ้น",
+            "unlabeled_parenthetical_count_text": "(714)"
+          }
+        ],
+        "network_requests": []
+      }
+    },
+    {
+      "context": {
+        "surface_type": "product-detail",
+        "query_or_category": "item-100001",
+        "sort_mode": "not-applicable",
+        "sort_semantics_explicit": false
+      },
+      "capture": {
+        "observed_at": "2026-08-31T02:00:00+00:00",
+        "initial_url": "https://www.lazada.co.th/products/fixture-cable-i100001-s200001.html",
+        "final_url": "https://www.lazada.co.th/products/fixture-cable-i100001-s200001.html",
+        "title": "Fixture Cable 100W",
+        "visible_product_card_count": 1,
+        "visible_page_text": "Fixture detail",
+        "visible_cards": [
+          {
+            "product_url": "https://www.lazada.co.th/products/fixture-cable-i100001-s200001.html",
+            "explicit_product_id": "100001",
+            "visible_title": "Fixture Cable 100W",
+            "current_price_text": "฿159.00",
+            "original_price_text": "฿229.00",
+            "variation_price_text": "฿159.00 - ฿199.00",
+            "rating_score_text": "rating 4.8",
+            "review_count_text": "รีวิว 412",
+            "counter_text": "5.5K ชิ้น",
+            "visible_text": "Fixture Cable 100W ฿159.00 ฿229.00 rating 4.8 รีวิว 412 5.5K ชิ้น",
+            "shop_id": "shop-a",
+            "seller_id": "seller-a"
+          }
+        ],
+        "network_requests": []
+      }
+    },
+    {
+      "context": {
+        "surface_type": "category",
+        "query_or_category": "mobile-accessories",
+        "sort_mode": "bestseller",
+        "sort_semantics_explicit": true
+      },
+      "capture": {
+        "observed_at": "2026-08-31T02:00:00+00:00",
+        "initial_url": "https://www.lazada.co.th/shop-mobile-accessories/?sort=bestseller",
+        "final_url": "https://www.lazada.co.th/shop-mobile-accessories/?sort=bestseller",
+        "title": "Fixture bestseller category",
+        "visible_product_card_count": 1,
+        "visible_page_text": "สินค้าขายดี",
+        "visible_cards": [
+          {
+            "product_url": "https://www.lazada.co.th/products/fixture-cable-i100001-s200001.html",
+            "explicit_product_id": "100001",
+            "visible_title": "Fixture Cable 100W",
+            "current_price_text": "฿159.00",
+            "counter_text": "ขายแล้ว 88 ชิ้น",
+            "visible_text": "Fixture Cable 100W ฿159.00 ขายแล้ว 88 ชิ้น"
+          }
+        ],
+        "network_requests": []
+      }
+    },
+    {
+      "context": {
+        "surface_type": "shop",
+        "query_or_category": "shop-a",
+        "sort_mode": "default",
+        "sort_semantics_explicit": false
+      },
+      "capture": {
+        "observed_at": "2026-08-31T02:00:00+00:00",
+        "initial_url": "https://www.lazada.co.th/shop/shop-a/",
+        "final_url": "https://www.lazada.co.th/shop/shop-a/",
+        "title": "Fixture Shop",
+        "visible_product_card_count": 1,
+        "visible_page_text": "Fixture Shop",
+        "visible_cards": [
+          {
+            "product_url": "https://www.lazada.co.th/products/fixture-cable-i100001-s200001.html",
+            "explicit_product_id": "100001",
+            "visible_title": "Fixture Cable 100W",
+            "current_price_text": "฿159.00",
+            "counter_text": "120 orders",
+            "visible_text": "Fixture Cable 100W ฿159.00 120 orders",
+            "shop_id": "shop-a"
+          }
+        ],
+        "network_requests": []
+      }
+    }
+  ]
+}

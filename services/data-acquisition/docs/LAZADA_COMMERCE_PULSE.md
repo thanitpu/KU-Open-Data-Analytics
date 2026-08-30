@@ -142,3 +142,42 @@ The rendered surface contained 40 visible product cards. The bounded evidence re
 The visible counters used bare Thai `ชิ้น` displays such as `5.5K ชิ้น`. Without a `sold` or `orders` label, their meaning and precision remain `unknown`; they are not parsed as sold, orders, or fulfilled transactions. Parenthetical counts were also visible but unlabeled in the bounded capture and therefore were not asserted as rating or review counts.
 
 The reviewed in-app browser capture did not expose structured response bodies or trustworthy network response metadata. Zero structured endpoints were validated; endpoint discovery remains a separate question. Windows Edge was not attempted and is not required for the now-validated rendered-DOM evidence path. The outcome establishes a viable unauthenticated diagnostic technique, not production acquisition or Human Approve.
+
+## Rendered-DOM Deep Audit
+
+The bounded Deep Audit confirms that rendered public Lazada Thailand surfaces can support a reusable, non-production product-identity and price observation technique. It audited one keyword-search observation, one directly linked product detail, one category, and one directly linked public shop. Each surface retained no more than 10 records, used only its first visible page, and required no login, challenge handling, browser-state reuse, or Windows Edge execution.
+
+The new keyword-search navigation did not complete in the browser-control window, so it was neither reloaded nor retried. Search/detail correlation therefore uses the previously integrated and reviewed search observation for item `5525400662`, while the detail, category, and shop observations are from the current Deep Audit. This provenance distinction is explicit in the audit result and prevents the older search observation from being presented as a same-load capture.
+
+### Repeatability and stable identity
+
+All 8 retained records across the four bounded surface samples exposed canonical public Lazada product URLs and stable item IDs. Every sampled identity normalized successfully. Search and detail retained the same item ID and title. The category and shop samples also retained exact source URL, timestamp, query/category/shop context, and observed display position. The generic `observation_scope` contract keeps the same item and timestamp on different source surfaces as distinct observations; only a true replay of the same scoped observation deduplicates.
+
+This establishes an approved-candidate pattern for Product Identity & Price observation, not production approval. Layout stability over time and larger-sample yield remain unproven.
+
+### Price semantics and product-detail correlation
+
+Explicit baht displays normalize without hidden scaling. Current, original/strikethrough, and variation-range fields remain separate, retain their raw display text, and expose range minimum/maximum only when a genuine explicit range is present.
+
+The correlated item displayed `฿25.00` on the earlier search card and `฿49.00` current plus `฿99.00` original on the current detail page. The item ID and title are consistent, but the prices are not equal and no explicit detail variation range explains the difference. The audit therefore records price consistency as false and does not assert SKU or variant equivalence.
+
+### Counter and rating/review semantics
+
+Bare displays such as `5.5K ชิ้น`, `1.9K ชิ้น`, and `823 ชิ้น` remain `counter_type = unknown`. A safe numeric parse and its exact/rounded precision are retained, but `observed_sold_count` remains null and semantic confidence is `unlabeled-display`. These values cannot enter sales velocity. Only an explicit `sold`/`ขายแล้ว` or `orders` label may produce the corresponding typed counter, and an order display still does not become a sold count or transaction ledger.
+
+Unlabeled parenthetical values such as `(714)` remain `unknown-not-review`. A numeric score, rating count, or review count is accepted only when it has an explicit label or a separately validated structural meaning. The live sample therefore produced no defensible rating/review count even though parenthetical numbers were visible.
+
+### Display order and longitudinal readiness
+
+The current search and category surfaces used default relevance, and the shop used its default order. Their DOM positions remain `observed_display_position`; none becomes a `MarketplaceRankingObservation`. A fully contextual ranking may be emitted only for an exact public surface whose selected sort explicitly means bestseller, top sales, or an equivalent validated concept. It is never a national ranking claim.
+
+Longitudinal status is `Partial`. Stable identity, explicit price, comparable public source surfaces, timestamped provenance, and challenge-free access support repeated product/price and display-order observation. `ready_for_longitudinal_observation` is false and `sales_velocity_ready` is false because no stable, explicitly labeled sold/order counter was established.
+
+The independent Deep Audit decisions are:
+
+- Product Identity & Price: **Approved candidate**.
+- Ranking/Display Order: **Needs review** (generic position is usable; rank semantics are not established).
+- Sold/Order Counter: **Needs review**.
+- Longitudinal Observation: **Partial**.
+
+`production_approved` and production storage remain false, and `scheduler_action` remains null. Remaining uncertainties include DOM/layout drift, current-search repeatability after the incomplete navigation, larger-sample identity/price yield, explicit rating/review structure, stable shop/seller hints outside shop/detail surfaces, counter meaning, and a defensible explicit ranking surface.

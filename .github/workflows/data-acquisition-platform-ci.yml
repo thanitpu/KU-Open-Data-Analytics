@@ -68,6 +68,7 @@ jobs:
           python tools/SELF_TEST_SHOPEE_EDGE_WORKFLOW.py
           python tools/SELF_TEST_LAZADA_COMMERCE_PULSE.py
           python tools/SELF_TEST_LAZADA_BROWSER_ACCESS_DIAGNOSTIC.py
+          python tools/SELF_TEST_LAZADA_RENDERED_DOM_DEEP_AUDIT.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
           python tools/SELF_TEST_LIFECYCLE_ACCEPTANCE.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"

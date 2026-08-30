@@ -74,6 +74,42 @@
     "scheduler_action": null,
     "conclusion": "A normal unauthenticated browser produced viable rendered-DOM Commerce Pulse evidence with stable identity, titles, explicit prices, query context, and display order. Counter meaning remains unresolved and no structured response was validated. This is diagnostic evidence, not production approval."
   },
+  "rendered_dom_deep_audit": {
+    "observed_on": "2026-08-31",
+    "mode": "bounded-rendered-dom-deep-audit",
+    "surfaces": ["keyword-search", "product-detail", "category", "shop"],
+    "retained_product_count": 8,
+    "max_retained_products_per_surface": 10,
+    "stable_identity_sample_count": 8,
+    "explicit_current_price_sample_count": 8,
+    "current_search_capture_status": "incomplete-no-retry; correlation uses prior integrated reviewed browser-pilot observation",
+    "search_detail_correlation": {
+      "platform_product_id": "5525400662",
+      "same_item_identity": true,
+      "title_consistent": true,
+      "search_price": 25.0,
+      "detail_price": 49.0,
+      "price_consistent_or_within_detail_range": false,
+      "variant_equivalence_asserted": false
+    },
+    "bare_item_counter_semantics": "unknown; raw display, safe numeric parse, precision and confidence retained; not eligible for sales velocity",
+    "unlabeled_parenthetical_semantics": "unknown-not-review",
+    "display_order_semantics": "observed display position only; no ranking observation from default relevance/default order",
+    "ready_for_longitudinal_observation": false,
+    "longitudinal_status": "Partial",
+    "sales_velocity_ready": false,
+    "pattern_decisions": {
+      "product_identity_price": "Approved candidate",
+      "ranking_display_order": "Needs review",
+      "sold_order_counter": "Needs review",
+      "longitudinal_observation": "Partial"
+    },
+    "authentication_or_challenge_required": false,
+    "windows_edge_attempted": false,
+    "production_approved": false,
+    "production_store": false,
+    "scheduler_action": null
+  },
   "techniques": [
     {
       "technique_id": "lazada_public_homepage_or_category",
