@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import sqlite3
 import sys
+from contextlib import closing
 from dataclasses import asdict
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -39,11 +41,13 @@ for case in cases:
 assert parse_sold_count("1.25")["precision"] == "unknown"
 
 
-def counter(product_id: str, count: int | None, at: str, precision="exact", raw=None):
+def counter(product_id: str, count: int | None, at: str, precision="exact", raw=None,
+            source_surface="fixture-counter", provenance=None):
     return SalesCounterObservation(
         platform="shopee-thailand", product_id=product_id, observed_sold_count=count,
         raw_display=raw or ("unknown" if count is None else str(count)), observed_at=at,
-        precision=precision, provenance={"surface": "fixture"},
+        precision=precision, source_surface=source_surface,
+        provenance=provenance or {"surface": "fixture"},
     )
 
 
@@ -82,6 +86,7 @@ ranking = MarketplaceRankingObservation(
     provenance={"fixture": True},
 )
 assert ranking.observed_rank == 1 and ranking.sort_mode == "bestseller"
+assert '"scope_type":"ranking"' in ranking.observation_scope
 try:
     MarketplaceRankingObservation(
         platform="shopee-thailand", surface_type="keyword-search", source_surface="",
@@ -92,7 +97,8 @@ try:
 except ValueError:
     pass
 
-# J/K/N: append-only store links only stable identities and never enables production.
+# J/K/N plus review regressions: append-only storage deduplicates true replays,
+# but retains simultaneous observations from distinct marketplace contexts.
 with TemporaryDirectory() as folder:
     db = Path(folder) / "commerce.sqlite3"
     store = CommerceObservationStore(db, environ={"KU2D_OPERATIONS_DB": str(Path(folder) / "operations.sqlite3")})
@@ -100,19 +106,75 @@ with TemporaryDirectory() as folder:
     first = store.append("sales_counter", prior)
     second = store.append("sales_counter", current)
     other = store.append("sales_counter", counter("ITEM-2", 50, "2026-08-29T12:00:00+00:00"))
+    other_surface = store.append("sales_counter", counter(
+        "ITEM-2", 50, "2026-08-29T12:00:00+00:00", source_surface="fixture-category",
+        provenance={"surface_type": "category", "category_or_query": "mobile-accessories",
+                    "sort_mode": "bestseller"},
+    ))
     duplicate = store.append("sales_counter", current)
-    assert first["inserted"] and second["inserted"] and other["inserted"]
+    category_ranking = MarketplaceRankingObservation(
+        platform="shopee-thailand", surface_type="category",
+        source_surface="https://shopee.co.th/category/mobile-accessories",
+        category_or_query="mobile-accessories", sort_mode="bestseller", product_id="ITEM-1",
+        observed_rank=2, observed_at=ranking.observed_at, provenance={"fixture": True},
+    )
+    keyword_rank = store.append("marketplace_ranking", ranking)
+    category_rank = store.append("marketplace_ranking", category_ranking)
+    keyword_replay = store.append("marketplace_ranking", ranking)
+    assert first["inserted"] and second["inserted"] and other["inserted"] and other_surface["inserted"]
     assert duplicate["inserted"] is False
+    assert keyword_rank["inserted"] and category_rank["inserted"]
+    assert keyword_replay["inserted"] is False
+    assert keyword_rank["observation_scope"] != category_rank["observation_scope"]
     rows = store.observations()
-    assert len(rows) == 3
-    assert len([row for row in rows if row["product_id"] == "ITEM-1"]) == 2
-    assert len([row for row in rows if row["product_id"] == "ITEM-2"]) == 1
+    assert len(rows) == 6
+    rank_rows = [row for row in rows if row["record_type"] == "marketplace_ranking"]
+    assert len(rank_rows) == 2
+    assert {row["payload"]["surface_type"] for row in rank_rows} == {"keyword-search", "category"}
+    assert {row["payload"]["source_surface"] for row in rank_rows} == {
+        "https://shopee.co.th/search?keyword=fixture",
+        "https://shopee.co.th/category/mobile-accessories",
+    }
+    assert all(row["observation_scope"] == row["payload"]["observation_scope"] for row in rows)
+    counter_rows = [row for row in rows if row["product_id"] == "ITEM-2"]
+    assert len(counter_rows) == 2 and len({row["observation_scope"] for row in counter_rows}) == 2
     assert all(row["production_approved"] == 0 for row in rows)
     try:
         CommerceObservationStore(db, environ={"KU2D_OPERATIONS_DB": str(db)})
         raise AssertionError("operations DB reused as commerce store")
     except ValueError:
         pass
+
+# Existing v1 experimental rows migrate append-only into scoped identity; the
+# prior table remains as a preserved legacy snapshot.
+with TemporaryDirectory() as folder:
+    legacy_db = Path(folder) / "legacy-commerce.sqlite3"
+    legacy_payload = asdict(ranking)
+    legacy_payload.pop("observation_scope")
+    with closing(sqlite3.connect(legacy_db)) as connection, connection:
+        connection.execute(
+            """CREATE TABLE commerce_observation (
+                   observation_id TEXT PRIMARY KEY, record_type TEXT NOT NULL,
+                   platform TEXT NOT NULL, product_id TEXT NOT NULL, observed_at TEXT NOT NULL,
+                   payload_json TEXT NOT NULL, production_approved INTEGER NOT NULL,
+                   UNIQUE(record_type, platform, product_id, observed_at))"""
+        )
+        connection.execute(
+            "INSERT INTO commerce_observation VALUES(?,?,?,?,?,?,0)",
+            ("legacy-id", "marketplace_ranking", ranking.platform, ranking.product_id,
+             ranking.observed_at, json.dumps(legacy_payload, ensure_ascii=False)),
+        )
+    migrated = CommerceObservationStore(legacy_db, environ={})
+    migrated_rows = migrated.observations()
+    assert len(migrated_rows) == 1
+    assert migrated_rows[0]["observation_scope"] == ranking.observation_scope
+    assert migrated_rows[0]["payload"]["observation_scope"] == ranking.observation_scope
+    assert migrated.append("marketplace_ranking", ranking)["inserted"] is False
+    with closing(migrated.connect()) as connection:
+        table_names = {row["name"] for row in connection.execute(
+            "SELECT name FROM sqlite_master WHERE type='table'"
+        ).fetchall()}
+    assert "commerce_observation_legacy_v1" in table_names
 
 # L: generic marketplace observations cannot generate a national-best-seller claim.
 labels = [observable_signal_label(key) for key in ("cumulative", "velocity", "ranking", "trend")]
@@ -134,12 +196,51 @@ product = CommerceProductObservation(
 assert product.production_approved is False
 trend = build_trending_candidate(
     platform="shopee-thailand", product_id="ITEM-1", observed_at=product.observed_at,
-    cumulative_signal=1200, velocity_signal=0.8, rank_strength=0.7,
+    cumulative_signal=1200, raw_estimated_units_per_hour=10.33,
+    normalized_sales_velocity=0.8, rank_strength=0.7,
     rank_improvement=0.5, review_growth=0.2, repeated_surface_presence=0.9,
 )
 assert trend.production_approved is False and trend.weights_authoritative is False
-assert trend.raw_signals == {"cumulative_sold_count": 1200, "estimated_units_per_hour": 0.8}
+assert trend.raw_velocity_signal == 10.33 and trend.normalized_velocity_signal == 0.8
+assert trend.raw_signals == {"cumulative_sold_count": 1200, "estimated_units_per_hour": 10.33}
+assert trend.component_values["normalized_sales_velocity"] == 0.8
 assert trend.scoring_version == "commerce-pulse-provisional-v1"
+serialized_trend = asdict(trend)
+assert serialized_trend["raw_velocity_signal"] == 10.33
+assert serialized_trend["normalized_velocity_signal"] == 0.8
+assert serialized_trend["raw_signals"]["estimated_units_per_hour"] == 10.33
+assert serialized_trend["component_values"]["normalized_sales_velocity"] == 0.8
+
+# Raw velocity is optional and unbounded above one; normalized velocity is
+# explicit, finite, and range-checked. No normalization formula is inferred.
+no_raw = build_trending_candidate(
+    platform="shopee-thailand", product_id="ITEM-2", observed_at=product.observed_at,
+    cumulative_signal=300, raw_estimated_units_per_hour=None,
+    normalized_sales_velocity=0.4,
+)
+assert no_raw.raw_velocity_signal is None
+assert no_raw.raw_signals["estimated_units_per_hour"] is None
+assert no_raw.component_values["normalized_sales_velocity"] == 0.4
+for invalid_normalized in (-0.01, 1.01, float("nan"), float("inf"), float("-inf")):
+    try:
+        build_trending_candidate(
+            platform="shopee-thailand", product_id="ITEM-1", observed_at=product.observed_at,
+            cumulative_signal=1200, raw_estimated_units_per_hour=10.33,
+            normalized_sales_velocity=invalid_normalized,
+        )
+        raise AssertionError(f"invalid normalized velocity accepted: {invalid_normalized}")
+    except ValueError:
+        pass
+for invalid_raw in (-0.01, float("nan"), float("inf"), float("-inf")):
+    try:
+        build_trending_candidate(
+            platform="shopee-thailand", product_id="ITEM-1", observed_at=product.observed_at,
+            cumulative_signal=1200, raw_estimated_units_per_hour=invalid_raw,
+            normalized_sales_velocity=0.8,
+        )
+        raise AssertionError(f"invalid raw velocity accepted: {invalid_raw}")
+    except ValueError:
+        pass
 
 # Explorer fixture: public JSON normalization is bounded and keeps price scaling uncertain.
 fixture_body = (FIXTURES / "public_structured_response.json").read_bytes()

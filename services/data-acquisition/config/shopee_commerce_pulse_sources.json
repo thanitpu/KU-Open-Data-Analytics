@@ -260,6 +260,7 @@
   "scoring_contract": {
     "version": "commerce-pulse-provisional-v1",
     "authoritative": false,
+    "normalization_method": "upstream-provisional-not-authoritatively-defined",
     "human_review_required": true,
     "inputs": [
       "normalized_sales_velocity",

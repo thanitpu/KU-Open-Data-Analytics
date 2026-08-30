@@ -85,6 +85,8 @@ A rank is invalid without all of the following:
 
 Rank #1 for a keyword sorted by bestseller is different from rank #1 in a category, on a campaign collection, or inside a shop. Generic search results never justify “Thailand’s #1 best-selling product.”
 
+One product may therefore have multiple observations at the same timestamp. Surface context is part of observation identity. Ranking scope deterministically includes source surface, surface type, category/query, and sort mode; product scope includes source surface and query; sales-counter scope includes its explicit surface and stable ranking/query context from provenance. Deduplication removes a replay of the same logical observation, not a distinct marketplace context.
+
 Preferred labels are:
 
 - Highest Observable Sold Count
@@ -96,11 +98,18 @@ Preferred labels are:
 
 `commerce-pulse-provisional-v1` combines normalized sales velocity, rank strength, rank improvement, review growth, and repeated-surface presence. Its weights are provisional and explicitly non-authoritative. Every candidate stores the scoring version, component values, weights, raw cumulative counter, raw velocity estimate, observed time, and pending Human Review status.
 
+Sales velocity has two deliberately separate values:
+
+- `raw_velocity_signal` / `raw_signals.estimated_units_per_hour` is the non-negative finite units/hour estimate and may be greater than 1;
+- `normalized_velocity_signal` / `component_values.normalized_sales_velocity` is the explicit `[0,1]` component used by provisional scoring.
+
+KU2D does not yet define an authoritative normalization method. Normalization is an upstream, reviewable input; the trend builder never treats raw units/hour as already normalized and never converts a normalized component back into raw velocity.
+
 Cumulative sold count and current velocity remain distinct signals. No cross-platform product matching is implemented.
 
 ## Longitudinal store
 
-`CommerceObservationStore` is append-only by `record_type + platform + product_id + observed_at`. Duplicate keys do not overwrite earlier evidence. It requires an explicit `KU2D_COMMERCE_OBSERVATION_DB` (or an explicit constructor path), rejects reuse of `KU2D_OPERATIONS_DB`, and hard-codes production approval to false. The explorer never opens this store.
+`CommerceObservationStore` is append-only by `record_type + platform + product_id + observed_at + observation_scope`. The normalized scope uses stable marketplace context rather than the entire volatile payload. A true replay is ignored, while simultaneous keyword-search, category-bestseller, campaign-collection, and shop-popular observations remain separate. It requires an explicit `KU2D_COMMERCE_OBSERVATION_DB` (or an explicit constructor path), rejects reuse of `KU2D_OPERATIONS_DB`, and hard-codes production approval to false. The explorer never opens this store.
 
 ## Explorer contract
 
