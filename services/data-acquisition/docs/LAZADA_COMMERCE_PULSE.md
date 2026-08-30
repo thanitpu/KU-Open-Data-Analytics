@@ -115,3 +115,30 @@ Only a technical invocation error may be corrected once. Evidence-withheld is a 
 The single authorized request completed on 2026-08-31 with diagnostic exit `2`. The official catalog URL redirected to an official Lazada tag/search URL and returned HTTP `200` HTML without a challenge. The 60,501-byte response exposed an application shell and route references, but no stable product-signal records and no validated public structured commerce endpoint. Account/login, checkout, app-navigation, service-worker, and help-center routes are explicitly non-commerce; other route names remain unvalidated and are not trusted by name.
 
 Normalized record count was zero. Technical completion was true, while `production_approved` and production storage remained false and `scheduler_action` remained null. Browser and Windows Edge were not attempted. Plain HTTP alone therefore did not establish a viable unauthenticated acquisition path; whether a normal public browser surface could do so remains a separate reviewed experiment, not an automatic escalation.
+
+## Normal-browser access diagnostic
+
+`tools/LAZADA_BROWSER_ACCESS_DIAGNOSTIC.py` analyzes one sanitized capture from a reviewed normal, fresh, unauthenticated browser page load. It does not launch the Windows Edge Runner and never advances execution environments automatically. The capture may contain only the initial/final public URL, title, bounded visible-card fields, display order, source query, challenge/login indicators, and sanitized resource metadata. Cookies, authorization data, tokens, device identifiers, profiles, browser storage, headers, raw NetLog, and raw response bodies are excluded.
+
+DOM evidence is usable only when a canonical Lazada item URL or explicit public item/product ID establishes identity. A contradictory URL and explicit ID is rejected; title alone is insufficient. Visible reviews remain review signals, `orders` remains an order-context display rather than sold/fulfilled units, and only explicit currency strings normalize. Unscaled structured numeric price remains raw with unknown scaling.
+
+A public structured response becomes `validated-commerce-data` only when an official Lazada Thailand JSON response contains stable identity and at least one marketplace signal. Endpoint naming alone remains a candidate. Overall classifications are:
+
+- `lazada-public-data-available`;
+- `lazada-rendered-dom-only`;
+- `lazada-login-required`;
+- `lazada-traffic-verification`;
+- `lazada-shell-only`;
+- `lazada-technical-failure`.
+
+Exit `0` means usable stable public evidence, `2` means the diagnostic completed but evidence was withheld or blocked, and `1` means technical/runtime/evidence-writing failure. Evidence is attempted before exit. Production approval and storage remain false and `scheduler_action` remains null for every result.
+
+### Browser Access Experiment #1 result
+
+The one authorized normal-browser page load for `สายชาร์จ` completed on 2026-08-31 with exit `0` and classification `lazada-rendered-dom-only`. The official catalog URL redirected to the corresponding official tag/search surface without traffic verification, CAPTCHA, access denial, or required login. An ordinary “sign in” header link is not a login-required boundary.
+
+The rendered surface contained 40 visible product cards. The bounded evidence retained 10 samples, all with matching explicit IDs and canonical public item URLs, plus title, explicit baht price, query, observed display order, and timestamp. Every sampled price normalized from its explicit `฿` display; no structured numeric scaling was inferred.
+
+The visible counters used bare Thai `ชิ้น` displays such as `5.5K ชิ้น`. Without a `sold` or `orders` label, their meaning and precision remain `unknown`; they are not parsed as sold, orders, or fulfilled transactions. Parenthetical counts were also visible but unlabeled in the bounded capture and therefore were not asserted as rating or review counts.
+
+The reviewed in-app browser capture did not expose structured response bodies or trustworthy network response metadata. Zero structured endpoints were validated; endpoint discovery remains a separate question. Windows Edge was not attempted and is not required for the now-validated rendered-DOM evidence path. The outcome establishes a viable unauthenticated diagnostic technique, not production acquisition or Human Approve.

@@ -1,0 +1,34 @@
+{
+  "observed_at": "2026-08-31T01:00:00+00:00",
+  "initial_url": "https://www.lazada.co.th/catalog/?q=fixture",
+  "final_url": "https://www.lazada.co.th/tag/fixture/?q=fixture",
+  "title": "Structured fixture",
+  "visible_cards": [],
+  "network_requests": [
+    {
+      "url": "https://www.lazada.co.th/api/catalog/search?q=fixture&access_token=must-not-survive",
+      "method": "GET",
+      "status": 200,
+      "content_type": "application/json",
+      "response_size": 24500,
+      "headers": {"Authorization": "must-not-survive", "Cookie": "must-not-survive"},
+      "response_json": {
+        "items": [
+          {
+            "itemId": "100001",
+            "productUrl": "https://www.lazada.co.th/products/fixture-i100001-s200001.html",
+            "title": "Fixture Cable",
+            "priceShow": "฿159.00",
+            "soldDisplay": "1.2k sold"
+          },
+          {
+            "itemId": "100002",
+            "title": "Numeric price fixture",
+            "price": 15900,
+            "reviewCount": 10
+          }
+        ]
+      }
+    }
+  ]
+}

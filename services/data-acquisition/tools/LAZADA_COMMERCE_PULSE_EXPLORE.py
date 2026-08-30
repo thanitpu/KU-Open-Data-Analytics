@@ -17,7 +17,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
-from urllib.parse import quote_plus, urljoin, urlparse
+from urllib.parse import quote_plus, urlparse
 from urllib.request import Request, urlopen
 
 from bs4 import BeautifulSoup
@@ -29,6 +29,7 @@ if str(ACQUISITION) not in sys.path:
     sys.path.insert(0, str(ACQUISITION))
 
 from commerce_market_observation import CommerceProductObservation, parse_sold_count
+from lazada_browser_access import product_id_from_url
 
 
 EXIT_EVIDENCE_OBTAINED = 0
@@ -130,21 +131,8 @@ def _challenge(text: str, status: int, effective_url: str = "") -> tuple[bool, s
     return False, None
 
 
-_ITEM_URL_RE = re.compile(r"(?:^|[-/])i(?P<item>\d+)(?:[-/.]|$)", re.IGNORECASE)
 _CURRENCY_RE = re.compile(r"(?:฿|THB\s*)(?P<amount>\d[\d,]*(?:\.\d+)?)", re.IGNORECASE)
 _ENDPOINT_RE = re.compile(r"(?:https://www\.lazada\.co\.th)?(/[A-Za-z0-9_?=&%./-]*(?:api|catalog|products)[A-Za-z0-9_?=&%./-]*)", re.IGNORECASE)
-
-
-def product_id_from_url(value: Any, base_url: str = "https://www.lazada.co.th/") -> tuple[str | None, str | None]:
-    raw = str(value or "").strip()
-    if not raw:
-        return None, None
-    absolute = urljoin(base_url, raw)
-    parsed = urlparse(absolute)
-    if (parsed.hostname or "").casefold() not in {"lazada.co.th", "www.lazada.co.th"}:
-        return None, None
-    match = _ITEM_URL_RE.search(parsed.path)
-    return (match.group("item"), absolute) if match else (None, absolute)
 
 
 def _walk(value: Any, path: str = "$"):

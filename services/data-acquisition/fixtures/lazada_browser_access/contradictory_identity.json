@@ -1,0 +1,15 @@
+{
+  "observed_at": "2026-08-31T01:00:00+00:00",
+  "initial_url": "https://www.lazada.co.th/catalog/?q=fixture",
+  "final_url": "https://www.lazada.co.th/tag/fixture/?q=fixture",
+  "title": "Contradictory fixture",
+  "visible_cards": [
+    {
+      "product_url": "https://www.lazada.co.th/products/fixture-i100001-s200001.html",
+      "explicit_product_id": "999999",
+      "visible_title": "Contradictory card",
+      "visible_price_text": "฿159.00"
+    }
+  ],
+  "network_requests": []
+}

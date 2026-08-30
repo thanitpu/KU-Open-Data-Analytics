@@ -47,6 +47,33 @@
     "scheduler_action": null,
     "conclusion": "Plain HTTP alone did not validate a viable unauthenticated Lazada acquisition path. Route references in the shell are not commerce evidence. No retry or automatic browser/Edge escalation was performed."
   },
+  "bounded_browser_pilot": {
+    "observed_on": "2026-08-31",
+    "environment": "normal-in-app-browser-fresh-unauthenticated-page-load",
+    "query": "สายชาร์จ",
+    "max_items": 10,
+    "page_load_count": 1,
+    "diagnostic_exit_code": 0,
+    "classification": "lazada-rendered-dom-only",
+    "technical_completion": true,
+    "usable_evidence": true,
+    "visible_product_card_count": 40,
+    "bounded_product_sample_count": 10,
+    "stable_identity_sample_count": 10,
+    "explicit_currency_price_sample_count": 10,
+    "visible_item_counter_semantics": "bare Thai ชิ้น displays observed; meaning and precision remain unknown and are not labeled sold or orders",
+    "rating_or_review_semantics": "parenthetical counts were visible but unlabeled in the bounded capture and were not classified as ratings, reviews, sold, or orders",
+    "validated_public_structured_commerce_endpoint_count": 0,
+    "structured_network_capture_status": "not-available-in-reviewed-in-app-browser-capture",
+    "challenge_detected": false,
+    "login_required": false,
+    "windows_edge_attempted": false,
+    "windows_edge_required_for_rendered_dom_evidence": false,
+    "production_approved": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "conclusion": "A normal unauthenticated browser produced viable rendered-DOM Commerce Pulse evidence with stable identity, titles, explicit prices, query context, and display order. Counter meaning remains unresolved and no structured response was validated. This is diagnostic evidence, not production approval."
+  },
   "techniques": [
     {
       "technique_id": "lazada_public_homepage_or_category",
