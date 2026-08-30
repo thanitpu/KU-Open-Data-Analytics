@@ -14,6 +14,7 @@ from serper_provider import search as serper_search, key_status as serper_key_st
 from source_discovery import search_web as public_search_web
 from technique_strategy import explore_with_strategy
 from track_selection import select_track_profile
+from retail_detail_catalog import generic_retail_detail_catalog
 from control_plane.domain_playbooks import recommended_sequence
 
 
@@ -102,6 +103,8 @@ def _pattern_clues(strategy_result):
             clues.add("product_endpoint")
         if "rendered" in text or "product card" in text or "product_cards" in text:
             clues.update(["product_cards","ssr_listing"])
+        if "canonical" in text or "product detail" in text or tech=="generic_retail_detail_catalog":
+            clues.update(["detail_pages","canonical_product"])
         if "next" in text or "rsc" in text or "hydration" in text:
             clues.update(["next_data","rsc","hydration_state"])
         if "promotion" in text or "campaign" in text or "catalogue" in text:
@@ -113,39 +116,115 @@ def _pattern_clues(strategy_result):
     return sorted(clues)
 
 
+def _record_key(row):
+    if not isinstance(row,dict):return str(row)
+    return (row.get("record_type"),row.get("source_url") or row.get("url"),row.get("sku") or row.get("gtin") or row.get("model"),
+            row.get("product_name") or row.get("promotion_title") or row.get("title") or row.get("name"),row.get("price"))
+
+
+def _refresh_strategy_summary(m):
+    results=m.get("technique_results") or []
+    samples=[];seen=set()
+    for tr in results:
+        for row in tr.get("sample_records") or []:
+            key=_record_key(row)
+            if key in seen:continue
+            seen.add(key);samples.append(row)
+    counts={}
+    for row in samples:
+        typ=(row or {}).get("record_type") or "Unknown"
+        counts[typ]=counts.get(typ,0)+1
+    m["sample_records"]=samples[:200]
+    m["unique_sample_record_count"]=len(samples)
+    m["record_types"]=[{"type":k,"count":v} for k,v in sorted(counts.items())]
+    m["record_count"]=sum(int(x.get("record_count") or 0) for x in results)
+    m["potential_coverage"]=[{"technique":x.get("technique"),"label":x.get("label"),**(x.get("potential") or {})} for x in results if x.get("potential")]
+    return m
+
+
+def _candidate_urls_from_bench(m,limit=3000):
+    out=[];seen=set()
+    def add(value):
+        value=str(value or "").strip()
+        if not value or value in seen:return
+        seen.add(value);out.append(value)
+    for tr in m.get("technique_results") or []:
+        for value in tr.get("urls_checked") or []:add(value)
+        for row in tr.get("sample_records") or []:
+            if isinstance(row,dict):add(row.get("source_url") or row.get("url"))
+        op=((tr.get("potential") or {}).get("operational_config") or {})
+        for value in op.get("seed_urls") or []:add(value)
+        for key in ("catalog_url","search_endpoint","graphql_endpoint","batch_endpoint"):
+            add(op.get(key))
+        if len(out)>=limit:break
+    return out[:limit]
+
+
+def _is_example_url(url):
+    h=(urlparse(url).hostname or "").lower()
+    return h.endswith(".invalid") or h.endswith(".test") or h in {"example.com","localhost","127.0.0.1"}
+
+
 def explore_url(url,domain="General",purpose="research_evidence",max_pages=3,techniques=None,progress_callback=None):
     m=explore_with_strategy(url,domain,purpose,max(1,min(max_pages,8)),techniques,progress_callback=progress_callback)
-    total=m.get("record_count",0); unique=m.get("unique_sample_record_count",0)
-    useful=sum(1 for x in m.get("technique_results") or [] if x.get("record_count",0)>0)
-    q={"label":"good" if useful>=2 and total>0 else ("usable" if useful else "weak"),
-       "score":min(95,30+useful*10+min(25,total)) if useful else 20,
-       "technique_count":len(m.get("technique_results") or []),"techniques_with_evidence":useful}
-    text=" ".join(str(r) for r in (m.get("sample_records") or [])[:30])
+    original_best=m.get("recommended_techniques") or []
     clues=_pattern_clues(m)
     guidance=recommended_sequence(domain,clues=clues)
+    track_selection={"required_track_gaps":{},"candidates":{}}
+    best=original_best
 
-    # Source-specific supermarket selectors already own their validated track logic.
-    # Generic retail domains use conservative output-based track inference so a
-    # promotion-heavy or document-heavy method cannot win Product & Price merely by
-    # returning many rows.
-    original_best=m.get("recommended_techniques") or []
-    track_selection={}
-    if purpose in {"retail_market_intelligence","competitive_intelligence"} and guidance.get("required_tracks") and not (m.get("track_recommendations") or {}):
+    generic_track_mode=(purpose in {"retail_market_intelligence","competitive_intelligence"} and
+                        bool(guidance.get("required_tracks")) and not (m.get("track_recommendations") or {}))
+    if generic_track_mode:
         picked,tracks,selection=select_track_profile(
             m.get("technique_results") or [],
             required_tracks=guidance.get("required_tracks") or [],
             optional_tracks=guidance.get("optional_tracks") or [],
             quality_gates=guidance.get("quality_gates") or {},
         )
+        enrichment=None
+        # Learned retail patterns are applied as a bounded second pass only when the
+        # first generic bench cannot satisfy Product & Price. Discovery evidence from
+        # the first pass seeds canonical product-route exploration.
+        gaps=selection.get("required_track_gaps") or {}
+        retail_transfer=(guidance.get("learned_pattern_library") or {}).get("transfer_status")=="inherited-not-yet-domain-validated"
+        may_enrich=(techniques is None or "generic_retail_detail_catalog" in set(techniques or []))
+        if "product_price" in gaps and retail_transfer and may_enrich and not _is_example_url(url):
+            enrichment=generic_retail_detail_catalog(
+                url,
+                max_pages=max(4,min(10,int(max_pages or 3)*2)),
+                candidate_urls=_candidate_urls_from_bench(m),
+            )
+            if not any(x.get("technique")==enrichment.get("technique") for x in (m.get("technique_results") or [])):
+                m.setdefault("technique_results",[]).append(enrichment)
+            _refresh_strategy_summary(m)
+            clues=_pattern_clues(m)
+            guidance=recommended_sequence(domain,clues=clues)
+            picked,tracks,selection=select_track_profile(
+                m.get("technique_results") or [],
+                required_tracks=guidance.get("required_tracks") or [],
+                optional_tracks=guidance.get("optional_tracks") or [],
+                quality_gates=guidance.get("quality_gates") or {},
+            )
         best=picked
         m["recommended_techniques"]=picked
         m["assigned_techniques"]=[x.get("technique") for x in picked if x.get("technique")]
         m["track_recommendations"]=tracks
-        track_selection={**selection,"global_recommendations_before_track_selection":original_best}
-    else:
-        best=original_best
-        track_selection={"required_track_gaps":{},"candidates":{}}
+        track_selection={**selection,"global_recommendations_before_track_selection":original_best,
+                         "canonical_detail_enrichment_attempted":bool(enrichment),
+                         "canonical_detail_enrichment":({
+                           "record_count":enrichment.get("record_count"),"pages_checked":enrichment.get("pages_checked"),
+                           "potential":enrichment.get("potential") or {},"diagnostics":enrichment.get("diagnostics") or []
+                         } if enrichment else None)}
 
+    _refresh_strategy_summary(m)
+    total=m.get("record_count",0); unique=m.get("unique_sample_record_count",0)
+    useful=sum(1 for x in m.get("technique_results") or [] if x.get("record_count",0)>0)
+    q={"label":"good" if useful>=2 and total>0 else ("usable" if useful else "weak"),
+       "score":min(95,30+useful*10+min(25,total)) if useful else 20,
+       "technique_count":len(m.get("technique_results") or []),"techniques_with_evidence":useful}
+    text=" ".join(str(r) for r in (m.get("sample_records") or [])[:30])
+    gaps=track_selection.get("required_track_gaps") or {}
     return {"status":"completed","mode":"adaptive-technique-explore","url":url,"domain":domain,
       "purpose":purpose,"adapter":"adaptive-technique-bench",
       "pages_checked":sum(x.get("pages_checked",0) for x in m.get("technique_results") or []),
@@ -156,7 +235,7 @@ def explore_url(url,domain="General",purpose="research_evidence",max_pages=3,tec
       "track_recommendations":m.get("track_recommendations") or {},"track_selection":track_selection,
       "potential_coverage":m.get("potential_coverage") or [],
       "pattern_clues":clues,"learned_pattern_guidance":guidance,
-      "recommendation":"add-to-monitoring" if best and not (track_selection.get("required_track_gaps") or {}) else "review-required-track-gaps" if (track_selection.get("required_track_gaps") or {}) else "review-source"}
+      "recommendation":"add-to-monitoring" if best and not gaps else "review-required-track-gaps" if gaps else "review-source"}
 
 def discovery_queries(query_text,query_type="topic",domain="General"):
     q=(query_text or "").strip()
