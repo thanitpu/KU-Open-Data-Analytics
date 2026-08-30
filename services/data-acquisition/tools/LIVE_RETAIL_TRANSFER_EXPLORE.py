@@ -28,6 +28,18 @@ def source_map():
     return {x.get("source_id"): x for x in (obj.get("sources") or [])}
 
 
+def compact_enrichment_decision(selection: dict) -> dict:
+    evidence = selection.get("canonical_detail_enrichment") or {}
+    return {
+        "eligible": bool(selection.get("canonical_detail_enrichment_eligible")),
+        "attempted": bool(selection.get("canonical_detail_enrichment_attempted")),
+        "basis": selection.get("canonical_detail_enrichment_basis") or [],
+        "skip_reason": selection.get("canonical_detail_enrichment_skip_reason"),
+        "record_count": evidence.get("record_count"),
+        "discovered_product_url_count": evidence.get("discovered_product_url_count"),
+    }
+
+
 def compact(result: dict) -> dict:
     tech = []
     for x in result.get("technique_results") or []:
@@ -58,6 +70,7 @@ def compact(result: dict) -> dict:
         "required_track_gaps": selection.get("required_track_gaps") or {},
         "track_candidates": selection.get("candidates") or {},
         "global_recommendations_before_track_selection": selection.get("global_recommendations_before_track_selection") or [],
+        "canonical_detail_enrichment": compact_enrichment_decision(selection),
         "potential_coverage": result.get("potential_coverage") or [],
         "technique_results": tech,
     }
