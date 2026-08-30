@@ -12,6 +12,8 @@ on:
       - 'services/data-acquisition/acquisition/track_selection.py'
       - 'services/data-acquisition/control_plane/domain_playbooks.py'
       - 'services/data-acquisition/tools/LIVE_JIB_RETAIL_LIFECYCLE.py'
+      - 'services/data-acquisition/tools/WRITE_JIB_VALIDATION_STEP_SUMMARY.py'
+      - 'services/data-acquisition/tools/SELF_TEST_JIB_LIFECYCLE_VALIDATION.py'
       - 'services/data-acquisition/tools/SELF_TEST_RETAIL_ASSIGNED_ACQUISITION.py'
       - '.github/workflows/data-acquisition-jib-live.yml'
   workflow_dispatch:
@@ -38,13 +40,23 @@ jobs:
           python tools/SELF_TEST_RETAIL_DETAIL_CATALOG.py
           python tools/SELF_TEST_RETAIL_DETAIL_TRANSPORT.py
           python tools/SELF_TEST_RETAIL_ASSIGNED_ACQUISITION.py
+          python tools/SELF_TEST_JIB_LIFECYCLE_VALIDATION.py
       - name: Run JIB Explore, Deep Audit and isolated approval lifecycle
+        id: jib_validation
         env:
           PYTHONPATH: .
+          KU2D_APPROVAL_SCOPE: isolated-staging
           KU2D_OPERATIONS_DB: ${{ runner.temp }}/ku2d_jib_live_ops.sqlite3
           KU2D_OBSERVATION_DB: ${{ runner.temp }}/ku2d_jib_live_obs.sqlite3
           KU2D_JIB_RESULT: ${{ github.workspace }}/docs/validation/jib-live-latest.json
-        run: python tools/LIVE_JIB_RETAIL_LIFECYCLE.py
+          KU2D_JIB_SUMMARY: ${{ github.workspace }}/docs/validation/jib-live-summary.json
+        run: python tools/LIVE_JIB_RETAIL_LIFECYCLE.py --require-approved
+      - name: Summarize JIB lifecycle validation
+        if: always()
+        run: >-
+          python tools/WRITE_JIB_VALIDATION_STEP_SUMMARY.py
+          --result "${{ github.workspace }}/docs/validation/jib-live-latest.json"
+          --summary "${{ github.workspace }}/docs/validation/jib-live-summary.json"
       - name: Upload JIB lifecycle evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -52,6 +64,7 @@ jobs:
           name: ku2d-jib-retail-lifecycle
           path: |
             docs/validation/jib-live-latest.json
+            docs/validation/jib-live-summary.json
             ${{ runner.temp }}/ku2d_jib_live_obs.sqlite3
           if-no-files-found: warn
           retention-days: 30
