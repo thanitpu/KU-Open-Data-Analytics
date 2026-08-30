@@ -24,7 +24,8 @@ def normalized_sources():
         rows.append({"registry":"q-diving","source_id":x.get("source_id"),"name":x.get("name"),
           "domain":"Diving","url":x.get("url"),"source_type":x.get("source_type") or "web",
           "enabled":bool(x.get("enabled",True)),"cadence":x.get("cadence","weekly"),"max_pages":3,
-          "store_to_repository":True,"purpose":"knowledge_learning","raw":x})
+          "store_to_repository":bool(x.get("store_to_repository",x.get("source_type")!="youtube-data-api-query-profile")),
+          "purpose":"knowledge_learning","query_profile_ids":x.get("query_profile_ids") or [],"raw":x})
     for x in _load(GENERAL,{"sources":[]}).get("sources",[]):
         rows.append({"registry":"general","source_id":x.get("source_id"),"name":x.get("name"),
           "domain":x.get("domain") or "General","url":x.get("url"),"source_type":x.get("source_type") or "web",

@@ -1,0 +1,36 @@
+{
+  "schema": "ku2d.youtube-query-profiles.v1",
+  "version": "1.0",
+  "provider": "youtube-data-api-v3",
+  "defaults": {
+    "type": "video",
+    "region_code": "TH",
+    "max_results": 10,
+    "domain": "q_diving",
+    "created_by": "KU2D",
+    "enabled": true,
+    "cadence": "manual-pilot",
+    "review_status": "foundation-candidate"
+  },
+  "profiles": [
+    {"profile_id":"QYT-BEGINNER-KOH-TAO-TH","research_collection":"learn_to_dive","query_text":"เรียนดำน้ำ เกาะเต่า","relevance_language":"th"},
+    {"profile_id":"QYT-BEGINNER-TH","research_collection":"learn_to_dive","query_text":"ดำน้ำลึก มือใหม่ ประเทศไทย","relevance_language":"th"},
+    {"profile_id":"QYT-BEGINNER-EN","research_collection":"learn_to_dive","query_text":"scuba diving beginner Thailand","relevance_language":"en","legacy_source_ids":["Q-004"],"legacy_search_url":"https://www.youtube.com/results?search_query=scuba+diving+beginner"},
+    {"profile_id":"QYT-KOH-TAO-EN","research_collection":"learn_to_dive","query_text":"open water course Koh Tao","relevance_language":"en","legacy_source_ids":["Q-005"],"legacy_search_url":"https://www.youtube.com/results?search_query=koh+tao+scuba+diving"},
+    {"profile_id":"QYT-EQUIPMENT-BEGINNER-TH","research_collection":"diving_equipment","query_text":"อุปกรณ์ดำน้ำ มือใหม่","relevance_language":"th"},
+    {"profile_id":"QYT-EQUIPMENT-REVIEW-TH","research_collection":"diving_equipment","query_text":"รีวิว BCD regulator dive computer","relevance_language":"th"},
+    {"profile_id":"QYT-EQUIPMENT-SETUP-EN","research_collection":"diving_equipment","query_text":"scuba gear beginner setup","relevance_language":"en"},
+    {"profile_id":"QYT-EQUIPMENT-RENT-BUY-EN","research_collection":"diving_equipment","query_text":"rent vs buy scuba equipment","relevance_language":"en"},
+    {"profile_id":"QYT-THAILAND-DESTINATIONS-TH","research_collection":"thailand_dive_destinations","query_text":"จุดดำน้ำประเทศไทย","relevance_language":"th"},
+    {"profile_id":"QYT-THAILAND-KOH-TAO-TH","research_collection":"thailand_dive_destinations","query_text":"ดำน้ำเกาะเต่า","relevance_language":"th"},
+    {"profile_id":"QYT-THAILAND-SIMILAN-EN","research_collection":"thailand_dive_destinations","query_text":"Similan diving","relevance_language":"en"},
+    {"profile_id":"QYT-THAILAND-RICHELIEU-EN","research_collection":"thailand_dive_destinations","query_text":"Richelieu Rock diving","relevance_language":"en"},
+    {"profile_id":"QYT-THAILAND-KOH-LIPE-EN","research_collection":"thailand_dive_destinations","query_text":"Koh Lipe diving","relevance_language":"en"},
+    {"profile_id":"QYT-INTERNATIONAL-RAJA-AMPAT","research_collection":"international_dive_destinations","query_text":"Raja Ampat diving guide","relevance_language":"en"},
+    {"profile_id":"QYT-INTERNATIONAL-KOMODO","research_collection":"international_dive_destinations","query_text":"Komodo scuba diving","relevance_language":"en"},
+    {"profile_id":"QYT-INTERNATIONAL-MALDIVES","research_collection":"international_dive_destinations","query_text":"Maldives liveaboard diving","relevance_language":"en"},
+    {"profile_id":"QYT-INTERNATIONAL-SIPADAN","research_collection":"international_dive_destinations","query_text":"Sipadan diving","relevance_language":"en"},
+    {"profile_id":"QYT-INTERNATIONAL-PALAU","research_collection":"international_dive_destinations","query_text":"Palau diving","relevance_language":"en"},
+    {"profile_id":"QYT-INTERNATIONAL-RED-SEA","research_collection":"international_dive_destinations","query_text":"Red Sea diving","relevance_language":"en"}
+  ]
+}

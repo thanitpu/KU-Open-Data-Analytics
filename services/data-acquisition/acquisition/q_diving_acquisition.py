@@ -58,14 +58,13 @@ def content_type_for(source_type,url):
 
 def acquire_url(url):
     src=source_type_for(url)
-    # YouTube public HTML is useful for metadata but transcript/comments are deliberately not scraped here.
+    if src=="youtube":
+        raise RuntimeError("YouTube sources require the documented YouTube Data API v3 provider; public page HTML is not acquired.")
     r=fetch(url);p=parse_html(r["html"],r["url"]);analytics=analyze(p["text"])
     return {"ok":True,"source_type":src,"content_type":content_type_for(src,url),
       "title":p["title"],"source_url":p["canonical_url"],"published_at":p["published_at"],
       "description":p["description"],"raw_text":p["text"],"analytics":analytics,
-      "diagnostics":{"http_status":r["status"],"fetched_url":r["url"],
-        "youtube_transcript_status":"not-acquired-from-public-html" if src=="youtube" else None,
-        "youtube_comments_status":"requires-authorized/API-or-user-supplied-data" if src=="youtube" else None}}
+      "diagnostics":{"http_status":r["status"],"fetched_url":r["url"]}}
 
 def import_transcript(title,url,transcript,channel="",published_at="",source_type="youtube"):
     return {"ok":True,"source_type":source_type,"content_type":"transcript","title":title,
