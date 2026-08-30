@@ -74,7 +74,9 @@ assert watsons["potential"]["identity_completeness_pct"] == 100.0
 assert jib["record_count"] == 1, jib
 j = jib["sample_records"][0]
 assert j["sku"] == "COMSET2411052"
-assert j["model"] == "2114"
+# The numeric route segments identify the official canonical detail route, but are
+# not promoted to a business model field without explicit page evidence.
+assert j["model"] == ""
 assert j["price"] == 28190.0
 assert "/web/product/readProduct/71671/2114/" in j["source_url"]
 
