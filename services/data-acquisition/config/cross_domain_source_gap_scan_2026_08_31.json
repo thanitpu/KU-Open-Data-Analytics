@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0",
+  "observed_date": "2026-08-31",
+  "baseline_commit": "820994f7521ef5f181e96826fdaaee40202b91ba",
+  "production_approved": false,
+  "production_store": false,
+  "scheduler_action": null,
+  "domain_inventory": [
+    {
+      "domain": "supermarket",
+      "registered_sources": ["Tops", "Lotus's", "Gourmet Market", "Big C", "Makro"],
+      "lifecycle_status": "validated-and-frozen",
+      "approved_technique": "source-specific split-track profiles",
+      "deep_audit_status": "passed",
+      "live_validation_status": "complete",
+      "execution_environment": "cloud-default; approved Thailand Edge only for Gourmet when cloud is blocked",
+      "known_blocker": null
+    },
+    {
+      "domain": "coffee",
+      "registered_sources": ["DEAN & DELUCA", "Starbucks", "All Cafe", "Cafe Amazon", "PunThai Coffee", "Inthanin Coffee", "Black Canyon"],
+      "lifecycle_status": "partially-explored",
+      "approved_technique": null,
+      "exploration_status": "PunThai deterministic detail technique exists; specialty-roaster work is in Draft PR #39",
+      "deep_audit_status": "incomplete",
+      "live_validation_status": "not-domain-approved",
+      "execution_environment": "cloud-public-read-only",
+      "known_blocker": "menu price and roasted-bean product price require separate contracts"
+    },
+    {
+      "domain": "beauty_retail",
+      "registered_sources": ["Watsons", "Konvy", "EVEANDBOY", "Beautrium", "Boots"],
+      "lifecycle_status": "inherited-not-yet-domain-validated",
+      "approved_technique": null,
+      "exploration_status": "Watsons discovery evidence only",
+      "deep_audit_status": "not-passed",
+      "live_validation_status": "none",
+      "execution_environment": "cloud-default",
+      "known_blocker": "Watsons Product & Price required-track gap"
+    },
+    {
+      "domain": "it_retail",
+      "registered_sources": ["JIB", "Advice", "IT City", "iHaveCPU", "BaNANA"],
+      "lifecycle_status": "partially-domain-validated",
+      "approved_technique": "JIB canonical detail plus application-bundle discovery",
+      "exploration_status": "JIB validated; peers remain candidates",
+      "deep_audit_status": "JIB passed isolated-staging gates",
+      "live_validation_status": "JIB live-profile-validated; production approval false",
+      "execution_environment": "cloud-hosted-public-read-only",
+      "known_blocker": "remaining sources lack domain-live validation"
+    },
+    {
+      "domain": "commerce_market_observation",
+      "registered_sources": ["Shopee", "Lazada", "TikTok Shop"],
+      "lifecycle_status": "exploration-only",
+      "approved_technique": null,
+      "exploration_status": "Shopee access paused; Lazada rendered DOM promising; TikTok public detail challenged; LINE SHOPPING inventory evidence is in Draft PR #37",
+      "deep_audit_status": "Lazada Draft PR #35; others incomplete",
+      "live_validation_status": "none",
+      "execution_environment": "cloud/default browser; reviewed Edge diagnostic only where separately authorized",
+      "known_blocker": "traffic verification or insufficient public demand semantics"
+    },
+    {
+      "domain": "ota",
+      "registered_sources": ["Agoda", "Booking.com", "Trip.com", "Traveloka", "Expedia", "Airbnb"],
+      "lifecycle_status": "partially-explored",
+      "approved_technique": null,
+      "exploration_status": "Booking deterministic transfer exists; Agoda and Traveloka stopped on challenge in Draft PR #38",
+      "deep_audit_status": "incomplete",
+      "live_validation_status": "none",
+      "execution_environment": "cloud-default",
+      "known_blocker": "public rate observations require exact dates, occupancy, currency, and non-personalized context"
+    },
+    {
+      "domain": "q_diving",
+      "registered_sources": ["Pantip diving discussions", "PADI Blog", "SSI Blog", "YouTube beginner query", "YouTube Koh Tao query"],
+      "lifecycle_status": "partially-explored",
+      "approved_technique": null,
+      "exploration_status": "PADI deterministic feed technique exists; SSI/course/equipment work is in Draft PR #40; YouTube paused",
+      "deep_audit_status": "incomplete",
+      "live_validation_status": "none",
+      "execution_environment": "cloud-public-read-only",
+      "known_blocker": "content authority/relevance requires Human Review"
+    }
+  ],
+  "ranked_gaps": [
+    {
+      "rank": 1,
+      "source": "LINE SHOPPING public seller collection",
+      "domain": "commerce_market_observation",
+      "priority": "P1",
+      "campaign_explore": "reused Draft PR #37 evidence",
+      "request_page_loads": 2,
+      "retained_records": 10,
+      "finding": "stable product/shop/collection identity and price; seller-local display order is not demand rank",
+      "next_action": "Deep Audit identity, replay deduplication, and observation-surface semantics"
+    },
+    {
+      "rank": 2,
+      "source": "Akha Ama Coffee official catalog",
+      "domain": "coffee",
+      "priority": "P1",
+      "campaign_explore": "one bounded first-page HTTP load",
+      "request_page_loads": 1,
+      "retained_records": 10,
+      "finding": "stable canonical product URLs, product names, package/roast cues, and explicit THB prices",
+      "next_action": "add catalog-to-detail deterministic technique and Deep Audit"
+    },
+    {
+      "rank": 3,
+      "source": "Watsons",
+      "domain": "beauty_retail",
+      "priority": "P0",
+      "campaign_explore": "recommendation-only; do not reopen existing access work",
+      "request_page_loads": 0,
+      "retained_records": 0,
+      "finding": "Discovery evidence exists but Product & Price remains a required-track gap",
+      "next_action": "architecture review of canonical detail identity/price technique before another live attempt"
+    },
+    {
+      "rank": 4,
+      "source": "Pantip diving discussions",
+      "domain": "q_diving",
+      "priority": "P2",
+      "campaign_explore": "recommendation-only; outside top-two request scope",
+      "request_page_loads": 0,
+      "retained_records": 0,
+      "finding": "registered public community source with no current deep-audit evidence",
+      "next_action": "define privacy, provenance, content identity, and Human Review contract before Explore"
+    },
+    {
+      "rank": 5,
+      "source": "Expedia Thailand Bangkok inventory",
+      "domain": "ota",
+      "priority": "P2",
+      "campaign_explore": "recommendation-only; outside top-two request scope",
+      "request_page_loads": 0,
+      "retained_records": 0,
+      "finding": "registered discovery candidate not yet classified by a bounded contextual-rate experiment",
+      "next_action": "one first-page public Explore with fixed dates, occupancy, and THB context"
+    }
+  ],
+  "request_accounting": {
+    "new_requests_in_this_task": 1,
+    "reused_line_shopping_campaign_loads": 2,
+    "retries": 0,
+    "pagination": 0,
+    "browser_loads_in_this_task": 0,
+    "edge_loads": 0
+  }
+}
