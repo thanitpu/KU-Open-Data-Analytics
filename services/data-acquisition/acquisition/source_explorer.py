@@ -14,7 +14,7 @@ from serper_provider import search as serper_search, key_status as serper_key_st
 from source_discovery import search_web as public_search_web
 from technique_strategy import explore_with_strategy
 from track_selection import select_track_profile
-from retail_detail_catalog import generic_retail_detail_catalog
+from retail_detail_transport import generic_retail_detail_catalog
 from control_plane.domain_playbooks import recommended_sequence
 
 
