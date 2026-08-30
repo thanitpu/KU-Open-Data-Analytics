@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import re
 import sys
+import traceback
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -27,6 +29,9 @@ from control_plane.observation_bridge import persist_audit, persist_explore
 from control_plane.scheduler import scheduler_plan
 
 SOURCE_ID = "SRC-018"
+EXIT_OK = 0
+EXIT_TECHNICAL_FAILURE = 1
+EXIT_APPROVAL_WITHHELD = 2
 
 
 def now():
@@ -120,18 +125,138 @@ def compact_technique(result):
     }
 
 
-def finish(result):
+def result_paths(environ=None):
+    env = environ or os.environ
+    detail = Path(env.get("KU2D_JIB_RESULT", ROOT.parent.parent / "docs" / "validation" / "jib-live-latest.json"))
+    summary = Path(env.get("KU2D_JIB_SUMMARY", detail.with_name("jib-live-summary.json")))
+    return detail, summary
+
+
+def isolated_database_paths(environ=None):
+    """Require explicit, distinct staging databases before simulated approval."""
+    env = environ or os.environ
+    if str(env.get("KU2D_APPROVAL_SCOPE") or "").strip().lower() != "isolated-staging":
+        raise RuntimeError("JIB lifecycle validation requires KU2D_APPROVAL_SCOPE=isolated-staging.")
+    operations = str(env.get("KU2D_OPERATIONS_DB") or "").strip()
+    observations = str(env.get("KU2D_OBSERVATION_DB") or "").strip()
+    if not operations or not observations:
+        raise RuntimeError("JIB lifecycle validation requires explicit isolated KU2D_OPERATIONS_DB and KU2D_OBSERVATION_DB paths.")
+    op_path = Path(operations).expanduser().resolve()
+    obs_path = Path(observations).expanduser().resolve()
+    if op_path == obs_path:
+        raise RuntimeError("JIB lifecycle validation operations and observation databases must be distinct.")
+    default_data = (ROOT / "data").resolve()
+    if op_path.parent == default_data or obs_path.parent == default_data:
+        raise RuntimeError("JIB lifecycle validation refuses service default data paths; use isolated temporary database paths.")
+    return op_path, obs_path
+
+
+def selected_techniques_by_track(result):
+    selected = {}
+    for row in result.get("persisted_assignment") or []:
+        for track in row.get("tracks") or []:
+            selected[str(track)] = {
+                "technique": row.get("technique"),
+                "label": row.get("label"),
+                "score": row.get("score"),
+            }
+    return selected
+
+
+def approval_requirements_passed(result):
+    audit = result.get("audit") or {}
+    tracks = result.get("approval_track_policy") or {}
+    return bool(
+        result.get("approved")
+        and audit.get("audit_passed")
+        and not (audit.get("hard_failures") or [])
+        and not (audit.get("domain_gate_failures") or [])
+        and not (tracks.get("missing_required") or [])
+    )
+
+
+def validation_summary(result):
+    audit = result.get("audit") or {}
+    track_policy = result.get("approval_track_policy") or {}
+    domain_gates = audit.get("domain_gate_checks") or {}
+    technique_profile = audit.get("technique_profile") or {}
+    yield_info = audit.get("yield") or {}
+    field_quality = audit.get("field_quality") or {}
+    repeatability = audit.get("repeatability") or {}
+
+    def gate_value(name, fallback=None):
+        return (domain_gates.get(name) or {}).get("value", fallback)
+
+    return {
+        "schema": "ku2d.retail-live-validation-summary.v1",
+        "source_id": result.get("source_id"),
+        "source_name": result.get("source_name"),
+        "source_url": result.get("source_url"),
+        "domain": result.get("domain"),
+        "execution_environment": result.get("environment"),
+        "validation_timestamp": result.get("finished_at") or result.get("started_at"),
+        "technical_completion": not bool(result.get("technical_failure")),
+        "approved": approval_requirements_passed(result),
+        "continuous_enabled": bool(result.get("continuous_enabled")),
+        "approval_scope": result.get("approval_scope"),
+        "tracks": {
+            "required": track_policy.get("required") or [],
+            "optional": track_policy.get("optional") or [],
+            "resolved": track_policy.get("resolved") or [],
+            "missing_required": track_policy.get("missing_required") or [],
+        },
+        "base_deep_audit": {
+            "passed": bool(audit.get("audit_passed")),
+            "hard_failures": audit.get("hard_failures") or [],
+            "quality_score": audit.get("quality_score"),
+            "quality_label": audit.get("quality_label"),
+        },
+        "domain_gates": domain_gates,
+        "domain_gate_failures": audit.get("domain_gate_failures") or [],
+        "selected_techniques_by_track": selected_techniques_by_track(result),
+        "technique_profile_fingerprint": technique_profile.get("fingerprint"),
+        "metrics": {
+            "product_sample_count": len([x for x in (audit.get("sample_records") or []) if x.get("record_type") == "ProductCandidate"]),
+            "product_yield_count": int(yield_info.get("products") or 0),
+            "price_completeness_pct": gate_value("product_price_completeness", field_quality.get("product_price_pct")),
+            "identity_completeness_pct": gate_value("sellable_product_identity"),
+            "semantic_quality_pct": gate_value("product_semantic_quality", field_quality.get("product_semantic_quality_pct")),
+            "repeatability_pct": gate_value("product_repeatability", repeatability.get("product_repeatability_pct")),
+            "provenance_pct": gate_value("provenance", field_quality.get("provenance_pct")),
+            "assigned_technique_execution_pct": gate_value("assigned_technique_execution"),
+        },
+        "warnings": audit.get("warnings") or [],
+        "approval_withheld_reason": result.get("approval_withheld_reason"),
+        "scheduler_action": (((result.get("scheduler_plan_after_approval") or [{}])[0].get("decision") or {}).get("action") if approval_requirements_passed(result) else None),
+        "technical_failure": result.get("technical_failure"),
+    }
+
+
+def write_evidence(result, environ=None):
     result["finished_at"] = now()
-    out = Path(os.environ.get("KU2D_JIB_RESULT", ROOT.parent.parent / "docs" / "validation" / "jib-live-latest.json"))
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(result, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
-    print(f"[JIB] RESULT_FILE={out}")
+    detail_path, summary_path = result_paths(environ)
+    detail_path.parent.mkdir(parents=True, exist_ok=True)
+    summary_path.parent.mkdir(parents=True, exist_ok=True)
+    detail_path.write_text(json.dumps(result, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
+    summary_path.write_text(json.dumps(validation_summary(result), ensure_ascii=False, indent=2, default=str), encoding="utf-8")
+    print(f"[JIB] RESULT_FILE={detail_path}")
+    print(f"[JIB] SUMMARY_FILE={summary_path}")
     print(f"[JIB] APPROVED={result.get('approved')}")
     if result.get("approval_withheld_reason"):
         print(f"[JIB] WITHHELD={result['approval_withheld_reason']}")
+    return detail_path, summary_path
 
 
-def main():
+def resolve_exit_code(result, require_approved=False):
+    if result.get("technical_failure"):
+        return EXIT_TECHNICAL_FAILURE
+    if require_approved and not approval_requirements_passed(result):
+        return EXIT_APPROVAL_WITHHELD
+    return EXIT_OK
+
+
+def run_lifecycle():
+    isolated_database_paths()
     sources = {x["source_id"]: x for x in normalized_sources()}
     source = sources.get(SOURCE_ID)
     if not source:
@@ -177,9 +302,16 @@ def main():
     explore_gaps = (explore.get("track_selection") or {}).get("required_track_gaps") or {}
     if not recs or explore_gaps:
         result["approved"] = False
+        result["continuous_enabled"] = False
+        result["approval_scope"] = "isolated-staging-db"
+        result["approval_track_policy"] = {
+            "required": sorted(required_tracks),
+            "optional": playbook.get("optional_tracks") or ["promotion"],
+            "resolved": sorted((explore.get("track_recommendations") or {}).keys()),
+            "missing_required": sorted(explore_gaps.keys()),
+        }
         result["approval_withheld_reason"] = "Explore did not close all required retail tracks."
-        finish(result)
-        return
+        return result
 
     persisted = replace_technique_assignments(SOURCE_ID, recs)
     result["persisted_assignment"] = [
@@ -254,8 +386,53 @@ def main():
             reasons.append("IT Retail domain gates failed: " + ", ".join(domain_failures))
         result["approval_withheld_reason"] = "; ".join(reasons)
 
-    finish(result)
+    return result
+
+
+def technical_failure_result(exc):
+    return {
+        "schema": "ku2d.retail-live-lifecycle.v1",
+        "source_id": SOURCE_ID,
+        "source_name": "JIB",
+        "source_url": "https://www.jib.co.th/web/index.php",
+        "domain": "IT Retail",
+        "started_at": now(),
+        "environment": "cloud-hosted-public-read-only",
+        "approved": False,
+        "continuous_enabled": False,
+        "approval_scope": "isolated-staging-db",
+        "technical_failure": {
+            "type": type(exc).__name__,
+            "message": str(exc),
+        },
+        "approval_withheld_reason": "Lifecycle did not complete because of a technical/runtime failure.",
+    }
+
+
+def parse_args(argv=None):
+    parser = argparse.ArgumentParser(description="Run the isolated JIB retail lifecycle validation.")
+    parser.add_argument(
+        "--require-approved",
+        action="store_true",
+        help="Return exit code 2 when lifecycle evidence is written but isolated staging approval is withheld.",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv=None):
+    args = parse_args(argv)
+    try:
+        result = run_lifecycle()
+    except Exception as exc:
+        result = technical_failure_result(exc)
+        traceback.print_exc()
+    try:
+        write_evidence(result)
+    except Exception:
+        traceback.print_exc()
+        return EXIT_TECHNICAL_FAILURE
+    return resolve_exit_code(result, require_approved=args.require_approved)
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

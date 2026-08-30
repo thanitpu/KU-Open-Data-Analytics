@@ -6,6 +6,18 @@ Canonical lifecycle: **Discover → Explore → Deep Audit → Human Approve →
 
 Explore/Audit observations are preserved as evidence; approved scheduled acquisition produces trusted observations. Secrets and runtime SQLite files are never committed.
 
+## Live validation status semantics
+
+Live workflow execution, lifecycle technical completion, source approval, isolated staging approval, and production Human Approve are different states:
+
+- **Workflow execution** reports whether the CI command and supporting steps ran successfully.
+- **Lifecycle technical completion** means Explore and Deep Audit finished and reviewable evidence was written; it does not mean quality gates passed.
+- **Source approval** means every required track and audit/domain gate passed for the exact technique-profile fingerprint.
+- **Isolated staging approval** is a validation-only simulation stored in explicitly configured temporary operations and observation databases. It cannot authorize production acquisition.
+- **Production Human Approve** remains the governance boundary that enables scheduled acquisition in the production operations database.
+
+`LIVE_JIB_RETAIL_LIFECYCLE.py --require-approved` requires explicit temporary database paths and `KU2D_APPROVAL_SCOPE=isolated-staging`. It returns `0` only for a technically complete, approved isolated-staging result, `2` when evidence is complete but approval is withheld, and `1` for a technical/runtime or evidence-write failure. Detailed and compact evidence are written before an approval-withheld exit. The compact artifact uses schema `ku2d.retail-live-validation-summary.v1`; live artifacts are uploaded by CI and are not committed automatically.
+
 ---
 
 # KU2D Data Acquisition Service v0.28
