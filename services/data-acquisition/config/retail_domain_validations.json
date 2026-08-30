@@ -1,0 +1,87 @@
+{
+  "schema": "ku2d.retail-domain-validations.v1",
+  "version": 1,
+  "registry_policy": {
+    "purpose": "Record sanitized domain-specific validation evidence without granting production approval.",
+    "production_approval_authority": "Production Human Approve in the production operations database",
+    "validation_records_are_non_authorizing": true
+  },
+  "domains": {
+    "beauty": {
+      "validation_status": "inherited-not-yet-domain-validated",
+      "live_validated_sources": []
+    },
+    "it_retail": {
+      "validation_status": "partially-domain-validated",
+      "live_validated_sources": [
+        {
+          "source_id": "SRC-018",
+          "source_name": "JIB",
+          "domain": "IT Retail",
+          "status": "live-profile-validated",
+          "workflow_scope": "isolated-staging",
+          "approval_scope": "isolated-staging-db",
+          "execution_environment": "cloud-hosted-public-read-only",
+          "production_approved": false,
+          "production_human_approve_performed": false,
+          "production_scheduling_enabled": false,
+          "durable_evidence_file": "docs/validation/jib-retail-validation-2026-08-30.json",
+          "validated_tracks": {
+            "product_price": {
+              "technique": "generic_retail_detail_catalog",
+              "technique_label": "Canonical Retail Product Detail Catalog",
+              "score": 64,
+              "validated_pattern_ids": [
+                "RC-P02"
+              ]
+            },
+            "discovery": {
+              "technique": "generic_app_bundle",
+              "technique_label": "JavaScript / App Bundle Mining",
+              "score": 37,
+              "validated_pattern_ids": [
+                "RC-P04"
+              ]
+            }
+          },
+          "optional_tracks": {
+            "promotion": {
+              "assigned": false,
+              "technique": null
+            }
+          },
+          "deep_audit": {
+            "passed": true,
+            "hard_failures": [],
+            "quality_score": 82,
+            "quality_label": "strong"
+          },
+          "metrics": {
+            "product_sample_count": 5,
+            "product_yield_count": 5,
+            "price_completeness_pct": 100.0,
+            "sellable_product_identity_pct": 100.0,
+            "semantic_quality_pct": 100.0,
+            "product_repeatability_pct": 100.0,
+            "provenance_pct": 100.0,
+            "assigned_technique_execution_pct": 100.0,
+            "regular_or_original_price_completeness_pct": 0.0
+          },
+          "technique_profile_fingerprint": "cbcfc49db6127e09",
+          "workflow_provenance": {
+            "workflow_run_id": 33302385382,
+            "integration_commit": "79a217292e2dc3a3982a5edf9fdede8377e1eff4",
+            "artifact_id": 9729383751,
+            "artifact_name": "ku2d-jib-retail-lifecycle",
+            "artifact_sha256": "d6e5e263d9801add556ef4692b9e84fa837774cf49d8494835a6794f3dfd676b"
+          },
+          "scheduler_evaluation": {
+            "scope": "isolated-staging-only",
+            "action": "scheduled-acquire",
+            "production_scheduling_enabled": false
+          }
+        }
+      ]
+    }
+  }
+}

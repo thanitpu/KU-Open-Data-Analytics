@@ -1,0 +1,145 @@
+{
+  "schema": "ku2d.retail-domain-validation.v1",
+  "schema_version": 1,
+  "recorded_at": "2026-08-30",
+  "record_type": "sanitized-durable-validation-evidence",
+  "validation_provenance": {
+    "workflow": "KU2D JIB Retail Lifecycle Validation",
+    "workflow_run_number": 2,
+    "workflow_run_id": 33302385382,
+    "trigger": "push",
+    "integration_commit": "79a217292e2dc3a3982a5edf9fdede8377e1eff4",
+    "artifact": {
+      "name": "ku2d-jib-retail-lifecycle",
+      "id": 9729383751,
+      "sha256": "d6e5e263d9801add556ef4692b9e84fa837774cf49d8494835a6794f3dfd676b",
+      "expires_at": "2026-09-29T08:48:20Z",
+      "detailed_evidence": "jib-live-latest.json",
+      "compact_evidence": "jib-live-summary.json",
+      "observation_database_committed": false
+    }
+  },
+  "source": {
+    "source_id": "SRC-018",
+    "name": "JIB",
+    "url": "https://www.jib.co.th/web/index.php",
+    "domain": "IT Retail",
+    "domain_key": "it_retail"
+  },
+  "execution": {
+    "environment": "cloud-hosted-public-read-only",
+    "workflow_scope": "isolated-staging",
+    "approval_scope": "isolated-staging-db",
+    "safety_policy": "Official public surfaces only; no login, CAPTCHA solving, proxy rotation, challenge solving, or access-control bypass."
+  },
+  "result": {
+    "technical_completion": true,
+    "isolated_staging_approved": true,
+    "production_approved": false,
+    "production_human_approve_performed": false,
+    "statement": "The JIB technique profile passed isolated-staging validation. Production Human Approve was not performed."
+  },
+  "tracks": {
+    "required": [
+      "discovery",
+      "product_price"
+    ],
+    "optional": [
+      "promotion"
+    ],
+    "resolved": [
+      "discovery",
+      "product_price"
+    ],
+    "missing_required": [],
+    "validated_techniques": {
+      "product_price": {
+        "technique": "generic_retail_detail_catalog",
+        "label": "Canonical Retail Product Detail Catalog",
+        "score": 64,
+        "validated_pattern_ids": [
+          "RC-P02"
+        ]
+      },
+      "discovery": {
+        "technique": "generic_app_bundle",
+        "label": "JavaScript / App Bundle Mining",
+        "score": 37,
+        "validated_pattern_ids": [
+          "RC-P04"
+        ]
+      }
+    },
+    "promotion": {
+      "assigned": false,
+      "technique": null
+    }
+  },
+  "deep_audit": {
+    "passed": true,
+    "hard_failures": [],
+    "quality_score": 82,
+    "quality_label": "strong"
+  },
+  "domain_gates": {
+    "product_catalog_sample": {
+      "passed": true,
+      "value": 5,
+      "required": ">=5 attributable products"
+    },
+    "product_price_completeness": {
+      "passed": true,
+      "value": 100.0,
+      "required": ">=85.0%"
+    },
+    "product_semantic_quality": {
+      "passed": true,
+      "value": 100.0,
+      "required": ">=85.0%"
+    },
+    "sellable_product_identity": {
+      "passed": true,
+      "value": 100.0,
+      "required": ">=90.0% SKU/model/GTIN/product ID or canonical product route"
+    },
+    "product_repeatability": {
+      "passed": true,
+      "value": 100.0,
+      "required": ">=70.0%"
+    },
+    "provenance": {
+      "passed": true,
+      "value": 100.0,
+      "required": ">=95.0% official source URL"
+    },
+    "assigned_technique_execution": {
+      "passed": true,
+      "value": 100.0,
+      "required": ">=80.0%"
+    }
+  },
+  "quality_metrics": {
+    "product_sample_count": 5,
+    "product_yield_count": 5,
+    "price_completeness_pct": 100.0,
+    "sellable_product_identity_pct": 100.0,
+    "semantic_quality_pct": 100.0,
+    "product_repeatability_pct": 100.0,
+    "provenance_pct": 100.0,
+    "assigned_technique_execution_pct": 100.0,
+    "regular_or_original_price_completeness_pct": 0.0
+  },
+  "technique_profile_fingerprint": "cbcfc49db6127e09",
+  "warnings": [
+    {
+      "code": "regular-price-low",
+      "severity": "informational",
+      "message": "Regular/original price was present in 0.0% of products and is not required unless a discount is explicitly detected."
+    }
+  ],
+  "scheduler_evaluation": {
+    "scope": "isolated-staging-only",
+    "action": "scheduled-acquire",
+    "production_scheduling_enabled": false
+  }
+}

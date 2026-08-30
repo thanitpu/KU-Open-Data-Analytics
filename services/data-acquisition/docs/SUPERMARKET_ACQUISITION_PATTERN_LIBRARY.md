@@ -148,6 +148,12 @@ Some details remain source-specific and should stay in adapters/technique implem
 
 The Pattern Library generalizes **how to select and combine techniques**, while adapters retain **how each source encodes its data**.
 
+## First cross-domain validation
+
+JIB is the first live-validated transfer of these patterns into IT Retail. Its isolated-staging profile validated canonical product-detail acquisition for Product & Price and app-bundle mining for Discovery. Promotion remained optional and unassigned. This proves only the relevant IT Retail pattern/track pairs for JIB; other IT Retail patterns remain cross-domain candidates, and Beauty remains inherited but not yet domain-validated.
+
+The validation did not perform production Human Approve. Retention-bound workflow evidence was reduced to `docs/validation/jib-retail-validation-2026-08-30.json`, while `config/retail_domain_validations.json` supplies the machine-readable, non-authorizing playbook overlay.
+
 ## Operational implications for KU2D
 
 The pattern registry should eventually be consumed by Explore/Technique Strategy so new supermarket sources can be ranked using prior validated patterns. A future recommender can use evidence such as sitemap size, structured API presence, rendered-card quality, reported totals, and cloud-access status to prioritize candidate techniques before expensive probing.
