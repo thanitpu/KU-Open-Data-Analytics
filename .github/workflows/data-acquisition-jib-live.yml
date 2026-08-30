@@ -14,6 +14,7 @@ on:
       - 'services/data-acquisition/tools/LIVE_JIB_RETAIL_LIFECYCLE.py'
       - 'services/data-acquisition/tools/WRITE_JIB_VALIDATION_STEP_SUMMARY.py'
       - 'services/data-acquisition/tools/SELF_TEST_JIB_LIFECYCLE_VALIDATION.py'
+      - 'services/data-acquisition/tools/SELF_TEST_RETAIL_ENRICHMENT_POLICY.py'
       - 'services/data-acquisition/tools/SELF_TEST_RETAIL_ASSIGNED_ACQUISITION.py'
       - '.github/workflows/data-acquisition-jib-live.yml'
   workflow_dispatch:
@@ -39,6 +40,7 @@ jobs:
           python tools/SELF_TEST_TRACK_AWARE_SELECTION.py
           python tools/SELF_TEST_RETAIL_DETAIL_CATALOG.py
           python tools/SELF_TEST_RETAIL_DETAIL_TRANSPORT.py
+          python tools/SELF_TEST_RETAIL_ENRICHMENT_POLICY.py
           python tools/SELF_TEST_RETAIL_ASSIGNED_ACQUISITION.py
           python tools/SELF_TEST_JIB_LIFECYCLE_VALIDATION.py
       - name: Run JIB Explore, Deep Audit and isolated approval lifecycle

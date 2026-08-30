@@ -165,12 +165,71 @@ def _is_example_url(url):
     return h.endswith(".invalid") or h.endswith(".test") or h in {"example.com","localhost","127.0.0.1"}
 
 
+def canonical_detail_enrichment_policy(url, guidance, required_track_gaps, techniques):
+    """Decide whether the bounded retail canonical-detail second pass is supported.
+
+    Domain validation status describes knowledge maturity; it is deliberately not
+    an execution-permission gate. Eligibility comes from the retail core playbook
+    or Product & Price-specific domain-live evidence for the detail technique.
+    """
+    decision = {
+        "canonical_detail_enrichment_eligible": False,
+        "canonical_detail_enrichment_attempted": False,
+        "canonical_detail_enrichment_basis": [],
+        "canonical_detail_enrichment_skip_reason": None,
+    }
+    gaps = required_track_gaps or {}
+    if "product_price" not in gaps:
+        decision["canonical_detail_enrichment_skip_reason"] = "product-price-already-resolved"
+        return decision
+
+    library = guidance.get("learned_pattern_library") or {}
+    if library.get("schema") != "ku2d.retail-commerce-core-patterns.v1":
+        decision["canonical_detail_enrichment_skip_reason"] = "retail-product-price-policy-not-applicable"
+        return decision
+
+    product_patterns = (guidance.get("tracks") or {}).get("product_price") or []
+    core_pattern = any(str(row.get("pattern_id") or "") == "RC-P02" for row in product_patterns)
+    domain_live = any(
+        str(evidence.get("technique") or "") == "generic_retail_detail_catalog"
+        for row in product_patterns
+        for evidence in ((row.get("evidence") or {}).get("domain_validated_sources") or [])
+    )
+    basis = []
+    if core_pattern:
+        basis.append("retail-core-pattern-RC-P02")
+    if library.get("transfer_status") == "inherited-not-yet-domain-validated" and core_pattern:
+        basis.append("inherited-retail-prior")
+    if domain_live:
+        basis.append("domain-live-validated-technique")
+    decision["canonical_detail_enrichment_basis"] = basis
+    if not (core_pattern or domain_live):
+        decision["canonical_detail_enrichment_skip_reason"] = "canonical-detail-capability-not-supported"
+        return decision
+    if techniques is not None and "generic_retail_detail_catalog" not in set(techniques or []):
+        decision["canonical_detail_enrichment_skip_reason"] = "technique-explicitly-excluded"
+        return decision
+    if _is_example_url(url):
+        decision["canonical_detail_enrichment_skip_reason"] = "example-or-test-url"
+        return decision
+
+    decision["canonical_detail_enrichment_eligible"] = True
+    return decision
+
+
 def explore_url(url,domain="General",purpose="research_evidence",max_pages=3,techniques=None,progress_callback=None):
     m=explore_with_strategy(url,domain,purpose,max(1,min(max_pages,8)),techniques,progress_callback=progress_callback)
     original_best=m.get("recommended_techniques") or []
     clues=_pattern_clues(m)
     guidance=recommended_sequence(domain,clues=clues)
-    track_selection={"required_track_gaps":{},"candidates":{}}
+    track_selection={
+      "required_track_gaps":{},"candidates":{},
+      "canonical_detail_enrichment_eligible":False,
+      "canonical_detail_enrichment_attempted":False,
+      "canonical_detail_enrichment_basis":[],
+      "canonical_detail_enrichment_skip_reason":"retail-product-price-policy-not-applicable",
+      "canonical_detail_enrichment":None,
+    }
     best=original_best
 
     generic_track_mode=(purpose in {"retail_market_intelligence","competitive_intelligence"} and
@@ -187,14 +246,14 @@ def explore_url(url,domain="General",purpose="research_evidence",max_pages=3,tec
         # first generic bench cannot satisfy Product & Price. Discovery evidence from
         # the first pass seeds canonical product-route exploration.
         gaps=selection.get("required_track_gaps") or {}
-        retail_transfer=(guidance.get("learned_pattern_library") or {}).get("transfer_status")=="inherited-not-yet-domain-validated"
-        may_enrich=(techniques is None or "generic_retail_detail_catalog" in set(techniques or []))
-        if "product_price" in gaps and retail_transfer and may_enrich and not _is_example_url(url):
+        enrichment_decision=canonical_detail_enrichment_policy(url,guidance,gaps,techniques)
+        if enrichment_decision["canonical_detail_enrichment_eligible"]:
             enrichment=generic_retail_detail_catalog(
                 url,
                 max_pages=max(4,min(10,int(max_pages or 3)*2)),
                 candidate_urls=_candidate_urls_from_bench(m),
             )
+            enrichment_decision["canonical_detail_enrichment_attempted"]=True
             if not any(x.get("technique")==enrichment.get("technique") for x in (m.get("technique_results") or [])):
                 m.setdefault("technique_results",[]).append(enrichment)
             _refresh_strategy_summary(m)
@@ -211,9 +270,10 @@ def explore_url(url,domain="General",purpose="research_evidence",max_pages=3,tec
         m["assigned_techniques"]=[x.get("technique") for x in picked if x.get("technique")]
         m["track_recommendations"]=tracks
         track_selection={**selection,"global_recommendations_before_track_selection":original_best,
-                         "canonical_detail_enrichment_attempted":bool(enrichment),
+                         **enrichment_decision,
                          "canonical_detail_enrichment":({
                            "record_count":enrichment.get("record_count"),"pages_checked":enrichment.get("pages_checked"),
+                           "discovered_product_url_count":(enrichment.get("potential") or {}).get("product_urls_discovered"),
                            "potential":enrichment.get("potential") or {},"diagnostics":enrichment.get("diagnostics") or []
                          } if enrichment else None)}
 

@@ -125,6 +125,18 @@ def compact_technique(result):
     }
 
 
+def compact_enrichment_decision(selection):
+    evidence = selection.get("canonical_detail_enrichment") or {}
+    return {
+        "eligible": bool(selection.get("canonical_detail_enrichment_eligible")),
+        "attempted": bool(selection.get("canonical_detail_enrichment_attempted")),
+        "basis": selection.get("canonical_detail_enrichment_basis") or [],
+        "skip_reason": selection.get("canonical_detail_enrichment_skip_reason"),
+        "record_count": evidence.get("record_count"),
+        "discovered_product_url_count": evidence.get("discovered_product_url_count"),
+    }
+
+
 def result_paths(environ=None):
     env = environ or os.environ
     detail = Path(env.get("KU2D_JIB_RESULT", ROOT.parent.parent / "docs" / "validation" / "jib-live-latest.json"))
@@ -287,6 +299,7 @@ def run_lifecycle():
     )
     persist_explore(SOURCE_ID, source.get("url"), explore)
     recs = explore.get("recommended_techniques") or []
+    explore_selection = explore.get("track_selection") or {}
     result["explore"] = {
         "quality": explore.get("quality"),
         "record_count": explore.get("record_count"),
@@ -294,12 +307,13 @@ def run_lifecycle():
         "recommendation": explore.get("recommendation"),
         "assigned_techniques": explore.get("assigned_techniques") or [],
         "track_recommendations": explore.get("track_recommendations") or {},
-        "required_track_gaps": (explore.get("track_selection") or {}).get("required_track_gaps") or {},
+        "required_track_gaps": explore_selection.get("required_track_gaps") or {},
+        "canonical_detail_enrichment": compact_enrichment_decision(explore_selection),
         "recommended_techniques": recs,
         "technique_results": [compact_technique(x) for x in (explore.get("technique_results") or [])],
     }
 
-    explore_gaps = (explore.get("track_selection") or {}).get("required_track_gaps") or {}
+    explore_gaps = explore_selection.get("required_track_gaps") or {}
     if not recs or explore_gaps:
         result["approved"] = False
         result["continuous_enabled"] = False
