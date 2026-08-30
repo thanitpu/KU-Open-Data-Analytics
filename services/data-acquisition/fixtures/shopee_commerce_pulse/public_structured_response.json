@@ -1,0 +1,28 @@
+{
+  "fixture_only": true,
+  "items": [
+    {
+      "itemid": 123456789,
+      "shopid": 987654321,
+      "name": "Fixture USB-C cable",
+      "brand": "Fixture Brand",
+      "category": "mobile-accessories",
+      "price": 15900000,
+      "price_before_discount": 19900000,
+      "rating": 4.8,
+      "review_count": 412,
+      "sold_display": "ขายแล้ว 1.2พัน",
+      "rank": 3
+    },
+    {
+      "itemid": 222222222,
+      "shopid": 333333333,
+      "name": "Fixture phone stand",
+      "price": 9900000,
+      "rating": 4.7,
+      "review_count": 88,
+      "sold_display": "ขายแล้ว 300 ชิ้น",
+      "rank": 7
+    }
+  ]
+}
