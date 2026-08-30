@@ -27,6 +27,7 @@
   "manual_source_classes": [
     "training_authority",
     "equipment_manufacturer",
+    "equipment_retailer",
     "dive_operator",
     "independent_instructor",
     "equipment_reviewer",

@@ -19,6 +19,7 @@ from youtube_human_review import (
     YouTubeVideoReview,
     create_knowledge_dataset,
     create_monitoring_plan,
+    extract_price_mentions,
     prepare_review_package,
     suggest_channel_class,
     suggest_commercial_context,
@@ -29,8 +30,10 @@ from youtube_source_foundation import load_policy, load_query_profiles
 from PREPARE_YOUTUBE_HUMAN_REVIEW import main as prepare_main
 
 FIXTURE = ROOT / "fixtures" / "youtube_human_review" / "sanitized_foundation_result.json"
+LEARNING_FIXTURE = ROOT / "fixtures" / "youtube_human_review" / "equipment_pilot_learning_cases.json"
 SCHEMA = ROOT / "config" / "youtube_knowledge_dataset_schema.json"
 source = json.loads(FIXTURE.read_text(encoding="utf-8"))
+learning = json.loads(LEARNING_FIXTURE.read_text(encoding="utf-8"))
 source_before = copy.deepcopy(source)
 package = prepare_review_package(source)
 
@@ -102,6 +105,29 @@ assert {
 } == set(EQUIPMENT_VOCABULARY)
 assert "equipment" in CONTENT_ROLES
 
+# Post-pilot equipment intent is core only within compatible scuba activity scope.
+learning_videos = {row["case_id"]: row for row in learning["videos"]}
+assert suggest_relevance(learning_videos["english_gear_setup"])["suggested_relevance"] == "core"
+assert suggest_relevance(learning_videos["thai_scuba_assembly"])["suggested_relevance"] == "core"
+assert suggest_relevance(learning_videos["beginner_buy_first"])["suggested_relevance"] == "core"
+assert suggest_relevance({
+    "title": "How To Set Up Your Dive Gear Correct",
+    "description": "Beginner setup lesson.",
+    "query_profile_ids": ["QYT-EQUIPMENT-SETUP-EN"],
+    "research_collections": ["diving_equipment"],
+})["suggested_relevance"] == "core"
+snorkeling = suggest_relevance(learning_videos["snorkeling_only"])
+spearfishing = suggest_relevance(learning_videos["spearfishing_only"])
+assert snorkeling["suggested_relevance"] == "adjacent" and "snorkeling" in " ".join(snorkeling["suggestion_basis"])
+assert spearfishing["suggested_relevance"] == "adjacent" and "spearfishing" in " ".join(spearfishing["suggestion_basis"])
+thai_freediving_equipment = suggest_relevance({
+    "title": "อุปกรณ์ดำน้ำสำหรับฟรีไดฟ์",
+    "description": "อุปกรณ์สำหรับฟรีไดฟ์เท่านั้น",
+    "query_profile_ids": ["QYT-EQUIPMENT-BEGINNER-TH"],
+    "research_collections": ["diving_equipment"],
+})
+assert thai_freediving_equipment["suggested_relevance"] == "adjacent"
+
 # F: operator/travel class hints remain distinguishable and explicitly non-authoritative.
 operator_hint = by_channel["SAN-DIVE-OPERATOR"]["review_suggestions"]
 travel_hint = by_channel["SAN-TRAVEL-CREATOR"]["review_suggestions"]
@@ -109,19 +135,50 @@ assert operator_hint["suggested_source_class"] == "dive_operator"
 assert travel_hint["suggested_source_class"] == "travel_dive_creator"
 assert operator_hint["authoritative"] is False and travel_hint["authoritative"] is False
 assert suggest_channel_class({"channel_title":"Unclassified", "channel_description":"General videos"})["suggested_source_class"] == "other"
+learning_channels = {row["case_id"]: row for row in learning["channels"]}
+expected_channel_classes = {
+    "equipment_retailer": "equipment_retailer",
+    "equipment_reviewer": "equipment_reviewer",
+    "equipment_manufacturer": "equipment_manufacturer",
+    "dive_operator": "dive_operator",
+    "community_creator": "community_creator",
+}
+for case_id, expected_class in expected_channel_classes.items():
+    channel_suggestion = suggest_channel_class(learning_channels[case_id])
+    assert channel_suggestion["suggested_source_class"] == expected_class
+    assert channel_suggestion["source_class_suggestion_basis"] and channel_suggestion["authoritative"] is False
+affiliate_creator = suggest_channel_class(learning_channels["affiliate_creator_not_retailer"])
+assert affiliate_creator["suggested_source_class"] != "equipment_retailer"
 
 # G: disclosed commercial text creates evidence-bearing hints; no hidden sponsorship is inferred.
 commercial = by_video["SAN-AFFILIATE-GEAR"]["review_suggestions"]
-assert commercial["commercial_context_suggestion"] == "affiliate"
+commercial_dimensions = commercial["commercial_context_suggestion"]
+assert commercial_dimensions["sponsorship_status"] == "unknown"
+assert commercial_dimensions["affiliate_status"] == "disclosed"
+assert commercial_dimensions["compatibility_summary"] == "affiliate"
 assert any(row["matched_cue"] == "affiliate" for row in commercial["commercial_context_evidence"])
 assert commercial["hidden_sponsorship_inferred"] is False
 assert by_video["SAN-AFFILIATE-GEAR"]["youtube_paid_product_placement"] is False
 quiet = suggest_commercial_context({"title":"Scuba skills", "description":"Neutral lesson"})
-assert quiet["commercial_context_suggestion"] == "unknown"
+assert quiet["commercial_context_suggestion"]["sponsorship_status"] == "unknown"
+assert quiet["commercial_context_suggestion"]["affiliate_status"] == "not_observed"
+assert quiet["commercial_context_suggestion"]["compatibility_summary"] == "unknown"
 assert quiet["commercial_context_evidence"] == [] and quiet["hidden_sponsorship_inferred"] is False
 product_promotion = suggest_commercial_context({"title":"New dive mask - buy now", "description":"Available now"})
-assert product_promotion["commercial_context_suggestion"] == "promotional_offer"
+assert product_promotion["commercial_context_suggestion"]["promotional_offer"] is True
+assert product_promotion["commercial_context_suggestion"]["compatibility_summary"] == "promotional_offer"
 assert product_promotion["commercial_context_evidence"]
+negative_affiliate = suggest_commercial_context(learning_videos["not_sponsored_affiliate_price"])
+negative_dimensions = negative_affiliate["commercial_context_suggestion"]
+assert negative_dimensions["sponsorship_status"] == "explicitly_not_sponsored"
+assert negative_dimensions["affiliate_status"] == "disclosed"
+assert negative_dimensions["compatibility_summary"] == "affiliate"
+assert not any(
+    row.get("status") == "disclosed_sponsored" for row in negative_affiliate["commercial_context_evidence"]
+)
+sponsored = suggest_commercial_context(learning_videos["sponsored_price"])
+assert sponsored["commercial_context_suggestion"]["sponsorship_status"] == "disclosed_sponsored"
+assert sponsored["commercial_context_suggestion"]["compatibility_summary"] == "sponsorship_disclosed"
 
 # H/I/J/K: monitoring requires completed channel approval and an uploads playlist; it stays dry.
 operator_candidate = by_channel["SAN-DIVE-OPERATOR"]
@@ -166,7 +223,24 @@ assert mentions[0]["record_type"] == "PriceMentionCandidate"
 assert mentions[0]["stated_by_source"] is True
 assert mentions[0]["current_commerce_price_evidence"] is False
 assert mentions[0]["product_price_acquisition_record"] is False
+assert mentions[0]["commercial_context"] == "affiliate"
+assert mentions[0]["commercial_dimensions"]["affiliate_status"] == "disclosed"
 assert "ProductCandidate" not in json.dumps(mentions) and "PriceObservation" not in json.dumps(mentions)
+negative_price_dimensions = negative_affiliate["commercial_context_suggestion"]
+negative_price = extract_price_mentions(
+    learning_videos["not_sponsored_affiliate_price"], negative_price_dimensions,
+)[0]
+assert negative_price["value"] == "300" and negative_price["currency"] == "USD"
+assert negative_price["commercial_context"] == "affiliate"
+assert negative_price["commercial_dimensions"]["sponsorship_status"] == "explicitly_not_sponsored"
+assert negative_price["commercial_dimensions"]["affiliate_status"] == "disclosed"
+assert negative_price["current_commerce_price_evidence"] is False
+assert negative_price["product_price_acquisition_record"] is False
+sponsored_dimensions = sponsored["commercial_context_suggestion"]
+sponsored_price = extract_price_mentions(learning_videos["sponsored_price"], sponsored_dimensions)[0]
+assert sponsored_price["value"] == "1000" and sponsored_price["commercial_context"] == "sponsorship_disclosed"
+assert sponsored_price["current_commerce_price_evidence"] is False
+assert sponsored_price["product_price_acquisition_record"] is False
 
 # M/A: rejecting ongoing monitoring never removes an included video's source channel provenance.
 rejected_package = copy.deepcopy(package)
@@ -334,6 +408,7 @@ assert policy["comments_enabled"] is False and policy["comment_threads_enabled"]
 assert policy["comment_acquisition_enabled"] is False
 assert policy["production_scheduling_enabled"] is False
 assert "other" in policy["manual_source_classes"]
+assert "equipment_retailer" in policy["manual_source_classes"]
 
 # Tool contract is deterministic, compact, and does not leak raw responses or credentials.
 secret = "SANITIZED-SECRET-MUST-NOT-LEAK"

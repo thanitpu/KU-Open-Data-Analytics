@@ -1,0 +1,107 @@
+{
+  "schema": "ku2d.youtube-equipment-pilot-learning-fixture.v1",
+  "sanitized": true,
+  "videos": [
+    {
+      "case_id": "english_gear_setup",
+      "video_id": "SAN-EQUIP-SETUP-EN",
+      "title": "Scuba Diving: How to Assemble Equipment",
+      "description": "A step-by-step gear assembly lesson for new scuba divers.",
+      "query_profile_ids": ["QYT-EQUIPMENT-SETUP-EN"],
+      "research_collections": ["diving_equipment"],
+      "observed_at": "2026-08-30T00:00:00Z"
+    },
+    {
+      "case_id": "thai_scuba_assembly",
+      "video_id": "SAN-EQUIP-ASSEMBLY-TH",
+      "title": "วิธีประกอบอุปกรณ์ดำน้ำลึก (Scuba Set)",
+      "description": "แนะนำการประกอบชุดสำหรับนักดำน้ำมือใหม่",
+      "query_profile_ids": ["QYT-EQUIPMENT-BEGINNER-TH"],
+      "research_collections": ["diving_equipment"],
+      "observed_at": "2026-08-30T00:00:00Z"
+    },
+    {
+      "case_id": "beginner_buy_first",
+      "video_id": "SAN-EQUIP-BUY-FIRST",
+      "title": "New Diver? Here's Exactly What Gear to Buy First",
+      "description": "A beginner gear guide for the first scuba course.",
+      "query_profile_ids": ["QYT-EQUIPMENT-SETUP-EN"],
+      "research_collections": ["diving_equipment"],
+      "observed_at": "2026-08-30T00:00:00Z"
+    },
+    {
+      "case_id": "snorkeling_only",
+      "video_id": "SAN-EQUIP-SNORKEL",
+      "title": "Snorkeling Equipment: Mask and Fins Setup",
+      "description": "Snorkeling-only equipment for surface reef trips.",
+      "query_profile_ids": ["QYT-EQUIPMENT-SETUP-EN"],
+      "research_collections": ["diving_equipment"],
+      "observed_at": "2026-08-30T00:00:00Z"
+    },
+    {
+      "case_id": "spearfishing_only",
+      "video_id": "SAN-EQUIP-SPEARFISHING",
+      "title": "Spearfishing Equipment Guide",
+      "description": "Fins and mask selection for spearfishing only.",
+      "query_profile_ids": ["QYT-EQUIPMENT-SETUP-EN"],
+      "research_collections": ["diving_equipment"],
+      "observed_at": "2026-08-30T00:00:00Z"
+    },
+    {
+      "case_id": "not_sponsored_affiliate_price",
+      "video_id": "SAN-EQUIP-PRICE-300",
+      "title": "$300 Beginner Dive Computer",
+      "description": "This video is NOT sponsored. Some product links are affiliate links and may earn a commission.",
+      "query_profile_ids": ["QYT-EQUIPMENT-SETUP-EN"],
+      "research_collections": ["diving_equipment"],
+      "observed_at": "2026-08-30T00:00:00Z"
+    },
+    {
+      "case_id": "sponsored_price",
+      "video_id": "SAN-EQUIP-PRICE-1000",
+      "title": "$1000+ Best Dive Computer",
+      "description": "Sponsored by Sanitized Scuba Brand.",
+      "query_profile_ids": ["QYT-EQUIPMENT-SETUP-EN"],
+      "research_collections": ["diving_equipment"],
+      "observed_at": "2026-08-30T00:00:00Z"
+    }
+  ],
+  "channels": [
+    {
+      "case_id": "equipment_retailer",
+      "channel_id": "SAN-CHANNEL-RETAILER",
+      "channel_title": "Sanitized Scuba Store",
+      "channel_description": "A diving equipment retailer and scuba shop for new divers."
+    },
+    {
+      "case_id": "equipment_reviewer",
+      "channel_id": "SAN-CHANNEL-REVIEWER",
+      "channel_title": "Sanitized Gear Tests",
+      "channel_description": "Independent scuba equipment reviews and maintenance education."
+    },
+    {
+      "case_id": "equipment_manufacturer",
+      "channel_id": "SAN-CHANNEL-MANUFACTURER",
+      "channel_title": "Sanitized Dive Systems",
+      "channel_description": "Official scuba gear manufacturer and dive equipment brand."
+    },
+    {
+      "case_id": "dive_operator",
+      "channel_id": "SAN-CHANNEL-OPERATOR",
+      "channel_title": "Sanitized Dive Center",
+      "channel_description": "Dive center and operator offering Open Water courses."
+    },
+    {
+      "case_id": "community_creator",
+      "channel_id": "SAN-CHANNEL-COMMUNITY",
+      "channel_title": "Sanitized Diver Community",
+      "channel_description": "Community scuba diving stories and skills."
+    },
+    {
+      "case_id": "affiliate_creator_not_retailer",
+      "channel_id": "SAN-CHANNEL-AFFILIATE",
+      "channel_title": "Sanitized Product Creator",
+      "channel_description": "General product creator using Amazon affiliate links; not a store or retailer."
+    }
+  ]
+}
