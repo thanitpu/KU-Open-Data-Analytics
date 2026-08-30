@@ -7,6 +7,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
+from providers.youtube_data_api import YouTubeProviderError, YouTubeQuotaExceeded, YouTubeTransientError
+
 ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = ROOT / "config" / "youtube_api_policy.json"
 PROFILES_PATH = ROOT / "config" / "q_diving_youtube_query_profiles.json"
@@ -69,6 +71,8 @@ class YouTubeVideoCandidate:
     etag: str | None
     data_status: str
     publicly_usable: bool
+    availability_reason: str | None
+    deletion_confirmed: bool
     provenance: dict
     human_review_status: str
     ku2d_manual_curation: dict = field(default_factory=dict)
@@ -144,11 +148,12 @@ def load_query_profiles(path: Path = PROFILES_PATH) -> list[dict]:
 def select_query_profiles(profile_ids: list[str] | None = None, *, profiles=None, policy=None) -> list[dict]:
     profiles = list(profiles if profiles is not None else load_query_profiles())
     if profile_ids:
-        wanted = set(profile_ids)
-        selected = [row for row in profiles if row.get("profile_id") in wanted]
-        missing = sorted(wanted - {row.get("profile_id") for row in selected})
+        ordered_ids = list(dict.fromkeys(profile_ids))
+        by_id = {row.get("profile_id"): row for row in profiles}
+        missing = [profile_id for profile_id in ordered_ids if profile_id not in by_id]
         if missing:
             raise ValueError(f"Unknown YouTube query profile(s): {', '.join(missing)}")
+        selected = [by_id[profile_id] for profile_id in ordered_ids]
     else:
         selected = [row for row in profiles if row.get("enabled")]
     policy = policy or load_policy()
@@ -277,6 +282,7 @@ def normalize_videos(api_items: list[dict], search_evidence: dict[str, dict], *,
             refresh_due_at=due_s, source_endpoint="videos.list",
             source_query_profile_id=profile_ids[0] if len(profile_ids) == 1 else None, etag=item.get("etag"),
             data_status="current" if usable else "unavailable", publicly_usable=usable,
+            availability_reason=None if usable else "not-public-or-processable", deletion_confirmed=False,
             provenance={"provider":"youtube-data-api-v3", "endpoint":"videos.list",
                         "query_profile_ids":profile_ids, "search_result_observed":bool(evidence)},
             human_review_status="pending", ku2d_manual_curation=_manual_curation(),
@@ -298,7 +304,8 @@ def normalize_videos(api_items: list[dict], search_evidence: dict[str, dict], *,
             query_profile_ids=profile_ids, research_collections=collections,
             observed_at=observed_s, api_refreshed_at=refreshed_s, refresh_due_at=due_s,
             source_endpoint="videos.list", source_query_profile_id=profile_ids[0] if len(profile_ids) == 1 else None,
-            etag=None, data_status="deleted", publicly_usable=False,
+            etag=None, data_status="unavailable", publicly_usable=False,
+            availability_reason="missing-from-videos-list", deletion_confirmed=False,
             provenance={"provider":"youtube-data-api-v3", "endpoint":"videos.list",
                         "query_profile_ids":profile_ids, "missing_from_hydration":True, "tombstone":True},
             human_review_status="not-reviewable", ku2d_manual_curation=_manual_curation(),
@@ -396,7 +403,9 @@ def discover(provider, profiles: list[dict], *, max_search_calls=8, max_pages_pe
     if len(profiles) > int(policy["pilot_limits"]["max_query_profiles"]):
         raise ValueError("YouTube query-profile pilot limit exceeded.")
     search_call_limit = int(max_search_calls)
-    if search_call_limit < len(profiles) or search_call_limit > int(policy["pilot_limits"]["max_query_profiles"]):
+    max_attempts = int(policy["pilot_limits"].get("max_search_attempts_per_pilot",
+                                                  policy["pilot_limits"]["max_query_profiles"]))
+    if search_call_limit < len(profiles) or search_call_limit > max_attempts:
         raise ValueError("YouTube search-call budget must cover every selected profile and stay within the pilot maximum.")
     page_limit = int(max_pages_per_query)
     if page_limit < 1 or page_limit > int(policy["pilot_limits"]["max_pages_per_query"]):
@@ -404,31 +413,113 @@ def discover(provider, profiles: list[dict], *, max_search_calls=8, max_pages_pe
     result_limit = int(max_results)
     if result_limit < 1 or result_limit > int(policy["pilot_limits"]["max_results_per_search"]):
         raise ValueError("YouTube result budget must be between 1 and the configured pilot maximum.")
+    ledger_start = len(provider.quota_ledger)
     search_evidence: dict[str, dict] = {}
     raw_search_count = 0
-    search_calls = 0
+    logical_search_operations_completed = 0
+    transient_search_retries_used = 0
+    profile_search_coverage = {
+        profile["profile_id"]: {
+            "initial_attempted": False,
+            "logical_pages_completed": 0,
+            "actual_attempts": 0,
+            "retries": 0,
+            "next_page_available": False,
+            "status": "pending",
+            "error_code": None,
+        }
+        for profile in profiles
+    }
+
+    def actual_search_attempts_used():
+        return sum(x.get("endpoint") == "search.list" for x in provider.quota_ledger[ledger_start:])
+
+    def merge_payload(payload, profile):
+        nonlocal raw_search_count
+        items = payload.get("items") or []
+        raw_search_count += len(items)
+        for parsed in parse_search_items(items, profile):
+            video_id = parsed["video_id"]
+            evidence = search_evidence.setdefault(video_id, {
+                "query_profile_ids": [], "research_collections": [],
+                "channel_id": parsed.get("channel_id"), "channel_title": parsed.get("channel_title"),
+                "search_title": parsed.get("title"), "search_description": parsed.get("description"),
+                "search_published_at": parsed.get("published_at"),
+            })
+            evidence["query_profile_ids"].append(profile["profile_id"])
+            evidence["research_collections"].append(profile["research_collection"])
+
+    def run_search_task(task):
+        nonlocal logical_search_operations_completed, transient_search_retries_used
+        profile = task["profile"]
+        profile_id = profile["profile_id"]
+        coverage = profile_search_coverage[profile_id]
+        if task["page_number"] == 1 and task["retry_number"] == 0:
+            coverage["initial_attempted"] = True
+        if task["retry_number"] > 0:
+            coverage["retries"] += 1
+            transient_search_retries_used += 1
+            delay = task.get("retry_after")
+            if delay is not None:
+                provider.sleeper(delay)
+        before = actual_search_attempts_used()
+        try:
+            payload = provider.search_once(profile, page_token=task.get("page_token"), max_results=result_limit)
+        except YouTubeQuotaExceeded:
+            coverage["actual_attempts"] += actual_search_attempts_used() - before
+            coverage["status"] = "quota-exceeded"
+            coverage["error_code"] = provider.quota_ledger[-1].get("error_code") if actual_search_attempts_used() > before else "quota-budget"
+            raise
+        except YouTubeTransientError as exc:
+            coverage["actual_attempts"] += actual_search_attempts_used() - before
+            coverage["status"] = "transient-error"
+            coverage["error_code"] = exc.error_code
+            if task["retry_number"] < provider.max_transient_retries:
+                return {**task, "retry_number": task["retry_number"] + 1, "retry_after": exc.retry_after}
+            return None
+        except YouTubeProviderError as exc:
+            coverage["actual_attempts"] += actual_search_attempts_used() - before
+            coverage["status"] = "error"
+            coverage["error_code"] = exc.error_code
+            return None
+        coverage["actual_attempts"] += actual_search_attempts_used() - before
+        coverage["logical_pages_completed"] += 1
+        logical_search_operations_completed += 1
+        coverage["next_page_available"] = bool(payload.get("nextPageToken"))
+        coverage["status"] = "completed"
+        coverage["error_code"] = None
+        merge_payload(payload, profile)
+        if task["page_number"] < page_limit and payload.get("nextPageToken"):
+            return {"profile": profile, "page_number": task["page_number"] + 1,
+                    "page_token": payload["nextPageToken"], "retry_number": 0, "retry_after": None}
+        return None
+
+    pending = []
+    # Fairness boundary: every profile gets its ordered initial attempt before
+    # any retry or second-page work is allowed to run.
     for profile in profiles:
-        token = None
-        for _ in range(page_limit):
-            if search_calls >= search_call_limit:
-                break
-            payload = provider.search(profile, page_token=token, max_results=result_limit)
-            search_calls += 1
-            items = payload.get("items") or []
-            raw_search_count += len(items)
-            for parsed in parse_search_items(items, profile):
-                video_id = parsed["video_id"]
-                evidence = search_evidence.setdefault(video_id, {"query_profile_ids": [], "research_collections": [],
-                                                                  "channel_id": parsed.get("channel_id"),
-                                                                  "channel_title": parsed.get("channel_title"),
-                                                                  "search_title": parsed.get("title"),
-                                                                  "search_description": parsed.get("description"),
-                                                                  "search_published_at": parsed.get("published_at")})
-                evidence["query_profile_ids"].append(profile["profile_id"])
-                evidence["research_collections"].append(profile["research_collection"])
-            token = payload.get("nextPageToken")
-            if not token:
-                break
+        task = {"profile": profile, "page_number": 1, "page_token": None,
+                "retry_number": 0, "retry_after": None}
+        follow_up = run_search_task(task)
+        if follow_up:
+            pending.append(follow_up)
+
+    # FIFO is deterministic round-robin because each profile contributes at
+    # most one pending operation at a time; any further retry is requeued.
+    while pending and actual_search_attempts_used() < search_call_limit:
+        task = pending.pop(0)
+        follow_up = run_search_task(task)
+        if follow_up:
+            pending.append(follow_up)
+
+    pending_profiles = {task["profile"]["profile_id"] for task in pending}
+    for profile_id, coverage in profile_search_coverage.items():
+        if profile_id in pending_profiles:
+            coverage["status"] = ("transient-retry-pending-budget-exhausted"
+                                  if coverage["logical_pages_completed"] == 0
+                                  else "partial-budget-exhausted")
+        elif coverage["status"] == "completed" and coverage["retries"]:
+            coverage["status"] = "completed-after-retry"
     video_ids = list(search_evidence)
     video_items = provider.videos(video_ids)
     videos = normalize_videos(video_items, search_evidence, requested_ids=video_ids, observed_at=observed, policy=policy)
@@ -443,15 +534,23 @@ def discover(provider, profiles: list[dict], *, max_search_calls=8, max_pages_pe
         channel_items.extend((provider.channels(channel_ids[start:start + 50]).get("items") or []))
     channels = normalize_channels(channel_items, channel_evidence=channel_evidence, observed_at=observed, policy=policy)
     report = quality_report(videos, raw_search_count=raw_search_count)
+    run_ledger = list(provider.quota_ledger[ledger_start:])
+    search_attempts = sum(x.get("endpoint") == "search.list" for x in run_ledger)
     return {
         "schema": "ku2d.youtube-source-foundation-result.v1",
         "provider": "youtube-data-api-v3",
         "observed_at": iso(observed),
         "query_profile_ids": [x["profile_id"] for x in profiles],
-        "search_calls_used": search_calls,
+        "logical_search_operations_completed": logical_search_operations_completed,
+        "actual_search_attempts_used": search_attempts,
+        "transient_search_retries_used": transient_search_retries_used,
+        "max_search_attempts": search_call_limit,
+        "search_attempt_budget_exhausted": search_attempts >= search_call_limit,
+        "profile_search_coverage": profile_search_coverage,
+        "search_calls_used": search_attempts,
         "videos": videos, "channels": channels, "playlists": [],
         "quality_report": report,
-        "quota_observations": list(provider.quota_ledger),
+        "quota_observations": run_ledger,
         "review_stage": "human-review-required",
         "approved": False,
         "production_store": False,

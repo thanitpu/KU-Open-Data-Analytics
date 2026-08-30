@@ -38,7 +38,9 @@ It refuses a missing key, unknown profile, unsupported endpoint, invalid budget,
 
 ## Quota and request discipline
 
-The pilot permits at most 10 results per search, eight selected query profiles, and two pages per query. `videos.list` is batched at 50 IDs. Every request produces a sanitized quota observation containing endpoint, request time/count, quota bucket, configured estimated cost, query profile, result count, next-page token, status, and error. Request URLs and keys are excluded.
+The pilot permits at most 10 results per search, eight selected query profiles, eight actual `search.list` transport attempts, and two logical pages per query. `--max-search-calls` means actual `search.list` attempts: initial requests, transient retries, and next-page requests all consume the same cap. It does not count metadata hydration calls. `videos.list` is batched at 50 IDs. Every request produces a sanitized quota observation containing endpoint, request time/count, quota bucket, configured estimated cost, query profile, result count, next-page token, status, and error. Request URLs and keys are excluded.
+
+Discovery preserves selected-profile order and performs one first-page attempt for every profile before allocating any retry or second page. Remaining attempts use a deterministic round-robin queue; a profile without `nextPageToken` is not queued for page two. Result evidence reports logical operations, actual attempts, transient retries, the maximum and exhaustion state, plus per-profile initial coverage, pages, attempts, retries, next-page availability, status, and error code. The compatibility field `search_calls_used` has the same meaning as `actual_search_attempts_used`.
 
 Endpoint costs are configurable estimates rather than permanent guarantees. Quota errors stop the run and are not retried. Transient transport/server errors have bounded backoff and honor `Retry-After`. Multiple API projects must not be used to avoid quota limits.
 
@@ -54,7 +56,7 @@ A caption-availability flag is not transcript authorization. A future transcript
 
 ## Retention, provenance, and deletion
 
-Non-authorized API data is refreshed or deleted within 30 days. Normalized candidates record `observed_at`, `api_refreshed_at`, `refresh_due_at`, `source_endpoint`, query-profile provenance, `etag`, and `data_status`. Missing, deleted, restricted, or private items become non-usable tombstones. Raw API snapshots are not retained.
+Non-authorized API data is refreshed or deleted within 30 days. Normalized candidates record `observed_at`, `api_refreshed_at`, `refresh_due_at`, `source_endpoint`, query-profile provenance, `etag`, and `data_status`. A requested ID missing from `videos.list` is an unavailable, non-usable tombstone with reason `missing-from-videos-list` and `deletion_confirmed: false`; absence alone never claims deletion. Explicitly unavailable, restricted, private, or independently confirmed deleted items also remain non-usable. Raw API snapshots are not retained.
 
 ## Foundation quality gates
 

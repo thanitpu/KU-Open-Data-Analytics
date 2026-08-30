@@ -8,11 +8,11 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-for path in (ROOT / "acquisition", ROOT / "acquisition" / "providers"):
+for path in (ROOT / "acquisition",):
     if str(path) not in sys.path:
         sys.path.insert(0, str(path))
 
-from youtube_data_api import YouTubeDataAPI, YouTubeProviderError, load_policy
+from providers.youtube_data_api import YouTubeDataAPI, YouTubeProviderError, load_policy
 from youtube_source_foundation import discover, select_query_profiles
 
 
@@ -22,7 +22,8 @@ def parser() -> argparse.ArgumentParser:
                    help="Approved query_profile_id; repeat for multiple profiles")
     p.add_argument("--max-results", type=int, default=10)
     p.add_argument("--max-pages", type=int, default=1)
-    p.add_argument("--max-search-calls", type=int, default=8)
+    p.add_argument("--max-search-calls", type=int, default=8,
+                   help="Maximum actual search.list transport attempts, including transient retries")
     p.add_argument("--quota-budget", type=int, default=50)
     p.add_argument("--endpoint", default="discovery")
     p.add_argument("--no-approve", action="store_true")
@@ -46,7 +47,8 @@ def validate_options(args, *, policy=None, environ=None) -> None:
     if args.max_pages < 1 or args.max_pages > int(limits["max_pages_per_query"]):
         raise ValueError("--max-pages exceeds the configured pilot limit.")
     selected_count = len(set(args.profiles or []))
-    if args.max_search_calls < selected_count or args.max_search_calls > int(limits["max_query_profiles"]):
+    max_attempts = int(limits.get("max_search_attempts_per_pilot", limits["max_query_profiles"]))
+    if args.max_search_calls < selected_count or args.max_search_calls > max_attempts:
         raise ValueError("--max-search-calls must cover selected profiles and stay within the pilot limit.")
     if args.quota_budget < 1:
         raise ValueError("--quota-budget must be positive.")
@@ -67,6 +69,8 @@ def main(argv=None) -> int:
         print(json.dumps({
             "schema": result["schema"], "video_count": len(result["videos"]),
             "channel_count": len(result["channels"]), "quality_passed": result["quality_report"]["passed"],
+            "actual_search_attempts_used": result["actual_search_attempts_used"],
+            "max_search_attempts": result["max_search_attempts"],
             "review_stage": result["review_stage"], "approved": result["approved"],
             "production_store": result["production_store"], "output": str(args.output) if args.output else None,
         }, ensure_ascii=False, sort_keys=True))

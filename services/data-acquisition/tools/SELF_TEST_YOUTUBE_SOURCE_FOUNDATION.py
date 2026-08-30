@@ -11,13 +11,15 @@ from urllib.error import HTTPError
 from urllib.parse import parse_qs, urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
-for path in (ROOT / "acquisition", ROOT / "acquisition" / "providers", ROOT / "tools"):
+for path in (ROOT / "acquisition", ROOT / "tools"):
     if str(path) not in sys.path:
         sys.path.insert(0, str(path))
 
 import q_diving_acquisition
 from LIVE_YOUTUBE_Q_DIVING_DISCOVERY import validate_options
-from youtube_data_api import YouTubeDataAPI, YouTubeProviderError, YouTubeQuotaExceeded, api_status, load_policy
+from providers.youtube_data_api import (
+    YouTubeDataAPI, YouTubeProviderError, YouTubeQuotaExceeded, YouTubeTransientError, api_status, load_policy,
+)
 from youtube_source_foundation import (
     apply_retention_policy, discover, load_query_profiles, normalize_channels, normalize_playlists, normalize_videos,
     parse_search_items,
@@ -82,6 +84,34 @@ class FixtureTransport:
         raise AssertionError(endpoint)
 
 
+class TransientFirstSearchTransport(FixtureTransport):
+    def __init__(self, failing_query):
+        super().__init__()
+        self.failing_query = failing_query
+        self.failed = False
+        self.search_order = []
+
+    def __call__(self, endpoint, url, timeout):
+        query = parse_qs(urlparse(url).query)
+        if endpoint == "search.list":
+            query_text = query.get("q", [""])[0]
+            self.search_order.append(query_text)
+            if query_text == self.failing_query and not self.failed:
+                self.failed = True
+                self.calls.append((endpoint, {k: v for k, v in query.items() if k != "key"}))
+                body = io.BytesIO(json.dumps({"error":{"errors":[{"reason":"backendError"}]}}).encode())
+                raise HTTPError(url, 503, "transient", {"Retry-After":"0"}, body)
+        return super().__call__(endpoint, url, timeout)
+
+
+class NoNextPageTransport(FixtureTransport):
+    def __call__(self, endpoint, url, timeout):
+        payload, headers, status = super().__call__(endpoint, url, timeout)
+        if endpoint == "search.list":
+            payload.pop("nextPageToken", None)
+        return payload, headers, status
+
+
 # A/B: missing-key behavior is explicit and status output is sanitized.
 assert api_status(environ={}) == {"configured": False, "provider": "youtube-data-api-v3", "policy_version": "1.0"}
 try:
@@ -130,7 +160,7 @@ batch_provider.videos([f"VID{i}" for i in range(1, 52)])
 video_calls = [x for x in batch_transport.calls if x[0] == "videos.list"]
 assert [len(x[1]["id"][0].split(",")) for x in video_calls] == [50, 1]
 
-# H/I: paging obeys the two-page bound and quota exhaustion stops before another request.
+# H/I: fair paging and the actual-attempt budget cover every selected profile first.
 paging_transport = FixtureTransport()
 paging_provider = YouTubeDataAPI(api_key=SECRET, policy=POLICY, transport=paging_transport, max_transient_retries=0)
 discover(paging_provider, selected[:1], max_pages_per_query=2, max_results=5, observed_at=NOW, policy=POLICY)
@@ -140,6 +170,70 @@ bounded_provider = YouTubeDataAPI(api_key=SECRET, policy=POLICY, transport=bound
 bounded = discover(bounded_provider, selected[:1], max_search_calls=1, max_pages_per_query=2,
                    max_results=5, observed_at=NOW, policy=POLICY)
 assert bounded["search_calls_used"] == 1
+
+# Two profiles/two attempts: both page ones run, neither page two can run.
+fair_two_transport = FixtureTransport()
+fair_two_provider = YouTubeDataAPI(api_key=SECRET, policy=POLICY, transport=fair_two_transport,
+                                   max_transient_retries=1, sleeper=lambda _: None)
+fair_two = discover(fair_two_provider, selected, max_search_calls=2, max_pages_per_query=2,
+                    max_results=5, observed_at=NOW, policy=POLICY)
+fair_two_search = [x for x in fair_two_transport.calls if x[0] == "search.list"]
+assert [x[1]["q"][0] for x in fair_two_search] == [selected[0]["query_text"], selected[1]["query_text"]]
+assert all("pageToken" not in x[1] for x in fair_two_search)
+assert fair_two["actual_search_attempts_used"] == 2 and fair_two["logical_search_operations_completed"] == 2
+assert fair_two["transient_search_retries_used"] == 0 and fair_two["search_attempt_budget_exhausted"] is True
+assert list(fair_two["profile_search_coverage"]) == [x["profile_id"] for x in selected]
+assert all(x["initial_attempted"] and x["logical_pages_completed"] == 1 and x["actual_attempts"] == 1
+           for x in fair_two["profile_search_coverage"].values())
+
+# Three profiles/five attempts: ordered first sweep, then page two for A and B.
+three = select_query_profiles(["QYT-KOH-TAO-EN", "QYT-BEGINNER-EN", "QYT-EQUIPMENT-SETUP-EN"],
+                              profiles=profiles, policy=POLICY)
+assert [x["profile_id"] for x in three] == ["QYT-KOH-TAO-EN", "QYT-BEGINNER-EN", "QYT-EQUIPMENT-SETUP-EN"]
+fair_three_transport = FixtureTransport()
+fair_three_provider = YouTubeDataAPI(api_key=SECRET, policy=POLICY, transport=fair_three_transport,
+                                     max_transient_retries=1, sleeper=lambda _: None)
+fair_three = discover(fair_three_provider, three, max_search_calls=5, max_pages_per_query=2,
+                      max_results=5, observed_at=NOW, policy=POLICY)
+fair_three_search = [x for x in fair_three_transport.calls if x[0] == "search.list"]
+assert [x[1]["q"][0] for x in fair_three_search] == [x["query_text"] for x in three] + [three[0]["query_text"], three[1]["query_text"]]
+assert all("pageToken" not in x[1] for x in fair_three_search[:3])
+assert all(x[1].get("pageToken") == ["NEXT"] for x in fair_three_search[3:])
+assert fair_three["actual_search_attempts_used"] == 5
+assert all(fair_three["profile_search_coverage"][x["profile_id"]]["initial_attempted"] for x in three)
+assert [fair_three["profile_search_coverage"][x["profile_id"]]["logical_pages_completed"] for x in three] == [2, 2, 1]
+
+# A missing nextPageToken never creates page-two work.
+no_next_transport = NoNextPageTransport()
+no_next_provider = YouTubeDataAPI(api_key=SECRET, policy=POLICY, transport=no_next_transport,
+                                  max_transient_retries=1, sleeper=lambda _: None)
+no_next = discover(no_next_provider, selected, max_search_calls=4, max_pages_per_query=2,
+                   max_results=5, observed_at=NOW, policy=POLICY)
+assert no_next["actual_search_attempts_used"] == 2 and no_next["search_attempt_budget_exhausted"] is False
+assert all(not x["next_page_available"] for x in no_next["profile_search_coverage"].values())
+
+# A transient A failure never preempts B's initial attempt. Retry occurs only after the sweep and only if budget remains.
+transient_two_transport = TransientFirstSearchTransport(selected[0]["query_text"])
+transient_two_provider = YouTubeDataAPI(api_key=SECRET, policy=POLICY, transport=transient_two_transport,
+                                        max_transient_retries=1, sleeper=lambda _: None)
+transient_two = discover(transient_two_provider, selected, max_search_calls=2, max_pages_per_query=2,
+                         max_results=5, observed_at=NOW, policy=POLICY)
+assert transient_two_transport.search_order == [selected[0]["query_text"], selected[1]["query_text"]]
+assert transient_two["actual_search_attempts_used"] == 2 and transient_two["transient_search_retries_used"] == 0
+assert transient_two["profile_search_coverage"][selected[0]["profile_id"]]["status"] == "transient-retry-pending-budget-exhausted"
+
+transient_three_transport = TransientFirstSearchTransport(selected[0]["query_text"])
+transient_three_provider = YouTubeDataAPI(api_key=SECRET, policy=POLICY, transport=transient_three_transport,
+                                          max_transient_retries=1, sleeper=lambda _: None)
+transient_three = discover(transient_three_provider, selected, max_search_calls=3, max_pages_per_query=2,
+                           max_results=5, observed_at=NOW, policy=POLICY)
+assert transient_three_transport.search_order == [selected[0]["query_text"], selected[1]["query_text"], selected[0]["query_text"]]
+assert transient_three["actual_search_attempts_used"] == 3 and transient_three["transient_search_retries_used"] == 1
+assert transient_three["logical_search_operations_completed"] == 2
+assert sum(x["endpoint"] == "search.list" for x in transient_three["quota_observations"]) == 3
+assert len(transient_three["quota_observations"]) > transient_three["actual_search_attempts_used"]
+assert SECRET not in json.dumps({"result":transient_three, "queue_calls":transient_three_transport.calls})
+
 try:
     discover(paging_provider, selected[:1], max_pages_per_query=3, max_results=5, observed_at=NOW, policy=POLICY)
     raise AssertionError("page budget accepted")
@@ -164,11 +258,13 @@ def quota_response(endpoint, url, timeout):
 quota_response_provider = YouTubeDataAPI(api_key=SECRET, policy=POLICY, transport=quota_response,
                                          max_transient_retries=2)
 try:
-    quota_response_provider.search(selected[0], max_results=5)
+    discover(quota_response_provider, selected[:1], max_search_calls=1, max_pages_per_query=2,
+             max_results=5, observed_at=NOW, policy=POLICY)
     raise AssertionError("quota response accepted")
-except YouTubeQuotaExceeded:
-    pass
+except YouTubeQuotaExceeded as exc:
+    assert SECRET not in str(exc)
 assert len(quota_response_calls) == 1 and quota_response_provider.quota_ledger[-1]["status"] == "quota-exceeded"
+assert sum(x["endpoint"] == "search.list" for x in quota_response_provider.quota_ledger) == 1
 
 # J: secrets never appear in results, ledger, status, or errors.
 serialized = json.dumps({"result": result, "ledger": provider.quota_ledger, "status": status})
@@ -190,8 +286,11 @@ evidence = {"VID1": {"query_profile_ids": ["QYT-BEGINNER-EN"],
 normalized = normalize_videos([video_item(1)], evidence, requested_ids=["VID1", "MISSING"], observed_at=NOW, policy=POLICY)
 assert normalized[0]["refresh_due_at"].startswith("2026-09-29")
 tombstone = next(x for x in normalized if x["video_id"] == "MISSING")
-assert tombstone["data_status"] == "deleted" and tombstone["publicly_usable"] is False
+assert tombstone["data_status"] == "unavailable" and tombstone["publicly_usable"] is False
+assert tombstone["availability_reason"] == "missing-from-videos-list" and tombstone["deletion_confirmed"] is False
 assert tombstone["provenance"]["tombstone"] is True
+assert tombstone["provenance"]["missing_from_hydration"] is True
+assert tombstone["transcript_text"] is None and tombstone["human_review_status"] == "not-reviewable"
 assert retention_action(normalized[0], now=datetime(2026, 9, 29, tzinfo=timezone.utc)) == "refresh-or-delete"
 retained = apply_retention_policy(normalized, now=datetime(2026, 9, 29, tzinfo=timezone.utc))
 assert [x["video_id"] for x in retained["records"]] == ["VID1"]

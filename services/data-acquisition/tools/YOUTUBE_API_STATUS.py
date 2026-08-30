@@ -5,11 +5,11 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PROVIDERS = ROOT / "acquisition" / "providers"
-if str(PROVIDERS) not in sys.path:
-    sys.path.insert(0, str(PROVIDERS))
+ACQUISITION = ROOT / "acquisition"
+if str(ACQUISITION) not in sys.path:
+    sys.path.insert(0, str(ACQUISITION))
 
-from youtube_data_api import api_status
+from providers.youtube_data_api import api_status
 
 
 def main() -> int:

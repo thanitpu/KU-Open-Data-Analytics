@@ -41,6 +41,7 @@
   "pilot_limits": {
     "max_results_per_search": 10,
     "max_query_profiles": 8,
+    "max_search_attempts_per_pilot": 8,
     "max_pages_per_query": 2,
     "max_video_ids_per_request": 50
   },

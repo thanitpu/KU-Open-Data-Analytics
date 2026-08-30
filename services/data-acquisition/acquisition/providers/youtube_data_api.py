@@ -20,7 +20,15 @@ PROVIDER = "youtube-data-api-v3"
 
 
 class YouTubeProviderError(RuntimeError):
-    pass
+    def __init__(self, message, *, error_code=None):
+        super().__init__(message)
+        self.error_code = error_code or type(self).__name__
+
+
+class YouTubeTransientError(YouTubeProviderError):
+    def __init__(self, message, *, error_code=None, retry_after=None):
+        super().__init__(message, error_code=error_code)
+        self.retry_after = retry_after
 
 
 class YouTubeQuotaExceeded(YouTubeProviderError):
@@ -80,7 +88,8 @@ class YouTubeDataAPI:
     def _endpoint_cost(self, endpoint: str) -> int:
         return int((((self.policy.get("quota_policy") or {}).get("endpoint_costs") or {}).get(endpoint)) or 1)
 
-    def _request(self, endpoint: str, params: dict, *, query_profile_id=None) -> dict:
+    def _request(self, endpoint: str, params: dict, *, query_profile_id=None,
+                 max_transient_retries=None) -> dict:
         if endpoint not in set(self.policy.get("allowed_endpoints") or []):
             raise YouTubeProviderError(f"Unsupported YouTube endpoint: {endpoint}")
         cost = self._endpoint_cost(endpoint)
@@ -89,6 +98,7 @@ class YouTubeDataAPI:
         request_params = {**safe_params, "key": self.api_key}
         url = f"{self.policy['api_root'].rstrip('/')}/{resource}?{urlencode(request_params, doseq=True)}"
         attempt = 0
+        retry_limit = self.max_transient_retries if max_transient_retries is None else max(0, int(max_transient_retries))
         while True:
             if self.quota_budget is not None and self.quota_used + cost > self.quota_budget:
                 raise YouTubeQuotaExceeded("Configured YouTube quota budget would be exceeded.")
@@ -128,24 +138,30 @@ class YouTubeDataAPI:
             except HTTPError as exc:
                 reason = _error_reason(exc)
                 quota_error = exc.code == 403 and reason in {"quotaExceeded", "dailyLimitExceeded", "rateLimitExceeded"}
-                observation.update({"status": "quota-exceeded" if quota_error else "http-error", "error": f"HTTP {exc.code}: {reason}",
+                transient = exc.code in {429, 500, 502, 503, 504}
+                observation.update({"status": "quota-exceeded" if quota_error else ("transient-error" if transient else "http-error"),
+                                    "error": f"HTTP {exc.code}: {reason}",
                                     "error_code": reason})
                 self.quota_ledger.append(observation)
                 if quota_error:
-                    raise YouTubeQuotaExceeded(observation["error"]) from None
-                transient = exc.code in {429, 500, 502, 503, 504}
-                if transient and attempt < self.max_transient_retries:
-                    retry_after = (exc.headers or {}).get("Retry-After")
-                    self.sleeper(float(retry_after) if retry_after and retry_after.isdigit() else min(2 ** attempt, 8))
+                    raise YouTubeQuotaExceeded(observation["error"], error_code=reason) from None
+                retry_after = (exc.headers or {}).get("Retry-After")
+                delay = float(retry_after) if retry_after and retry_after.isdigit() else min(2 ** attempt, 8)
+                if transient and attempt < retry_limit:
+                    self.sleeper(delay)
                     attempt += 1
                     continue
-                raise YouTubeProviderError(observation["error"]) from None
+                if transient:
+                    raise YouTubeTransientError(observation["error"], error_code=reason, retry_after=delay) from None
+                raise YouTubeProviderError(observation["error"], error_code=reason) from None
             except (URLError, TimeoutError) as exc:
                 observation.update({"status": "transport-error", "error": type(exc).__name__, "error_code": type(exc).__name__})
                 self.quota_ledger.append(observation)
-                if attempt < self.max_transient_retries:
+                delay = min(2 ** attempt, 8)
+                if attempt < retry_limit:
                     self.sleeper(min(2 ** attempt, 8)); attempt += 1; continue
-                raise YouTubeProviderError(f"YouTube API transport failure: {type(exc).__name__}") from None
+                raise YouTubeTransientError(f"YouTube API transport failure: {type(exc).__name__}",
+                                            error_code=type(exc).__name__, retry_after=delay) from None
             except YouTubeProviderError as exc:
                 observation.update({"status": "invalid-response", "error": str(exc), "error_code": type(exc).__name__})
                 self.quota_ledger.append(observation)
@@ -156,13 +172,24 @@ class YouTubeDataAPI:
                 raise YouTubeProviderError(f"YouTube API provider failure: {type(exc).__name__}") from None
 
     def search(self, query_profile: dict, *, page_token=None, max_results=None) -> dict:
+        return self._search(query_profile, page_token=page_token, max_results=max_results,
+                            max_transient_retries=None)
+
+    def search_once(self, query_profile: dict, *, page_token=None, max_results=None) -> dict:
+        """Perform exactly one search.list transport attempt with no internal retry."""
+        return self._search(query_profile, page_token=page_token, max_results=max_results,
+                            max_transient_retries=0)
+
+    def _search(self, query_profile: dict, *, page_token=None, max_results=None,
+                max_transient_retries=None) -> dict:
         limit = min(int(max_results or query_profile.get("max_results") or 10),
                     int(self.policy["pilot_limits"]["max_results_per_search"]))
         return self._request("search.list", {
             "part": "snippet", "q": query_profile["query_text"], "type": query_profile.get("type", "video"),
             "regionCode": query_profile.get("region_code"), "relevanceLanguage": query_profile.get("relevance_language"),
             "maxResults": limit, "pageToken": page_token,
-        }, query_profile_id=query_profile.get("profile_id"))
+        }, query_profile_id=query_profile.get("profile_id"),
+            max_transient_retries=max_transient_retries)
 
     def channels(self, channel_ids: list[str]) -> dict:
         return self._request("channels.list", {"part": "snippet,contentDetails", "id": ",".join(dict.fromkeys(channel_ids[:50]))})
