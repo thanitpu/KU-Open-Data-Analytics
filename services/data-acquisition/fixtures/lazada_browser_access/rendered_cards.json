@@ -1,0 +1,26 @@
+{
+  "observed_at": "2026-08-31T01:00:00+00:00",
+  "initial_url": "https://www.lazada.co.th/catalog/?q=fixture",
+  "final_url": "https://www.lazada.co.th/tag/fixture/?q=fixture",
+  "title": "Fixture search",
+  "visible_page_text": "Fixture Cable ฿159.00 รีวิว 412 ขายแล้ว 1.2พัน Fixture Charger ฿299.00 120 orders",
+  "visible_cards": [
+    {
+      "product_url": "https://www.lazada.co.th/products/fixture-cable-i100001-s200001.html",
+      "explicit_product_id": "100001",
+      "visible_title": "Fixture Cable",
+      "visible_price_text": "฿159.00",
+      "visible_rating_or_review_text": "รีวิว 412",
+      "visible_sold_or_order_text": "ขายแล้ว 1.2พัน"
+    },
+    {
+      "product_url": "https://www.lazada.co.th/products/fixture-charger-i100002-s200002.html",
+      "explicit_product_id": "100002",
+      "visible_title": "Fixture Charger",
+      "visible_price_text": "฿299.00",
+      "visible_rating_or_review_text": "review 30",
+      "visible_sold_or_order_text": "120 orders"
+    }
+  ],
+  "network_requests": []
+}
