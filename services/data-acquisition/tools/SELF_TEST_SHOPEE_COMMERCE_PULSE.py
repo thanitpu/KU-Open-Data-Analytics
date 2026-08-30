@@ -329,7 +329,19 @@ assert {row["category_id"] for row in registry["pilot_seed_registry"]["categorie
 }
 assert registry["domain_boundary"]["production_approved"] is False
 assert registry["domain_boundary"]["production_storage_enabled"] is False
-assert registry["bounded_access_audit"]["windows_edge_runner"] == "not-required-or-tested"
+edge_checkpoint = registry["bounded_access_audit"]["windows_edge_runner"]
+assert registry["bounded_access_audit"]["public_unauthenticated_acquisition_status"] == "PAUSED"
+assert edge_checkpoint == {
+    "workflow_run_id": 33324304668,
+    "classification": "edge-traffic-verification",
+    "technical_completion": True,
+    "usable_evidence": False,
+    "visible_product_card_count": 0,
+    "validated_network_endpoint_count": 0,
+    "production_store": False,
+    "scheduler_action": None,
+    "sensitive_browser_state_captured": False,
+}
 assert registry["scoring_contract"]["authoritative"] is False
 
 # O/P are enforced by the complete deterministic corpus; this test also guards shared policy files.

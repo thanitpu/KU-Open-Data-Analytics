@@ -1,0 +1,36 @@
+{
+  "mods": {
+    "listItems": [
+      {
+        "itemId": "100001",
+        "productUrl": "https://www.lazada.co.th/products/fixture-cable-i100001-s200001.html",
+        "name": "Fixture Cable",
+        "sellerId": "seller-a",
+        "shopId": "shop-a",
+        "priceShow": "฿159.00",
+        "originalPriceShow": "฿199.00",
+        "soldDisplay": "1.2k sold",
+        "ratingScore": "4.8",
+        "reviewCount": 412,
+        "rank": 1,
+        "sortMode": "relevance"
+      },
+      {
+        "itemId": "100002",
+        "productUrl": "https://www.lazada.co.th/products/fixture-cable-i100002-s200002.html",
+        "name": "Fixture Cable",
+        "price": 15900,
+        "orderDisplay": "120 orders",
+        "ratingScore": 4.7,
+        "reviewCount": 30,
+        "rank": 2,
+        "sortMode": "relevance"
+      },
+      {
+        "itemId": "100003",
+        "name": "Review-only fixture",
+        "reviewCount": 9
+      }
+    ]
+  }
+}

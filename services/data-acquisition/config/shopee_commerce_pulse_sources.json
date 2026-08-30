@@ -42,9 +42,20 @@
       "commerce_data_validated": false
     },
     "browser_context": "in-app browser redirected top.selected to /verify/traffic/error?type=4 and displayed Login Required; no login or bypass attempted",
-    "windows_edge_runner": "not-required-or-tested",
+    "windows_edge_runner": {
+      "workflow_run_id": 33324304668,
+      "classification": "edge-traffic-verification",
+      "technical_completion": true,
+      "usable_evidence": false,
+      "visible_product_card_count": 0,
+      "validated_network_endpoint_count": 0,
+      "production_store": false,
+      "scheduler_action": null,
+      "sensitive_browser_state_captured": false
+    },
     "github_hosted_runner": "not-tested",
-    "conclusion": "Public surfaces exist, but no acquisition technique is validated. Static HTTP returned an application shell and the bounded in-app browser check reached Shopee traffic verification requiring login. Do not select Edge or attempt circumvention."
+    "public_unauthenticated_acquisition_status": "PAUSED",
+    "conclusion": "Public surfaces exist, but no viable compliant non-authenticated public acquisition technique was identified within the reviewed access boundary. Static HTTP returned an application shell, the bounded in-app browser reached Shopee traffic verification requiring login, and the reviewed Windows Edge diagnostic also stopped at traffic verification with zero usable records. PAUSED does not mean impossible, absent data, or technical failure. Do not retry or attempt circumvention without a new reviewed access technique."
   },
   "techniques": [
     {
