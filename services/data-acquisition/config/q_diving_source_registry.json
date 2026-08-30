@@ -33,19 +33,25 @@
       "source_id": "Q-004",
       "group": "Video",
       "name": "YouTube · Scuba beginner search",
-      "source_type": "youtube",
-      "url": "https://www.youtube.com/results?search_query=scuba+diving+beginner",
-      "enabled": true,
-      "cadence": "weekly"
+      "source_type": "youtube-data-api-query-profile",
+      "query_profile_ids": ["QYT-BEGINNER-EN"],
+      "legacy_search_url": "https://www.youtube.com/results?search_query=scuba+diving+beginner",
+      "enabled": false,
+      "cadence": "manual-pilot",
+      "review_status": "human-approval-required",
+      "notes": "Traceability entry only. Use the documented YouTube Data API v3 provider; do not acquire the legacy search page."
     },
     {
       "source_id": "Q-005",
       "group": "Video",
       "name": "YouTube · Koh Tao diving search",
-      "source_type": "youtube",
-      "url": "https://www.youtube.com/results?search_query=koh+tao+scuba+diving",
-      "enabled": true,
-      "cadence": "weekly"
+      "source_type": "youtube-data-api-query-profile",
+      "query_profile_ids": ["QYT-KOH-TAO-EN"],
+      "legacy_search_url": "https://www.youtube.com/results?search_query=koh+tao+scuba+diving",
+      "enabled": false,
+      "cadence": "manual-pilot",
+      "review_status": "human-approval-required",
+      "notes": "Traceability entry only. Use the documented YouTube Data API v3 provider; do not acquire the legacy search page."
     }
   ]
 }

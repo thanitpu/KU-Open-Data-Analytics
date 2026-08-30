@@ -59,6 +59,7 @@ jobs:
           python tools/SELF_TEST_RETAIL_ASSIGNED_ACQUISITION.py
           python tools/SELF_TEST_JIB_LIFECYCLE_VALIDATION.py
           python tools/SELF_TEST_OTA_BOOKING_v0.1.py
+          python tools/SELF_TEST_YOUTUBE_SOURCE_FOUNDATION.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
           python tools/SELF_TEST_LIFECYCLE_ACCEPTANCE.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"

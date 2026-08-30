@@ -1,0 +1,68 @@
+{
+  "schema": "ku2d.youtube-api-policy.v1",
+  "version": "1.0",
+  "provider": "youtube-data-api-v3",
+  "api_root": "https://www.googleapis.com/youtube/v3",
+  "documented_endpoints_only": true,
+  "scraping_prohibited": true,
+  "audiovisual_download_prohibited": true,
+  "arbitrary_third_party_transcript_download": false,
+  "comment_acquisition_enabled": false,
+  "non_authorized_data_refresh_days": 30,
+  "human_approve_required_for_monitoring": true,
+  "allowed_endpoints": [
+    "search.list",
+    "channels.list",
+    "playlists.list",
+    "playlistItems.list",
+    "videos.list"
+  ],
+  "comments_enabled": false,
+  "comment_threads_enabled": false,
+  "youtube_page_scraping_enabled": false,
+  "video_or_audio_download_enabled": false,
+  "arbitrary_transcript_acquisition_enabled": false,
+  "human_approve_required": true,
+  "production_scheduling_enabled": false,
+  "manual_source_classes": [
+    "training_authority",
+    "equipment_manufacturer",
+    "dive_operator",
+    "independent_instructor",
+    "equipment_reviewer",
+    "travel_dive_creator",
+    "community_creator"
+  ],
+  "retention": {
+    "refresh_or_delete_days": 30,
+    "retain_raw_api_snapshots": false,
+    "tombstone_unavailable_or_deleted": true
+  },
+  "pilot_limits": {
+    "max_results_per_search": 10,
+    "max_query_profiles": 8,
+    "max_pages_per_query": 2,
+    "max_video_ids_per_request": 50
+  },
+  "quota_policy": {
+    "costs_are_configurable_estimates": true,
+    "endpoint_costs": {
+      "search.list": 1,
+      "channels.list": 1,
+      "playlists.list": 1,
+      "playlistItems.list": 1,
+      "videos.list": 1
+    },
+    "endpoint_quota_buckets": {
+      "search.list": "discovery",
+      "channels.list": "metadata-read",
+      "playlists.list": "metadata-read",
+      "playlistItems.list": "metadata-read",
+      "videos.list": "metadata-read"
+    },
+    "retry_quota_errors": false,
+    "retry_transient_errors": true,
+    "honor_retry_after": true,
+    "multiple_api_projects_for_quota_avoidance": false
+  }
+}

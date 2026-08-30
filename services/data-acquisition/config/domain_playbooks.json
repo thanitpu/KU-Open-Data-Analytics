@@ -90,7 +90,7 @@
         {"pattern_id":"diving_rss_feed","label":"RSS / Atom Feed","track":"content_index","base_priority":100,"clues":["rss","atom","feed"],"evidence":{"validated_sources":[],"candidate_sources":["PADI Blog","SSI Blog"]}},
         {"pattern_id":"diving_structured_article_index","label":"Structured Article / Blog Index","track":"content_index","base_priority":92,"clues":["article_cards","blog_index","json_ld","article_list"],"evidence":{"validated_sources":[],"candidate_sources":["PADI Blog","SSI Blog"]}},
         {"pattern_id":"diving_community_listing","label":"Public Community Discussion Listing","track":"content_index","base_priority":88,"clues":["discussion_list","topic_cards","forum","pantip"],"evidence":{"validated_sources":[],"candidate_sources":["Pantip · Diving discussions"]},"restriction":"Acquire only public discussion content and metadata; do not collect private-account data."},
-        {"pattern_id":"diving_video_search","label":"Public Video Search / Channel Listing","track":"content_index","base_priority":84,"clues":["youtube","video_cards","video_search","channel_feed"],"evidence":{"validated_sources":[],"candidate_sources":["YouTube · Scuba beginner search","YouTube · Koh Tao diving search"]}},
+        {"pattern_id":"diving_video_search","label":"YouTube Data API v3 Query Profile / Approved Channel Uploads","track":"content_index","base_priority":84,"clues":["youtube_data_api_v3","query_profile","uploads_playlist","video_metadata"],"evidence":{"validated_sources":[],"candidate_sources":["YouTube · Scuba beginner search","YouTube · Koh Tao diving search"]},"restriction":"Use only documented YouTube Data API v3 methods. Do not scrape YouTube pages, comments, captions, audio, or video. Channel monitoring must follow channels.list uploads playlist to playlistItems.list and batched videos.list."},
         {"pattern_id":"diving_article_metadata","label":"Article / Discussion Metadata","track":"content_metadata","base_priority":94,"clues":["title","published_at","author","tags","description","canonical_url"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
         {"pattern_id":"diving_sitemap_discovery","label":"Sitemap Discovery","track":"discovery","base_priority":86,"clues":["sitemap","article_urls","topic_urls"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
         {"pattern_id":"diving_search_discovery","label":"Site Search / Tag / Category Discovery","track":"discovery","base_priority":82,"clues":["tag_page","category_page","site_search"],"evidence":{"validated_sources":[],"candidate_sources":[]}},
@@ -98,7 +98,7 @@
       ],
       "environment_rules": [
         {"condition":"personal_profile_surface","action":"minimize_personal_data","reason":"Keep only public metadata needed for content provenance; avoid unnecessary personal profile attributes."},
-        {"condition":"platform_api_requires_key","action":"use_authorized_connector_or_public_surface","reason":"Do not scrape around authentication or API access controls."}
+        {"condition":"platform_api_requires_key","action":"use_documented_api_with_configured_key","reason":"Use the configured official provider and do not scrape around authentication or API access controls."}
       ]
     }
   }

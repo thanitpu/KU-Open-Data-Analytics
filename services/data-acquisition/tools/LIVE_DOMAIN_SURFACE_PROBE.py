@@ -51,6 +51,8 @@ def candidates(domains: set[str]) -> list[dict]:
     if 'q_diving' in domains:
         reg = load_json(CFG / 'q_diving_source_registry.json', {'sources': []})
         for x in reg.get('sources') or []:
+            if not x.get('url'):
+                continue
             out.append({
                 'domain': 'q_diving', 'candidate_id': x.get('source_id'), 'name': x.get('name'),
                 'url': x.get('url'), 'source_type': x.get('source_type') or 'official-public-web',
