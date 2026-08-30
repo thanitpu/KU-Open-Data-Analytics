@@ -1,0 +1,7 @@
+{
+  "observed_at": "2026-08-30T12:00:00+00:00",
+  "initial_url": "https://shopee.co.th/search?keyword=fixture",
+  "final_url": "https://shopee.co.th/verify/traffic/error?type=4",
+  "html": "<html><head><title>Traffic Verification</title></head><body>Verify you are human</body></html>",
+  "network_requests": []
+}

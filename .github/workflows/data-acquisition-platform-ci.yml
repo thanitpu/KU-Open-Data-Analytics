@@ -62,6 +62,7 @@ jobs:
           python tools/SELF_TEST_YOUTUBE_SOURCE_FOUNDATION.py
           python tools/SELF_TEST_YOUTUBE_HUMAN_REVIEW.py
           python tools/SELF_TEST_SHOPEE_COMMERCE_PULSE.py
+          python tools/SELF_TEST_SHOPEE_EDGE_ACCESS_DIAGNOSTIC.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
           python tools/SELF_TEST_LIFECYCLE_ACCEPTANCE.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
