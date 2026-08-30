@@ -6,7 +6,7 @@ Canonical lifecycle: **Discover → Explore → Deep Audit → Human Approve →
 
 Explore/Audit observations are preserved as evidence; approved scheduled acquisition produces trusted observations. Secrets and runtime SQLite files are never committed.
 
-Shopee Commerce Pulse is a separate, non-production marketplace-observation domain. Its public-signal semantics, isolated explorer, controlled pilot boundary, and bounded Windows Edge access diagnostic are documented in [docs/SHOPEE_COMMERCE_PULSE.md](docs/SHOPEE_COMMERCE_PULSE.md).
+Shopee Commerce Pulse is a separate, non-production marketplace-observation domain. Its public-signal semantics and now-paused public unauthenticated access checkpoint are documented in [docs/SHOPEE_COMMERCE_PULSE.md](docs/SHOPEE_COMMERCE_PULSE.md). Lazada reuses the generic observation contracts while keeping platform-specific access and interpretation explicit in [docs/LAZADA_COMMERCE_PULSE.md](docs/LAZADA_COMMERCE_PULSE.md).
 
 ## Live validation status semantics
 

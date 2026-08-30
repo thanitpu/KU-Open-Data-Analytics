@@ -1,6 +1,6 @@
 # Shopee Commerce Pulse exploration
 
-Status: non-production exploration foundation. No Shopee acquisition technique, production storage, approval, or schedule is authorized by this document.
+Status: public unauthenticated acquisition is **PAUSED**. No Shopee acquisition technique, production storage, approval, or schedule is authorized by this document.
 
 ## Domain boundary
 
@@ -26,14 +26,16 @@ A bounded 2026-08-30 audit used only two official public surfaces: `https://shop
 
 The official `top.selected` and collection pages are search-indexed with rendered product titles, display prices, ratings, Thai `ขายแล้ว` counters, explicit `TOP` positions, and sort labels such as `สินค้าขายดี`. This establishes that public observation surfaces exist, but it does not validate an extraction transport.
 
-The current environment matrix is deliberately incomplete:
+The reviewed access checkpoint is now closed:
 
 | Environment | Finding |
 | --- | --- |
 | Normal local HTTP | Reachable, but static response is an application shell with no usable product signal evidence |
 | In-app browser context | Redirected to `/verify/traffic/error?type=4` with “Login Required”; no login or bypass attempted |
-| Windows Edge Runner | Not required or tested; never selected automatically |
+| Windows Edge Runner | Run 33324304668 completed technically, but stopped at `edge-traffic-verification`; zero visible product cards and zero validated commerce endpoints |
 | GitHub-hosted runner | Not tested; deterministic CI makes no live Shopee request |
+
+The public unauthenticated Shopee Commerce Pulse path is **PAUSED** because no viable compliant non-authenticated public technique was found within the reviewed boundary. This does not assert that acquisition is impossible, that Shopee has no data, or that the diagnostic failed technically. It means only that static HTTP, the bounded in-app browser check, and the one reviewed Windows Edge diagnostic did not yield usable public evidence without crossing an authentication or traffic-verification boundary. No further retry is authorized by this checkpoint.
 
 If a future HTTP or cloud probe receives a CAPTCHA, authentication requirement, challenge, `403`, or `429`, the result is evidence-withheld. KU2D must not solve the challenge, rotate proxies, replay private signatures, or add user cookies/session tokens. The bounded in-app browser check already reached an authentication/traffic-verification boundary and stopped. If another reviewed public browser environment later works while plain HTTP or cloud is blocked, the evidence must say so; that fact alone does not authorize Edge execution.
 
@@ -151,4 +153,4 @@ $env:PYTHONPATH='.'
 python tools/SHOPEE_EDGE_ACCESS_DIAGNOSTIC.py --query 'สายชาร์จ' --max-items 10 --output 'C:\KU2D-Runtime\commerce\shopee-edge-cable.json' --no-production-store
 ```
 
-It may run exactly once after deterministic verification and only through the reviewed Windows Edge environment. Until that live result exists, the durable access matrix remains unchanged: plain HTTP produced a shell with zero usable records, the in-app browser reached traffic verification/Login Required, and Edge is not proven required or viable.
+The reviewed pilot has already run once as workflow run `33324304668`. It classified the result as `edge-traffic-verification`, with `technical_completion: true`, `usable_evidence: false`, zero visible product cards, and zero validated network endpoints. Evidence was withheld without collecting sensitive browser state. Do not dispatch it again under this checkpoint. A future attempt requires a separately reviewed, compliant access technique.
