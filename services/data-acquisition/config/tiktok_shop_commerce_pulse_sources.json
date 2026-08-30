@@ -1,0 +1,96 @@
+{
+  "schema": "ku2d.tiktok-shop-commerce-pulse-sources.v1",
+  "version": "1.0",
+  "platform": "tiktok-shop-thailand",
+  "domain_boundary": {
+    "domain": "Commerce Market Observation",
+    "separate_from": "Retail Product & Price Acquisition",
+    "public_official_surfaces_only": true,
+    "authentication_allowed": false,
+    "captcha_or_challenge_bypass_allowed": false,
+    "cookies_or_session_tokens_allowed": false,
+    "production_approved": false,
+    "production_storage_enabled": false,
+    "scheduler_action": null,
+    "national_transaction_truth_claimed": false
+  },
+  "official_api_boundary": {
+    "classification": "seller-creator-or-partner-authorized-api-not-national-public-marketplace-feed",
+    "national_public_marketplace_feed": false,
+    "seller_creator_or_partner_authorization_required": true,
+    "app_key_secret_signature_and_access_token_required": true,
+    "seller_or_shop_product_api_requires_seller_token": true,
+    "affiliate_api_requires_creator_or_partner_authorization": true,
+    "allowed_in_this_explorer": false,
+    "official_sources": [
+      "https://partner.tiktokshop.com/docv2/page/authorization-overview-202407",
+      "https://partner.tiktokshop.com/docv2/page/connecting-shops",
+      "https://partner.tiktokshop.com/docv2/page/api-entity-tags",
+      "https://partner.tiktokshop.com/docv2/page/access-scope",
+      "https://partner.tiktokshop.com/docv2/page/get-product",
+      "https://partner.tiktokshop.com/docv2/page/sign-your-api-request"
+    ]
+  },
+  "techniques": [
+    {
+      "technique_id": "tiktok_shop_public_keyword_surface",
+      "source_surface": "Official public TikTok Shop Thailand keyword/category surface",
+      "url_pattern": "https://shop.tiktok.com/th/k/{query}",
+      "expected_fields": ["stable product identity", "title", "display price", "rating", "public sold display", "contextual position"],
+      "identity_requirement": "Canonical public product URL or explicit public structured product ID.",
+      "ranking_semantics": "Observed position only unless exact sort semantics are explicit.",
+      "access_class": "public-no-auth-when-visible",
+      "validation_status": "candidate"
+    },
+    {
+      "technique_id": "tiktok_shop_public_product_detail",
+      "source_surface": "Official public TikTok Shop Thailand product detail",
+      "url_pattern": "https://shop.tiktok.com/th/pdp/{slug}/{product_id}",
+      "expected_fields": ["product ID", "title", "display price", "shop name", "rating/review", "sold display"],
+      "identity_requirement": "Numeric product ID from canonical official URL or matching structured field.",
+      "access_class": "public-no-auth-when-visible",
+      "validation_status": "candidate"
+    },
+    {
+      "technique_id": "tiktok_shop_public_shop_or_creator_product_surface",
+      "source_surface": "Public shop or creator-linked product surface",
+      "url_pattern": "Exact official public customer surface discovered from a product page",
+      "expected_fields": ["shop/creator hint", "stable product identity", "display price", "surface context"],
+      "restriction": "Public customer evidence only; do not enter creator alliance, affiliate authorization, seller center, login, or account flows.",
+      "validation_status": "candidate"
+    },
+    {
+      "technique_id": "tiktok_shop_public_structured_state",
+      "source_surface": "Structured JSON embedded in or directly returned to a public customer page",
+      "url_pattern": "Observed official public customer surface only",
+      "expected_fields": ["stable product identity", "title", "explicit price", "shop identity", "typed public counter"],
+      "restriction": "Do not replay signed, tokenized, authenticated, or account-bound endpoints.",
+      "validation_status": "candidate"
+    }
+  ],
+  "pilot_limits": {
+    "max_items": 10,
+    "max_requests_or_page_loads": 20,
+    "first_page_only": true,
+    "automatic_edge_escalation": false
+  },
+  "bounded_live_pilot": {
+    "status": "evidence-withheld-access-boundary",
+    "observed_on": "2026-08-31",
+    "target_surface": "official-public-thailand-product-detail",
+    "request_count": 1,
+    "http_status": 200,
+    "response_bytes": 5506,
+    "challenge_detected": true,
+    "challenge_reason": "challenge-or-required-login-marker",
+    "technical_completion": true,
+    "usable_evidence": false,
+    "normalized_record_count": 0,
+    "browser_attempted": false,
+    "windows_edge_attempted": false,
+    "conclusion": "The one bounded public HTTP product-detail request reached an access boundary and produced no stable product evidence. No retry, browser escalation, login, authorization, or circumvention was attempted.",
+    "production_approved": false,
+    "production_store": false,
+    "scheduler_action": null
+  }
+}
