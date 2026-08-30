@@ -18,6 +18,12 @@ Live workflow execution, lifecycle technical completion, source approval, isolat
 
 `LIVE_JIB_RETAIL_LIFECYCLE.py --require-approved` requires explicit temporary database paths and `KU2D_APPROVAL_SCOPE=isolated-staging`. It returns `0` only for a technically complete, approved isolated-staging result, `2` when evidence is complete but approval is withheld, and `1` for a technical/runtime or evidence-write failure. Detailed and compact evidence are written before an approval-withheld exit. The compact artifact uses schema `ku2d.retail-live-validation-summary.v1`; live artifacts are uploaded by CI and are not committed automatically.
 
+## Durable JIB cross-domain validation knowledge
+
+JIB is the first successful live validation of the supermarket-derived Retail Commerce Core Patterns in another retail domain. Workflow run `33302385382` validated canonical-detail Product & Price with `generic_retail_detail_catalog` and app-bundle Discovery with `generic_app_bundle` from an official public surface. Promotion remained optional and unassigned.
+
+The live profile was approved only in isolated staging. It did not perform production Human Approve and does not enable production scheduling. Because GitHub Actions artifacts are retention-bound, the reviewed result is reduced to the sanitized durable record `docs/validation/jib-retail-validation-2026-08-30.json` and the non-authorizing registry `config/retail_domain_validations.json`; raw product records and the staging SQLite database are not committed.
+
 ---
 
 # KU2D Data Acquisition Service v0.28

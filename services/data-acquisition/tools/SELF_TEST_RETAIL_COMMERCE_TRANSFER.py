@@ -38,11 +38,29 @@ assert set(it_seq["tracks"]) == {"product_price", "discovery"}
 assert it_seq["tracks"]["product_price"][0]["pattern_id"] == "RC-P01"
 assert any(x.get("action") == "prefer_edge_runner" for x in it_seq["environment_rules"])
 
-# Cross-domain transfer is a candidate prior, not fake validation.
-for domain in (beauty, it):
-    for pattern in domain["patterns"]:
+# Cross-domain transfer remains a candidate prior unless a pattern/track pair has
+# explicit domain evidence. Beauty has no live domain validation yet.
+for pattern in beauty["patterns"]:
+    assert pattern["transfer_status"] == "cross-domain-candidate"
+    assert pattern["evidence"]["validated_sources"] == []
+    assert pattern["evidence"]["domain_validated_sources"] == []
+    assert len(pattern["evidence"]["upstream_validated_sources"]) == 5
+
+# JIB validates only canonical-detail Product & Price and app-bundle Discovery.
+it_validated = {
+    ("RC-P02", "product_price"): "generic_retail_detail_catalog",
+    ("RC-P04", "discovery"): "generic_app_bundle",
+}
+for pattern in it["patterns"]:
+    key = (pattern["pattern_id"], pattern["track"])
+    assert len(pattern["evidence"]["upstream_validated_sources"]) == 5
+    if key in it_validated:
+        assert pattern["transfer_status"] == "domain-live-validated"
+        assert pattern["evidence"]["validated_sources"] == ["JIB"]
+        assert pattern["evidence"]["domain_validated_sources"][0]["technique"] == it_validated[key]
+    else:
         assert pattern["transfer_status"] == "cross-domain-candidate"
         assert pattern["evidence"]["validated_sources"] == []
-        assert len(pattern["evidence"]["upstream_validated_sources"]) == 5
+        assert pattern["evidence"]["domain_validated_sources"] == []
 
 print("Retail commerce cross-domain transfer: PASS")

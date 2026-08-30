@@ -51,6 +51,7 @@ jobs:
           python tools/SELF_TEST_DOMAIN_PLAYBOOKS.py
           python tools/SELF_TEST_PATTERN_GUIDED_EXPLORE.py
           python tools/SELF_TEST_RETAIL_COMMERCE_TRANSFER.py
+          python tools/SELF_TEST_RETAIL_DOMAIN_VALIDATIONS.py
           python tools/SELF_TEST_TRACK_AWARE_SELECTION.py
           python tools/SELF_TEST_RETAIL_DETAIL_CATALOG.py
           python tools/SELF_TEST_RETAIL_DETAIL_TRANSPORT.py

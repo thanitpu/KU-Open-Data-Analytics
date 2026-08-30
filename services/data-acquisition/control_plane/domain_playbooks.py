@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PLAYBOOK_FILE = ROOT / "config" / "domain_playbooks.json"
 SUPERMARKET_PATTERN_FILE = ROOT / "config" / "supermarket_acquisition_patterns.json"
 RETAIL_CORE_FILE = ROOT / "config" / "retail_commerce_core_patterns.json"
+RETAIL_VALIDATIONS_FILE = ROOT / "config" / "retail_domain_validations.json"
 
 
 def load_playbooks() -> dict:
@@ -26,6 +27,10 @@ def load_supermarket_patterns() -> dict:
 
 def load_retail_core() -> dict:
     return _load_json(RETAIL_CORE_FILE)
+
+
+def load_retail_validations() -> dict:
+    return _load_json(RETAIL_VALIDATIONS_FILE)
 
 
 def _supermarket_overlay(pb: dict) -> dict:
@@ -64,6 +69,8 @@ def _supermarket_overlay(pb: dict) -> dict:
 
 def _retail_specialized_playbook(domain: str) -> dict:
     core = load_retail_core()
+    validation_registry = load_retail_validations()
+    domain_validation = (validation_registry.get("domains") or {}).get(domain) or {}
     spec = (core.get("domain_specializations") or {}).get(domain) or {}
     if not spec:
         return {}
@@ -77,6 +84,22 @@ def _retail_specialized_playbook(domain: str) -> dict:
         "RC-P06": ["split_track"],
         "RC-P07": ["cloud_access_blocked", "edge_required"],
     }
+    validation_by_pattern_track: dict[tuple[str, str], list[dict]] = {}
+    for source in domain_validation.get("live_validated_sources") or []:
+        for track, track_validation in (source.get("validated_tracks") or {}).items():
+            for pattern_id in track_validation.get("validated_pattern_ids") or []:
+                evidence = {
+                    "source_id": source.get("source_id"),
+                    "source_name": source.get("source_name"),
+                    "status": source.get("status"),
+                    "validation_scope": source.get("validation_scope"),
+                    "production_approved": bool(source.get("production_approved")),
+                    "technique": track_validation.get("technique"),
+                    "technique_label": track_validation.get("technique_label"),
+                    "technique_profile_fingerprint": source.get("technique_profile_fingerprint"),
+                    "durable_evidence_file": source.get("durable_evidence_file"),
+                }
+                validation_by_pattern_track.setdefault((str(pattern_id), str(track)), []).append(evidence)
     rows = []
     for p in core.get("core_patterns") or []:
         if domain not in (p.get("applicable_domains") or []):
@@ -85,6 +108,7 @@ def _retail_specialized_playbook(domain: str) -> dict:
         for track in tracks:
             if track in {"orchestration", "execution_environment"}:
                 continue
+            domain_evidence = validation_by_pattern_track.get((str(p.get("pattern_id")), str(track)), [])
             rows.append({
                 "pattern_id": p.get("pattern_id"),
                 "label": p.get("name"),
@@ -92,12 +116,23 @@ def _retail_specialized_playbook(domain: str) -> dict:
                 "base_priority": p.get("priority"),
                 "clues": clue_map.get(p.get("pattern_id"), []),
                 "evidence": {
-                    "validated_sources": [],
+                    "validated_sources": [x.get("source_name") for x in domain_evidence if x.get("source_name")],
+                    "domain_validated_sources": domain_evidence,
                     "transferred_from_domain": "supermarket",
                     "upstream_validated_sources": (core.get("derived_from") or {}).get("validated_sources") or [],
                 },
-                "transfer_status": "cross-domain-candidate",
+                "transfer_status": "domain-live-validated" if domain_evidence else "cross-domain-candidate",
             })
+    live_validated_sources = [
+        {
+            "source_id": source.get("source_id"),
+            "source_name": source.get("source_name"),
+            "status": source.get("status"),
+            "validation_scope": source.get("validation_scope"),
+            "production_approved": bool(source.get("production_approved")),
+        }
+        for source in (domain_validation.get("live_validated_sources") or [])
+    ]
     return {
         "label": labels[domain],
         "required_business_tracks": list((core.get("shared_tracks") or {}).get("required") or []),
@@ -114,7 +149,9 @@ def _retail_specialized_playbook(domain: str) -> dict:
         "learned_pattern_library": {
             "schema": core.get("schema"),
             "version": core.get("version"),
-            "transfer_status": "inherited-not-yet-domain-validated",
+            "validation_registry_schema": validation_registry.get("schema"),
+            "transfer_status": domain_validation.get("validation_status") or "inherited-not-yet-domain-validated",
+            "live_validated_sources": live_validated_sources,
             "derived_from": core.get("derived_from") or {},
         },
     }
