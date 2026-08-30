@@ -27,7 +27,10 @@
       "source_type": "ssi",
       "url": "https://www.divessi.com/en/blog",
       "enabled": true,
-      "cadence": "weekly"
+      "cadence": "weekly",
+      "exploration_status": "promising-ready-for-deep-audit",
+      "candidate_technique": "static-html-article-card-index",
+      "review_status": "human-review-required"
     },
     {
       "source_id": "Q-004",
@@ -52,6 +55,28 @@
       "cadence": "manual-pilot",
       "review_status": "human-approval-required",
       "notes": "Traceability entry only. Use the documented YouTube Data API v3 provider; do not acquire the legacy search page."
+    },
+    {
+      "source_id": "Q-006",
+      "group": "Operator / Course",
+      "name": "Scubadoo Koh Tao price list",
+      "source_type": "official-public-course-catalog",
+      "url": "https://www.scubadookohtao.com/price-lists",
+      "enabled": false,
+      "cadence": "manual-explore",
+      "review_status": "promising-not-approved",
+      "notes": "Service-course prices and inclusions are not retail product prices or market-demand signals."
+    },
+    {
+      "source_id": "Q-007",
+      "group": "Equipment Retail",
+      "name": "Aquamaster Thailand",
+      "source_type": "official-public-equipment-catalog",
+      "url": "https://www.aquamaster.net/collections/scuba-diving-equipment-sale/",
+      "enabled": false,
+      "cadence": "manual-explore",
+      "review_status": "promising-not-approved",
+      "notes": "Retail equipment identity and price only; sale display order is not a demand or national-ranking signal."
     }
   ]
 }

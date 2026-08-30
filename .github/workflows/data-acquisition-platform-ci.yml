@@ -52,6 +52,8 @@ jobs:
           python tools/SELF_TEST_EXECUTION_ENVIRONMENT.py
           python tools/SELF_TEST_DOMAIN_PLAYBOOKS.py
           python tools/SELF_TEST_PATTERN_GUIDED_EXPLORE.py
+          python tools/SELF_TEST_QDIVING_PADI_v0.1.py
+          python tools/SELF_TEST_QDIVING_SOURCE_EXPANSION.py
           python tools/SELF_TEST_RETAIL_ENRICHMENT_POLICY.py
           python tools/SELF_TEST_RETAIL_COMMERCE_TRANSFER.py
           python tools/SELF_TEST_RETAIL_DOMAIN_VALIDATIONS.py

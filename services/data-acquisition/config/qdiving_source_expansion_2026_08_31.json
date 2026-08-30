@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "observed_at": "2026-08-31T06:30:00+00:00",
+  "scope": "bounded-non-youtube-q-diving-source-explore",
+  "youtube_acquisition": "paused",
+  "production_approved": false,
+  "production_store": false,
+  "scheduler_action": null,
+  "sources": [
+    {
+      "source_id": "Q-003",
+      "source": "SSI Blog",
+      "source_class": "official-public-content-index",
+      "url": "https://www.divessi.com/en/blog",
+      "public_page_loads": 1,
+      "http_status": 200,
+      "retained_records": 10,
+      "stable_identity": "canonical official article URL and slug",
+      "price": "not-applicable",
+      "browser_required": false,
+      "edge_required": false,
+      "technique": "static-html-article-card-index",
+      "technique_status": "promising-ready-for-deep-audit",
+      "review_boundary": "Article metadata and automated relevance are non-authoritative; Human Review is required."
+    },
+    {
+      "source_id": "Q-006",
+      "source": "Scubadoo Koh Tao",
+      "source_class": "official-public-course-catalog",
+      "url": "https://www.scubadookohtao.com/price-lists",
+      "public_page_loads": 1,
+      "http_status": 200,
+      "retained_records": 10,
+      "stable_identity": "official host plus normalized course/service name",
+      "price": "explicit THB service price",
+      "package_structure": "duration, dive count, and included accommodation where displayed",
+      "browser_required": false,
+      "edge_required": false,
+      "technique": "static-html-course-menu-cards",
+      "technique_status": "promising-ready-for-deep-audit",
+      "semantic_boundary": "Dive-course service price is not retail product price or marketplace demand."
+    },
+    {
+      "source_id": "Q-007",
+      "source": "Aquamaster Thailand",
+      "source_class": "official-public-equipment-catalog",
+      "url": "https://www.aquamaster.net/collections/scuba-diving-equipment-sale/",
+      "public_page_loads": 1,
+      "http_status": 200,
+      "retained_records": 10,
+      "stable_identity": "canonical official product URL and slug",
+      "price": "explicit THB current price or variant range",
+      "demand_signal": null,
+      "browser_required": false,
+      "edge_required": false,
+      "technique": "static-html-woocommerce-product-cards",
+      "technique_status": "promising-ready-for-deep-audit",
+      "semantic_boundary": "Sale catalog display position is provenance, not demand or national rank."
+    }
+  ],
+  "request_accounting": {
+    "total_public_page_loads": 3,
+    "retries": 0,
+    "pagination": 0,
+    "browser_page_loads": 0,
+    "edge_page_loads": 0,
+    "retained_record_cap_per_source": 10
+  },
+  "access_diagnostics": {
+    "access_challenge_detected": false,
+    "note": "The Scubadoo and Aquamaster HTML contains dormant CAPTCHA/form-plugin strings, but returned complete public page content and records; those strings are not classified as an access challenge."
+  },
+  "guardrails": [
+    "No booking, form submission, login, cookies, session reuse, CAPTCHA handling, proxying, or bypass",
+    "No YouTube acquisition",
+    "Content, course services, and retail products remain separate evidence classes",
+    "No production storage, scheduling, or approval"
+  ]
+}
