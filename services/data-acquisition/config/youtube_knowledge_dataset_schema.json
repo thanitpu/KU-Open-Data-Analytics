@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ku2d.local/schemas/youtube-knowledge-dataset-v1.json",
+  "title": "YouTubeKnowledgeDataset",
+  "description": "Non-production contract for reviewed Q-Diving YouTube metadata handed from KU2D to a KU2A workspace.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "dataset_id",
+    "domain",
+    "source_type",
+    "generated_at",
+    "query_profile_ids",
+    "included_video_ids",
+    "included_channel_ids",
+    "research_collections",
+    "human_review_summary",
+    "provenance_summary",
+    "data_refresh_due_at",
+    "production_approved"
+  ],
+  "properties": {
+    "schema": {"const": "ku2d.youtube-knowledge-dataset.v1"},
+    "dataset_id": {"type": "string", "minLength": 1},
+    "domain": {"const": "q_diving"},
+    "source_type": {"const": "youtube"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "query_profile_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "included_video_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "included_channel_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "research_collections": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "human_review_summary": {"type": "object"},
+    "provenance_summary": {"type": "object"},
+    "data_refresh_due_at": {"type": ["string", "null"], "format": "date-time"},
+    "production_approved": {"const": false}
+  }
+}
