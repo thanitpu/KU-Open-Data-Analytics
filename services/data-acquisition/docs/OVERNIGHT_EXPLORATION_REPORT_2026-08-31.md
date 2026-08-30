@@ -35,8 +35,8 @@ Watsons Product & Price, and all public-marketplace demand claims remain open.
 | `codex/overnight-coffee-source-expansion` | `441c71d678a30cc62b742ea58f23f629a9d1e2d6` | #39 | Data Acquisition #173, Frontend #882, Preview #95: success |
 | `codex/overnight-qdiving-source-expansion` | `5f972d456415dbd0d8ae695f02c056e4a7c76e56` | #40 | Data Acquisition #174, Frontend #884, Preview #96: success |
 | `codex/overnight-cross-domain-source-gap-scan` | `408e4a3889a70b89b71cbd076b0b980d1aaae2d3` | #41 | Data Acquisition #175, Frontend #886, Preview #97: success |
-| `codex/overnight-acquisition-technique-transfer-matrix` | `4c024a480dafda27b0064b3059e34eebaadf353d` | #42 | Data Acquisition #176 and Preview #98: success; Frontend #888 running at capture |
-| `codex/overnight-exploration-summary` | This report branch | Pending Draft PR | Pending publication |
+| `codex/overnight-acquisition-technique-transfer-matrix` | `4c024a480dafda27b0064b3059e34eebaadf353d` | #42 | Data Acquisition #176, Frontend #888, Preview #98: success |
+| `codex/overnight-exploration-summary` | This report branch | #43 | Checks triggered by report publication |
 
 ## Task/source evidence table
 
@@ -58,7 +58,7 @@ Watsons Product & Price, and all public-marketplace demand claims remain open.
 | 6 | Q-Diving retail | Aquamaster equipment sale catalog | same | #40 | 1 HTTP | HTTP 200, public WooCommerce cards | 10 equipment products | 10 canonical product URLs | 10 explicit THB prices/ranges | Catalog order is not demand | HTML product metadata | No | No | Promising | Disabled | Detail correlation and price-semantics Deep Audit |
 | 7 | Cross-domain | LINE, Akha Ama, Watsons, Pantip, Expedia gaps | `codex/overnight-cross-domain-source-gap-scan` | #41 | 1 new Akha load; LINE evidence reused | Inventory complete | Ranked evidence/recommendations | Source-specific | Source-specific | No unsupported claims | Source-specific | No new browser | No | Research complete | Disabled | Follow P0/P1 review order |
 | 8 | Cross-domain | Technique transfer matrix | `codex/overnight-acquisition-technique-transfer-matrix` | #42 | 0 | Analysis only | PROVEN/PROMISING/FAILED/UNTESTED matrix | Assessed per technique | Assessed per technique | Assessed per technique | Public vs authorized separated | Environment separated | Environment separated | Analysis complete | Disabled | Review matrix before next source build |
-| 9 | Campaign | Master report | `codex/overnight-exploration-summary` | pending | 0 | Analysis only | Consolidated report | Not applicable | Not applicable | Not applicable | Not applicable | No | No | Review artifact | Disabled | Morning review |
+| 9 | Campaign | Master report | `codex/overnight-exploration-summary` | #43 | 0 | Analysis only | Consolidated report | Not applicable | Not applicable | Not applicable | Not applicable | No | No | Review artifact | Disabled | Morning review |
 
 ## Request accounting
 
