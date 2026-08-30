@@ -1,0 +1,234 @@
+name: KU2D Shopee Edge Access Diagnostic
+
+on:
+  workflow_dispatch:
+    inputs:
+      query:
+        description: 'Public Shopee Thailand search query'
+        required: true
+        default: 'สายชาร์จ'
+        type: string
+      max_items:
+        description: 'Maximum visible or structured product samples (1-10)'
+        required: true
+        default: '10'
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ku2d-shopee-edge-access-diagnostic
+  cancel-in-progress: false
+
+jobs:
+  shopee-edge-diagnostic:
+    runs-on: [self-hosted, Windows, X64, ku2d-acquisition, thailand]
+    timeout-minutes: 20
+    env:
+      KU2D_PYTHON: C:\Users\KU-2023\AppData\Local\Programs\Python\Python312\python.exe
+      KU2D_EVIDENCE_PATH: C:\KU2D-Runtime\commerce\shopee-edge-${{ github.run_id }}.json
+      KU2D_ARTIFACT_NAME: shopee-edge-access-${{ github.run_id }}
+    steps:
+      - name: Checkout reviewed integration branch
+        uses: actions/checkout@v4
+        with:
+          ref: integration/data-acquisition-platform
+          persist-credentials: false
+
+      - name: Validate input and runner preflight
+        id: preflight
+        shell: powershell
+        working-directory: services/data-acquisition
+        env:
+          KU2D_INPUT_MAX_ITEMS: ${{ inputs.max_items }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          $maxItems = 0
+          if (-not [int]::TryParse($env:KU2D_INPUT_MAX_ITEMS, [ref]$maxItems)) {
+            throw 'max_items must be an integer between 1 and 10.'
+          }
+          if ($maxItems -lt 1 -or $maxItems -gt 10) {
+            throw 'max_items must be an integer between 1 and 10.'
+          }
+
+          if (-not (Test-Path -LiteralPath 'tools\SHOPEE_EDGE_ACCESS_DIAGNOSTIC.py' -PathType Leaf)) {
+            throw 'Repository checkout preflight failed: Shopee Edge diagnostic is missing.'
+          }
+          if (-not (Test-Path -LiteralPath 'requirements.txt' -PathType Leaf)) {
+            throw 'Repository checkout preflight failed: Data Acquisition requirements are missing.'
+          }
+          if (-not (Test-Path -LiteralPath $env:KU2D_PYTHON -PathType Leaf)) {
+            throw 'Python 3.12 is unavailable at the configured Edge Runner path.'
+          }
+          $pythonVersion = & $env:KU2D_PYTHON -c "import platform; print(platform.python_version())"
+          if ($LASTEXITCODE -ne 0) { throw 'Python version preflight failed.' }
+          if (-not $pythonVersion.StartsWith('3.12.')) {
+            throw "The reviewed Edge Runner requires Python 3.12; found $pythonVersion."
+          }
+
+          $edgeCandidates = @(
+            (Join-Path ${env:ProgramFiles(x86)} 'Microsoft\Edge\Application\msedge.exe'),
+            (Join-Path $env:ProgramFiles 'Microsoft\Edge\Application\msedge.exe'),
+            (Join-Path $env:LOCALAPPDATA 'Microsoft\Edge\Application\msedge.exe')
+          )
+          $edgePath = $edgeCandidates | Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Leaf) } | Select-Object -First 1
+          if (-not $edgePath) {
+            throw 'Microsoft Edge executable is unavailable on the self-hosted Windows runner.'
+          }
+          $edgeVersion = (Get-Item -LiteralPath $edgePath).VersionInfo.ProductVersion
+          if (-not $edgeVersion) { throw 'Microsoft Edge version could not be determined.' }
+
+          $outputDirectory = Split-Path -Parent $env:KU2D_EVIDENCE_PATH
+          New-Item -ItemType Directory -Force -Path $outputDirectory | Out-Null
+          $probePath = Join-Path $outputDirectory ".ku2d-write-probe-$env:GITHUB_RUN_ID.tmp"
+          Set-Content -LiteralPath $probePath -Value 'write-probe' -Encoding utf8
+          Remove-Item -LiteralPath $probePath -Force
+
+          $runnerOs = [System.Runtime.InteropServices.RuntimeInformation]::OSDescription
+          $runnerArch = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString()
+          Write-Host "Runner OS: $runnerOs"
+          Write-Host "Runner architecture: $runnerArch"
+          Write-Host "Python version: $pythonVersion"
+          Write-Host 'Repository checkout: available'
+          Write-Host "Microsoft Edge version: $edgeVersion"
+          Write-Host 'External runtime output directory: writable'
+
+          "KU2D_EDGE_BINARY=$edgePath" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          "runner_os=$runnerOs" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "runner_arch=$runnerArch" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "python_version=$pythonVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "edge_version=$edgeVersion" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "max_items=$maxItems" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Prepare isolated Python environment
+        id: python
+        shell: powershell
+        working-directory: services/data-acquisition
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $venvDirectory = Join-Path $env:RUNNER_TEMP "ku2d-shopee-edge-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          & $env:KU2D_PYTHON -m venv $venvDirectory
+          if ($LASTEXITCODE -ne 0) { throw 'Unable to create the isolated Python environment.' }
+          $venvPython = Join-Path $venvDirectory 'Scripts\python.exe'
+          & $venvPython -m pip install --disable-pip-version-check -r requirements.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Unable to install Data Acquisition requirements.' }
+          "venv_python=$venvPython" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Validate Edge diagnostic dependencies
+        shell: powershell
+        working-directory: services/data-acquisition
+        env:
+          PYTHONPATH: .
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & '${{ steps.python.outputs.venv_python }}' -c "import bs4, websockets; from websockets.sync.client import connect; from tools.SHOPEE_EDGE_ACCESS_DIAGNOSTIC import find_edge; find_edge(); print('Edge diagnostic dependencies: available')"
+          if ($LASTEXITCODE -ne 0) { throw 'A required Edge diagnostic dependency is unavailable.' }
+
+      - name: Run one bounded Shopee Edge diagnostic
+        id: diagnostic
+        shell: powershell
+        working-directory: services/data-acquisition
+        env:
+          PYTHONPATH: .
+          KU2D_INPUT_QUERY: ${{ inputs.query }}
+        run: |
+          & '${{ steps.python.outputs.venv_python }}' tools/SHOPEE_EDGE_ACCESS_DIAGNOSTIC.py `
+            --query "$env:KU2D_INPUT_QUERY" `
+            --max-items '${{ steps.preflight.outputs.max_items }}' `
+            --output "$env:KU2D_EVIDENCE_PATH" `
+            --no-production-store
+          $diagnosticExit = $LASTEXITCODE
+          "exit_code=$diagnosticExit" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          if ($diagnosticExit -eq 0) {
+            'execution_outcome=evidence-obtained' | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            exit 0
+          }
+          if ($diagnosticExit -eq 2) {
+            'execution_outcome=evidence-withheld' | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+            Write-Host 'Diagnostic completed with evidence withheld; this is not a technical workflow failure.'
+            exit 0
+          }
+          'execution_outcome=technical-failure' | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          throw "Shopee Edge diagnostic failed technically with exit code $diagnosticExit."
+
+      - name: Write diagnostic step summary
+        if: always()
+        shell: powershell
+        env:
+          KU2D_INPUT_QUERY: ${{ inputs.query }}
+        run: |
+          function Display-Value($value, $fallback = 'unavailable') {
+            if ($null -eq $value) { return $fallback }
+            if ($value -is [bool]) { return $value.ToString().ToLowerInvariant() }
+            $text = "$value"
+            if ([string]::IsNullOrWhiteSpace($text)) { return $fallback }
+            return $text
+          }
+
+          $classification = 'unavailable'
+          $technicalCompletion = 'unavailable'
+          $usableEvidence = 'unavailable'
+          $visibleCards = 'unavailable'
+          $validatedEndpoints = 'unavailable'
+          $productionStore = 'unavailable'
+          $schedulerAction = 'unavailable'
+          if (Test-Path -LiteralPath $env:KU2D_EVIDENCE_PATH -PathType Leaf) {
+            try {
+              $result = Get-Content -LiteralPath $env:KU2D_EVIDENCE_PATH -Raw | ConvertFrom-Json
+              $classification = Display-Value $result.classification
+              $technicalCompletion = Display-Value $result.technical_completion
+              $usableEvidence = Display-Value $result.usable_evidence
+              $visibleCards = Display-Value $result.visible_product_card_count
+              $validatedEndpoints = Display-Value $result.validated_network_endpoint_count
+              $productionStore = Display-Value $result.production_store
+              $schedulerAction = Display-Value $result.scheduler_action 'null'
+            } catch {
+              $classification = 'unreadable-evidence'
+            }
+          }
+
+          $safeQuery = ("$env:KU2D_INPUT_QUERY" -replace '[\r\n]+', ' ' -replace '\|', '\|')
+          if ($safeQuery.Length -gt 200) { $safeQuery = $safeQuery.Substring(0, 200) }
+          $summary = @"
+          ## Shopee Edge Access Diagnostic
+
+          > A successful workflow means the bounded diagnostic executed correctly. It does not mean Shopee acquisition succeeded or received approval.
+
+          | Field | Value |
+          |---|---|
+          | Runner OS | $(Display-Value '${{ steps.preflight.outputs.runner_os }}') |
+          | Runner architecture | $(Display-Value '${{ steps.preflight.outputs.runner_arch }}') |
+          | Edge version | $(Display-Value '${{ steps.preflight.outputs.edge_version }}') |
+          | Query | $safeQuery |
+          | max_items | $(Display-Value '${{ steps.preflight.outputs.max_items }}') |
+          | Diagnostic exit code | $(Display-Value '${{ steps.diagnostic.outputs.exit_code }}' 'not-run') |
+          | Execution outcome | $(Display-Value '${{ steps.diagnostic.outputs.execution_outcome }}' 'not-run') |
+          | Classification | $classification |
+          | technical_completion | $technicalCompletion |
+          | usable_evidence | $usableEvidence |
+          | visible_product_card_count | $visibleCards |
+          | validated_network_endpoint_count | $validatedEndpoints |
+          | production_store | $productionStore |
+          | scheduler_action | $schedulerAction |
+          | Artifact | $env:KU2D_ARTIFACT_NAME |
+          "@
+          Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY -Value $summary -Encoding utf8
+
+      - name: Check for sanitized evidence artifact
+        id: evidence
+        if: always()
+        shell: powershell
+        run: |
+          $exists = Test-Path -LiteralPath $env:KU2D_EVIDENCE_PATH -PathType Leaf
+          "exists=$($exists.ToString().ToLowerInvariant())" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Upload sanitized diagnostic JSON
+        if: always() && steps.evidence.outputs.exists == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.KU2D_ARTIFACT_NAME }}
+          path: ${{ env.KU2D_EVIDENCE_PATH }}
+          if-no-files-found: error
+          retention-days: 7
