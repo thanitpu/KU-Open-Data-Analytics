@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "observed_date": "2026-08-31",
+  "scope": "bounded-public-coffee-source-exploration",
+  "production_approved": false,
+  "production_store": false,
+  "scheduler_action": null,
+  "sources": [
+    {
+      "source": "Roots Coffee",
+      "official_url": "https://shop.rootsbkk.com/collections/frontpage/products/house-blend-coffee",
+      "source_class": "specialty-roaster-product-detail",
+      "public_requests": 1,
+      "retained_live_records": 0,
+      "access_outcome": "request-completed-console-evidence-not-durably-retained",
+      "indexed_public_evidence": {
+        "price": "450 THB",
+        "origin": "Pangkhon Village, Chiang Rai",
+        "process": "Honey and Kenya-style washed",
+        "tasting_notes_present": true
+      },
+      "stable_identity": "canonical official product URL",
+      "technique": "official-public-roaster-product-detail",
+      "technique_status": "promising-needs-reviewed-live-rerun",
+      "next_action": "Deep Audit with bounded evidence-file output"
+    },
+    {
+      "source": "Nana Coffee Roasters",
+      "official_url": "https://nanacoffeeroasters.com/products/house-blend",
+      "source_class": "specialty-roaster-product-detail",
+      "public_requests": 1,
+      "retained_live_records": 0,
+      "access_outcome": "request-completed-console-evidence-not-durably-retained",
+      "indexed_public_evidence": {
+        "origin": "Colombia, Brazil, Kenya, Ethiopia",
+        "process": "Washed and natural",
+        "roast_level_present": true,
+        "package_size_present": true
+      },
+      "stable_identity": "canonical official product URL",
+      "technique": "official-public-roaster-product-detail",
+      "technique_status": "promising-needs-reviewed-live-rerun",
+      "next_action": "Deep Audit with bounded evidence-file output"
+    },
+    {
+      "source": "Akha Ama Coffee",
+      "official_url": "https://www.akhaamacoffee.com/",
+      "source_class": "specialty-roaster-catalog",
+      "public_requests": 0,
+      "retained_live_records": 0,
+      "access_outcome": "research-only",
+      "indexed_public_evidence": {
+        "product_prices_present": true,
+        "roast_information_present": true,
+        "geographic_provenance_present": true
+      },
+      "stable_identity": "not-audited",
+      "technique": "catalog-to-product-detail",
+      "technique_status": "untested-candidate",
+      "next_action": "Bounded catalog and product-detail correlation Explore"
+    }
+  ],
+  "request_accounting": {
+    "network_requests": 2,
+    "pre_request_import_failure": 1,
+    "pre_request_import_failure_counted_as_network": false,
+    "retries": 0,
+    "page_limit": "first product detail only",
+    "record_limit": 10
+  },
+  "guardrails": [
+    "Official public product pages only",
+    "No login, cookies, session reuse, CAPTCHA handling, proxying, or bypass",
+    "Indexed public facts are research evidence, not retained live acquisition records",
+    "No retry was made after the console-evidence retention failure",
+    "Roasted-bean product price is not cafe drink-menu price",
+    "No production storage, scheduling, or approval"
+  ]
+}
