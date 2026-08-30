@@ -8,6 +8,8 @@ on:
       - 'services/data-acquisition/config/retail_commerce_core_patterns.json'
       - 'services/data-acquisition/control_plane/domain_playbooks.py'
       - 'services/data-acquisition/acquisition/source_explorer.py'
+      - 'services/data-acquisition/acquisition/track_selection.py'
+      - 'services/data-acquisition/acquisition/retail_detail_catalog.py'
       - 'services/data-acquisition/tools/LIVE_RETAIL_TRANSFER_EXPLORE.py'
       - '.github/workflows/data-acquisition-retail-transfer-live.yml'
   workflow_dispatch:
@@ -15,7 +17,7 @@ on:
 jobs:
   explore-retail-transfer:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     defaults:
       run:
         working-directory: services/data-acquisition
