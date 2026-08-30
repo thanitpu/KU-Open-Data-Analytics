@@ -1,0 +1,99 @@
+{
+  "schema": "ku2d.marketplace-source-inventory.v1",
+  "observed_on": "2026-08-31",
+  "baseline_sources": ["Shopee", "Lazada", "TikTok Shop"],
+  "scoring_scale": "0-5; higher is better except redundancy",
+  "candidates": [
+    {
+      "source": "LINE SHOPPING",
+      "url": "https://shop.line.me/",
+      "priority": "priority-1",
+      "scores": {"thailand_relevance": 5, "public_data": 5, "stable_identity": 5, "observable_price": 5, "demand_signal": 1, "technical_accessibility": 4, "ku2d_value": 5, "redundancy": 2},
+      "evidence": "One public seller collection exposed 10/10 stable product IDs, titles, explicit baht prices, shop and collection identity, and display position.",
+      "boundary": "Recommended collection order is not bestseller rank or demand truth; seller-local catalog semantics require Deep Audit.",
+      "next_action": "Deep Audit public seller collections and product-detail correlation."
+    },
+    {
+      "source": "Kaidee",
+      "url": "https://www.kaidee.com/th",
+      "priority": "priority-2",
+      "scores": {"thailand_relevance": 5, "public_data": 5, "stable_identity": 4, "observable_price": 5, "demand_signal": 0, "technical_accessibility": 5, "ku2d_value": 2, "redundancy": 1},
+      "evidence": "Official public classified listings expose categories, titles, seller/location context and asking prices.",
+      "boundary": "Classified asking prices are not comparable sellable-SKU prices, sales counters, or marketplace demand; heterogeneous listing types require a separate listing-observation contract.",
+      "next_action": "Architecture review before any Explore."
+    },
+    {
+      "source": "Central Online",
+      "url": "https://www.central.co.th/",
+      "priority": "defer",
+      "scores": {"thailand_relevance": 5, "public_data": 4, "stable_identity": 5, "observable_price": 5, "demand_signal": 1, "technical_accessibility": 4, "ku2d_value": 2, "redundancy": 5},
+      "evidence": "High-value official retail catalog candidate.",
+      "boundary": "Better classified as Retail Product & Price than Commerce Market Observation; largely redundant with the Retail transfer program.",
+      "next_action": "Route to Retail source prioritization, not marketplace demand research."
+    },
+    {
+      "source": "Temu",
+      "url": "https://www.temu.com/",
+      "priority": "defer",
+      "scores": {"thailand_relevance": 3, "public_data": 2, "stable_identity": 4, "observable_price": 3, "demand_signal": 2, "technical_accessibility": 2, "ku2d_value": 3, "redundancy": 4},
+      "evidence": "Consumer catalog exists, but Thailand localization, price context, personalization and public access stability are unresolved.",
+      "boundary": "Do not reuse accounts, sessions, device state or personalized price context.",
+      "next_action": "Research terms/localization and public access before any request."
+    },
+    {
+      "source": "AliExpress",
+      "url": "https://www.aliexpress.com/",
+      "priority": "defer",
+      "scores": {"thailand_relevance": 3, "public_data": 2, "stable_identity": 4, "observable_price": 3, "demand_signal": 2, "technical_accessibility": 2, "ku2d_value": 2, "redundancy": 4},
+      "evidence": "Cross-border catalog may expose products and demand displays.",
+      "boundary": "Currency, shipping destination, tax, personalization and account/session context make prices difficult to compare as Thailand observations.",
+      "next_action": "Defer until a destination-explicit public observation contract exists."
+    },
+    {
+      "source": "NocNoc",
+      "url": "https://nocnoc.com/",
+      "priority": "reject",
+      "scores": {"thailand_relevance": 5, "public_data": 0, "stable_identity": 0, "observable_price": 0, "demand_signal": 0, "technical_accessibility": 5, "ku2d_value": 0, "redundancy": 1},
+      "evidence": "The current official page announces cessation: new orders stopped 2026-02-09 and the platform ended 2026-05-09.",
+      "boundary": "Do not build a new acquisition path for a terminated marketplace.",
+      "next_action": "No further acquisition."
+    },
+    {
+      "source": "JD Central",
+      "url": "https://www.jd.co.th/",
+      "priority": "reject",
+      "scores": {"thailand_relevance": 0, "public_data": 0, "stable_identity": 0, "observable_price": 0, "demand_signal": 0, "technical_accessibility": 0, "ku2d_value": 0, "redundancy": 5},
+      "evidence": "Thailand consumer e-commerce operations closed in 2023.",
+      "boundary": "Historical source only.",
+      "next_action": "No further acquisition."
+    }
+  ],
+  "bounded_pilots": [
+    {
+      "source": "NocNoc",
+      "public_http_requests": 1,
+      "normal_browser_page_loads": 1,
+      "retained_records": 0,
+      "access_outcome": "official shutdown notice",
+      "usable_commerce_evidence": false,
+      "edge_required": false
+    },
+    {
+      "source": "LINE SHOPPING",
+      "public_http_requests": 1,
+      "normal_browser_page_loads": 1,
+      "retained_records": 10,
+      "visible_collection_products": 28,
+      "stable_identity_count": 10,
+      "explicit_price_count": 10,
+      "demand_counter_count": 0,
+      "access_outcome": "public seller collection reachable",
+      "usable_commerce_evidence": true,
+      "browser_requirement": "used for semantic DOM confirmation; static identity extraction remains untested",
+      "edge_required": false
+    }
+  ],
+  "production_approved": false,
+  "production_store": false,
+  "scheduler_action": null
+}
