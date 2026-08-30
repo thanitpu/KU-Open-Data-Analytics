@@ -31,7 +31,8 @@
     "independent_instructor",
     "equipment_reviewer",
     "travel_dive_creator",
-    "community_creator"
+    "community_creator",
+    "other"
   ],
   "retention": {
     "refresh_or_delete_days": 30,
