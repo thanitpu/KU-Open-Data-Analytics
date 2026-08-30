@@ -1,0 +1,57 @@
+name: KU2D JIB Retail Lifecycle Validation
+
+on:
+  push:
+    branches:
+      - integration/data-acquisition-platform
+    paths:
+      - 'services/data-acquisition/acquisition/retail_detail_catalog.py'
+      - 'services/data-acquisition/acquisition/retail_detail_transport.py'
+      - 'services/data-acquisition/acquisition/retail_assigned_acquisition.py'
+      - 'services/data-acquisition/acquisition/source_explorer.py'
+      - 'services/data-acquisition/acquisition/track_selection.py'
+      - 'services/data-acquisition/control_plane/domain_playbooks.py'
+      - 'services/data-acquisition/tools/LIVE_JIB_RETAIL_LIFECYCLE.py'
+      - 'services/data-acquisition/tools/SELF_TEST_RETAIL_ASSIGNED_ACQUISITION.py'
+      - '.github/workflows/data-acquisition-jib-live.yml'
+  workflow_dispatch:
+
+jobs:
+  validate-jib-lifecycle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: services/data-acquisition
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Verify operational retail profile routing
+        env:
+          PYTHONPATH: .
+        run: |
+          python tools/SELF_TEST_TRACK_AWARE_SELECTION.py
+          python tools/SELF_TEST_RETAIL_DETAIL_CATALOG.py
+          python tools/SELF_TEST_RETAIL_DETAIL_TRANSPORT.py
+          python tools/SELF_TEST_RETAIL_ASSIGNED_ACQUISITION.py
+      - name: Run JIB Explore, Deep Audit and isolated approval lifecycle
+        env:
+          PYTHONPATH: .
+          KU2D_OPERATIONS_DB: ${{ runner.temp }}/ku2d_jib_live_ops.sqlite3
+          KU2D_OBSERVATION_DB: ${{ runner.temp }}/ku2d_jib_live_obs.sqlite3
+          KU2D_JIB_RESULT: ${{ github.workspace }}/docs/validation/jib-live-latest.json
+        run: python tools/LIVE_JIB_RETAIL_LIFECYCLE.py
+      - name: Upload JIB lifecycle evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ku2d-jib-retail-lifecycle
+          path: |
+            docs/validation/jib-live-latest.json
+            ${{ runner.temp }}/ku2d_jib_live_obs.sqlite3
+          if-no-files-found: warn
+          retention-days: 30
