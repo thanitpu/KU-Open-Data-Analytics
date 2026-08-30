@@ -48,9 +48,22 @@ The relevance screen recognizes only transparent metadata cues:
 - `adjacent`: freediving in a scuba-beginner collection, diving from another location for a Koh Tao profile, or meaningful diving content without an exact collection match;
 - `irrelevant`: no meaningful diving relation in the title or description.
 
-Equipment screening supports mask, fins, wetsuit, BCD, regulator, dive computer, tank, underwater camera, accessory, maintenance, rental, purchase, and fitting/sizing vocabulary. These remain suggestions until Human Review.
+Equipment screening supports mask, fins, wetsuit, BCD, regulator, dive computer, tank, underwater camera, accessory, maintenance, rental, purchase, and fitting/sizing vocabulary. It also recognizes transparent equipment intent such as scuba/dive gear, equipment assembly and setup, beginner gear, what to buy first, and equivalent Thai phrases for choosing, buying, or assembling dive equipment.
+
+Activity scope remains part of the suggestion. Snorkeling-only, spearfishing-only, and freediving-only equipment stays adjacent to the scuba equipment collection unless the metadata also contains explicit scuba context. Generic equipment wording such as `อุปกรณ์ดำน้ำ` is therefore not sufficient by itself to turn an adjacent activity into core scuba equipment. All results remain suggestions until Human Review.
+
+Commercial screening reports independent, evidence-bearing dimensions rather than forcing mutually compatible facts into one label:
+
+- `sponsorship_status`: `disclosed_sponsored`, `explicitly_not_sponsored`, or `unknown`;
+- `affiliate_status`: `disclosed` or `not_observed`;
+- `operator_self_promotion`: whether a transparent self-promotion cue was observed;
+- `promotional_offer`: whether a transparent offer cue was observed.
+
+Negated phrases such as “not sponsored,” “this video is not sponsored,” and “unsponsored” are explicit negative sponsorship evidence and are not reused as positive sponsored matches. No sponsorship cue still means `unknown`, never “not sponsored.” Likewise, affiliate status `not_observed` means only that no transparent affiliate cue was found; it is not proof that no affiliate relationship exists. A conservative `compatibility_summary` is retained for older consumers; it is not the authoritative representation. For example, “not sponsored” plus disclosed affiliate links has sponsorship status `explicitly_not_sponsored`, affiliate status `disclosed`, and compatibility summary `affiliate`.
 
 Commercial screening reports the matched title/description cue and source field. It does not infer hidden sponsorship.
+
+Channel suggestions distinguish `equipment_retailer` when public metadata explicitly describes a scuba/dive store, shop, retailer, or equivalent Thai equipment seller. Manufacturer, reviewer, dive-operator, and community classifications remain separate. Generic affiliate creators are not treated as retailers without store/retailer evidence. Retailer or other commercial source status supplies provenance for Human Review; it does not imply rejection.
 
 ## Channel monitoring boundary
 
@@ -66,7 +79,7 @@ The plan uses the uploads playlist, not repeated search. It always has `producti
 
 ## Price mentions are not commerce evidence
 
-A recognizable amount in a title or description may become a `PriceMentionCandidate` with value, currency, local text context, video identity, observation time, source-statement marker, and commercial-context suggestion. It explicitly has:
+A recognizable amount in a title or description may become a `PriceMentionCandidate` with value, currency, local text context, video identity, observation time, source-statement marker, the multidimensional commercial suggestion, and a conservative compatibility context. It explicitly has:
 
 ```json
 {

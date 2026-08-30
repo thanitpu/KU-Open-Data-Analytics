@@ -22,8 +22,8 @@ COMMERCIAL_CONTEXTS = {
 KNOWLEDGE_USES = {"include", "include_with_context", "exclude"}
 SOURCE_CLASSES = {
     "training_authority", "dive_operator", "equipment_manufacturer",
-    "independent_instructor", "equipment_reviewer", "travel_dive_creator",
-    "community_creator", "other",
+    "equipment_retailer", "independent_instructor", "equipment_reviewer",
+    "travel_dive_creator", "community_creator", "other",
 }
 DOMAIN_FOCUSES = {
     "diving_specialist", "travel_with_diving", "lifestyle_with_diving", "mixed",
@@ -43,6 +43,22 @@ EQUIPMENT_VOCABULARY = {
     "rental": ("rental", "rent gear", "เช่าอุปกรณ์"),
     "purchase": ("purchase", "buy gear", "ซื้ออุปกรณ์"),
     "fitting_sizing": ("fitting", "sizing", "fit test", "เลือกไซซ์", "ขนาด"),
+}
+EQUIPMENT_INTENT_VOCABULARY = (
+    "scuba gear", "dive gear", "diving equipment", "scuba equipment",
+    "gear setup", "set up gear", "setup gear", "assemble equipment",
+    "assemble gear", "gear assembly", "what gear to buy", "gear to buy first",
+    "beginner gear", "อุปกรณ์ดำน้ำ", "อุปกรณ์สกูบา", "ชุดดำน้ำลึก",
+    "ชุด scuba", "ประกอบอุปกรณ์", "ประกอบชุด", "เลือกอุปกรณ์", "ซื้ออุปกรณ์",
+)
+SCUBA_SCOPE_VOCABULARY = (
+    "scuba", "open water", "bcd", "regulator", "dive computer",
+    "ดำน้ำลึก", "สกูบา", "เรกูเลเตอร์", "คอมพิวเตอร์ดำน้ำ",
+)
+ADJACENT_ACTIVITY_VOCABULARY = {
+    "freediving": ("freediving", "free diving", "freedive", "ฟรีไดฟ์"),
+    "snorkeling": ("snorkeling", "snorkelling", "snorkel", "ดำน้ำตื้น"),
+    "spearfishing": ("spearfishing", "spear fishing", "สเปียร์ฟิชชิง", "ตกปลาด้วยฉมวก"),
 }
 
 
@@ -111,6 +127,7 @@ class PriceMentionCandidate:
     observed_at: str
     stated_by_source: bool
     commercial_context: str
+    commercial_dimensions: dict[str, Any]
 
 
 @dataclass
@@ -293,12 +310,27 @@ def suggest_relevance(video: dict[str, Any]) -> dict[str, Any]:
     equipment = sorted(
         topic for topic, cues in EQUIPMENT_VOCABULARY.items() if _matches(text, cues)
     )
+    equipment_intent = _matches(text, EQUIPMENT_INTENT_VOCABULARY)
+    scuba_scope = _matches(text, SCUBA_SCOPE_VOCABULARY)
+    adjacent_activities = {
+        activity: _matches(text, cues)
+        for activity, cues in ADJACENT_ACTIVITY_VOCABULARY.items()
+        if _matches(text, cues)
+    }
     koh_tao_query = any("KOH-TAO" in profile_id for profile_id in profile_ids)
 
-    if "diving_equipment" in collections and equipment:
+    if "diving_equipment" in collections and adjacent_activities and not scuba_scope:
+        return {"suggested_relevance": "adjacent", "suggestion_basis": [
+            "equipment intent is scoped to an adjacent non-scuba activity",
+            f"matched adjacent activities: {', '.join(sorted(adjacent_activities))}",
+            "no explicit scuba context was found",
+        ]}
+    if "diving_equipment" in collections and (equipment or equipment_intent):
         return {"suggested_relevance": "core", "suggestion_basis": [
-            "equipment vocabulary matches the diving_equipment collection",
-            f"matched equipment topics: {', '.join(equipment)}",
+            "equipment item or intent vocabulary matches the diving_equipment collection",
+            *( [f"matched equipment topics: {', '.join(equipment)}"] if equipment else [] ),
+            *( [f"matched equipment intent: {', '.join(equipment_intent)}"] if equipment_intent else [] ),
+            *( ["explicit scuba activity scope is present"] if scuba_scope else [] ),
         ]}
     if "learn_to_dive" in collections and freedive:
         return {"suggested_relevance": "adjacent", "suggestion_basis": [
@@ -338,23 +370,58 @@ def suggest_equipment_topics(video: dict[str, Any]) -> dict[str, Any]:
 
 
 def suggest_commercial_context(video: dict[str, Any]) -> dict[str, Any]:
-    """Surface disclosed text cues only; an empty result is unknown, not 'not sponsored'."""
+    """Surface independent disclosed dimensions; absence never means 'not sponsored'."""
     text = _text(video.get("title"), video.get("description"))
-    patterns = {
-        "sponsorship_disclosed": ("sponsored", "paid partnership", "#ad", "สนับสนุนโดย"),
-        "affiliate": ("affiliate", "affiliate link", "earn a commission", "ลิงก์แนะนำ", "ค่านายหน้า"),
-        "promotional_offer": ("promo code", "discount code", "discount", "sale", "buy now", "shop now", "available now", "โปรโมชั่น", "ส่วนลด", "รหัสส่วนลด", "สั่งซื้อ"),
-        "operator_self_promotion": ("book with us", "our dive center", "our course", "จองกับเรา", "สมัครเรียนกับเรา"),
+    negative_sponsorship = _matches(text, ("this video is not sponsored", "not sponsored", "unsponsored"))
+    sponsorship_scan_text = text
+    for cue in negative_sponsorship:
+        sponsorship_scan_text = sponsorship_scan_text.replace(cue, " ")
+    positive_sponsorship = _matches(
+        sponsorship_scan_text, ("sponsored by", "sponsored", "paid partnership", "#ad", "สนับสนุนโดย"),
+    )
+    affiliate = _matches(text, ("affiliate", "affiliate link", "affiliate links", "earn a commission", "ลิงก์แนะนำ", "ค่านายหน้า"))
+    promotional = _matches(text, ("promo code", "discount code", "discount", "sale", "buy now", "shop now", "available now", "โปรโมชั่น", "ส่วนลด", "รหัสส่วนลด", "สั่งซื้อ"))
+    self_promotion = _matches(text, ("book with us", "our dive center", "our course", "จองกับเรา", "สมัครเรียนกับเรา"))
+
+    if positive_sponsorship and negative_sponsorship:
+        sponsorship_status = "unknown"
+    elif positive_sponsorship:
+        sponsorship_status = "disclosed_sponsored"
+    elif negative_sponsorship:
+        sponsorship_status = "explicitly_not_sponsored"
+    else:
+        sponsorship_status = "unknown"
+    dimensions = {
+        "sponsorship_status": sponsorship_status,
+        "affiliate_status": "disclosed" if affiliate else "not_observed",
+        "operator_self_promotion": bool(self_promotion),
+        "promotional_offer": bool(promotional),
     }
+    if sponsorship_status == "disclosed_sponsored":
+        compatibility_summary = "sponsorship_disclosed"
+    elif affiliate:
+        compatibility_summary = "affiliate"
+    elif promotional:
+        compatibility_summary = "promotional_offer"
+    elif self_promotion:
+        compatibility_summary = "operator_self_promotion"
+    else:
+        compatibility_summary = "unknown"
+    dimensions["compatibility_summary"] = compatibility_summary
     evidence = [
-        {"context": context, "matched_cue": cue, "source_field": "title_or_description"}
-        for context, cues in patterns.items()
-        for cue in _matches(text, cues)
+        *({"context": "sponsorship", "status": "explicitly_not_sponsored", "matched_cue": cue,
+           "source_field": "title_or_description"} for cue in negative_sponsorship),
+        *({"context": "sponsorship", "status": "disclosed_sponsored", "matched_cue": cue,
+           "source_field": "title_or_description"} for cue in positive_sponsorship),
+        *({"context": "affiliate", "status": "disclosed", "matched_cue": cue,
+           "source_field": "title_or_description"} for cue in affiliate),
+        *({"context": "promotional_offer", "status": "observed", "matched_cue": cue,
+           "source_field": "title_or_description"} for cue in promotional),
+        *({"context": "operator_self_promotion", "status": "observed", "matched_cue": cue,
+           "source_field": "title_or_description"} for cue in self_promotion),
     ]
-    priority = ("sponsorship_disclosed", "affiliate", "promotional_offer", "operator_self_promotion")
-    suggestion = next((value for value in priority if any(x["context"] == value for x in evidence)), "unknown")
     return {
-        "commercial_context_suggestion": suggestion,
+        "commercial_context_suggestion": dimensions,
         "commercial_context_evidence": evidence,
         "hidden_sponsorship_inferred": False,
     }
@@ -367,12 +434,20 @@ def suggest_channel_class(channel: dict[str, Any]) -> dict[str, Any]:
     travel = _matches(text, ("travel", "traveller", "island life", "lifestyle", "food", "เที่ยว", "ท่องเที่ยว", "ไลฟ์สไตล์"))
     diving = _matches(text, ("scuba", "diving", "dive", "ดำน้ำ"))
     manufacturer = _matches(text, ("manufacturer", "official scuba gear", "dive equipment brand"))
-    reviewer = _matches(text, ("gear review", "equipment review", "scuba reviews"))
+    retailer = _matches(text, (
+        "scuba store", "scuba shop", "dive store", "dive shop", "diving equipment store",
+        "dive equipment shop", "scuba equipment shop", "diving equipment retailer",
+        "dive equipment retailer", "scuba equipment retailer", "ร้านอุปกรณ์ดำน้ำ",
+        "ร้านขายอุปกรณ์ดำน้ำ", "จำหน่ายอุปกรณ์ดำน้ำ", "ร้านสกูบา",
+    ))
+    reviewer = _matches(text, ("gear review", "gear reviews", "equipment review", "equipment reviews", "scuba reviews"))
     instructor = _matches(text, ("independent instructor", "scuba instructor", "ครูสอนดำน้ำ"))
     if operator:
         source_class, focus, basis = "dive_operator", "diving_specialist", operator
     elif manufacturer:
         source_class, focus, basis = "equipment_manufacturer", "diving_specialist", manufacturer
+    elif retailer:
+        source_class, focus, basis = "equipment_retailer", "diving_specialist", retailer
     elif reviewer:
         source_class, focus, basis = "equipment_reviewer", "diving_specialist", reviewer
     elif instructor:
@@ -398,7 +473,7 @@ _PRICE_PATTERNS = (
 )
 
 
-def extract_price_mentions(video: dict[str, Any], commercial_suggestion: str) -> list[dict[str, Any]]:
+def extract_price_mentions(video: dict[str, Any], commercial_dimensions: dict[str, Any]) -> list[dict[str, Any]]:
     mentions: list[dict[str, Any]] = []
     for field_name in ("title", "description"):
         value = str(video.get(field_name) or "")
@@ -409,7 +484,8 @@ def extract_price_mentions(video: dict[str, Any], commercial_suggestion: str) ->
                     value=match.group(1).replace(",", ""), currency=currency,
                     context=value[start:end], source_video_id=str(video.get("video_id") or ""),
                     observed_at=str(video.get("observed_at") or ""), stated_by_source=True,
-                    commercial_context=commercial_suggestion,
+                    commercial_context=str(commercial_dimensions["compatibility_summary"]),
+                    commercial_dimensions=copy.deepcopy(commercial_dimensions),
                 )
                 mentions.append({
                     **asdict(candidate),
