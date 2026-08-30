@@ -1,0 +1,65 @@
+{
+  "schema": "ku2d.ota-source-expansion.v1",
+  "observed_on": "2026-08-31",
+  "existing_validated_fixture_technique": {
+    "source": "Booking.com",
+    "technique": "public search result cards with explicit query context",
+    "live_revalidated_tonight": false,
+    "required_context": ["destination_or_property", "check_in", "check_out", "occupancy", "currency", "observed_at"]
+  },
+  "selected_sources": [
+    {
+      "source_id": "SRC-OTA-AGODA",
+      "source": "Agoda",
+      "surface": "public Bangkok search",
+      "query_context": {
+        "destination": "Bangkok",
+        "city_id": "9395",
+        "check_in": "2026-09-15",
+        "check_out": "2026-09-16",
+        "rooms": 1,
+        "adults": 2,
+        "children": 0,
+        "currency": "THB"
+      },
+      "public_http_requests": 1,
+      "http_status": 200,
+      "response_bytes": 391041,
+      "challenge_detected": true,
+      "retained_property_records": 0,
+      "retained_rate_records": 0,
+      "browser_attempted": false,
+      "classification": "access-boundary-stop",
+      "technique_transfer": "promising-pattern-but-not-access-validated",
+      "next_action": "Pause pending a separately reviewed compliant public access technique."
+    },
+    {
+      "source_id": "SRC-OTA-TRAVELOKA",
+      "source": "Traveloka",
+      "surface": "public Thailand hotel destination",
+      "query_context": {
+        "destination": "Thailand",
+        "check_in": null,
+        "check_out": null,
+        "rooms": null,
+        "adults": null,
+        "children": null,
+        "currency": null
+      },
+      "public_http_requests": 1,
+      "http_status": 403,
+      "response_bytes": 773,
+      "challenge_detected": true,
+      "retained_property_records": 0,
+      "retained_rate_records": 0,
+      "browser_attempted": false,
+      "classification": "access-boundary-stop",
+      "technique_transfer": "not-validated",
+      "next_action": "Pause; do not browser-escalate from the access-control response."
+    }
+  ],
+  "booking_or_account_flow_attempted": false,
+  "production_approved": false,
+  "production_store": false,
+  "scheduler_action": null
+}
