@@ -23,6 +23,7 @@ from youtube_human_review import (
     suggest_channel_class,
     suggest_commercial_context,
     suggest_relevance,
+    validate_review_package_integrity,
 )
 from youtube_source_foundation import load_policy, load_query_profiles
 from PREPARE_YOUTUBE_HUMAN_REVIEW import main as prepare_main
@@ -32,6 +33,43 @@ SCHEMA = ROOT / "config" / "youtube_knowledge_dataset_schema.json"
 source = json.loads(FIXTURE.read_text(encoding="utf-8"))
 source_before = copy.deepcopy(source)
 package = prepare_review_package(source)
+
+
+def complete_video_review(review_package, video_id, *, relevance="core", knowledge_use="include"):
+    review = next(row for row in review_package["video_reviews"] if row["video_id"] == video_id)
+    review.update({
+        "review_status": "reviewed",
+        "relevance": relevance,
+        "content_roles": ["training"] if relevance != "irrelevant" else [],
+        "commercial_context": "none",
+        "knowledge_use": knowledge_use,
+        "reviewer_note": "Sanitized deterministic review.",
+        "reviewed_by": "ku2d-reviewer",
+        "reviewed_at": "2026-08-30T00:00:00Z",
+    })
+    return review
+
+
+def complete_channel_review(review_package, channel_id, *, decision, source_class, domain_focus):
+    review = next(row for row in review_package["channel_reviews"] if row["channel_id"] == channel_id)
+    review.update({
+        "review_status": "reviewed",
+        "source_class": source_class,
+        "domain_focus": domain_focus,
+        "monitoring_decision": decision,
+        "reviewer_note": "Sanitized deterministic review.",
+        "reviewed_by": "ku2d-reviewer",
+        "reviewed_at": "2026-08-30T00:00:00Z",
+    })
+    return review
+
+
+def assert_handoff_fails(review_package, message_fragment):
+    try:
+        create_knowledge_dataset(review_package, dataset_id="EXPECTED-FAILURE")
+        raise AssertionError(f"Malformed handoff accepted: {message_fragment}")
+    except ValueError as exc:
+        assert message_fragment in str(exc), (message_fragment, str(exc))
 
 # A/B: reviews are separate, pending, and blank; automation produces suggestions only.
 assert source == source_before
@@ -130,21 +168,45 @@ assert mentions[0]["current_commerce_price_evidence"] is False
 assert mentions[0]["product_price_acquisition_record"] is False
 assert "ProductCandidate" not in json.dumps(mentions) and "PriceObservation" not in json.dumps(mentions)
 
-# M: completed review can create a provenance-bearing, explicitly non-production KU2A contract.
+# M/A: rejecting ongoing monitoring never removes an included video's source channel provenance.
+rejected_package = copy.deepcopy(package)
+complete_video_review(
+    rejected_package, "SAN-FREEDIVING", relevance="adjacent", knowledge_use="include_with_context",
+)
+rejected_channel_review = complete_channel_review(
+    rejected_package,
+    "SAN-TRAVEL-CREATOR",
+    decision="reject",
+    source_class="travel_dive_creator",
+    domain_focus="travel_with_diving",
+)
+rejected_dataset = create_knowledge_dataset(
+    rejected_package,
+    dataset_id="QDIVING-YOUTUBE-REJECTED-MONITORING",
+    generated_at="2026-08-30T01:00:00Z",
+)
+assert rejected_dataset["included_video_ids"] == ["SAN-FREEDIVING"]
+assert rejected_dataset["included_channel_ids"] == ["SAN-TRAVEL-CREATOR"]
+assert rejected_dataset["monitoring_approved_channel_ids"] == []
+assert rejected_dataset["monitoring_watch_channel_ids"] == []
+assert rejected_dataset["human_review_summary"]["source_channels_included"] == 1
+assert rejected_dataset["human_review_summary"]["monitoring_channels_rejected"] == 1
+try:
+    create_monitoring_plan(rejected_channel_review, by_channel["SAN-TRAVEL-CREATOR"])
+    raise AssertionError("rejected channel created a monitoring plan")
+except ValueError:
+    pass
+
+# M/B: approved monitoring is separate, uses uploads, and remains non-production.
 reviewed_package = copy.deepcopy(package)
-video_review = next(row for row in reviewed_package["video_reviews"] if row["video_id"] == "SAN-EN-KOH-TAO")
-video_review.update({
-    "review_status": "reviewed",
-    "relevance": "core",
-    "content_roles": ["training", "beginner_experience"],
-    "commercial_context": "none",
-    "knowledge_use": "include",
-    "reviewer_note": "Suitable for research context.",
-    "reviewed_by": "ku2d-reviewer",
-    "reviewed_at": "2026-08-30T00:00:00Z",
-})
-channel_review = next(row for row in reviewed_package["channel_reviews"] if row["channel_id"] == "SAN-DIVE-OPERATOR")
-channel_review.update(approved_channel_review)
+complete_video_review(reviewed_package, "SAN-EN-KOH-TAO", relevance="core", knowledge_use="include")
+channel_review = complete_channel_review(
+    reviewed_package,
+    "SAN-DIVE-OPERATOR",
+    decision="approve",
+    source_class="dive_operator",
+    domain_focus="diving_specialist",
+)
 dataset = create_knowledge_dataset(
     reviewed_package,
     dataset_id="QDIVING-YOUTUBE-SANITIZED-001",
@@ -154,15 +216,115 @@ assert dataset["schema"] == "ku2d.youtube-knowledge-dataset.v1"
 assert dataset["domain"] == "q_diving" and dataset["source_type"] == "youtube"
 assert dataset["included_video_ids"] == ["SAN-EN-KOH-TAO"]
 assert dataset["included_channel_ids"] == ["SAN-DIVE-OPERATOR"]
+assert dataset["monitoring_approved_channel_ids"] == ["SAN-DIVE-OPERATOR"]
+assert dataset["monitoring_watch_channel_ids"] == []
 assert dataset["research_collections"] == ["learn_to_dive"]
 assert dataset["human_review_summary"]["video_reviews_completed"] == 1
+assert dataset["human_review_summary"]["monitoring_channels_approved"] == 1
 assert dataset["provenance_summary"]["provider"] == "youtube-data-api-v3"
 assert dataset["provenance_summary"]["human_review_required"] is True
 assert dataset["data_refresh_due_at"] == "2026-09-28T09:00:00+00:00"
 assert dataset["production_approved"] is False
+approved_plan = create_monitoring_plan(channel_review, by_channel["SAN-DIVE-OPERATOR"])
+assert approved_plan["production_enabled"] is False and approved_plan["scheduler_action"] is None
+
+# M/C: watch is represented only in its explicit list and cannot create a monitoring plan.
+watch_package = copy.deepcopy(package)
+complete_video_review(watch_package, "SAN-FREEDIVING", relevance="adjacent", knowledge_use="include_with_context")
+watch_review = complete_channel_review(
+    watch_package,
+    "SAN-TRAVEL-CREATOR",
+    decision="watch",
+    source_class="travel_dive_creator",
+    domain_focus="travel_with_diving",
+)
+watch_dataset = create_knowledge_dataset(watch_package, dataset_id="QDIVING-YOUTUBE-WATCH")
+assert watch_dataset["included_channel_ids"] == ["SAN-TRAVEL-CREATOR"]
+assert watch_dataset["monitoring_approved_channel_ids"] == []
+assert watch_dataset["monitoring_watch_channel_ids"] == ["SAN-TRAVEL-CREATOR"]
+try:
+    create_monitoring_plan(watch_review, by_channel["SAN-TRAVEL-CREATOR"])
+    raise AssertionError("watch channel created a monitoring plan")
+except ValueError:
+    pass
+
+# M/D-H: unknown and duplicate candidate/review identities fail before aggregation.
+broken = copy.deepcopy(package)
+broken["video_reviews"][0]["video_id"] = "UNKNOWN-VIDEO"
+assert_handoff_fails(broken, "Unknown video review identity: UNKNOWN-VIDEO")
+broken = copy.deepcopy(package)
+broken["channel_reviews"][0]["channel_id"] = "UNKNOWN-CHANNEL"
+assert_handoff_fails(broken, "Unknown channel review identity: UNKNOWN-CHANNEL")
+broken = copy.deepcopy(package)
+broken["video_reviews"].append(copy.deepcopy(broken["video_reviews"][0]))
+assert_handoff_fails(broken, "Duplicate video review identity")
+broken = copy.deepcopy(package)
+broken["channel_reviews"].append(copy.deepcopy(broken["channel_reviews"][0]))
+assert_handoff_fails(broken, "Duplicate channel review identity")
+broken = copy.deepcopy(package)
+broken["candidate_videos"].append(copy.deepcopy(broken["candidate_videos"][0]))
+assert_handoff_fails(broken, "Duplicate candidate video identity")
+broken = copy.deepcopy(package)
+broken["candidate_channels"].append(copy.deepcopy(broken["candidate_channels"][0]))
+assert_handoff_fails(broken, "Duplicate candidate channel identity")
+broken = copy.deepcopy(package)
+broken["video_reviews"].pop()
+assert_handoff_fails(broken, "Candidate video has no review record")
+broken = copy.deepcopy(package)
+broken["candidate_channels"][0]["channel_id"] = ""
+assert_handoff_fails(broken, "empty channel_id")
+
+# M/I-K: contradictory completed decisions and finalized pending records fail closed.
+broken = copy.deepcopy(package)
+complete_video_review(broken, "SAN-NONDIVING", relevance="irrelevant", knowledge_use="include")
+assert_handoff_fails(broken, "irrelevant video must be excluded")
+validate_review_package_integrity(reviewed_package)  # core/include
+validate_review_package_integrity(watch_package)  # adjacent/include_with_context
+broken = copy.deepcopy(package)
+broken["video_reviews"][0]["relevance"] = "core"
+assert_handoff_fails(broken, "Pending video review carries final field")
+broken = copy.deepcopy(package)
+broken["channel_reviews"][0]["monitoring_decision"] = "approve"
+assert_handoff_fails(broken, "Pending channel review carries final field")
+
+# M/L-N: included candidate identity and provenance come from the candidate record, not the review.
+broken = copy.deepcopy(reviewed_package)
+next(row for row in broken["candidate_videos"] if row["video_id"] == "SAN-EN-KOH-TAO")["channel_id"] = None
+assert_handoff_fails(broken, "has no source channel_id")
+broken = copy.deepcopy(reviewed_package)
+next(row for row in broken["candidate_videos"] if row["video_id"] == "SAN-EN-KOH-TAO")["refresh_due_at"] = None
+assert_handoff_fails(broken, "has no refresh_due_at")
+broken = copy.deepcopy(reviewed_package)
+next(row for row in broken["candidate_videos"] if row["video_id"] == "SAN-EN-KOH-TAO")["provenance"] = {}
+assert_handoff_fails(broken, "lacks official provider provenance")
+broken = copy.deepcopy(reviewed_package)
+next(row for row in broken["candidate_videos"] if row["video_id"] == "SAN-EN-KOH-TAO")["provenance"]["provider"] = "untrusted-provider"
+assert_handoff_fails(broken, "lacks official provider provenance")
+broken = copy.deepcopy(reviewed_package)
+next(row for row in broken["candidate_videos"] if row["video_id"] == "SAN-EN-KOH-TAO")["query_profile_ids"] = []
+assert_handoff_fails(broken, "has no query-profile provenance path")
+broken = copy.deepcopy(reviewed_package)
+next(row for row in broken["candidate_videos"] if row["video_id"] == "SAN-EN-KOH-TAO")["publicly_usable"] = False
+assert_handoff_fails(broken, "not from a current, publicly usable foundation record")
+
+# The schema makes monitoring separation, identity uniqueness, and provenance constraints explicit.
 schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
 assert schema["properties"]["production_approved"]["const"] is False
 assert set(schema["required"]) == set(dataset)
+for field_name in (
+    "included_video_ids", "included_channel_ids", "monitoring_approved_channel_ids",
+    "monitoring_watch_channel_ids",
+):
+    assert schema["properties"][field_name]["uniqueItems"] is True
+    assert schema["properties"][field_name]["items"]["minLength"] == 1
+summary_schema = schema["properties"]["human_review_summary"]
+assert {
+    "source_channels_included", "monitoring_channels_approved",
+    "monitoring_channels_watch", "monitoring_channels_rejected",
+}.issubset(summary_schema["required"])
+provenance_schema = schema["properties"]["provenance_summary"]
+assert provenance_schema["properties"]["provider"]["const"] == "youtube-data-api-v3"
+assert provenance_schema["properties"]["human_review_required"]["const"] is True
 
 # N/O: transcript text never enters the review package and comments remain disabled.
 assert all(row["transcript_text"] is None for row in source["videos"])

@@ -122,6 +122,8 @@ class YouTubeKnowledgeDataset:
     query_profile_ids: list[str]
     included_video_ids: list[str]
     included_channel_ids: list[str]
+    monitoring_approved_channel_ids: list[str]
+    monitoring_watch_channel_ids: list[str]
     research_collections: list[str]
     human_review_summary: dict[str, Any]
     provenance_summary: dict[str, Any]
@@ -133,6 +135,10 @@ def validate_video_review(review: dict[str, Any]) -> None:
     if review.get("review_status") not in VIDEO_REVIEW_STATUSES:
         raise ValueError("Invalid YouTube video review_status.")
     if review["review_status"] == "pending":
+        final_fields = ("relevance", "knowledge_use", "commercial_context", "reviewed_by", "reviewed_at")
+        populated = [field_name for field_name in final_fields if review.get(field_name) not in (None, "")]
+        if populated:
+            raise ValueError(f"Pending video review carries final field(s): {', '.join(populated)}.")
         return
     if review.get("relevance") not in RELEVANCE_VALUES:
         raise ValueError("A reviewed video requires a valid relevance decision.")
@@ -142,14 +148,22 @@ def validate_video_review(review: dict[str, Any]) -> None:
         raise ValueError("A reviewed video requires a valid commercial_context decision.")
     if not set(review.get("content_roles") or []).issubset(CONTENT_ROLES):
         raise ValueError("A video review contains an unsupported content role.")
-    if not review.get("reviewed_by") or not review.get("reviewed_at"):
+    if not str(review.get("reviewed_by") or "").strip() or not str(review.get("reviewed_at") or "").strip():
         raise ValueError("A reviewed video requires reviewer provenance.")
+    if review.get("relevance") == "irrelevant" and review.get("knowledge_use") != "exclude":
+        raise ValueError("An irrelevant video must be excluded from knowledge use.")
+    if review.get("knowledge_use") in {"include", "include_with_context"} and review.get("relevance") not in {"core", "adjacent"}:
+        raise ValueError("Included video knowledge requires core or adjacent relevance.")
 
 
 def validate_channel_review(review: dict[str, Any]) -> None:
     if review.get("review_status") not in VIDEO_REVIEW_STATUSES:
         raise ValueError("Invalid YouTube channel review_status.")
     if review["review_status"] == "pending":
+        final_fields = ("source_class", "domain_focus", "monitoring_decision", "reviewed_by", "reviewed_at")
+        populated = [field_name for field_name in final_fields if review.get(field_name) not in (None, "")]
+        if populated:
+            raise ValueError(f"Pending channel review carries final field(s): {', '.join(populated)}.")
         return
     if review.get("source_class") not in SOURCE_CLASSES:
         raise ValueError("A reviewed channel requires a valid source_class.")
@@ -157,8 +171,114 @@ def validate_channel_review(review: dict[str, Any]) -> None:
         raise ValueError("A reviewed channel requires a valid domain_focus.")
     if review.get("monitoring_decision") not in MONITORING_DECISIONS:
         raise ValueError("A reviewed channel requires a valid monitoring_decision.")
-    if not review.get("reviewed_by") or not review.get("reviewed_at"):
+    if not str(review.get("reviewed_by") or "").strip() or not str(review.get("reviewed_at") or "").strip():
         raise ValueError("A reviewed channel requires reviewer provenance.")
+
+
+def _indexed_identities(rows: Any, identity_field: str, record_label: str) -> tuple[list[str], dict[str, dict[str, Any]]]:
+    if not isinstance(rows, list):
+        raise ValueError(f"{record_label} records must be a list.")
+    identities: list[str] = []
+    indexed: dict[str, dict[str, Any]] = {}
+    for index, row in enumerate(rows):
+        if not isinstance(row, dict):
+            raise ValueError(f"{record_label} record at index {index} must be an object.")
+        identity = row.get(identity_field)
+        if not isinstance(identity, str) or not identity.strip():
+            raise ValueError(f"{record_label} record at index {index} has an empty {identity_field}.")
+        if identity != identity.strip():
+            raise ValueError(f"{record_label} identity has surrounding whitespace: {identity!r}.")
+        if identity in indexed:
+            raise ValueError(f"Duplicate {record_label} identity: {identity}.")
+        identities.append(identity)
+        indexed[identity] = row
+    return identities, indexed
+
+
+def validate_review_package_integrity(review_package: dict[str, Any]) -> None:
+    """Reject malformed or contradictory manual edits before KU2A handoff."""
+    if not isinstance(review_package, dict) or review_package.get("schema") != "ku2d.youtube-human-review-package.v1":
+        raise ValueError("Expected a YouTube Human Review package.")
+    if review_package.get("provider") != "youtube-data-api-v3":
+        raise ValueError("Review package provider must be youtube-data-api-v3.")
+    if review_package.get("foundation_result_schema") != "ku2d.youtube-source-foundation-result.v1":
+        raise ValueError("Review package has an invalid foundation result schema provenance.")
+    if review_package.get("domain") != "q_diving" or review_package.get("source_type") != "youtube":
+        raise ValueError("Review package must describe the Q-Diving YouTube source contract.")
+
+    candidate_video_ids, candidate_videos = _indexed_identities(
+        review_package.get("candidate_videos"), "video_id", "candidate video",
+    )
+    candidate_channel_ids, candidate_channels = _indexed_identities(
+        review_package.get("candidate_channels"), "channel_id", "candidate channel",
+    )
+    video_review_ids, video_reviews = _indexed_identities(
+        review_package.get("video_reviews"), "video_id", "video review",
+    )
+    channel_review_ids, channel_reviews = _indexed_identities(
+        review_package.get("channel_reviews"), "channel_id", "channel review",
+    )
+
+    for identity in video_review_ids:
+        if identity not in candidate_videos:
+            raise ValueError(f"Unknown video review identity: {identity}.")
+    for identity in channel_review_ids:
+        if identity not in candidate_channels:
+            raise ValueError(f"Unknown channel review identity: {identity}.")
+    for identity in candidate_video_ids:
+        if identity not in video_reviews:
+            raise ValueError(f"Candidate video has no review record: {identity}.")
+    for identity in candidate_channel_ids:
+        if identity not in channel_reviews:
+            raise ValueError(f"Candidate channel has no review record: {identity}.")
+
+    for review in review_package["video_reviews"]:
+        validate_video_review(review)
+    for review in review_package["channel_reviews"]:
+        validate_channel_review(review)
+
+    package_profile_ids = review_package.get("query_profile_ids")
+    if not isinstance(package_profile_ids, list) or not package_profile_ids:
+        raise ValueError("Review package has no query_profile_ids provenance.")
+    if any(not isinstance(profile_id, str) or not profile_id.strip() for profile_id in package_profile_ids):
+        raise ValueError("Review package contains an empty query_profile_id.")
+    if len(package_profile_ids) != len(set(package_profile_ids)):
+        raise ValueError("Review package contains duplicate query_profile_ids.")
+    profile_rows = review_package.get("query_profile_provenance")
+    profile_ids, _ = _indexed_identities(profile_rows, "profile_id", "query-profile provenance")
+    profile_id_set = set(profile_ids)
+    for row in profile_rows:
+        if row.get("domain") != "q_diving":
+            raise ValueError(f"Query-profile provenance {row['profile_id']} has an invalid domain.")
+        for field_name in ("research_collection", "query_text", "region_code"):
+            if not isinstance(row.get(field_name), str) or not row[field_name].strip():
+                raise ValueError(f"Query-profile provenance {row['profile_id']} has an empty {field_name}.")
+    for profile_id in package_profile_ids:
+        if profile_id not in profile_id_set:
+            raise ValueError(f"Query profile has no provenance record: {profile_id}.")
+    for profile_id in profile_ids:
+        if profile_id not in package_profile_ids:
+            raise ValueError(f"Unknown query-profile provenance identity: {profile_id}.")
+
+    for review in review_package["video_reviews"]:
+        if review.get("review_status") != "reviewed" or review.get("knowledge_use") not in {"include", "include_with_context"}:
+            continue
+        candidate = candidate_videos[review["video_id"]]
+        if not str(candidate.get("channel_id") or "").strip():
+            raise ValueError(f"Included candidate video {review['video_id']} has no source channel_id.")
+        if not str(candidate.get("refresh_due_at") or "").strip():
+            raise ValueError(f"Included candidate video {review['video_id']} has no refresh_due_at.")
+        provenance = candidate.get("provenance")
+        if not isinstance(provenance, dict) or provenance.get("provider") != "youtube-data-api-v3":
+            raise ValueError(f"Included candidate video {review['video_id']} lacks official provider provenance.")
+        candidate_profiles = candidate.get("query_profile_ids")
+        if not isinstance(candidate_profiles, list) or not candidate_profiles:
+            raise ValueError(f"Included candidate video {review['video_id']} has no query-profile provenance path.")
+        if any(not isinstance(profile_id, str) or not profile_id.strip() or profile_id not in profile_id_set
+               for profile_id in candidate_profiles):
+            raise ValueError(f"Included candidate video {review['video_id']} has an unknown query-profile provenance path.")
+        if candidate.get("data_status") != "current" or candidate.get("publicly_usable") is not True:
+            raise ValueError(f"Included candidate video {review['video_id']} is not from a current, publicly usable foundation record.")
 
 
 def suggest_relevance(video: dict[str, Any]) -> dict[str, Any]:
@@ -356,6 +476,8 @@ def prepare_review_package(
             "research_collections": list(video.get("research_collections") or []),
             "observed_at": video.get("observed_at"),
             "refresh_due_at": video.get("refresh_due_at"),
+            "data_status": video.get("data_status"),
+            "publicly_usable": video.get("publicly_usable"),
             "provenance": copy.deepcopy(video.get("provenance") or {}),
             "review_suggestions": {**relevance, **commercial, **equipment},
         })
@@ -433,35 +555,36 @@ def create_knowledge_dataset(
     review_package: dict[str, Any], *, dataset_id: str, generated_at: str | None = None,
 ) -> dict[str, Any]:
     """Build a non-production KU2A handoff from completed Human Review records."""
-    if review_package.get("schema") != "ku2d.youtube-human-review-package.v1":
-        raise ValueError("Expected a YouTube Human Review package.")
-    video_reviews = review_package.get("video_reviews") or []
-    channel_reviews = review_package.get("channel_reviews") or []
-    for review in video_reviews:
-        validate_video_review(review)
-    for review in channel_reviews:
-        validate_channel_review(review)
+    validate_review_package_integrity(review_package)
+    if not isinstance(dataset_id, str) or not dataset_id.strip():
+        raise ValueError("YouTubeKnowledgeDataset requires a non-empty dataset_id.")
+    video_reviews = review_package["video_reviews"]
+    channel_reviews = review_package["channel_reviews"]
 
     included_video_reviews = [
         row for row in video_reviews
         if row.get("review_status") == "reviewed" and row.get("knowledge_use") in {"include", "include_with_context"}
     ]
-    included_channel_reviews = [
+    monitoring_approved_reviews = [
         row for row in channel_reviews
-        if row.get("review_status") == "reviewed" and row.get("monitoring_decision") in {"approve", "watch"}
+        if row.get("review_status") == "reviewed" and row.get("monitoring_decision") == "approve"
+    ]
+    monitoring_watch_reviews = [
+        row for row in channel_reviews
+        if row.get("review_status") == "reviewed" and row.get("monitoring_decision") == "watch"
     ]
     included_video_ids = sorted({str(row["video_id"]) for row in included_video_reviews})
-    included_channel_ids = sorted({str(row["channel_id"]) for row in included_channel_reviews})
+    video_candidates_by_id = {row["video_id"]: row for row in review_package["candidate_videos"]}
+    selected_candidates = [video_candidates_by_id[video_id] for video_id in included_video_ids]
+    included_channel_ids = sorted({str(row["channel_id"]) for row in selected_candidates})
+    monitoring_approved_channel_ids = sorted(str(row["channel_id"]) for row in monitoring_approved_reviews)
+    monitoring_watch_channel_ids = sorted(str(row["channel_id"]) for row in monitoring_watch_reviews)
     collections = sorted({
-        collection for row in included_video_reviews for collection in row.get("research_collections") or []
+        collection for row in selected_candidates for collection in row.get("research_collections") or []
     })
-    selected_candidates = [
-        row for row in review_package.get("candidate_videos") or []
-        if row.get("video_id") in set(included_video_ids)
-    ]
     selected_channel_candidates = [
         row for row in review_package.get("candidate_channels") or []
-        if row.get("channel_id") in set(included_channel_ids)
+        if row.get("channel_id") in included_channel_ids
     ]
     refresh_values = sorted({
         row.get("refresh_due_at")
@@ -475,7 +598,13 @@ def create_knowledge_dataset(
         "videos_excluded": sum(row.get("knowledge_use") == "exclude" for row in video_reviews),
         "channel_candidates": len(channel_reviews),
         "channel_reviews_completed": sum(row.get("review_status") == "reviewed" for row in channel_reviews),
-        "channels_included": len(included_channel_ids),
+        "source_channels_included": len(included_channel_ids),
+        "monitoring_channels_approved": len(monitoring_approved_channel_ids),
+        "monitoring_channels_watch": len(monitoring_watch_channel_ids),
+        "monitoring_channels_rejected": sum(
+            row.get("review_status") == "reviewed" and row.get("monitoring_decision") == "reject"
+            for row in channel_reviews
+        ),
     }
     dataset = YouTubeKnowledgeDataset(
         dataset_id=dataset_id,
@@ -485,6 +614,8 @@ def create_knowledge_dataset(
         query_profile_ids=list(review_package.get("query_profile_ids") or []),
         included_video_ids=included_video_ids,
         included_channel_ids=included_channel_ids,
+        monitoring_approved_channel_ids=monitoring_approved_channel_ids,
+        monitoring_watch_channel_ids=monitoring_watch_channel_ids,
         research_collections=collections,
         human_review_summary=summary,
         provenance_summary={

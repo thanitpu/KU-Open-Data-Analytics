@@ -38,6 +38,8 @@ The package contains compact candidate video/channel metadata, profile provenanc
 
 Only public, current, usable foundation candidates enter the package. Each candidate retains provider, endpoint, query-profile, observation, and refresh provenance.
 
+Before a KU2A handoff is built, `validate_review_package_integrity()` rejects malformed or contradictory manual edits. Candidate and review identities must be non-empty, unique, and one-to-one. Included candidates must retain an official YouTube Data API provider, current/public foundation status, source channel attribution, refresh timing, and a valid query-profile provenance path. Pending reviews cannot carry final decisions or reviewer provenance. Irrelevant videos must be excluded, while included videos must be core or adjacent. Duplicate and unknown identities are reported explicitly before any aggregation occurs.
+
 ## Deterministic screening suggestions
 
 The relevance screen recognizes only transparent metadata cues:
@@ -83,7 +85,17 @@ YouTube metadata is not a Product & Price acquisition source in this checkpoint.
 KU2D → reviewed YouTube metadata → KU2A Workspace
 ```
 
-The contract is defined in `config/youtube_knowledge_dataset_schema.json`. Only completed video reviews marked `include` or `include_with_context` enter `included_video_ids`. Only completed channel reviews with `approve` or `watch` monitoring decisions enter `included_channel_ids`. The dataset carries query profiles, research collections, a Human Review summary, provider/schema provenance, and the earliest relevant refresh date. `production_approved` is fixed to `false`.
+The contract is defined in `config/youtube_knowledge_dataset_schema.json`. Only completed video reviews marked `include` or `include_with_context` enter `included_video_ids`.
+
+`included_channel_ids` is source-channel provenance: it contains the unique channel IDs attached to included video candidates. It is not a monitoring authorization list. Rejecting monitoring for a general travel/lifestyle channel does not remove that channel's source attribution from an included video.
+
+Monitoring decisions are represented separately:
+
+- `monitoring_approved_channel_ids` contains only completed channel reviews whose decision is `approve`;
+- `monitoring_watch_channel_ids` contains only completed channel reviews whose decision is `watch`;
+- rejected and pending channels appear in neither monitoring list.
+
+Only an approved channel can produce a dry monitoring plan; `watch` remains an observation decision rather than authorization. The dataset also carries query profiles, research collections derived from candidate provenance, a Human Review summary, provider/schema provenance, and the earliest relevant refresh date. `production_approved` is fixed to `false`.
 
 This checkpoint does not integrate the dataset with `app.html` or any KU2A UI.
 

@@ -14,6 +14,8 @@
     "query_profile_ids",
     "included_video_ids",
     "included_channel_ids",
+    "monitoring_approved_channel_ids",
+    "monitoring_watch_channel_ids",
     "research_collections",
     "human_review_summary",
     "provenance_summary",
@@ -22,16 +24,103 @@
   ],
   "properties": {
     "schema": {"const": "ku2d.youtube-knowledge-dataset.v1"},
-    "dataset_id": {"type": "string", "minLength": 1},
+    "dataset_id": {"type": "string", "minLength": 1, "pattern": ".*\\S.*"},
     "domain": {"const": "q_diving"},
     "source_type": {"const": "youtube"},
     "generated_at": {"type": "string", "format": "date-time"},
-    "query_profile_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
-    "included_video_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
-    "included_channel_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
-    "research_collections": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
-    "human_review_summary": {"type": "object"},
-    "provenance_summary": {"type": "object"},
+    "query_profile_ids": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1, "pattern": ".*\\S.*"},
+      "uniqueItems": true
+    },
+    "included_video_ids": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1, "pattern": ".*\\S.*"},
+      "uniqueItems": true
+    },
+    "included_channel_ids": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1, "pattern": ".*\\S.*"},
+      "uniqueItems": true
+    },
+    "monitoring_approved_channel_ids": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1, "pattern": ".*\\S.*"},
+      "uniqueItems": true
+    },
+    "monitoring_watch_channel_ids": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1, "pattern": ".*\\S.*"},
+      "uniqueItems": true
+    },
+    "research_collections": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1, "pattern": ".*\\S.*"},
+      "uniqueItems": true
+    },
+    "human_review_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "video_candidates",
+        "video_reviews_completed",
+        "videos_included",
+        "videos_excluded",
+        "channel_candidates",
+        "channel_reviews_completed",
+        "source_channels_included",
+        "monitoring_channels_approved",
+        "monitoring_channels_watch",
+        "monitoring_channels_rejected"
+      ],
+      "properties": {
+        "video_candidates": {"type": "integer", "minimum": 0},
+        "video_reviews_completed": {"type": "integer", "minimum": 0},
+        "videos_included": {"type": "integer", "minimum": 0},
+        "videos_excluded": {"type": "integer", "minimum": 0},
+        "channel_candidates": {"type": "integer", "minimum": 0},
+        "channel_reviews_completed": {"type": "integer", "minimum": 0},
+        "source_channels_included": {"type": "integer", "minimum": 0},
+        "monitoring_channels_approved": {"type": "integer", "minimum": 0},
+        "monitoring_channels_watch": {"type": "integer", "minimum": 0},
+        "monitoring_channels_rejected": {"type": "integer", "minimum": 0}
+      }
+    },
+    "provenance_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "foundation_result_schema",
+        "review_package_schema",
+        "query_profile_provenance",
+        "human_review_required"
+      ],
+      "properties": {
+        "provider": {"const": "youtube-data-api-v3"},
+        "foundation_result_schema": {"const": "ku2d.youtube-source-foundation-result.v1"},
+        "review_package_schema": {"const": "ku2d.youtube-human-review-package.v1"},
+        "query_profile_provenance": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["profile_id", "domain", "research_collection", "query_text", "region_code", "relevance_language"],
+            "properties": {
+              "profile_id": {"type": "string", "minLength": 1},
+              "domain": {"const": "q_diving"},
+              "research_collection": {"type": "string", "minLength": 1},
+              "query_text": {"type": "string", "minLength": 1},
+              "region_code": {"type": "string", "minLength": 1},
+              "relevance_language": {"type": ["string", "null"]}
+            }
+          }
+        },
+        "human_review_required": {"const": true}
+      }
+    },
     "data_refresh_due_at": {"type": ["string", "null"], "format": "date-time"},
     "production_approved": {"const": false}
   }
