@@ -23,6 +23,7 @@ def markdown(summary: dict | None, errors: list[str]) -> str:
     if errors:
         lines.extend(["> [!CAUTION]", "> Validation evidence is missing or unreadable."])
         lines.extend([f"> {error}" for error in errors])
+        lines.append("> Treat this validation as a technical failure.")
         lines.append("")
     if not summary:
         lines.append("No trustworthy lifecycle summary is available. Treat this validation as a technical failure.")
@@ -82,7 +83,7 @@ def main(argv=None) -> int:
         output.parent.mkdir(parents=True, exist_ok=True)
         with output.open("a", encoding="utf-8") as stream:
             stream.write(text)
-    return 0
+    return 1 if errors or summary is None else 0
 
 
 if __name__ == "__main__":

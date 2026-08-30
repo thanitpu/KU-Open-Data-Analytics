@@ -80,15 +80,85 @@ inconsistent = fixture(True)
 inconsistent["audit"]["domain_gate_failures"] = ["provenance"]
 assert lifecycle.resolve_exit_code(inconsistent, require_approved=True) == lifecycle.EXIT_APPROVAL_WITHHELD
 
+
+def expect_isolation_failure(environ: dict, message: str):
+    try:
+        lifecycle.isolated_database_paths(environ)
+    except RuntimeError:
+        return
+    raise AssertionError(message)
+
+
+def write_case(path: Path, value):
+    if value is None:
+        return
+    if isinstance(value, str):
+        path.write_text(value, encoding="utf-8")
+    else:
+        path.write_text(json.dumps(value), encoding="utf-8")
+
+
 with TemporaryDirectory() as td:
     temp = Path(td)
     production_db = temp / "production-approval.sqlite3"
     production_db.write_bytes(b"production-approval-sentinel")
     before = production_db.read_bytes()
 
+    # Resolved isolation paths need not exist, but must be explicit, separate, scoped,
+    # and entirely outside the service's default data tree.
+    valid_isolation = {
+        "KU2D_APPROVAL_SCOPE": "isolated-staging",
+        "KU2D_OPERATIONS_DB": str(temp / "guards" / "ops.sqlite3"),
+        "KU2D_OBSERVATION_DB": str(temp / "guards" / "obs.sqlite3"),
+    }
+    assert not Path(valid_isolation["KU2D_OPERATIONS_DB"]).exists()
+    op_path, obs_path = lifecycle.isolated_database_paths(valid_isolation)
+    assert op_path != obs_path
+    expect_isolation_failure({**valid_isolation, "KU2D_APPROVAL_SCOPE": ""}, "missing scope must fail")
+    expect_isolation_failure({**valid_isolation, "KU2D_APPROVAL_SCOPE": "production"}, "wrong scope must fail")
+    expect_isolation_failure({k: v for k, v in valid_isolation.items() if k != "KU2D_OPERATIONS_DB"}, "missing operations path must fail")
+    expect_isolation_failure({k: v for k, v in valid_isolation.items() if k != "KU2D_OBSERVATION_DB"}, "missing observation path must fail")
+    expect_isolation_failure({**valid_isolation, "KU2D_OBSERVATION_DB": valid_isolation["KU2D_OPERATIONS_DB"]}, "identical paths must fail")
+    service_data = ROOT / "data"
+    expect_isolation_failure({**valid_isolation, "KU2D_OPERATIONS_DB": str(service_data / "ops.sqlite3")}, "direct operations default-data path must fail")
+    expect_isolation_failure({**valid_isolation, "KU2D_OBSERVATION_DB": str(service_data / "obs.sqlite3")}, "direct observation default-data path must fail")
+    expect_isolation_failure({**valid_isolation, "KU2D_OPERATIONS_DB": str(service_data / "nested" / "ops.sqlite3")}, "nested operations default-data path must fail")
+    expect_isolation_failure({**valid_isolation, "KU2D_OBSERVATION_DB": str(service_data / "nested" / "obs.sqlite3")}, "nested observation default-data path must fail")
+
+    # The Step Summary must always be appended before its evidence-validity exit code.
+    valid_result = fixture(True)
+    valid_summary = lifecycle.validation_summary(valid_result)
+    summary_cases = [
+        ("valid", valid_result, valid_summary, 0, None),
+        ("missing-result", None, valid_summary, 1, "Missing evidence file"),
+        ("missing-summary", valid_result, None, 1, "Missing evidence file"),
+        ("corrupt-result", "{not-json", valid_summary, 1, "Corrupt evidence file"),
+        ("corrupt-summary", valid_result, "{not-json", 1, "Corrupt evidence file"),
+        ("nonobject-result", [], valid_summary, 1, "expected a JSON object"),
+        ("nonobject-summary", valid_result, [], 1, "expected a JSON object"),
+    ]
+    for name, result_value, summary_value, expected_code, diagnostic in summary_cases:
+        case_dir = temp / "step-summary" / name
+        case_dir.mkdir(parents=True)
+        result_path = case_dir / "result.json"
+        summary_path = case_dir / "summary.json"
+        output_path = case_dir / "github-step-summary.md"
+        write_case(result_path, result_value)
+        write_case(summary_path, summary_value)
+        code = step_summary.main([
+            "--result", str(result_path), "--summary", str(summary_path), "--output", str(output_path)
+        ])
+        assert code == expected_code, name
+        written = output_path.read_text(encoding="utf-8")
+        assert "JIB Retail Lifecycle Validation" in written, name
+        if diagnostic:
+            assert diagnostic in written, name
+            assert "Treat this validation as a technical failure" in written, name
+
     env_keys = ("KU2D_APPROVAL_SCOPE", "KU2D_OPERATIONS_DB", "KU2D_OBSERVATION_DB", "KU2D_JIB_RESULT", "KU2D_JIB_SUMMARY")
     old_env = {key: os.environ.get(key) for key in env_keys}
     original_run = lifecycle.run_lifecycle
+    original_write = lifecycle.write_evidence
     try:
         os.environ["KU2D_APPROVAL_SCOPE"] = "isolated-staging"
         os.environ["KU2D_OPERATIONS_DB"] = str(temp / "isolated-ops.sqlite3")
@@ -119,9 +189,30 @@ with TemporaryDirectory() as td:
         assert "production Human Approve" in rendered
         missing, error = step_summary.load_json(temp / "missing.json")
         assert missing is None and "Missing evidence file" in error
+
+        def controlled_failure():
+            raise RuntimeError("controlled technical failure")
+
+        lifecycle.run_lifecycle = controlled_failure
+        assert lifecycle.main(["--require-approved"]) == lifecycle.EXIT_TECHNICAL_FAILURE
+        technical_detail = json.loads(Path(os.environ["KU2D_JIB_RESULT"]).read_text(encoding="utf-8"))
+        technical_summary = json.loads(Path(os.environ["KU2D_JIB_SUMMARY"]).read_text(encoding="utf-8"))
+        assert technical_detail["technical_failure"]["type"] == "RuntimeError"
+        assert technical_detail["approved"] is False
+        assert technical_summary["technical_completion"] is False
+        assert technical_summary["approved"] is False
+
+        lifecycle.run_lifecycle = lambda: fixture(True)
+
+        def fail_evidence_write(*args, **kwargs):
+            raise OSError("controlled evidence write failure")
+
+        lifecycle.write_evidence = fail_evidence_write
+        assert lifecycle.main(["--require-approved"]) == lifecycle.EXIT_TECHNICAL_FAILURE
         assert production_db.read_bytes() == before, "isolated lifecycle policy test must not touch production approval state"
     finally:
         lifecycle.run_lifecycle = original_run
+        lifecycle.write_evidence = original_write
         for key, value in old_env.items():
             if value is None:
                 os.environ.pop(key, None)

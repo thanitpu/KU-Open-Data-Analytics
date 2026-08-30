@@ -146,8 +146,8 @@ def isolated_database_paths(environ=None):
     if op_path == obs_path:
         raise RuntimeError("JIB lifecycle validation operations and observation databases must be distinct.")
     default_data = (ROOT / "data").resolve()
-    if op_path.parent == default_data or obs_path.parent == default_data:
-        raise RuntimeError("JIB lifecycle validation refuses service default data paths; use isolated temporary database paths.")
+    if op_path.is_relative_to(default_data) or obs_path.is_relative_to(default_data):
+        raise RuntimeError("JIB lifecycle validation refuses the service default data tree; use isolated temporary database paths.")
     return op_path, obs_path
 
 
