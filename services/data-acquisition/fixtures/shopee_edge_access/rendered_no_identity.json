@@ -1,0 +1,7 @@
+{
+  "observed_at": "2026-08-30T12:00:00+00:00",
+  "initial_url": "https://shopee.co.th/search?keyword=fixture",
+  "final_url": "https://shopee.co.th/search?keyword=fixture",
+  "html": "<html><head><title>Fixture results</title></head><body><div data-testid='product-card'><a href='/search?keyword=fixture'>Visible cable</a><span>฿99</span><span>ขายแล้ว 40 ชิ้น</span></div></body></html>",
+  "network_requests": []
+}

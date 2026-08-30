@@ -1,0 +1,8 @@
+{
+  "observed_at": "2026-08-30T12:00:00+00:00",
+  "initial_url": "https://shopee.co.th/search?keyword=%E0%B8%AA%E0%B8%B2%E0%B8%A2%E0%B8%8A%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%88",
+  "final_url": "https://shopee.co.th/search?keyword=%E0%B8%AA%E0%B8%B2%E0%B8%A2%E0%B8%8A%E0%B8%B2%E0%B8%A3%E0%B9%8C%E0%B8%88",
+  "html": "<html><head><title>สายชาร์จ | Shopee</title></head><body><div data-testid='product-card'><a href='/usb-c-cable-i.101.9001' title='สายชาร์จ USB-C'>สายชาร์จ USB-C</a><span>฿159</span><span>ขายแล้ว 1.2พัน</span><span>รีวิว 412</span></div><div data-testid='product-card'><a href='https://shopee.co.th/fast-cable-i.102.9002' title='สายชาร์จเร็ว'>สายชาร์จเร็ว</a><span>฿249</span><span>ขายแล้ว 88 ชิ้น</span><span>คะแนน 4.9</span></div></body></html>",
+  "network_requests": [],
+  "console_errors_summary": []
+}

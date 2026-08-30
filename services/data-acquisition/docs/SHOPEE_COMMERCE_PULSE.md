@@ -135,3 +135,20 @@ python tools/SHOPEE_COMMERCE_PULSE_EXPLORE.py --query 'สายชาร์จ'
 ```
 
 Run from `services/data-acquisition`. This command performs one public, no-auth diagnostic request. It does not approve, store, schedule, authenticate, or bypass a challenge. Review its evidence before any browser/network pilot.
+
+## Windows Edge access diagnostic
+
+`tools/SHOPEE_EDGE_ACCESS_DIAGNOSTIC.py` is the reviewed second access experiment. It is a one-page-load diagnostic for the existing Windows Edge Runner environment, not a crawler or an approved acquisition technique. The command requires `--no-production-store`, caps `--max-items` at 10, starts Microsoft Edge with a fresh temporary profile, and never supplies cookies, authentication, stealth behavior, challenge solving, proxy rotation, or production state.
+
+The evidence contains only the initial/final public URL, title, bounded visible-card observations, challenge status, a sanitized console-error summary, and sanitized network metadata. Network headers, browser state, raw NetLog, raw response bodies, tokens, cookies, session identifiers, authorization values, and device identifiers are excluded. A response is `validated-commerce-data` only when its small inspected public JSON contains a stable product identity plus a marketplace signal; endpoint naming alone remains `commerce-candidate`.
+
+DOM fallback accepts stable identity only from deterministic public Shopee product URL forms. Visible cards without such identity are evidence-withheld. Traffic verification, Login Required, CAPTCHA, or access denial is a stop boundary and returns exit 2 after evidence is written. Technical or evidence-writing failure returns 1. Stable network evidence or stable rendered-card evidence returns 0, but does not grant production approval or scheduling.
+
+The one approved pilot command is:
+
+```powershell
+$env:PYTHONPATH='.'
+python tools/SHOPEE_EDGE_ACCESS_DIAGNOSTIC.py --query 'สายชาร์จ' --max-items 10 --output 'C:\KU2D-Runtime\commerce\shopee-edge-cable.json' --no-production-store
+```
+
+It may run exactly once after deterministic verification and only through the reviewed Windows Edge environment. Until that live result exists, the durable access matrix remains unchanged: plain HTTP produced a shell with zero usable records, the in-app browser reached traffic verification/Login Required, and Edge is not proven required or viable.
