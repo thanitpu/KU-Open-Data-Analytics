@@ -424,3 +424,7 @@ The review defers to current durable evidence for integrated equivalents, preser
 `config/parked_candidate_review.json` and `docs/PARKED_CANDIDATE_REVIEW.md` review the exact 30-file deltas of parked Draft PRs #36–#41 at their immutable heads. The storage-neutral artifact classifies 59 claim/capability findings, maps every finding to current evidence, and records why all 11 Candidate Learning Evidence summaries are intentionally not lossless projections of the parked branches.
 
 The candidate review preserves exact future evidence requirements without promoting a source or implementation. Its pure validator rejects authority drift, missing PR/file/CLE provenance, stale dependency graphs, branch mutation/merge/delete state, live requests, knowledge writes, production/scheduler/ML behavior, and old cross-source ranking behavior.
+
+The Parked Evidence Disposition Plan in config/parked_evidence_disposition_plan.json and docs/PARKED_EVIDENCE_DISPOSITION_PLAN.md adds a non-executing disposition and closure-prerequisite plan for parked Draft PRs #36–#43. Every PR retains exact branch/head provenance, durable candidate or synthesis dependencies, non-lossless gaps, and concrete prerequisites before any future human closure decision.
+
+No parked PR is currently closure-eligible and no lossless-preservation claim is made. The pure validator rejects executable close/merge/delete/mutation fields, stale PR provenance, unsupported closure eligibility, authority promotion, live reruns, action-count drift, or recommendation/ranking behavior.
