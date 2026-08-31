@@ -1,0 +1,40 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000007",
+  "prompt_id": "KU2D-P-000018",
+  "result_id": "KU2D-R-000018",
+  "review_id": "KU2D-V-000018",
+  "decided_at": "2026-08-31T14:48:00+07:00",
+  "decided_by": {"actor":"human","actor_id":"project_owner"},
+  "decision": "confirmed",
+  "reason_note": "Human authority continued after PR #49 was squash-merged at c722aacfb49d618e6f67c24923e4c89e3909fac0 and authorized a bounded disposition-planning pass for the eight parked PRs already reviewed. This authorizes planning and durable review artifacts only, not closure, merge, branch deletion, candidate promotion, live acquisition, production, scheduling, or ML execution.",
+  "scope": "Treat PR #49 Parked Candidate Review v1 as accepted and merged. Continue with Parked Evidence Disposition & Closure Planning for parked PRs #36-#43 using the integrated Branch Governance, Parked Synthesis Review, and Parked Candidate Review as the evidence base.",
+  "authorizations": {
+    "plan_parked_dispositions": true,
+    "create_review_artifacts": true,
+    "create_draft_pr": true,
+    "close_parked_prs": false,
+    "merge_parked_prs": false,
+    "delete_branches": false,
+    "mutate_parked_branches": false,
+    "promote_candidate_evidence": false,
+    "live_acquisition": false,
+    "production_authorization": false,
+    "ml_training_or_inference": false
+  },
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_context": "Explicit project-owner instruction to continue after PR #49 merge",
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "base_branch": "integration/data-acquisition-platform",
+    "depends_on_merge": "c722aacfb49d618e6f67c24923e4c89e3909fac0",
+    "target_branch": "codex/ku2d-parked-disposition-planning-v1",
+    "authoritative_branch": "codex/ku2d-parked-disposition-planning-v1"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
