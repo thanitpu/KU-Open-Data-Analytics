@@ -1,0 +1,37 @@
+{
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
+  "review_id": "KU2D-V-000012",
+  "prompt_id": "KU2D-P-000012",
+  "result_id": "KU2D-R-000012",
+  "reviewed_at": "2026-08-31T12:50:00+07:00",
+  "reviewed_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review",
+    "human_authority_claimed": false
+  },
+  "review_result": "human_decision_required",
+  "requires_human_decision": true,
+  "reason_code": "TECHNICALLY_ACCEPTED_READY_TRANSITION_REQUIRES_HUMAN",
+  "explanation": "PR #46 is technically accepted. KU2D-R-000012 reports the full Quality Foundation delta as scope-consistent, with QF1-QF42, CK1-CK30, LM1-LM30, AH1-AH23, complete deterministic corpus 39/39, and exact-head CI successful at the audited content head. Independent recheck confirms the current PR head is open, mergeable, still Draft, and all current-head CI workflows succeed. The only remaining action is the Draft-to-Ready transition, which the available connector cannot complete because of the known Repository.fullDatabaseId GraphQL schema error. Human action is therefore required only to mark PR #46 Ready for review. No merge is authorized by this review until Ready status is independently confirmed and exact current head/CI are rechecked.",
+  "evidence_references": [
+    "KU2D-R-000012",
+    "PR:#46",
+    "audited-content-head:fea52c54be7dfd8c6029d4156f7bb739ee06654e",
+    "current-pr-head:6b6e36de37d5462b3853073a71a167ebf01999af",
+    "workflow:Data Acquisition Platform CI#229:success",
+    "workflow:Frontend CI#1004:success",
+    "workflow:PR Browser Preview Link#148:success"
+  ],
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-core-intelligence-v1",
+    "authoritative_branch": "codex/ku2d-core-intelligence-v1",
+    "target_pr": 46
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
