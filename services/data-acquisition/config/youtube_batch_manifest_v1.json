@@ -1,0 +1,50 @@
+{
+  "schema":"ku2d.youtube-batch-manifest-templates.v1",
+  "templates":[
+    {
+      "schema":"ku2d.youtube-batch-manifest.v1",
+      "manifest_id":"KU2D-YT-QDIVING-TWO-VIDEO-TEMPLATE-000001",
+      "template_kind":"two_video_bounded",
+      "mode":"exact-input-only",
+      "search_fallback":false,
+      "allowed_endpoints":["videos.list","commentThreads.list","comments.list"],
+      "automatic_endpoint_switching":false,
+      "language_scope":["th","en"],
+      "modules":{"metadata":"required","comments":"optional","transcript":"disabled"},
+      "identity_registry_id":"KU2D-YT-REVIEWED-IDENTITIES-000001",
+      "identity_registry_entry_ids":[],
+      "execution_authorized":false,
+      "comment_policy":{"comment_threads_max_pages_per_video":2,"comments_list_when_embedded_incomplete_only":true,"ordering_is_acquisition_context_only":true,"representativeness_claims":false},
+      "request_budget":{"max_total_requests":10,"max_estimated_quota_units":10,"value_origin":"proposal_not_observed"},
+      "execution_policy":{"concurrency":1,"timeout_seconds":30,"timeout_value_origin":"proposal_not_observed","retry_limit":1,"retry_value_origin":"proposal_not_observed","checkpoint_resume":true,"idempotent_request_keys":true,"evidence_before_next_request":true},
+      "deep_audit_required":true,
+      "stop_conditions":["identity_invalid_or_revoked","quota_boundary","checkpoint_inconsistent","evidence_writer_failure","relationship_mismatch"],
+      "exit_meanings":{"0":"required modules and audit passed","1":"technical runtime evidence quota or integrity failure","2":"technical completion with required evidence withheld"},
+      "request_intent_fingerprint":"21df3a580e32685966610e016a8df20a2ffd21faa0ea6e7c51a1adfedd3b1e79",
+      "production_store":false,"production_approved":false,"scheduler_action":null
+    },
+    {
+      "schema":"ku2d.youtube-batch-manifest.v1",
+      "manifest_id":"KU2D-YT-LONG-RUN-PLANNING-TEMPLATE-000001",
+      "template_kind":"tens_to_hundreds_planning_only",
+      "mode":"exact-input-only",
+      "search_fallback":false,
+      "allowed_endpoints":["videos.list","commentThreads.list","comments.list"],
+      "automatic_endpoint_switching":false,
+      "language_scope":["th","en"],
+      "modules":{"metadata":"required","comments":"optional","transcript":"disabled"},
+      "identity_registry_id":"KU2D-YT-REVIEWED-IDENTITIES-000001",
+      "identity_registry_entry_ids":[],
+      "execution_authorized":false,
+      "planned_video_count":{"minimum":10,"maximum":500,"value_origin":"proposal_not_observed"},
+      "comment_policy":{"comment_threads_max_pages_per_video":2,"comments_list_when_embedded_incomplete_only":true,"ordering_is_acquisition_context_only":true,"representativeness_claims":false},
+      "request_budget":{"max_total_requests":2500,"max_estimated_quota_units":2500,"value_origin":"proposal_not_observed"},
+      "execution_policy":{"concurrency":1,"timeout_seconds":30,"timeout_value_origin":"proposal_not_observed","retry_limit":1,"retry_value_origin":"proposal_not_observed","checkpoint_resume":true,"idempotent_request_keys":true,"evidence_before_next_request":true},
+      "deep_audit_required":true,
+      "stop_conditions":["identity_invalid_or_revoked","quota_boundary","checkpoint_inconsistent","evidence_writer_failure","relationship_mismatch"],
+      "exit_meanings":{"0":"required modules and audit passed","1":"technical runtime evidence quota or integrity failure","2":"technical completion with required evidence withheld"},
+      "request_intent_fingerprint":"bc57bc858773d1015ae448bf5510452de30e6f95db4dd04203c046420dcc195f",
+      "production_store":false,"production_approved":false,"scheduler_action":null
+    }
+  ]
+}

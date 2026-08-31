@@ -1,0 +1,14 @@
+{
+  "schema":"ku2d.reviewed-youtube-video-identity-registry.v1",
+  "registry_id":"KU2D-YT-REVIEWED-IDENTITIES-000001",
+  "prepared_at":"2026-09-01T01:20:00+07:00",
+  "entries":[],
+  "candidate_only_evidence":[
+    {"candidate_identity":"SAN-VID-001","evidence_class":"sanitized_fixture","provenance":"fixtures/youtube_human_review/sanitized_foundation_result.json","review_status":"not_human_reviewed","privacy_safe":true,"usable_for_live_acquisition":false},
+    {"candidate_identity":"SAN-VID-002","evidence_class":"sanitized_fixture","provenance":"fixtures/youtube_human_review/sanitized_foundation_result.json","review_status":"not_human_reviewed","privacy_safe":true,"usable_for_live_acquisition":false}
+  ],
+  "candidate_audit":{"live_discovery_performed":false,"non_sanitized_canonical_candidates_found":0,"finding":"Merged evidence contains sanitized fixture candidates only; none may be promoted by Codex."},
+  "readiness":{"usable_identity_count":0,"required_qdiving_identity_count":2,"qdiving_two_video_status":"identity_review_required"},
+  "production_approved":false,
+  "scheduler_action":null
+}
