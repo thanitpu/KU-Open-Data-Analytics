@@ -1,47 +1,180 @@
-# Acquisition Learning Memory foundation
+# KU2D Acquisition Learning Memory
 
-## Purpose and current boundary
+## V1 purpose and boundary
 
-Preserve structured acquisition experience now so it can support future ML-assisted KU2D.
+Learning Memory preserves reviewed acquisition experience as safe, traceable JSON records. It is not ML. V1 adds no model, training, inference, embeddings, vector database, feature store, fine-tuning, automatic labeling, autonomous approval, production scheduling, or runtime dataset integration.
 
-This foundation is **not currently ML**. It has no model, training, embeddings, feature store, vector database, inference service, automatic labeling, or autonomous learning. It defines a storage-neutral `ku2d.acquisition-learning-record.v1` JSON contract, validation, canonical serialization, and opt-in exporters for sanitized deterministic evidence. Normal acquisition does not generate or store these records automatically.
+Normal acquisition does not emit Learning Memory. Record creation and historical replay are explicit, opt-in operations. A Learning Memory decision cannot authorize a source, mutate production approval, enable storage, or schedule acquisition.
 
-Learning records follow separable layers:
+The lifecycle remains:
 
-Observed Evidence → Context → Semantic / Human Decision → Acquisition Outcome → Provenance
+```text
+Codex / System Explore
+  -> Observed Evidence
+  -> System Proposal / Interpretation
+  -> Assistant Review
+  -> Human Confirmation
+  -> Final Decision / Ground Truth Candidate
+  -> Future ML Dataset Eligibility
+```
 
-`observed_evidence` contains possible future input features such as public raw text, surface, field/DOM context, identity, and sanitized metadata. `semantic_labels` and `decision` contain the derived or reviewed target separately. A future training export must not place a final label such as `price_role = from_price` back into its model-input features; this separation prevents label leakage without rewriting historical records.
+Not every example needs every stage. The actor, authority, and evidence supporting each stage must remain explicit.
 
-## Knowledge contract
+## Why preserve acquisition experience
 
-Each record is one JSON object and can later become one JSONL line. It preserves:
+High-value acquisition knowledge includes failures and uncertainty, not only large successful outputs. Learning Memory retains semantic corrections, technique outcomes, access boundaries, and negative evidence so future work can distinguish a verified rule from a suggestion and a challenge page from usable product evidence.
 
-- identity: record ID, schema, domain, source/platform, source and surface type;
-- observation context: sanitized source surface, query/category, time, execution and public/auth context when known;
-- technique: technique ID, acquisition mode, and version when known;
-- observed evidence: sanitized public values and provenance references only;
-- semantic labels: including explicit `unknown` and unresolved values;
-- acquisition outcome: technical completion, evidence usability, challenge/auth boundaries, identity availability, and unchanged production/scheduler state;
-- decision: optional system suggestion, final decision, reason, explanation, evidence references, and genuine decision source;
-- provenance: source/extractor schema, origin, reviewed status, and genuine reviewer provenance only.
+Evidence is never overwritten by a later interpretation. Corrections create new review or Ground Truth records. This makes the original suggestion, the correction reason, the reviewer class, and any genuine Human Confirmation independently auditable.
 
-Unknown and unresolved labels are valuable evidence. They must not be forced into positive classes. Negative outcomes—application shells, challenges, login boundaries, HTTP failures, ceased sources, unvalidated endpoints, Edge requirements, and zero usable records—are also first-class learning examples. The current PR includes only one sanitized synthetic negative contract test; it does not fabricate operational history.
+## V1 record contracts
 
-Human Review remains authoritative wherever the lifecycle requires it. A record may preserve both `system_suggestion` and `final_decision`, but it must not claim Human Review without genuine reviewer provenance. Current Lazada examples come from deterministic reviewed rules, so their system suggestions and reviewer provenance remain null.
+All records are JSON-object and JSONL compatible, storage-neutral, canonically serializable, and validated without a production database.
+
+### Acquisition Learning Record
+
+Schema: `ku2d.acquisition-learning-record.v1`
+
+Preserves the observation identity/context, technique, sanitized observed evidence, semantic labels, acquisition outcome, decision, and provenance. Existing v1 records remain backward compatible.
+
+### Review Feedback Record
+
+Schema: `ku2d.review-feedback-record.v1`
+
+Reviews one Acquisition Learning Record. It retains the original system suggestion separately from the reviewed suggestion, review result, proposed final decision, reason, explanation, evidence references, actor type, and source/commit reference when available.
+
+Allowed actor types are `assistant_review`, `human_review`, `deterministic_validation`, and `policy_review`. Actor type determines authority; a caller cannot relabel an assistant as a human reviewer.
+
+### Human Confirmation Record
+
+Schema: `ku2d.human-confirmation-record.v1`
+
+Records an explicit human `confirmed`, `rejected`, or `deferred` decision. It requires a genuine reviewer label, timestamp, explicit-human-input provenance, and a consistent Learning Record/Review reference. It is never generated from an assistant response or deterministic rule.
+
+### Ground Truth Decision Record
+
+Schema: `ku2d.ground-truth-decision-record.v1`
+
+Represents the current decision derived from preserved evidence and review history, not immutable truth forever. Status may be `candidate`, `human_confirmed`, `policy_confirmed`, `deterministic_confirmed`, `superseded`, or `withdrawn`.
+
+A `human_confirmed` record must cite a matching genuine Human Confirmation. A revision creates a new record with `supersedes_ground_truth_record_id`; the prior record remains intact. Unknown and unresolved labels are valid. Contradictory active labels, orphan references, cross-target references, self-supersession, and supersession cycles fail closed.
+
+### Decision Trace
+
+Schema: `ku2d.decision-trace.v1`
+
+A Decision Trace is a derived view, not a mutable replacement for its source records. It answers:
+
+- what the system originally suggested;
+- who reviewed it and whether it was accepted, corrected, rejected, deferred, or considered insufficient;
+- why the review changed or retained the suggestion;
+- whether explicit Human Confirmation exists;
+- the current active label and authority;
+- whether an earlier Ground Truth record was superseded.
+
+## Evidence, suggestion, review, confirmation, and Ground Truth
+
+These layers are deliberately separate:
+
+- **Observed evidence** is the sanitized public fact or acquisition outcome.
+- **System suggestion** is an interpretation and may be wrong.
+- **Assistant review** may accept or propose a correction but is not Human Confirmation.
+- **Deterministic validation** can establish a tested invariant but cannot claim human authority.
+- **Human Confirmation** records an explicit human action.
+- **Ground Truth** identifies the current candidate or confirmed decision while preserving its authority basis and history.
+
+An example such as `5.5K ชิ้น` may preserve `sold` as the system suggestion, `unknown` as the assistant correction, `missing_explicit_sold_label` as the reason, and a later explicit human `unknown` confirmation without rewriting any earlier artifact.
+
+## Authority discipline
+
+The conceptual hierarchy is:
+
+```text
+observed
+  < system_suggested
+  < assistant_reviewed
+  < deterministic_verified
+  < human_confirmed
+  < approved_ground_truth
+```
+
+This hierarchy communicates provenance and confidence; it does not force a linear workflow. Policy confirmation is separately identified and must cite its policy basis. `approved_ground_truth` is conceptual authority only in V1 and does not mean production Human Approve or source authorization.
+
+## Bundle integrity and append-only meaning
+
+`validate_learning_memory_bundle(...)` validates Acquisition Learning, Review Feedback, Human Confirmation, and Ground Truth records together. It checks global identifier uniqueness and all cross-record references without requiring live storage.
+
+History is append-only in meaning:
+
+- evidence and prior proposals are retained;
+- corrections add Review Feedback;
+- human decisions add Human Confirmation;
+- revised labels add a superseding Ground Truth record;
+- superseded or withdrawn records do not silently remain active.
+
+The V1 serializers return deterministic JSON. No helper writes during normal acquisition, and the historical backfill builder returns an in-memory bundle only.
+
+## Negative evidence and unresolved labels
+
+Unknown, unresolved, rejected, failed, and access-blocked outcomes are first-class examples. Examples include application shells, challenge/login boundaries, HTTP failures, ceased sources, unvalidated endpoints, Edge requirements, zero usable records, unknown counters, and unresolved price differences.
+
+Record count is not evidence quality. A negative example must still preserve exact sanitized evidence, technique context, decision reason, and provenance. Learning Memory does not weaken safety boundaries or encourage challenge circumvention.
+
+## Future ML dataset eligibility
+
+Eligibility assessment is classification for possible future export, not a training dataset and not model execution:
+
+- `excluded`: sensitive or prohibited material;
+- `ineligible`: absent evidence, broken structure, or contradictory active decisions;
+- `review_required`: assistant review exists without the authority required for confirmation;
+- `candidate`: safe deterministic or policy-supported evidence;
+- `human_confirmed`: active label has matching explicit Human Confirmation.
+
+No V1 process trains, exports, auto-labels, or automatically promotes an example.
 
 ## Safety and authorization
 
-Learning records exclude cookies, authorization headers, tokens, sessions, browser profiles, storage state, device IDs, raw NetLogs, private user information, and credential-bearing URLs. Validation fails closed on malformed identity/provenance, sensitive material, non-JSON-safe values, contradictory canonical-price state, and fabricated Human Review provenance.
+Validation rejects credentials, cookies, authorization headers, tokens, sessions, browser profiles, storage state, device identifiers, raw NetLogs, private personal data, non-JSON-safe values, malformed identity/provenance, and fabricated Human Review provenance.
 
-A Learning Record does not authorize:
+A record never authorizes production acquisition/storage, monitoring, scheduling, authentication or access-control bypass, deployment, source approval, KU2A runtime use, or production Human Approve. Backfilled records keep `production_approved=false`, `production_store=false`, and `scheduler_action=null`.
 
-- production acquisition or storage;
-- monitoring or scheduling;
-- authentication/access-control bypass;
-- model training;
-- automated deployment;
-- production or Human Approve decisions.
+## Codex Explore -> Chat Review -> Human Confirmation
 
-## FUTURE possibilities
+GitHub remains the current shared source of truth. A review exchange in chat is useful input but is not itself a repository record.
 
-Subject to separate architecture, privacy, quality, and Human Review checkpoints, these records may later support technique recommendation, source classification, field-semantic classification, extraction suggestions, anomaly detection, and review prioritization. None of those capabilities exists today.
+Codex should hand off a structured review packet:
+
+```text
+Learning Record ID:
+Evidence summary:
+System suggestion:
+Decision requested:
+Uncertainty:
+Reason/evidence:
+Relevant source/commit:
+Human confirmation required: yes|no
+```
+
+An Assistant Review should return:
+
+```text
+Learning Record ID:
+Review result: accepted|corrected|rejected|insufficient_evidence|deferred
+Reviewed suggestion:
+Proposed final decision:
+Reason code:
+Explanation:
+Human confirmation required: yes|no
+```
+
+Codex or another controlled repository change then validates and serializes that result as a Review Feedback Record. If human authority is required, an actual human must explicitly confirm, reject, or defer it before a Human Confirmation Record can be created. Repository review protects the evidence link and prevents chat text from silently becoming Ground Truth.
+
+## Version roadmap
+
+- **V1 (current):** structured Learning Memory contracts, authority validation, deterministic serialization, opt-in historical replay, and future-dataset eligibility.
+- **V2 (FUTURE):** separately reviewed opt-in emission from Explore and Deep Audit.
+- **V3 (FUTURE):** review UI / KU2D review workspace.
+- **V4 (FUTURE):** reviewed dataset export for ML experimentation.
+- **V5 (FUTURE):** ML-assisted classification and recommendations.
+- **V6 (FUTURE):** agentic acquisition with explicit Human Review gates.
+
+V2–V6 require separate architecture, privacy, security, quality, and Human Review checkpoints.
