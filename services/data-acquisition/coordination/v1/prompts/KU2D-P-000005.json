@@ -1,0 +1,54 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000005",
+  "created_at": "2026-08-31T09:57:00+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "objective": "Deepen KU2D Core Knowledge and ML-ready reviewed knowledge from existing repository history before any acquisition-scope expansion",
+  "instructions": [
+    "AUTHORITATIVE BRANCH: work only on codex/ku2d-core-knowledge-backfill-v1. Before reading the queue, verify the checked-out branch and pull/fetch the latest remote state. If branch does not match, stop and switch; never act from a stale branch queue.",
+    "Do not start Survey, Google Forms, DoE, bias tooling, SEM, connected-system expansion, new source exploration, live acquisition, ML training, embeddings, inference, or production scheduling.",
+    "Treat KU2D-R-000004 and KU2D-V-000004 as accepted inputs. Preserve all evidence/interpretation/authority distinctions already established.",
+    "Audit repository history, merged PRs, current/open acquisition PR artifacts, docs, configs, fixtures, and deterministic validation records for additional historical acquisition knowledge that is not yet represented. Focus especially on LINE SHOPPING, NocNoc, TikTok Shop, Agoda, Traveloka, Coffee sources, and other past source episodes. Do not fabricate any outcome. Clearly distinguish merged/reviewed durable evidence from unmerged candidate evidence and from registry seed-only evidence.",
+    "If useful, add a Candidate Learning Evidence Registry separate from Reviewed Learning Corpus. Candidate evidence may preserve bounded source observations or access outcomes from unmerged/open PRs, but must never be promoted to reviewed corpus or Ground Truth without explicit review authority. Include provenance to exact PR/commit/file and a candidate status.",
+    "Strengthen the Reviewed Learning Corpus model so each episode separates future-ML features from labels/decisions, records evidence strength, review authority, transferability, negative evidence, and source/execution context. Prevent label leakage by construction or validation where practical.",
+    "Extend the ML Knowledge Map into task-specific knowledge specifications for at least price semantics, counter semantics, source classification, technique selection, access-outcome prediction, field semantic mapping, evidence-strength assessment, and review prioritization. For each task define candidate input feature families, target/label family, authority requirement, exclusion criteria, leakage risks, and current readiness. Do not export a training dataset.",
+    "Add a small Human Confirmation candidate packet for contradiction-rich, high-value semantic decisions already supported by repository evidence. This packet is only a review request list; it must not fabricate Human Confirmation. Prefer decisions such as bare marketplace counters, ambiguous displayed price roles, product-vs-variant identity, displayed-order-vs-demand, and environment-boundary-vs-technique-failure distinctions. Mark every item as awaiting explicit human authority.",
+    "Reassess the Core Coverage Matrix and Knowledge Gap Register after the historical audit. Coverage must be evidence-weighted, not source-count-weighted. Preserve gaps when evidence remains weak.",
+    "Add a branch-authority safeguard to Agent Handoff documentation and, if safely bounded, protocol validation metadata so Prompt/Queue records can name an authoritative branch and Codex must fail closed on stale-branch handoff. Maintain backward compatibility with existing v1 records; do not silently rewrite old records.",
+    "Run deterministic validation including git diff --check, JSON/YAML parse, Python compilation, Agent Handoff, Learning Memory, Core Knowledge, and the complete Data Acquisition corpus. No live requests.",
+    "Keep PR #45 Draft. Update it with these changes only if they remain within Core Knowledge/coordination scope. Do not merge.",
+    "When complete, create KU2D-R-000005, update queue so next_action.actor=assistant, push the branch, and stop."
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000005",
+    "next_actor": "assistant",
+    "must_report": [
+      "historical evidence newly recovered",
+      "candidate vs reviewed evidence counts",
+      "ML task knowledge specifications",
+      "human-confirmation candidate packet",
+      "coverage/gap changes",
+      "branch-authority safeguard",
+      "tests and CI",
+      "live request count",
+      "remaining uncertainties"
+    ]
+  },
+  "provenance": {
+    "authoritative_branch": "codex/ku2d-core-knowledge-backfill-v1",
+    "depends_on_result": "KU2D-R-000004",
+    "depends_on_review": "KU2D-V-000004",
+    "target_pr": 45,
+    "scope_note": "Core KU2D knowledge deepening before source expansion"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
