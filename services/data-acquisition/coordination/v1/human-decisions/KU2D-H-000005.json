@@ -1,0 +1,29 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000005",
+  "recorded_at": "2026-08-31T13:44:00+07:00",
+  "recorded_by": {
+    "actor": "human",
+    "actor_id": "project_owner"
+  },
+  "decision": "continue",
+  "scope": "PR #47 Branch/PR Governance v1 is accepted as merged at squash commit f2c94299776b969948ee85883328806244a42d0e. Continue with a bounded review of parked synthesis work, beginning with the two branches not durably projected into Candidate Learning Evidence: codex/overnight-acquisition-technique-transfer-matrix and codex/overnight-exploration-summary.",
+  "authorizations": {
+    "review_parked_synthesis": true,
+    "create_review_artifacts": true,
+    "create_draft_pr": true,
+    "merge_parked_prs": false,
+    "promote_candidate_evidence": false,
+    "delete_branches": false,
+    "mutate_parked_branches": false,
+    "live_acquisition": false,
+    "production_authorization": false,
+    "ml_training_or_inference": false
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "base_branch": "integration/data-acquisition-platform",
+    "depends_on_merge": "f2c94299776b969948ee85883328806244a42d0e",
+    "target_branch": "codex/ku2d-parked-synthesis-review-v1"
+  }
+}
