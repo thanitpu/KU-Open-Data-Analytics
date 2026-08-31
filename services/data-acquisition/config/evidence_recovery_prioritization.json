@@ -1,0 +1,355 @@
+{
+  "schema": "ku2d.evidence-recovery-prioritization.v1",
+  "version": "1.0",
+  "prioritized_at": "2026-08-31T16:08:00+07:00",
+  "repository": "thanitpu/KU-Open-Data-Analytics",
+  "authoritative_branch": "codex/ku2d-evidence-recovery-prioritization-v1",
+  "base_branch": "integration/data-acquisition-platform",
+  "base_sha": "01d6ad74626ea0e768f7f5f7acf5ddbe71bb7972",
+  "scope": {
+    "candidate_pr_numbers": [37, 39, 40],
+    "required_disposition": "NEEDS_TARGETED_EVIDENCE_RERUN",
+    "selection_count": 1,
+    "historical_heads_are_immutable": true,
+    "current_state_observed": "open-draft-unmerged",
+    "live_rerun_authorized": false
+  },
+  "evidence_sources": [
+    {
+      "evidence_id": "KU2D-ERP-EV-DISPOSITION",
+      "schema": "ku2d.parked-evidence-disposition-plan.v1",
+      "path": "config/parked_evidence_disposition_plan.json",
+      "authority": "reviewed-non-executing-plan"
+    },
+    {
+      "evidence_id": "KU2D-ERP-EV-CANDIDATE-REVIEW",
+      "schema": "ku2d.parked-candidate-review.v1",
+      "path": "config/parked_candidate_review.json",
+      "authority": "reviewed-candidate-only"
+    },
+    {
+      "evidence_id": "KU2D-ERP-EV-SYNTHESIS-REVIEW",
+      "schema": "ku2d.parked-synthesis-review.v1",
+      "path": "config/parked_synthesis_review.json",
+      "authority": "reviewed-synthesis-only"
+    },
+    {
+      "evidence_id": "KU2D-ERP-EV-CLE",
+      "schema": "ku2d.candidate-learning-evidence-registry.v1",
+      "path": "config/candidate_learning_evidence_registry.json",
+      "authority": "candidate-only"
+    },
+    {
+      "evidence_id": "KU2D-ERP-EV-GOVERNANCE",
+      "schema": "ku2d.branch-pr-disposition-registry.v1",
+      "path": "config/branch_pr_disposition_registry.json",
+      "authority": "historical-governance-snapshot"
+    },
+    {
+      "evidence_id": "KU2D-ERP-EV-CORE",
+      "schema": "ku2d.core-knowledge-taxonomy.v1",
+      "path": "config/core_knowledge_taxonomy.json",
+      "authority": "durable-core-knowledge"
+    }
+  ],
+  "scoring_model": {
+    "scale": {"minimum": 0, "maximum": 5, "direction": "higher-is-better", "integer_scores_only": true},
+    "formula": "weighted_points = sum(score * weight_percent); normalized_score = weighted_points / 100",
+    "criteria": [
+      {
+        "criterion": "cross_source_domain_reuse_value",
+        "weight_percent": 20,
+        "rationale": "Rewards evidence that can validate reusable acquisition semantics across more than one source or source role."
+      },
+      {
+        "criterion": "evidence_gap_leverage",
+        "weight_percent": 25,
+        "rationale": "Highest weight because the checkpoint exists to close explicit gaps on the path toward future Reviewed status."
+      },
+      {
+        "criterion": "expected_learning_gain",
+        "weight_percent": 20,
+        "rationale": "Rewards uncertainty reduction about identity, price, provenance, repeatability, and technique transfer."
+      },
+      {
+        "criterion": "feasibility_compliance",
+        "weight_percent": 15,
+        "rationale": "A high score means a bounded official public-surface rerun is feasible with low access/compliance risk."
+      },
+      {
+        "criterion": "dependency_reduction",
+        "weight_percent": 10,
+        "rationale": "Rewards a rerun that resolves multiple linked CLE and reviewed claim dependencies without widening scope."
+      },
+      {
+        "criterion": "effort_cost",
+        "weight_percent": 10,
+        "rationale": "A high score means lower expected engineering, review, request, and maintenance cost."
+      }
+    ],
+    "tie_breakers": [
+      "higher evidence_gap_leverage score",
+      "higher feasibility_compliance score",
+      "higher dependency_reduction score",
+      "lower PR number"
+    ]
+  },
+  "candidates": [
+    {
+      "candidate_id": "KU2D-ERP-PR37",
+      "pr_number": 37,
+      "domain": "Marketplace / Commerce Market Observation",
+      "branch": "codex/overnight-marketplace-source-inventory",
+      "head_sha": "0e99926c72cec7e83e259408c153fd6c99fd1492",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "observed_pr_state": {"open": true, "draft": true, "merged": false, "head_unchanged": true},
+      "planning_disposition": "NEEDS_TARGETED_EVIDENCE_RERUN",
+      "candidate_evidence_ids": ["KU2D-CLE-000002", "KU2D-CLE-000003"],
+      "claim_dependency_ids": [
+        "KU2D-PCR-000011", "KU2D-PCR-000012", "KU2D-PCR-000013", "KU2D-PCR-000014",
+        "KU2D-PCR-000015", "KU2D-PCR-000016", "KU2D-PCR-000017", "KU2D-PCR-000018",
+        "KU2D-PCR-000019", "KU2D-PCR-000020", "KU2D-PCR-000021"
+      ],
+      "missing_evidence": [
+        {
+          "gap_id": "KU2D-ERP-GAP-37-01",
+          "target_sources": ["LINE SHOPPING"],
+          "requirement": "Retain a bounded sanitized per-record collection sample and request ledger with canonical product, shop, collection, title, explicit price, availability, and source-surface provenance.",
+          "candidate_evidence_ids": ["KU2D-CLE-000002"],
+          "claim_ids": ["KU2D-PCR-000011"],
+          "in_targeted_rerun_scope": true
+        },
+        {
+          "gap_id": "KU2D-ERP-GAP-37-02",
+          "target_sources": ["LINE SHOPPING"],
+          "requirement": "Compare retained static and rendered identity, correlate collection rows to canonical detail identity and price roles, and repeat the bounded observation to evaluate refresh and logical replay deduplication.",
+          "candidate_evidence_ids": ["KU2D-CLE-000002"],
+          "claim_ids": ["KU2D-PCR-000013", "KU2D-PCR-000014"],
+          "in_targeted_rerun_scope": true
+        },
+        {
+          "gap_id": "KU2D-ERP-GAP-37-03",
+          "target_sources": ["NocNoc"],
+          "requirement": "Retain a sanitized official cessation notice with observation time and complete an independent source-lifecycle review without treating the ceased surface as commerce records.",
+          "candidate_evidence_ids": ["KU2D-CLE-000003"],
+          "claim_ids": ["KU2D-PCR-000019"],
+          "in_targeted_rerun_scope": true
+        },
+        {
+          "gap_id": "KU2D-ERP-GAP-37-04",
+          "target_sources": ["Kaidee", "Temu", "AliExpress"],
+          "requirement": "Future separately scoped research would need representative listing evidence, destination-explicit price/shipping/tax provenance, source-role semantics, and public-access review.",
+          "candidate_evidence_ids": [],
+          "claim_ids": ["KU2D-PCR-000015", "KU2D-PCR-000017", "KU2D-PCR-000018"],
+          "in_targeted_rerun_scope": false
+        }
+      ],
+      "claims_not_requiring_rerun_evidence": [
+        {"claim_id": "KU2D-PCR-000012", "reason": "Display order is already governed as context rather than demand."},
+        {"claim_id": "KU2D-PCR-000016", "reason": "Central Online has an integrated Retail equivalent."},
+        {"claim_id": "KU2D-PCR-000020", "reason": "JD Central remains a historical lifecycle note."},
+        {"claim_id": "KU2D-PCR-000021", "reason": "The stale branch priority scores must not be reused."}
+      ],
+      "scores": {
+        "cross_source_domain_reuse_value": 5,
+        "evidence_gap_leverage": 4,
+        "expected_learning_gain": 4,
+        "feasibility_compliance": 2,
+        "dependency_reduction": 3,
+        "effort_cost": 3
+      },
+      "score_rationale": {
+        "cross_source_domain_reuse_value": "LINE identity/detail/replay evidence could transfer to marketplace observation broadly.",
+        "evidence_gap_leverage": "The rerun addresses LINE and NocNoc gaps but not the heterogeneous source-role research.",
+        "expected_learning_gain": "It would distinguish static, rendered, detail, lifecycle, and replay semantics.",
+        "feasibility_compliance": "Rendered correlation and a changed/ceased surface create more access and availability uncertainty.",
+        "dependency_reduction": "It directly advances two CLE records and four reviewed claims.",
+        "effort_cost": "Two surface modes, detail correlation, repetition, and lifecycle review create moderate effort."
+      },
+      "weighted_points": 370,
+      "normalized_score": 3.7,
+      "rank": 3,
+      "wait_reason": "Wait until the lower-risk evidence-retention failure in Coffee is resolved; LINE needs a wider static/rendered/detail protocol and NocNoc may no longer expose the notice.",
+      "ranking_change_evidence": "A current official public LINE surface proving stable static/detail identity without session state, plus a retained NocNoc notice, would raise feasibility and dependency-reduction scores enough to reconsider priority.",
+      "rerun_execution_authorized": false
+    },
+    {
+      "candidate_id": "KU2D-ERP-PR39",
+      "pr_number": 39,
+      "domain": "Coffee retail product",
+      "branch": "codex/overnight-coffee-source-expansion",
+      "head_sha": "441c71d678a30cc62b742ea58f23f629a9d1e2d6",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "observed_pr_state": {"open": true, "draft": true, "merged": false, "head_unchanged": true},
+      "planning_disposition": "NEEDS_TARGETED_EVIDENCE_RERUN",
+      "candidate_evidence_ids": ["KU2D-CLE-000006", "KU2D-CLE-000007"],
+      "claim_dependency_ids": [
+        "KU2D-PCR-000029", "KU2D-PCR-000030", "KU2D-PCR-000031", "KU2D-PCR-000032",
+        "KU2D-PCR-000033", "KU2D-PCR-000034", "KU2D-PCR-000035", "KU2D-PCR-000036",
+        "KU2D-PCR-000037"
+      ],
+      "missing_evidence": [
+        {
+          "gap_id": "KU2D-ERP-GAP-39-01",
+          "target_sources": ["Roots Coffee"],
+          "requirement": "Use evidence-before-exit to retain one bounded sanitized official product-detail response and its normalized record with canonical identity, attributable price, availability, and field-level provenance.",
+          "candidate_evidence_ids": ["KU2D-CLE-000006"],
+          "claim_ids": ["KU2D-PCR-000029", "KU2D-PCR-000030", "KU2D-PCR-000032"],
+          "in_targeted_rerun_scope": true
+        },
+        {
+          "gap_id": "KU2D-ERP-GAP-39-02",
+          "target_sources": ["Nana Coffee Roasters"],
+          "requirement": "Use evidence-before-exit to retain one bounded sanitized official product-detail response and its normalized record with canonical identity, attributable price, availability, and field-level provenance.",
+          "candidate_evidence_ids": ["KU2D-CLE-000007"],
+          "claim_ids": ["KU2D-PCR-000029", "KU2D-PCR-000031", "KU2D-PCR-000033"],
+          "in_targeted_rerun_scope": true
+        },
+        {
+          "gap_id": "KU2D-ERP-GAP-39-03",
+          "target_sources": ["Roots Coffee", "Nana Coffee Roasters"],
+          "requirement": "Repeat the same bounded detail observations and Deep Audit identity, price-role, temporal availability, origin, process, roast, package, and raw-to-normalized provenance without conflating retail beans with cafe menu prices.",
+          "candidate_evidence_ids": ["KU2D-CLE-000006", "KU2D-CLE-000007"],
+          "claim_ids": ["KU2D-PCR-000029", "KU2D-PCR-000037"],
+          "in_targeted_rerun_scope": true
+        }
+      ],
+      "claims_not_requiring_rerun_evidence": [
+        {"claim_id": "KU2D-PCR-000034", "reason": "Retail-bean versus cafe-menu semantics are already durable Core Knowledge."},
+        {"claim_id": "KU2D-PCR-000035", "reason": "The stale Akha status is superseded by later candidate evidence and must not be restored."},
+        {"claim_id": "KU2D-PCR-000036", "reason": "The prior request ledger remains historical context; the new rerun must create its own ledger."}
+      ],
+      "scores": {
+        "cross_source_domain_reuse_value": 4,
+        "evidence_gap_leverage": 5,
+        "expected_learning_gain": 4,
+        "feasibility_compliance": 5,
+        "dependency_reduction": 4,
+        "effort_cost": 5
+      },
+      "score_rationale": {
+        "cross_source_domain_reuse_value": "Official detail provenance transfers across specialty roasters and retail catalog sources.",
+        "evidence_gap_leverage": "Evidence-before-exit directly repairs the documented reason both live outcomes were withheld.",
+        "expected_learning_gain": "Two sources test reusable identity, price, semantic attribute, provenance, and repeatability behavior.",
+        "feasibility_compliance": "The proposed scope is bounded read-only access to official public product-detail pages with no browser escalation.",
+        "dependency_reduction": "It directly advances two CLE records and the parser, source, and Deep Audit claim chain.",
+        "effort_cost": "Two detail pages, retained evidence, and one bounded repeat per source are the smallest coherent recovery package."
+      },
+      "weighted_points": 450,
+      "normalized_score": 4.5,
+      "rank": 1,
+      "wait_reason": null,
+      "ranking_change_evidence": "It should lose first place if an official source blocks public read-only access, canonical identity or attributable price disappears, or a compliance review adds browser/session requirements.",
+      "rerun_execution_authorized": false
+    },
+    {
+      "candidate_id": "KU2D-ERP-PR40",
+      "pr_number": 40,
+      "domain": "Q-Diving content, services, and retail equipment",
+      "branch": "codex/overnight-qdiving-source-expansion",
+      "head_sha": "5f972d456415dbd0d8ae695f02c056e4a7c76e56",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "observed_pr_state": {"open": true, "draft": true, "merged": false, "head_unchanged": true},
+      "planning_disposition": "NEEDS_TARGETED_EVIDENCE_RERUN",
+      "candidate_evidence_ids": ["KU2D-CLE-000008", "KU2D-CLE-000009", "KU2D-CLE-000010"],
+      "claim_dependency_ids": [
+        "KU2D-PCR-000038", "KU2D-PCR-000039", "KU2D-PCR-000040", "KU2D-PCR-000041",
+        "KU2D-PCR-000042", "KU2D-PCR-000043", "KU2D-PCR-000044", "KU2D-PCR-000045",
+        "KU2D-PCR-000046", "KU2D-PCR-000047", "KU2D-PCR-000048"
+      ],
+      "missing_evidence": [
+        {
+          "gap_id": "KU2D-ERP-GAP-40-01",
+          "target_sources": ["SSI Blog"],
+          "requirement": "Retain sanitized canonical article records and raw publication-date strings, repeat identity observations, and obtain Human Review of Q-Diving relevance and source authority.",
+          "candidate_evidence_ids": ["KU2D-CLE-000008"],
+          "claim_ids": ["KU2D-PCR-000038", "KU2D-PCR-000044"],
+          "in_targeted_rerun_scope": true
+        },
+        {
+          "gap_id": "KU2D-ERP-GAP-40-02",
+          "target_sources": ["Scubadoo Koh Tao"],
+          "requirement": "Retain sanitized service records and repeat service identity, package composition, duration, dive count, explicit THB price, field provenance, and package-change observations.",
+          "candidate_evidence_ids": ["KU2D-CLE-000009"],
+          "claim_ids": ["KU2D-PCR-000039", "KU2D-PCR-000042", "KU2D-PCR-000045"],
+          "in_targeted_rerun_scope": true
+        },
+        {
+          "gap_id": "KU2D-ERP-GAP-40-03",
+          "target_sources": ["Aquamaster Thailand"],
+          "requirement": "Retain sanitized product records and repeat product-versus-variant identity, canonical detail correlation, current/range price roles, field provenance, and availability observations.",
+          "candidate_evidence_ids": ["KU2D-CLE-000010"],
+          "claim_ids": ["KU2D-PCR-000040", "KU2D-PCR-000042", "KU2D-PCR-000046"],
+          "in_targeted_rerun_scope": true
+        },
+        {
+          "gap_id": "KU2D-ERP-GAP-40-04",
+          "target_sources": ["SSI Blog", "Scubadoo Koh Tao", "Aquamaster Thailand"],
+          "requirement": "Retain raw-to-normalized provenance, parser fingerprints and negative fixtures; independently validate all three source roles, registry fields, and transferred rules before any integration decision.",
+          "candidate_evidence_ids": ["KU2D-CLE-000008", "KU2D-CLE-000009", "KU2D-CLE-000010"],
+          "claim_ids": ["KU2D-PCR-000041", "KU2D-PCR-000047", "KU2D-PCR-000048"],
+          "in_targeted_rerun_scope": true
+        }
+      ],
+      "claims_not_requiring_rerun_evidence": [
+        {"claim_id": "KU2D-PCR-000043", "reason": "The prior static-request accounting remains historical and cannot establish current access."}
+      ],
+      "scores": {
+        "cross_source_domain_reuse_value": 5,
+        "evidence_gap_leverage": 4,
+        "expected_learning_gain": 5,
+        "feasibility_compliance": 4,
+        "dependency_reduction": 5,
+        "effort_cost": 2
+      },
+      "score_rationale": {
+        "cross_source_domain_reuse_value": "The package spans content, course-service, and retail-product source roles.",
+        "evidence_gap_leverage": "It closes many gaps but also requires non-live Human Review and integration decisions beyond acquisition evidence.",
+        "expected_learning_gain": "Three distinct source roles strongly test role isolation and transfer semantics.",
+        "feasibility_compliance": "All historical surfaces were public static pages, but three current surfaces and Human Review increase coordination risk.",
+        "dependency_reduction": "It advances three CLE records and eleven reviewed claims.",
+        "effort_cost": "Three parsers, three repeats, Deep Audit, Human Review, role review, and registry review make this the largest package."
+      },
+      "weighted_points": 430,
+      "normalized_score": 4.3,
+      "rank": 2,
+      "wait_reason": "Wait until the smaller Coffee recovery validates the evidence-before-exit pattern; Q-Diving then needs a separately reviewed three-role package plus Human Review capacity.",
+      "ranking_change_evidence": "Reviewed current fixtures and approved Human Review capacity that reduce the expected effort score from 2 to 5 would raise the normalized score to 4.6 and move Q-Diving ahead.",
+      "rerun_execution_authorized": false
+    }
+  ],
+  "recommendation": {
+    "recommended_candidate_id": "KU2D-ERP-PR39",
+    "recommended_pr_number": 39,
+    "recommended_scope": "Roots Coffee and Nana Coffee Roasters official product-detail evidence recovery",
+    "reason": "Coffee has the highest deterministic score because a small, public, read-only, evidence-before-exit rerun directly repairs the known retention failure across two reusable retail-detail sources with the lowest compliance and effort risk.",
+    "recommendation_is_execution_authority": false,
+    "separate_human_authorization_required_before_rerun": true,
+    "automatic_follow_on": false
+  },
+  "boundaries": {
+    "storage_neutral": true,
+    "planning_only": true,
+    "live_request_count": 0,
+    "rerun_execution": false,
+    "candidate_promotion_count": 0,
+    "learning_memory_write": false,
+    "reviewed_corpus_write": false,
+    "core_knowledge_write": false,
+    "human_confirmation_write": false,
+    "ground_truth_write": false,
+    "parked_pr_close_count": 0,
+    "parked_pr_merge_count": 0,
+    "parked_ref_mutation_count": 0,
+    "branch_deletion_count": 0,
+    "cleanup_execution": false,
+    "runtime_auto_write": false,
+    "production_authorized": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "ml_training_or_inference": false,
+    "ml_dataset_export": false,
+    "survey_doe_sem_work": false,
+    "broader_recommendation_or_ranking": false
+  }
+}

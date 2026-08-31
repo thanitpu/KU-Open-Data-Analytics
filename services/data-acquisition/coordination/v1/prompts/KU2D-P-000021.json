@@ -1,0 +1,29 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000021",
+  "created_at": "2026-08-31T15:59:00+07:00",
+  "created_by": {"actor":"assistant","actor_id":"assistant_review"},
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-evidence-recovery-prioritization-v1",
+  "objective": "Prioritize the first targeted evidence recovery rerun among Marketplace (PR #37), Coffee (PR #39), and Q-Diving (PR #40) without executing live acquisition.",
+  "instructions": [
+    "Read the merged Parked Evidence Disposition & Closure Plan, Parked Candidate Review, Parked Synthesis Review, Core Knowledge, Candidate Learning Evidence, and Branch/PR Governance artifacts from the current branch.",
+    "Evaluate only PR #37, PR #39, and PR #40. Preserve their exact historical heads and current parked state.",
+    "Build a transparent scoring matrix using at minimum: cross-source/domain reuse value, evidence-gap leverage toward future Reviewed status, expected learning gain, feasibility/compliance risk, dependency reduction, and expected effort/cost. State weights and rationale explicitly and keep the scoring storage-neutral/deterministic.",
+    "For each candidate, enumerate the exact missing evidence that a targeted rerun would seek, mapping back to CLE records and the disposition plan.",
+    "Recommend exactly one first rerun. Also state why the other two should wait and what evidence would change the ranking.",
+    "Do not perform any live request, browser acquisition, API call to source sites, or evidence rerun in this prompt.",
+    "Do not promote Candidate Learning Evidence, mutate Learning Memory/Reviewed Corpus/Core Knowledge/Human Confirmation/Ground Truth, close/merge/delete parked refs, add broader ranking behavior, or authorize production/ML/Survey/DoE/SEM work.",
+    "Create a bounded storage-neutral prioritization artifact, concise report, deterministic validator/tests, and Draft PR. Write KU2D-R-000021 and return control to assistant."
+  ],
+  "expected_result": {"result_id":"KU2D-R-000021","next_actor":"assistant"},
+  "provenance": {
+    "repository":"thanitpu/KU-Open-Data-Analytics",
+    "depends_on_result":"KU2D-R-000020",
+    "depends_on_review":"KU2D-V-000020",
+    "depends_on_human_decision":"KU2D-H-000008",
+    "depends_on_merge":"01d6ad74626ea0e768f7f5f7acf5ddbe71bb7972",
+    "authoritative_branch":"codex/ku2d-evidence-recovery-prioritization-v1"
+  },
+  "boundaries": {"coordination_only":true,"live_requests":0,"rerun_execution":false,"candidate_promotion":false,"knowledge_mutation":false,"parked_ref_mutation":false,"cleanup_execution":false,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null,"ml_training_or_inference":false}
+}

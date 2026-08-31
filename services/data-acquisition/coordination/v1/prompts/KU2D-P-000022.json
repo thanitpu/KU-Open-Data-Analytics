@@ -1,0 +1,24 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000022",
+  "created_at": "2026-08-31T16:19:00+07:00",
+  "created_by": {"actor":"assistant","actor_id":"assistant_review"},
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-evidence-recovery-prioritization-v1",
+  "objective": "Final merge-readiness validation for Draft PR #51 Evidence Recovery Prioritization v1 only.",
+  "instructions": [
+    "Stay on codex/ku2d-evidence-recovery-prioritization-v1 and read KU2D-V-000021.",
+    "Refresh PR #51 exact head and all exact-head CI workflows and rerun all deterministic/regression checks.",
+    "Confirm the ranking remains Coffee PR #39 first at 4.50, Q-Diving PR #40 second at 4.30, and Marketplace PR #37 third at 3.70 with the same documented weighted criteria and rationales.",
+    "Confirm PRs #37, #39, and #40 remain open Draft, unmerged, unchanged, and that the recommendation does not authorize any rerun or live request.",
+    "Confirm all seven in-scope Candidate Learning Evidence records and 31 reviewed claim dependencies retain explicit gaps/no-rerun reasons and no authority promotion.",
+    "Confirm no knowledge mutation, parked-ref mutation, cleanup, production, scheduler, ML, Survey/DoE/SEM, or broader ranking behavior was introduced.",
+    "Update PR #51 description to exact current validation state if needed.",
+    "Try the normal Ready-for-review transition once. If the known Repository.fullDatabaseId connector error occurs, record it and stop without workaround or retry.",
+    "Do not merge PR #51 and do not execute the Coffee rerun.",
+    "Write KU2D-R-000022 and return control to assistant."
+  ],
+  "expected_result": {"result_id":"KU2D-R-000022","next_actor":"assistant"},
+  "provenance": {"repository":"thanitpu/KU-Open-Data-Analytics","depends_on_result":"KU2D-R-000021","depends_on_review":"KU2D-V-000021","target_pr":51,"authoritative_branch":"codex/ku2d-evidence-recovery-prioritization-v1"},
+  "boundaries": {"coordination_only":true,"automatic_learning_memory_export":false,"rerun_execution_authorized":false,"live_requests":0,"candidate_promotion":false,"knowledge_mutation":false,"parked_ref_mutation":false,"cleanup_execution":false,"production_authorized":false,"scheduler_action":null,"ml_training_or_inference":false}
+}

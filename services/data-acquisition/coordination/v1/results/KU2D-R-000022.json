@@ -1,0 +1,161 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000022",
+  "prompt_id": "KU2D-P-000022",
+  "submitted_at": "2026-08-31T16:24:28+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "partial",
+  "summary": "Completed final technical and merge-readiness validation of Draft PR #51 at exact audited head ec82687210875e541c819b2fcdf814a43b9f28e5. The inherited P22/V21/queue handoff metadata was invalid under Agent Handoff v1 and caused CI #277 to fail; it was normalized without changing review meaning, scope, or authority, after which all 44 deterministic scripts and exact-head workflows passed. Coffee PR #39 remains first at 4.50, Q-Diving PR #40 second at 4.30, and Marketplace PR #37 third at 3.70. The three parked PRs and all seven CLE plus 31 claim mappings remain exact and non-authorizing. The PR description is current. Ready-for-review was attempted once but the connector failed on unavailable Repository.fullDatabaseId; no workaround or retry was attempted, so PR #51 remains Draft and unmerged. No Coffee rerun or live request occurred.",
+  "evidence_references": [
+    "PR:#51",
+    "commit:ec82687210875e541c819b2fcdf814a43b9f28e5",
+    "base:01d6ad74626ea0e768f7f5f7acf5ddbe71bb7972",
+    "KU2D-R-000021",
+    "KU2D-V-000021",
+    "workflow:Data Acquisition Platform CI#278",
+    "workflow:Frontend CI#1117",
+    "workflow:PR Browser Preview Link#192"
+  ],
+  "repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-evidence-recovery-prioritization-v1",
+    "authoritative_branch": "codex/ku2d-evidence-recovery-prioritization-v1",
+    "base_branch": "integration/data-acquisition-platform",
+    "base_sha": "01d6ad74626ea0e768f7f5f7acf5ddbe71bb7972",
+    "validated_head_sha": "ec82687210875e541c819b2fcdf814a43b9f28e5",
+    "pull_request_number": 51,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/51",
+    "pull_request_title": "KU2D: Prioritize evidence recovery reruns v1",
+    "pull_request_open": true,
+    "pull_request_draft": true,
+    "pull_request_mergeable": true,
+    "pull_request_merged": false,
+    "changed_file_count_before_result_submission": 13
+  },
+  "ranking_integrity": {
+    "ranked_candidates": [
+      {"rank": 1, "pr_number": 39, "normalized_score": 4.5, "rerun_execution_authorized": false},
+      {"rank": 2, "pr_number": 40, "normalized_score": 4.3, "rerun_execution_authorized": false},
+      {"rank": 3, "pr_number": 37, "normalized_score": 3.7, "rerun_execution_authorized": false}
+    ],
+    "criteria_and_weights_unchanged": true,
+    "score_rationales_unchanged": true,
+    "in_scope_candidate_evidence_count": 7,
+    "reviewed_claim_dependency_count": 31,
+    "all_dependencies_have_gap_or_no_rerun_reason": true,
+    "candidate_promotion_count": 0,
+    "knowledge_mutation_count": 0,
+    "rerun_execution_count": 0,
+    "live_request_count": 0
+  },
+  "parked_pr_recheck": [
+    {"pr_number": 37, "branch": "codex/overnight-marketplace-source-inventory", "head_sha": "0e99926c72cec7e83e259408c153fd6c99fd1492", "open": true, "draft": true, "merged": false, "head_unchanged": true, "mutated_by_checkpoint": false},
+    {"pr_number": 39, "branch": "codex/overnight-coffee-source-expansion", "head_sha": "441c71d678a30cc62b742ea58f23f629a9d1e2d6", "open": true, "draft": true, "merged": false, "head_unchanged": true, "mutated_by_checkpoint": false},
+    {"pr_number": 40, "branch": "codex/overnight-qdiving-source-expansion", "head_sha": "5f972d456415dbd0d8ae695f02c056e4a7c76e56", "open": true, "draft": true, "merged": false, "head_unchanged": true, "mutated_by_checkpoint": false}
+  ],
+  "coordination_correction": {
+    "initial_failing_run_number": 277,
+    "initial_failing_run_id": 33377062961,
+    "initial_failure": "KU2D-P-000022 omitted automatic_learning_memory_export=false; KU2D-V-000021 used a non-contract review schema/fields; the codex next_action carried a downstream review_id.",
+    "correction_commit": "ec82687210875e541c819b2fcdf814a43b9f28e5",
+    "prompt_boundary_restored": true,
+    "assistant_review_contract_restored": true,
+    "codex_downstream_pointer_removed": true,
+    "semantic_prompt_scope_changed": false,
+    "review_meaning_changed": false,
+    "authorization_changed": false,
+    "validator_weakened": false,
+    "corrected_ci_run_number": 278,
+    "corrected_ci_conclusion": "success"
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "git_diff_check": "passed",
+    "json_parse": "138 files passed before Result submission",
+    "yaml_parse": "16 workflows passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service, tools passed",
+    "evidence_recovery_prioritization_tests": "ERP1-ERP30 passed",
+    "agent_handoff_tests": "AH1-AH23 passed",
+    "parked_disposition_tests": "PED1-PED30 passed",
+    "complete_deterministic_corpus": "44/44 scripts passed",
+    "supermarket_regressions": "passed",
+    "retail_transfer_regressions": "passed",
+    "youtube_regressions": "passed",
+    "shopee_regressions": "passed",
+    "lazada_regressions": "passed",
+    "jib_and_lifecycle_regressions": "passed",
+    "live_request_count": 0
+  },
+  "ci": {
+    "head_sha": "ec82687210875e541c819b2fcdf814a43b9f28e5",
+    "data_acquisition_platform_ci": {"run_number": 278, "run_id": 33377325065, "conclusion": "success"},
+    "frontend_ci": {"run_number": 1117, "run_id": 33377325049, "conclusion": "success"},
+    "pr_browser_preview_link": {"run_number": 192, "run_id": 33377325071, "conclusion": "success"}
+  },
+  "pull_request_finalization": {
+    "description_updated": true,
+    "description_head_sha": "ec82687210875e541c819b2fcdf814a43b9f28e5",
+    "description_ranking_test_ci_and_boundaries_exact": true,
+    "ready_transition_requested_once": true,
+    "ready_transition_completed": false,
+    "connector_error": "GitHub GraphQL response requested Repository.fullDatabaseId, which is unavailable in the repository schema",
+    "unsafe_workaround_attempted": false,
+    "retry_attempted": false,
+    "draft_remains": true,
+    "merged": false
+  },
+  "files_changed_by_checkpoint": [
+    "services/data-acquisition/coordination/queue.json",
+    "services/data-acquisition/coordination/v1/prompts/KU2D-P-000022.json",
+    "services/data-acquisition/coordination/v1/reviews/KU2D-V-000021.json",
+    "services/data-acquisition/coordination/v1/results/KU2D-R-000022.json"
+  ],
+  "remaining_blockers": [
+    "PR #51 cannot be marked Ready through the available connector until its GraphQL Repository.fullDatabaseId response selection is corrected or an independently authorized reviewer performs the transition."
+  ],
+  "security_and_boundaries": {
+    "credentials_or_private_material_added": false,
+    "new_source_count": 0,
+    "live_request_count": 0,
+    "rerun_execution_count": 0,
+    "candidate_source_promotion_count": 0,
+    "learning_memory_mutation_count": 0,
+    "reviewed_learning_corpus_mutation_count": 0,
+    "core_knowledge_mutation_count": 0,
+    "human_confirmation_mutation_count": 0,
+    "ground_truth_mutation_count": 0,
+    "parked_pr_close_count": 0,
+    "parked_pr_merge_count": 0,
+    "parked_ref_mutation_count": 0,
+    "branch_deletion_count": 0,
+    "cleanup_execution_count": 0,
+    "production_authorized": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "runtime_auto_write": false,
+    "ml_training_or_inference": false,
+    "ml_dataset_export": false,
+    "survey_doe_sem_work": false,
+    "broader_recommendation_or_ranking": false
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-evidence-recovery-prioritization-v1",
+    "authoritative_branch": "codex/ku2d-evidence-recovery-prioritization-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000022.json",
+    "depends_on_result": "KU2D-R-000021",
+    "depends_on_review": "KU2D-V-000021",
+    "target_pr": 51,
+    "historical_prs": [37, 39, 40],
+    "learning_memory_record_id": null
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
