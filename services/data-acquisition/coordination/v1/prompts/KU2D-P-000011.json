@@ -1,0 +1,46 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000011",
+  "created_at": "2026-08-31T12:30:00+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-core-intelligence-v1",
+  "objective": "Create an authoritative Branch/PR Inventory & Disposition Register before any broader Core Intelligence or source-expansion work continues.",
+  "instructions": [
+    "BRANCH HANDOFF: remain on codex/ku2d-core-intelligence-v1. Fetch/pull latest remote state and read coordination/queue.json from this branch before any work.",
+    "Do not perform broader Core Intelligence recommendation/ranking, new source exploration, live requests, ML training/inference/export, Survey/DoE/SEM work, production authorization, scheduling, or branch deletion in this checkpoint.",
+    "Inventory all remote codex/* branches currently present in thanitpu/KU-Open-Data-Analytics and all associated PRs where available.",
+    "For every branch, determine evidence-backed disposition using repository/PR state only. Allowed dispositions: ACTIVE, MERGED_HISTORICAL, PARKED_REVIEWED, PARKED_UNREVIEWED, SUPERSEDED, SAFE_TO_DELETE_CANDIDATE, NEEDS_REVIEW.",
+    "Do not delete branches. SAFE_TO_DELETE_CANDIDATE is advisory only and must include exact proof that unique reviewed knowledge/code is already merged or superseded.",
+    "Record at minimum: branch, purpose/theme, related PR number/state if any, base branch, head SHA, merged integration SHA if applicable, latest meaningful activity/evidence, disposition, whether unique code remains unmerged, whether knowledge has been projected into Learning Memory/Reviewed Learning Corpus/Core Knowledge, candidate evidence references if any, dependencies, recommended next action, and deletion-risk note.",
+    "Explicitly distinguish branches that were merged but intentionally retained as historical provenance from branches that contain unmerged work worth preserving.",
+    "For parked exploration branches, identify whether their evidence is already represented in Candidate Learning Evidence, Reviewed Learning Corpus, Core Knowledge, or not represented. Do not promote anything during this task.",
+    "Create a machine-readable registry, preferably services/data-acquisition/config/branch_pr_disposition_registry.json, with a versioned schema and deterministic validator/self-test.",
+    "Create a concise human-readable report under services/data-acquisition/docs explaining branch groups and recommended cleanup/review order.",
+    "Add a summary section that answers: total codex branches, active count, merged-historical count, parked-reviewed count, parked-unreviewed/needs-review count, superseded count, safe-to-delete candidates, and branches with unique unmerged knowledge.",
+    "Cross-check that no branch is classified from name alone; use PR/commit/repository evidence. Unknowns must remain NEEDS_REVIEW.",
+    "Preserve the current Core Intelligence Quality Foundation work in PR #46 unchanged except for files necessary for this inventory checkpoint and coordination records. If mixing the inventory into PR #46 would make review scope materially worse, stop and report that a separate branch/PR is preferable instead of forcing it into PR #46.",
+    "Run deterministic JSON validation, any new self-test, git diff --check, and relevant existing coordination/core-knowledge tests. No live acquisition.",
+    "Write KU2D-R-000011 with exact inventory counts, branch dispositions, PR mapping, knowledge-projection status, cleanup candidates, unresolved cases, files changed, tests/CI, and whether this should remain in PR #46 or move to a separate PR. Hand control back to assistant.",
+    "Do not merge or delete anything."
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000011",
+    "next_actor": "assistant"
+  },
+  "provenance": {
+    "depends_on_result": "KU2D-R-000010",
+    "depends_on_review": "KU2D-V-000010",
+    "authoritative_branch": "codex/ku2d-core-intelligence-v1",
+    "target_pr": 46
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
