@@ -1,0 +1,317 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000002",
+  "prompt_id": "KU2D-P-000002",
+  "submitted_at": "2026-08-31T09:10:00+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "Completed a repository-grounded architecture assessment for a future Survey/Questionnaire Acquisition lane and KU2A SEM support. No survey runtime, provider connector, analysis implementation, UI, production integration, or live request was added.",
+  "evidence_references": [
+    "README.md",
+    "src/app.js",
+    "src/state.js",
+    "backend/app/api.py",
+    "backend/app/schemas.py",
+    "docs/DATA_ACQUISITION_NORTH_STAR.md",
+    "services/data-acquisition/acquisition/acquisition_orchestrator.py",
+    "services/data-acquisition/config/youtube_knowledge_dataset_schema.json"
+  ],
+  "architecture_assessment": {
+    "current_state": {
+      "ku2a_dataset_intake": "The current browser-first KU2A path imports CSV/XLSX or pasted tabular data, profiles fields and measurement levels locally, and sends a CSV analytical matrix to FastAPI only after explicit analysis execution.",
+      "ku2a_backend": "The stateless FastAPI backend accepts one uploaded CSV plus reviewed intent, target, mode, and options. It has validated fast analytical routes but no survey design, response collection, or SEM route.",
+      "ku2d_public_acquisition": "The existing KU2D lifecycle is optimized for public official Internet sources: Discover, Explore, Deep Audit, Human Approve, Scheduled Acquire, Monitor, and Re-Explore on drift.",
+      "existing_handoff_precedent": "The reviewed YouTube knowledge-dataset contract demonstrates a non-production, provenance-rich KU2D-to-KU2A handoff, but survey responses require stronger privacy, consent, instrument-version, and sampling metadata."
+    },
+    "placement_decision": {
+      "logical_owner": "KU2D should own survey specification, provider orchestration, collection status, response provenance, and acquisition-quality checks as a distinct user-authorized acquisition lane.",
+      "physical_boundary": "A future survey-acquisition service or clearly isolated KU2D survey package should sit beside public Web acquisition rather than entering the public monitoring registry, public observation store, or scheduled source crawler.",
+      "response_storage": "Identifiable or row-level survey responses belong in a privacy-controlled response store with study-scoped access and retention. They must not enter Learning Memory, Agent Handoff records, the public acquisition repository, or source-ranking evidence.",
+      "ku2a_boundary": "KU2A should receive a frozen, versioned Analytical Dataset Handoff containing response data plus the survey metadata manifest. Uploaded survey CSV/XLSX may enter through current dataset intake, but SEM-aware or quality-aware analysis requires the companion manifest.",
+      "governance": "Publishing a form is a Human Approve boundary distinct from provider connection, draft generation, collection, dataset handoff, and analytical-model approval."
+    },
+    "acquisition_lanes": [
+      {
+        "lane": "public_internet",
+        "entry": "Official public URL/API/feed",
+        "control_model": "Existing KU2D Discover through Scheduled Acquire lifecycle",
+        "data_class": "Public source evidence"
+      },
+      {
+        "lane": "uploaded_dataset",
+        "entry": "User-selected CSV/XLSX or pasted data",
+        "control_model": "Current KU2A browser intake and explicit analysis run",
+        "data_class": "User-controlled analytical dataset"
+      },
+      {
+        "lane": "authorized_existing_system",
+        "entry": "User-authorized business/research system export or connector",
+        "control_model": "Connector-specific delegated access, schema mapping, provenance, revocation, and explicit dataset handoff",
+        "data_class": "Private organizational data"
+      },
+      {
+        "lane": "survey_collection",
+        "entry": "Question bank, Questionnaire Specification, or research/business question",
+        "control_model": "Design, Human Review, provider draft, Human Publish Approve, collect, monitor, freeze/export, quality review, KU2A handoff",
+        "data_class": "Consent-governed respondent data"
+      }
+    ],
+    "staged_workflow": [
+      {
+        "stage": "question_bank_intake",
+        "behavior": "Import a simple Excel/CSV question bank into a draft Questionnaire Specification. Validate columns, stable item IDs, answer types, scale coding, and missing construct metadata; do not publish."
+      },
+      {
+        "stage": "assisted_specification",
+        "behavior": "Add constructs, scale definitions, sampling intent, consent/privacy metadata, branching, required/optional status, language, and planned analysis. Suggestions remain non-authoritative."
+      },
+      {
+        "stage": "human_design_review",
+        "behavior": "A human reviews research purpose, appropriateness, wording, ordering, burden, consent, sampling, measurement validity, provider capability loss, and final publish preview."
+      },
+      {
+        "stage": "provider_draft_and_publish",
+        "behavior": "Create a provider draft through a generic provider adapter. Publishing requires a separate explicit approval reference tied to the exact instrument version."
+      },
+      {
+        "stage": "collection_monitoring",
+        "behavior": "Show invitation/respondent counts, completion and dropout, collection window, quota/strata coverage, provider health, last synchronization, and warnings without treating response volume as quality."
+      },
+      {
+        "stage": "freeze_export_and_quality",
+        "behavior": "Freeze a collection snapshot, preserve provider/export provenance, pseudonymize respondent identity, map item IDs to columns, and compute transparent quality diagnostics."
+      },
+      {
+        "stage": "ku2a_dataset_handoff",
+        "behavior": "Send a versioned response table and metadata manifest to KU2A. Preserve the unmodified raw export separately from reviewed derived scale scores."
+      },
+      {
+        "stage": "automatic_analysis",
+        "behavior": "Future reviewed automation may produce descriptive response summaries, item distributions, missingness, reliability candidates, and analysis recommendations; it must not make automatic causal, validity, or SEM claims."
+      },
+      {
+        "stage": "question_only_advisory",
+        "behavior": "When only a research/business question is supplied, recommend questionnaire, interview, observation, existing-data connector, experiment, or mixed methods. The recommendation requires human acceptance before instrument design."
+      }
+    ],
+    "conceptual_contracts": {
+      "QuestionnaireSpecification": [
+        "instrument_id and immutable version",
+        "title, purpose, research questions, owner, locale and status",
+        "planned population, collection window and intended analyses",
+        "ordered stable item IDs, sections, branching and display randomization rules",
+        "consent/privacy reference and human-review/publish approval references"
+      ],
+      "QuestionItem": [
+        "item_id, wording, help text, response type, required flag and section/order",
+        "single choice, multiple choice, Likert/rating, numeric, text, date/time, matrix/grid, ranking or provider-supported equivalent",
+        "allowed values, labels, numeric coding, scale type, validation and skip/branch rules",
+        "construct_id, indicator role, reverse_coded flag and source/adaptation provenance"
+      ],
+      "ConstructScale": [
+        "construct_id, conceptual definition and indicator item IDs",
+        "reflective/formative declaration when known",
+        "scoring rule, reverse coding, minimum answered items and missingness rule",
+        "expected reliability/validity review and literature/source reference"
+      ],
+      "ConsentPrivacyMetadata": [
+        "purpose and lawful/ethical basis recorded by the study owner",
+        "consent text/version, participant information and withdrawal route",
+        "data classification, direct/indirect identifier inventory and minimization plan",
+        "access roles, retention/deletion dates, geography and onward-use restrictions"
+      ],
+      "SamplingDesign": [
+        "target population, sampling frame, inclusion/exclusion and recruitment channel",
+        "probability/non-probability method, strata, clusters, quotas and planned weights",
+        "sample-size rationale, expected response rate and nonresponse follow-up plan",
+        "experimental assignment fields only when a separate experiment is genuinely designed"
+      ],
+      "ResponseProvenance": [
+        "instrument_id/version, provider, provider form reference and export/synchronization time",
+        "stable pseudonymous respondent_id, provider response reference, started/submitted times and completion state",
+        "item-to-column map, source locale, collection wave, group/stratum/cluster and assignment references when applicable",
+        "raw-export digest and transformation lineage without storing provider access material"
+      ],
+      "CollectionStatus": [
+        "draft/published/paused/closed/frozen state and exact instrument version",
+        "invited, started, completed, partial and excluded counts",
+        "quota/strata progress, dropout points, last synchronization and provider warnings",
+        "collection target is planning context, never proof of representativeness or quality"
+      ],
+      "BiasQualityDiagnostics": [
+        "missingness by item/respondent/group and completion-time anomalies",
+        "duplicate/straight-line/low-variance attention indicators as review flags, not automatic fraud labels",
+        "coverage, selection and nonresponse diagnostics against the declared sampling frame",
+        "wording/order/branch exposure, common-method risk and mode effects",
+        "item-total behavior, internal consistency candidates and measurement-invariance prerequisites",
+        "all exclusions and derived scores retain reason, rule version and human-review status"
+      ],
+      "AnalyticalDatasetHandoff": [
+        "dataset_id, frozen snapshot time, instrument/version and row/column counts",
+        "response table reference plus sanitized field manifest and item-to-variable map",
+        "construct/indicator/scoring metadata, reverse-coded items and scale/measurement levels",
+        "missing-value semantics, respondent/group/design variables, weights/strata/clusters and provenance",
+        "consent/use restrictions, quality warnings, transformation lineage and production approval state"
+      ]
+    },
+    "questionnaire_appropriateness_advisory": {
+      "questionnaire_is_plausible_for": [
+        "self-reported attitudes, perceptions, preferences, intentions, experiences or knowledge",
+        "standardized measurement across a defined population when participants can answer meaningfully",
+        "constructs with defensible indicators or a reviewed exploratory instrument goal"
+      ],
+      "recommend_alternatives_when": [
+        "the answer already exists in reliable administrative/transactional data",
+        "direct behavior or environmental observation is required instead of self-report",
+        "causal effect is the core question and treatment assignment is feasible",
+        "the topic, population, literacy/access constraints or risk require interviews, qualitative work or specialist ethics review",
+        "a questionnaire would impose disproportionate burden or cannot validly measure the construct"
+      ],
+      "authority": "The advisory produces a rationale and uncertainty, not an automatic methodological or ethics approval."
+    },
+    "doe_and_bias_placement": {
+      "questionnaire_design": "Defines measurement: constructs, items, scales, wording, order, branching, response burden, mode, consent and validity evidence.",
+      "sampling_design": "Defines who can be observed: population, frame, recruitment, probability mechanism, strata/clusters/quotas, weights and nonresponse follow-up.",
+      "experimental_design": "Defines interventions and causal contrasts: treatments, controls, random assignment, blocking, factorial structure, blinding and outcome timing. It is not implied by distributing a questionnaire.",
+      "randomization": "Item/order randomization belongs to instrument administration and wording/order-bias control. Treatment randomization belongs to a separately approved experimental protocol.",
+      "bias_map": {
+        "selection_and_coverage": "Sampling Design and recruitment provenance",
+        "nonresponse": "Collection Status plus response-propensity/weighting diagnostics",
+        "common_method": "Questionnaire Design, measurement timing/source separation and analysis warnings",
+        "wording_and_order": "QuestionItem versions, section/order exposure and pretest evidence",
+        "measurement_validity": "ConstructScale evidence, pilot/EFA/CFA and invariance review",
+        "causal_validity": "Experimental Design, not ordinary survey collection"
+      }
+    },
+    "survey_collection_provider": {
+      "principle": "Google Forms is one adapter behind a generic Survey Collection Provider; provider-specific IDs and limitations remain in provenance rather than defining the domain contract.",
+      "operations": [
+        "capabilities and supported question/branching features",
+        "connect with explicit delegated user authorization and revoke",
+        "create/update draft from an immutable Questionnaire Specification version",
+        "render provider mapping and unsupported-feature warnings for human review",
+        "publish only with an exact human approval reference",
+        "read collection metadata/status and export response pages incrementally",
+        "pause/close/freeze collection through explicit user action",
+        "health, synchronization cursor, idempotency key and provider provenance"
+      ],
+      "google_forms_specific_boundary": "A future connector should use documented Google APIs and least-privilege delegated access. It must never place account credentials or delegated access material in repository artifacts, logs, Learning Memory, or handoff metadata."
+    },
+    "ku2a_sem_placement": {
+      "location": "SEM belongs in KU2A as a future advanced analytical family after dataset intake, profile, reviewed preparation and model setup. KU2D supplies instrument/sampling/provenance metadata but does not estimate SEM.",
+      "measurement_stage": [
+        "indicator coding, reverse scoring and missing-data plan",
+        "latent-construct specification and identification checks",
+        "CFA with factor loadings, residuals and correlated-error restrictions under human review",
+        "reliability and convergent/discriminant validity diagnostics such as omega/alpha, composite reliability, AVE and HTMT where appropriate",
+        "group/time measurement-invariance workflow when comparisons are intended"
+      ],
+      "structural_stage": [
+        "reviewed directional paths, covariances and control variables",
+        "direct, indirect/mediation and total effects with justified uncertainty estimation",
+        "moderation through reviewed interactions or multi-group models where appropriate",
+        "fit and residual diagnostics including chi-square context, CFI, TLI, RMSEA and SRMR",
+        "alternative-model and sensitivity warnings without claiming causal identification from cross-sectional association"
+      ],
+      "prerequisites": [
+        "versioned construct-to-item map and scale coding",
+        "reflective/formative choices and model identification",
+        "sample-size/power or precision rationale appropriate to estimator/model complexity",
+        "ordinal versus continuous indicator declaration and estimator choice",
+        "missingness, nonnormality, clustering, weights and sampling-design metadata",
+        "instrument version, collection mode/wave, respondent/group IDs and provenance",
+        "human-reviewed model specification and interpretation boundary"
+      ]
+    },
+    "minimum_shared_metadata_for_ku2a": [
+      "instrument_id, instrument_version, study/research question and collection wave",
+      "stable item_id to dataset-column mapping and original wording/version",
+      "construct_id, indicator role, reverse_coded flag and reviewed scoring rule",
+      "response and scale types, value/label coding, ordered categories and missing-value meanings",
+      "stable pseudonymous respondent_id plus grouping, time, treatment/assignment fields when genuinely applicable",
+      "sampling frame/method, strata, clusters, quotas, weights and recruitment channel",
+      "consent/use/retention restrictions and privacy classification",
+      "provider/export provenance, collection window, transformation lineage and quality warnings"
+    ],
+    "privacy_authorization_boundaries": [
+      "Provider connection is explicit, revocable, least-privilege delegated access owned by the user/study; connection does not authorize form publication.",
+      "Human Publish Approve binds to an exact Questionnaire Specification and provider draft preview.",
+      "Respondent consent and study authorization are distinct from Google account connection and from KU2A analysis permission.",
+      "Collect only necessary identifiers; use study-scoped pseudonymous respondent IDs and separate re-identification material where required.",
+      "Enforce role-based access, retention/deletion, export audit, withdrawal/correction handling and purpose limitation.",
+      "Do not expose responses in GitHub, coordination records, Learning Memory, logs, public observation storage or future ML datasets by default.",
+      "Sensitive/high-risk studies require institutional ethics/privacy review outside automated KU2D approval."
+    ],
+    "phased_roadmap": [
+      {
+        "phase": "S1_contracts_only",
+        "scope": "Architecture decision records and JSON schemas for Questionnaire Specification, items/scales, consent/privacy, sampling, response provenance, status, diagnostics and KU2A handoff.",
+        "branch_boundary": "Dedicated survey-contracts branch/PR; no provider or UI."
+      },
+      {
+        "phase": "S2_question_bank_draft",
+        "scope": "Deterministic Excel/CSV question-bank importer, validation report and editable provider-neutral draft with Human Review.",
+        "branch_boundary": "Separate importer/review PR with sanitized fixtures only."
+      },
+      {
+        "phase": "S3_provider_draft",
+        "scope": "Generic Survey Collection Provider interface and Google Forms draft creation using documented APIs, explicit delegated connection and no automatic publish.",
+        "branch_boundary": "Security-reviewed connector PR; credentials configured outside repository."
+      },
+      {
+        "phase": "S4_collection_and_quality",
+        "scope": "Explicit publish gate, status dashboard, bounded response synchronization, frozen exports, sampling/nonresponse/quality diagnostics and privacy controls.",
+        "branch_boundary": "Separate private-data/control-plane PRs; production disabled until reviewed."
+      },
+      {
+        "phase": "S5_ku2a_handoff",
+        "scope": "Analytical Dataset Handoff ingestion, survey-aware profile, descriptive/item/scale workflow and provenance display in KU2A.",
+        "branch_boundary": "KU2A-owned PR; no SEM yet."
+      },
+      {
+        "phase": "S6_question_advisor",
+        "scope": "Non-authoritative recommendation among questionnaire, interview, observation, existing data, experiment and mixed methods with human acceptance.",
+        "branch_boundary": "Separate evaluated recommendation PR; no auto-generation/publish."
+      },
+      {
+        "phase": "S7_sem_measurement",
+        "scope": "KU2A measurement-model/CFA route with identification, estimator, fit, reliability, validity and invariance diagnostics.",
+        "branch_boundary": "Dedicated advanced-analytics PR with benchmark datasets and specialist review."
+      },
+      {
+        "phase": "S8_sem_structural",
+        "scope": "Reviewed structural paths, mediation/moderation and sensitivity reporting after the measurement route is validated.",
+        "branch_boundary": "Separate SEM structural-model PR; no causal claims without design support."
+      }
+    ],
+    "recommended_next_checkpoint": "Open a new architecture/contracts-only branch after PR #44 review. Begin with provider-neutral schemas and sanitized fixtures; do not place Survey implementation, respondent data, Google connection, KU2A UI, or SEM code in the Learning Memory PR."
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "agent_handoff_tests": "AH1-AH18 passed",
+    "complete_corpus": "37/37 passed",
+    "json_parse": "49 files passed",
+    "yaml_parse": "16 files passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service, tools passed",
+    "coordination_compatibility": "Global latest pointers preserve the completed P-000001 chain while P-000002 advances independently.",
+    "live_request_count": 0
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-learning-memory-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000002.json",
+    "depends_on_result": "KU2D-R-000001",
+    "depends_on_review": "KU2D-V-000001",
+    "assessment_only": true,
+    "learning_memory_record_id": null
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

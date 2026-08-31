@@ -1,24 +1,24 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T09:08:00+07:00",
+  "updated_at": "2026-08-31T09:10:00+07:00",
   "latest_prompt": "KU2D-P-000002",
-  "latest_result": "KU2D-R-000001",
+  "latest_result": "KU2D-R-000002",
   "latest_review": "KU2D-V-000001",
   "latest_human_decision": null,
   "prompt_states": {
     "KU2D-P-000001": "completed",
-    "KU2D-P-000002": "ready_for_codex"
+    "KU2D-P-000002": "result_submitted"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001"
   ],
   "next_action": {
-    "actor": "codex",
+    "actor": "assistant",
     "prompt_id": "KU2D-P-000002",
-    "result_id": null,
+    "result_id": "KU2D-R-000002",
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "KU2D-P-000001 accepted by KU2D-V-000001. KU2D-P-000002 requests architecture assessment only for Survey/Questionnaire Data Acquisition and future KU2A SEM support; no implementation or live request is authorized."
+  "notes": "KU2D-R-000002 contains the requested Survey/Questionnaire and future KU2A SEM architecture assessment. It is ready for assistant review; no implementation, live request, or Human Decision was created."
 }

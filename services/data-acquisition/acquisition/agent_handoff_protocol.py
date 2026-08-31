@@ -335,37 +335,59 @@ def validate_agent_handoff_bundle(
         if record_id is not None and record_id not in records:
             raise ValueError(f"queue latest pointer references an unknown {label}")
     latest_prompt = queue.get("latest_prompt")
-    for record_id in (queue.get("latest_result"), queue.get("latest_review"), queue.get("latest_human_decision")):
-        if record_id:
-            record = results.get(record_id) or reviews.get(record_id) or humans.get(record_id)
-            if record["prompt_id"] != latest_prompt:
-                raise ValueError("queue latest pointers do not share the latest Prompt")
-
     state = queue["prompt_states"].get(latest_prompt) if latest_prompt else None
     latest_result = queue.get("latest_result")
     latest_review = queue.get("latest_review")
     latest_human = queue.get("latest_human_decision")
     actor = queue["next_action"]["actor"]
+    prompt_results = [record for record in results.values() if record["prompt_id"] == latest_prompt]
+    prompt_reviews = [record for record in reviews.values() if record["prompt_id"] == latest_prompt]
+    prompt_humans = [record for record in humans.values() if record["prompt_id"] == latest_prompt]
     if state in {"draft", "ready_for_codex", "in_progress", "superseded"}:
-        if any(value is not None for value in (latest_result, latest_review, latest_human)):
-            raise ValueError("pre-result or superseded queue state cannot expose downstream latest pointers")
+        if prompt_results or prompt_reviews or prompt_humans:
+            raise ValueError("pre-result or superseded Prompt cannot have downstream records")
     elif state == "result_submitted":
-        if not latest_result or latest_review is not None or latest_human is not None or actor != "assistant":
+        current_result = results.get(latest_result)
+        if (
+            not current_result or current_result["prompt_id"] != latest_prompt
+            or len(prompt_results) != 1 or prompt_reviews or prompt_humans or actor != "assistant"
+        ):
             raise ValueError("result_submitted state requires an unreviewed Result and assistant action")
     elif state == "reviewed":
-        if not latest_result or not latest_review or latest_human is not None or actor != "none":
+        current_result = results.get(latest_result)
+        current_review = reviews.get(latest_review)
+        if (
+            not current_result or current_result["prompt_id"] != latest_prompt
+            or not current_review or current_review["prompt_id"] != latest_prompt
+            or prompt_humans or actor != "none"
+        ):
             raise ValueError("reviewed state requires Result and Assistant Review with no pending actor")
-        if reviews[latest_review]["requires_human_decision"]:
+        if current_review["requires_human_decision"]:
             raise ValueError("a review requiring human authority cannot use reviewed terminal state")
     elif state == "human_decision_required":
-        if not latest_result or not latest_review or latest_human is not None or actor != "human":
+        current_result = results.get(latest_result)
+        current_review = reviews.get(latest_review)
+        if (
+            not current_result or current_result["prompt_id"] != latest_prompt
+            or not current_review or current_review["prompt_id"] != latest_prompt
+            or prompt_humans or actor != "human"
+        ):
             raise ValueError("human_decision_required state requires a pending human action")
-        if not reviews[latest_review]["requires_human_decision"]:
+        if not current_review["requires_human_decision"]:
             raise ValueError("human queue action lacks a matching review request")
     elif state == "completed":
-        if not latest_result or not latest_review or actor != "none" or latest_prompt not in queue["completed_prompt_ids"]:
+        current_result = results.get(latest_result)
+        current_review = reviews.get(latest_review)
+        current_human = humans.get(latest_human) if latest_human else None
+        if (
+            not current_result or current_result["prompt_id"] != latest_prompt
+            or not current_review or current_review["prompt_id"] != latest_prompt
+            or actor != "none" or latest_prompt not in queue["completed_prompt_ids"]
+        ):
             raise ValueError("completed state requires a reviewed Result and completed history")
-        if reviews[latest_review]["requires_human_decision"] and not latest_human:
+        if current_review["requires_human_decision"] and (
+            not current_human or current_human["prompt_id"] != latest_prompt
+        ):
             raise ValueError("completed human-gated review lacks Human Decision")
 
     if previous_queue_state is not None:
