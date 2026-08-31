@@ -7,71 +7,98 @@
   "production_authorized": false,
   "codes": [
     {
-      "code_id": "SI-UNKNOWN-COUNTER", "code_kind": "semantic_code", "definition": "A numeric display whose source does not explicitly identify the counter role.",
+      "code_id": "SI-UNKNOWN-COUNTER", "code_kind": "taxonomy_code", "code_family": "semantic_interpretation", "definition": "A numeric display whose source does not explicitly identify the counter role.",
       "include_when": ["A number is visible and the source role label is absent or ambiguous."], "exclude_when": ["The source explicitly labels the number as sold, orders, reviews, or another typed role."],
       "positive_examples": ["A marketplace card shows 1.2k with no role label."], "counter_examples": ["The source explicitly says 1.2k sold."],
       "parent_code_id": null, "child_code_ids": [], "commonly_confused_with": ["SI-TYPED-SOLD-COUNTER"], "evidence_required": ["Raw counter text", "Adjacent source label and surface context"]
     },
     {
-      "code_id": "SI-TYPED-SOLD-COUNTER", "code_kind": "semantic_code", "definition": "A public counter explicitly labelled by its source as sold.",
+      "code_id": "SI-TYPED-SOLD-COUNTER", "code_kind": "taxonomy_code", "code_family": "semantic_interpretation", "definition": "A public counter explicitly labelled by its source as sold.",
       "include_when": ["The retained source label explicitly identifies the counter as sold."], "exclude_when": ["Sold meaning is inferred from position, icon, endpoint name, or a bare number."],
       "positive_examples": ["The card text explicitly states 500 sold."], "counter_examples": ["A bare 500 appears beside a product."],
       "parent_code_id": null, "child_code_ids": [], "commonly_confused_with": ["SI-UNKNOWN-COUNTER"], "evidence_required": ["Raw counter text", "Explicit sold-role label", "Source-surface provenance"]
     },
     {
-      "code_id": "SI-PRICE-ROLE-PRESERVED", "code_kind": "semantic_code", "definition": "The displayed price role is retained independently from temporal status.",
+      "code_id": "SI-PRICE-ROLE-PRESERVED", "code_kind": "taxonomy_code", "code_family": "semantic_interpretation", "definition": "The displayed price role is retained independently from temporal status.",
       "include_when": ["Evidence distinguishes current, regular, from, promotional, discount, or unknown display roles."], "exclude_when": ["Only acquisition method or observation time is available."],
       "positive_examples": ["A current display price and regular strike-through price retain separate roles."], "counter_examples": ["An API field is assumed current merely because it came from an API."],
       "parent_code_id": null, "child_code_ids": [], "commonly_confused_with": ["SI-PRICE-TEMPORAL-STATUS-PRESERVED"], "evidence_required": ["Source price label or layout evidence", "Observed value provenance"]
     },
     {
-      "code_id": "SI-PRICE-TEMPORAL-STATUS-PRESERVED", "code_kind": "semantic_code", "definition": "Current advertised, historical observed, and unknown temporal states remain separate from price role.",
+      "code_id": "SI-PRICE-TEMPORAL-STATUS-PRESERVED", "code_kind": "taxonomy_code", "code_family": "semantic_interpretation", "definition": "Current advertised, historical observed, and unknown temporal states remain separate from price role.",
       "include_when": ["Source temporal evidence supports current, historical, or explicitly unresolved status."], "exclude_when": ["Temporal status is inferred solely from API, DOM, cache, archive, or other acquisition method."],
       "positive_examples": ["An active official price page observed now, absent contrary history, supports current advertised at observed_at."], "counter_examples": ["A cached response is labelled historical without source temporal evidence."],
       "parent_code_id": null, "child_code_ids": [], "commonly_confused_with": ["SI-PRICE-ROLE-PRESERVED"], "evidence_required": ["Source temporal context", "observed_at", "Contrary-history check"]
     },
     {
-      "code_id": "SI-VARIANT-UNRESOLVED", "code_kind": "semantic_code", "definition": "Product identity match does not establish selected-variant equivalence.",
+      "code_id": "SI-VARIANT-UNRESOLVED", "code_kind": "taxonomy_code", "code_family": "semantic_interpretation", "definition": "Product identity match does not establish selected-variant equivalence.",
       "include_when": ["Product or item identity matches but variant attributes are absent, incomplete, or conflicting."], "exclude_when": ["The same selected variant is supported by attributable variant identifiers and attributes."],
       "positive_examples": ["Two records share a product ID but expose no matching size or color selection."], "counter_examples": ["Product ID, variant ID, size, and color all match."],
       "parent_code_id": null, "child_code_ids": [], "commonly_confused_with": ["SI-SELLABLE-PRODUCT-PRICE"], "evidence_required": ["Product identity evidence", "Variant identity evidence or explicit absence"]
     },
     {
-      "code_id": "SI-DISPLAY-ORDER-ONLY", "code_kind": "semantic_code", "definition": "Position is contextual display order and not demand, popularity, or national rank.",
+      "code_id": "SI-DISPLAY-ORDER-ONLY", "code_kind": "taxonomy_code", "code_family": "semantic_interpretation", "definition": "Position is contextual display order and not demand, popularity, or national rank.",
       "include_when": ["An item position is observed without an explicit source sort/ranking contract."], "exclude_when": ["A source contract explicitly defines the retained ordering semantics and scope."],
       "positive_examples": ["Item 1 on a generic marketplace result page is retained as display position 1."], "counter_examples": ["A documented scoped ranking explicitly labels its metric and period."],
       "parent_code_id": null, "child_code_ids": [], "commonly_confused_with": [], "evidence_required": ["Surface identity", "Sort/filter context", "Observation time"]
     },
     {
-      "code_id": "SI-ENVIRONMENT-BOUNDARY-NOT-TECHNIQUE-FAILURE", "code_kind": "semantic_code", "definition": "A blocked environment does not disprove a technique when the same technique succeeds in a separately approved environment.",
+      "code_id": "SI-ENVIRONMENT-BOUNDARY-NOT-TECHNIQUE-FAILURE", "code_kind": "taxonomy_code", "code_family": "semantic_interpretation", "definition": "A blocked environment does not disprove a technique when the same technique succeeds in a separately approved environment.",
       "include_when": ["The technique is held constant and reviewed evidence shows an approved alternative environment succeeds."], "exclude_when": ["The technique changed, the alternative environment was not approved, or no success evidence exists."],
       "positive_examples": ["Rendered cards fail in cloud but the same rendered-card technique succeeds on approved Thailand Edge."], "counter_examples": ["A different technique succeeds elsewhere."],
       "parent_code_id": null, "child_code_ids": [], "commonly_confused_with": ["FB-CLOUD-ACCESS-BLOCKED"], "evidence_required": ["Cloud boundary evidence", "Same-technique alternative-environment success", "Environment approval provenance"]
     },
     {
-      "code_id": "FB-APPLICATION-SHELL", "code_kind": "semantic_code", "definition": "HTTP completed but the retained surface contained no stable usable business evidence.",
+      "code_id": "FB-APPLICATION-SHELL", "code_kind": "taxonomy_code", "code_family": "failure_boundary_type", "definition": "HTTP completed but the retained surface contained no stable usable business evidence.",
       "include_when": ["Only an application shell or bootstrap UI is present after a bounded public attempt."], "exclude_when": ["Stable attributable product or intended-scope evidence is retained."],
       "positive_examples": ["The response contains only a static app mount and no product identity."], "counter_examples": ["Rendered cards contain stable product identity and price."],
       "parent_code_id": null, "child_code_ids": [], "commonly_confused_with": ["FB-TRAFFIC-VERIFICATION"], "evidence_required": ["Sanitized response or browser capture", "Stable-signal assessment"]
     },
     {
-      "code_id": "FB-TRAFFIC-VERIFICATION", "code_kind": "semantic_code", "definition": "A challenge or traffic-verification control stopped a bounded public attempt.",
+      "code_id": "FB-TRAFFIC-VERIFICATION", "code_kind": "taxonomy_code", "code_family": "failure_boundary_type", "definition": "A challenge or traffic-verification control stopped a bounded public attempt.",
       "include_when": ["The visible or response evidence explicitly indicates traffic verification or challenge."], "exclude_when": ["The page is merely empty, a normal application shell, or a technical transport failure."],
       "positive_examples": ["A challenge page requests traffic verification and execution stops."], "counter_examples": ["A normal SPA shell loads without a challenge marker."],
       "parent_code_id": null, "child_code_ids": [], "commonly_confused_with": ["FB-APPLICATION-SHELL"], "evidence_required": ["Sanitized challenge marker", "Execution-environment provenance"]
     },
     {
-      "code_id": "AT-SITEMAP-CANONICAL-DETAIL", "code_kind": "semantic_code", "definition": "Canonical detail URLs are discovered through official sitemap evidence and parsed at their detail surface.",
+      "code_id": "AT-SITEMAP-CANONICAL-DETAIL", "code_kind": "taxonomy_code", "code_family": "acquisition_technique", "definition": "Canonical detail URLs are discovered through official sitemap evidence and parsed at their detail surface.",
       "include_when": ["Sitemap evidence yields canonical detail URLs and detail pages own attributable fields."], "exclude_when": ["Only sitemap URLs exist without usable canonical detail evidence."],
       "positive_examples": ["Official sitemap product URLs resolve to attributable product detail records."], "counter_examples": ["A sitemap lists category pages only."],
       "parent_code_id": null, "child_code_ids": [], "commonly_confused_with": ["AT-CANONICAL-DETAIL"], "evidence_required": ["Official sitemap", "Canonical URL", "Detail identity evidence"]
     },
     {
-      "code_id": "AT-APP-BUNDLE-DISCOVERY", "code_kind": "semantic_code", "definition": "Public application-bundle clues support discovery only until semantics are independently validated.",
+      "code_id": "AT-APP-BUNDLE-DISCOVERY", "code_kind": "taxonomy_code", "code_family": "acquisition_technique", "definition": "Public application-bundle clues support discovery only until semantics are independently validated.",
       "include_when": ["Public bundles expose route, operation, or catalog-frontier clues with provenance."], "exclude_when": ["Names or endpoints are treated as validated product data without response evidence."],
       "positive_examples": ["A public bundle identifies a candidate discovery operation retained as a clue."], "counter_examples": ["An endpoint name alone is asserted to own Product and Price."],
       "parent_code_id": null, "child_code_ids": [], "commonly_confused_with": ["AT-FIRST-PARTY-NETWORK-DISCOVERY"], "evidence_required": ["Public bundle reference", "Sanitized clue", "Independent semantic-validation status"]
     }
   ],
+  "coverage": {
+    "taxonomy_id_count": 83,
+    "guided_id_count": 11,
+    "full_taxonomy_coverage": false,
+    "dimensions_covered": ["acquisition_technique", "failure_boundary_type", "semantic_interpretation"],
+    "fully_codebooked_dimensions": [],
+    "partially_codebooked_dimensions": ["acquisition_technique", "failure_boundary_type", "semantic_interpretation"],
+    "not_yet_codebooked_dimensions": ["acquisition_outcome", "change_drift", "data_quality_yield", "evidence_strength", "evidence_type", "execution_environment", "price_temporal_status", "privacy_authorization", "provenance_class", "request_cost_latency", "review_authority", "source_characteristic", "transferability"],
+    "dimension_coverage": [
+      {"dimension": "source_characteristic", "taxonomy_id_count": 8, "guided_id_count": 0, "not_yet_codebooked_ids": ["SC-OFFICIAL-PUBLIC", "SC-STRUCTURED-CATALOG", "SC-STATIC-DISCOVERY", "SC-RENDERED-COMMERCE", "SC-SPA", "SC-PUBLIC-MARKETPLACE", "SC-OFFICIAL-METADATA", "SC-HUMAN-CONFIRMED-POLICY"]},
+      {"dimension": "acquisition_technique", "taxonomy_id_count": 11, "guided_id_count": 2, "not_yet_codebooked_ids": ["AT-OFFICIAL-API", "AT-CANONICAL-DETAIL", "AT-SSR-CATALOG", "AT-RENDERED-DOM", "AT-BROWSER-OBSERVATION", "AT-FIRST-PARTY-NETWORK-DISCOVERY", "AT-UPLOADS-PLAYLIST", "AT-OFFICIAL-MENU-DETAIL", "AT-TECHNIQUE-AGNOSTIC-POLICY"]},
+      {"dimension": "execution_environment", "taxonomy_id_count": 5, "guided_id_count": 0, "not_yet_codebooked_ids": ["EE-CLOUD", "EE-EDGE-TH", "EE-NORMAL-BROWSER", "EE-STATIC-HTTP", "EE-NOT-EVIDENCED"]},
+      {"dimension": "evidence_type", "taxonomy_id_count": 11, "guided_id_count": 0, "not_yet_codebooked_ids": ["ET-STRUCTURED-RESPONSE", "ET-SITEMAP", "ET-CANONICAL-DETAIL", "ET-RENDERED-CARD", "ET-BROWSER-CAPTURE", "ET-APP-BUNDLE", "ET-WORKFLOW-VALIDATION", "ET-NEGATIVE-ACCESS", "ET-DETERMINISTIC-FIXTURE", "ET-POLICY-CONTRACT", "ET-HUMAN-CONFIRMATION"]},
+      {"dimension": "semantic_interpretation", "taxonomy_id_count": 10, "guided_id_count": 7, "not_yet_codebooked_ids": ["SI-SELLABLE-PRODUCT-PRICE", "SI-DISCOVERY-FRONTIER", "SI-METADATA-NOT-TRANSCRIPT"]},
+      {"dimension": "price_temporal_status", "taxonomy_id_count": 3, "guided_id_count": 0, "not_yet_codebooked_ids": ["PTS-CURRENT-ADVERTISED", "PTS-HISTORICAL-OBSERVED", "PTS-TEMPORAL-UNKNOWN"]},
+      {"dimension": "acquisition_outcome", "taxonomy_id_count": 4, "guided_id_count": 0, "not_yet_codebooked_ids": ["AO-USABLE-EVIDENCE", "AO-PARTIAL-EVIDENCE", "AO-BOUNDARY-REACHED", "AO-CANDIDATE-ONLY"]},
+      {"dimension": "failure_boundary_type", "taxonomy_id_count": 5, "guided_id_count": 2, "not_yet_codebooked_ids": ["FB-LOGIN-REQUIRED", "FB-CLOUD-ACCESS-BLOCKED", "FB-INSUFFICIENT-EVIDENCE"]},
+      {"dimension": "transferability", "taxonomy_id_count": 3, "guided_id_count": 0, "not_yet_codebooked_ids": ["TR-GENERIC", "TR-DOMAIN", "TR-SOURCE-SPECIFIC"]},
+      {"dimension": "evidence_strength", "taxonomy_id_count": 3, "guided_id_count": 0, "not_yet_codebooked_ids": ["ES-REVIEWED-DURABLE", "ES-DETERMINISTIC-REGRESSION", "ES-CONTRACT-ONLY"]},
+      {"dimension": "review_authority", "taxonomy_id_count": 3, "guided_id_count": 0, "not_yet_codebooked_ids": ["RA-REPOSITORY-REVIEWED", "RA-DETERMINISTIC-VALIDATION", "RA-HUMAN-CONFIRMED"]},
+      {"dimension": "change_drift", "taxonomy_id_count": 3, "guided_id_count": 0, "not_yet_codebooked_ids": ["CD-PROFILE-FINGERPRINT", "CD-REFRESH-REQUIRED", "CD-NOT-EVIDENCED"]},
+      {"dimension": "data_quality_yield", "taxonomy_id_count": 4, "guided_id_count": 0, "not_yet_codebooked_ids": ["DQ-STRONG", "DQ-PARTIAL", "DQ-NEGATIVE-ZERO-USABLE", "DQ-NOT-MEASURED"]},
+      {"dimension": "request_cost_latency", "taxonomy_id_count": 2, "guided_id_count": 0, "not_yet_codebooked_ids": ["RC-QUOTA-EVIDENCED", "RC-NOT-EVIDENCED"]},
+      {"dimension": "privacy_authorization", "taxonomy_id_count": 3, "guided_id_count": 0, "not_yet_codebooked_ids": ["PA-PUBLIC-NO-AUTH", "PA-STOP-ON-ACCESS-CONTROL", "PA-PRODUCTION-DISABLED"]},
+      {"dimension": "provenance_class", "taxonomy_id_count": 5, "guided_id_count": 0, "not_yet_codebooked_ids": ["PV-DURABLE-VALIDATION", "PV-CONFIG-REGISTRY", "PV-DETERMINISTIC-FIXTURE", "PV-DOC-CONTRACT", "PV-HUMAN-DECISION"]}
+    ]
+  },
   "boundaries": {"ground_truth_authorized": false, "production_authorized": false, "scheduler_action": null, "ml_execution_or_export": false}
 }

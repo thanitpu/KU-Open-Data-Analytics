@@ -10,16 +10,19 @@ The quality chain is explicit and non-destructive:
 Raw / Observed Evidence
   -> Prepared Evidence
   -> Descriptor
-  -> Semantic Code
+  -> Code
+  -> optional Theme
   -> Interpretation
   -> Decision
 ```
 
-Raw evidence remains immutable and retains provenance. Preparation records transformations but references the raw evidence rather than replacing it. A descriptor states what is visible. A code applies a defined codebook concept. An interpretation explains what the codes mean in context. A decision identifies its authority source. These stages are validated separately because evidence is not interpretation and observation is not Ground Truth.
+Raw evidence remains immutable and retains provenance. Preparation records transformations but references the raw evidence rather than replacing it. A descriptor states what is visible. A code applies a defined taxonomy concept while retaining its taxonomy family. An optional theme groups related codes into a broader analytical idea. An interpretation explains what the codes and themes mean in context. A decision identifies its authority source. These stages are validated separately because evidence is not interpretation and observation is not Ground Truth.
 
 ## Codebook discipline
 
-`config/core_knowledge_codebook.json` is a backward-compatible guidance adapter over `core_knowledge_taxonomy.json`; it does not change existing taxonomy IDs or schemas. Applicable semantic codes contain:
+`config/core_knowledge_codebook.json` is a backward-compatible guidance adapter over `core_knowledge_taxonomy.json`; it does not change existing taxonomy IDs or schemas. Qualitative coding can use different taxonomy families. In the current adapter, `SI-*` remains `semantic_interpretation`, `AT-*` remains `acquisition_technique`, and `FB-*` remains `failure_boundary_type`. Only the first family may be described as semantic-interpretation codes. The taxonomy, not a caller label or identifier prefix assumption, is authoritative.
+
+Every guided taxonomy code contains:
 
 - a definition and evidence requirement;
 - `include_when` and `exclude_when` guidance;
@@ -27,7 +30,14 @@ Raw evidence remains immutable and retains provenance. Preparation records trans
 - optional parent/child relationships;
 - commonly confused taxonomy codes.
 
-The validator rejects descriptor or theme identifiers masquerading as semantic codes. Code, theme, and descriptor are different analytical objects even when they use similar words.
+The validator rejects a descriptor or theme masquerading as a code and rejects any code family that contradicts the code ID's authoritative taxonomy dimension. Code, theme, descriptor, and interpretation are different analytical objects even when they use similar words:
+
+- **Descriptor:** “The bounded response contains an app mount but no stable product identity.” This stays close to observed evidence.
+- **Code:** `FB-APPLICATION-SHELL`, explicitly in the `failure_boundary_type` family. It is not a semantic-interpretation code.
+- **Theme:** “Technical reachability can exist without usable business evidence.” This is a broader analytical grouping and confers no authority.
+- **Interpretation:** “For this bounded attempt, the retained descriptor and boundary code indicate an application-shell stop rather than usable product evidence.” This is the contextual analytical statement.
+
+The adapter publishes exact coverage metadata: total taxonomy IDs, fully guided IDs, dimensions covered, per-dimension missing IDs, and dimensions with no guidance yet. Partial guidance is explicit and never presented as a complete taxonomy codebook.
 
 The ontology remains open. An observation may return `no_existing_code_fits` or `novel_pattern_candidate`. Neither state is coerced into the nearest code, claims authority, or modifies the taxonomy. A novel code requires later independent review.
 
@@ -59,9 +69,9 @@ Not every check is required for every finding, but a skipped check must be expli
 
 ## Independent coding and semantic reliability
 
-The Independent Coding contract supports future blinded Codex/Assistant comparisons using sample ID, task, codebook version, coder identity/type, labels, agreement state, and adjudication need. This checkpoint contains deterministic fixture coders only. It does not fabricate Assistant labels, human labels, or human inter-rater reliability.
+The Independent Coding contract supports future blinded Codex/Assistant comparisons using sample ID, task, codebook version, expected taxonomy family, coder identity/type, labels, agreement state, and adjudication need. Coding tasks enforce the expected family: technique selection can use `acquisition_technique`, boundary classification can use `failure_boundary_type`, and semantic tasks can use `semantic_interpretation`. This checkpoint contains deterministic fixture coders only. It does not fabricate Assistant labels, human labels, or human inter-rater reliability.
 
-Agreement helpers calculate exact agreement rate and Cohen's kappa when one categorical label per coder and enough variation are present. Insufficient, multilabel, or zero-denominator inputs return `not_applicable`. A Semantic Reliability report preserves sample size, disagreement cases, and chance-corrected results per task—such as price semantics, counter semantics, source classification, technique selection, evidence strength, or review prioritization. It provides no aggregate score that could hide task-level disagreement.
+Agreement helpers calculate exact agreement rate and Cohen's kappa when one categorical label per coder, compatible taxonomy families, and enough variation are present. Insufficient, multilabel, dimension-incompatible, or zero-denominator inputs return `not_applicable`. A Semantic Reliability report preserves expected family, sample size, disagreement cases, and chance-corrected results per task—such as price semantics, counter semantics, source classification, technique selection, evidence strength, or review prioritization. It provides no aggregate score that could hide task-level disagreement.
 
 Disagreement requires adjudication. Future Assistant or human labels must come from genuinely independent records, never synthesized by this module.
 
@@ -104,4 +114,3 @@ The pure validators and deterministic agreement helpers live in `acquisition/cor
 ```powershell
 python tools/SELF_TEST_CORE_INTELLIGENCE_QUALITY.py
 ```
-

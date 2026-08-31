@@ -59,7 +59,10 @@ index = codebook_index(codebook, taxonomy)
 
 # QF2: every applicable code carries complete include/exclude/example/evidence guidance.
 for code in codebook["codes"]:
-    assert code["code_kind"] == "semantic_code"
+    assert code["code_kind"] == "taxonomy_code"
+    assert code["code_family"] in {
+        "semantic_interpretation", "acquisition_technique", "failure_boundary_type",
+    }
     assert code["definition"]
     for field in (
         "include_when", "exclude_when", "positive_examples", "counter_examples",
@@ -74,15 +77,16 @@ for chain in fixtures["evidence_chains"]:
 assert raw_snapshots == [item["raw_evidence"] for item in fixtures["evidence_chains"]]
 assert all(item["raw_evidence"]["immutable"] is True for item in fixtures["evidence_chains"])
 
-# QF4: descriptor, semantic code, interpretation, and decision remain different stages.
+# QF4: descriptor, code, theme, interpretation, and decision remain different stages.
 counter_chain = fixtures["evidence_chains"][0]
 assert counter_chain["descriptors"][0]["kind"] == "descriptor"
-assert counter_chain["codes"][0]["kind"] == "semantic_code"
+assert counter_chain["codes"][0]["kind"] == "code"
+assert counter_chain["themes"][0]["kind"] == "theme"
 assert counter_chain["interpretations"][0]["kind"] == "interpretation"
 assert counter_chain["decisions"][0]["kind"] == "decision"
 assert counter_chain["descriptors"][0]["descriptor_id"] not in index
 
-# QF5: a descriptor cannot silently masquerade as a semantic code.
+# QF5: a descriptor cannot silently masquerade as a taxonomy code.
 descriptor_as_code = deepcopy(counter_chain)
 descriptor_as_code["codes"][0]["kind"] = "descriptor"
 must_fail(lambda: validate_evidence_chain(descriptor_as_code, codebook, taxonomy), "descriptor substituted for code")
@@ -191,7 +195,7 @@ must_fail(lambda: assess_finding_verification(promoted), "finding auto-promoted"
 
 # QF22: independent coding records preserve blinded coder separation without fabricated Assistant/Human labels.
 for record in fixtures["independent_coding_records"]:
-    validate_independent_coding_record(record)
+    validate_independent_coding_record(record, codebook, taxonomy)
     assert record["coder"]["coder_type"] == "deterministic_fixture"
     assert record["agreement_status"] == "not_compared"
 assert len({item["coder"]["coder_id"] for item in fixtures["independent_coding_records"]}) == 2
@@ -200,9 +204,9 @@ assert len({item["coder"]["coder_id"] for item in fixtures["independent_coding_r
 disagreement = deepcopy(fixtures["independent_coding_records"][0])
 disagreement["agreement_status"] = "disagreement"
 disagreement["adjudication_needed"] = False
-must_fail(lambda: validate_independent_coding_record(disagreement), "disagreement omitted adjudication")
+must_fail(lambda: validate_independent_coding_record(disagreement, codebook, taxonomy), "disagreement omitted adjudication")
 disagreement["adjudication_needed"] = True
-validate_independent_coding_record(disagreement)
+validate_independent_coding_record(disagreement, codebook, taxonomy)
 
 # QF24: agreement rate preserves sample size and disagreement cases.
 pairs = [
@@ -236,7 +240,12 @@ assert cohens_kappa(uniform)["status"] == "not_applicable"
 
 # QF27: task-level reliability is never hidden by one aggregate score.
 report = build_semantic_reliability_report(
-    report_id="KU2D-SR-TEST", task_pairs={"counter_semantics": pairs, "price_semantics": uniform},
+    report_id="KU2D-SR-TEST", task_pairs={
+        "counter_semantics": [dict(item, code_family_a="semantic_interpretation", code_family_b="semantic_interpretation") for item in pairs],
+        "price_semantics": [dict(item, code_family_a="semantic_interpretation", code_family_b="semantic_interpretation") for item in uniform],
+    },
+    task_code_families={"counter_semantics": "semantic_interpretation", "price_semantics": "semantic_interpretation"},
+    taxonomy=taxonomy,
     provenance_references=["fixtures/core_intelligence_quality/reviewed_examples.json"],
 )
 assert report["aggregate_score"] is None
@@ -304,4 +313,76 @@ bypassed = deepcopy(fixtures["quality_loops"][0])
 bypassed["stages"] = [item for item in bypassed["stages"] if item["stage"] != "finding_verification"]
 must_fail(lambda: validate_quality_loop(bypassed), "Core Knowledge completion bypassed Finding Verification")
 
-print("Core Intelligence Quality Foundation deterministic tests passed (QF1-QF35).")
+# QF36: taxonomy is authoritative for SI, AT, and FB code families.
+assert index["SI-UNKNOWN-COUNTER"]["code_family"] == "semantic_interpretation"
+assert index["AT-SITEMAP-CANONICAL-DETAIL"]["code_family"] == "acquisition_technique"
+assert index["FB-APPLICATION-SHELL"]["code_family"] == "failure_boundary_type"
+wrong_at_family = deepcopy(codebook)
+next(item for item in wrong_at_family["codes"] if item["code_id"].startswith("AT-"))["code_family"] = "semantic_interpretation"
+must_fail(lambda: validate_codebook(wrong_at_family, taxonomy), "AT code masqueraded as semantic interpretation")
+wrong_fb_family = deepcopy(codebook)
+next(item for item in wrong_fb_family["codes"] if item["code_id"].startswith("FB-"))["code_family"] = "semantic_interpretation"
+must_fail(lambda: validate_codebook(wrong_fb_family, taxonomy), "FB code masqueraded as semantic interpretation")
+
+# QF37: Theme is broader than Code, distinct from Interpretation, and non-authoritative.
+theme = counter_chain["themes"][0]
+assert theme["kind"] == "theme"
+assert theme["authority_conferred"] is False
+assert theme["theme_id"] in counter_chain["interpretations"][0]["theme_references"]
+theme_as_code = deepcopy(counter_chain)
+theme_as_code["codes"][0]["kind"] = "theme"
+must_fail(lambda: validate_evidence_chain(theme_as_code, codebook, taxonomy), "theme substituted for code")
+interpretation_as_theme = deepcopy(counter_chain)
+interpretation_as_theme["themes"][0]["kind"] = "interpretation"
+must_fail(lambda: validate_evidence_chain(interpretation_as_theme, codebook, taxonomy), "interpretation substituted for theme")
+
+# QF38: task-aware coding rejects a valid code from the wrong taxonomy family.
+wrong_task_family = deepcopy(fixtures["coding_chains"][-1])
+wrong_task_family["expected_code_family"] = "semantic_interpretation"
+must_fail(lambda: validate_coding_chain(wrong_task_family, codebook, taxonomy), "technique code entered semantic task")
+
+# QF39: dimension-aware agreement and kappa refuse incompatible label families.
+dimension_pairs = [
+    dict(item, code_family_a="semantic_interpretation", code_family_b="semantic_interpretation")
+    for item in pairs
+]
+assert agreement_rate(dimension_pairs, expected_code_family="semantic_interpretation")["status"] == "calculated"
+incompatible_pairs = deepcopy(dimension_pairs)
+incompatible_pairs[0]["code_family_b"] = "failure_boundary_type"
+assert agreement_rate(incompatible_pairs, expected_code_family="semantic_interpretation")["status"] == "not_applicable"
+assert cohens_kappa(incompatible_pairs, expected_code_family="semantic_interpretation")["status"] == "not_applicable"
+
+# QF40: coverage metadata states exact partial scope rather than false completeness.
+coverage = codebook["coverage"]
+assert coverage["taxonomy_id_count"] == 83
+assert coverage["guided_id_count"] == len(codebook["codes"]) == 11
+assert coverage["full_taxonomy_coverage"] is False
+assert coverage["dimensions_covered"] == [
+    "acquisition_technique", "failure_boundary_type", "semantic_interpretation",
+]
+assert coverage["fully_codebooked_dimensions"] == []
+assert coverage["not_yet_codebooked_dimensions"]
+assert sum(item["guided_id_count"] for item in coverage["dimension_coverage"]) == 11
+
+# QF41: SI family claims and Independent Coding task dimensions also fail closed.
+wrong_si_family = deepcopy(codebook)
+next(item for item in wrong_si_family["codes"] if item["code_id"].startswith("SI-"))["code_family"] = "acquisition_technique"
+must_fail(lambda: validate_codebook(wrong_si_family, taxonomy), "SI code left semantic_interpretation family")
+wrong_independent_family = deepcopy(fixtures["independent_coding_records"][0])
+wrong_independent_family["expected_code_family"] = "failure_boundary_type"
+must_fail(
+    lambda: validate_independent_coding_record(wrong_independent_family, codebook, taxonomy),
+    "independent semantic coding accepted a failure-boundary task family",
+)
+
+# QF42: reliability reports reject invented taxonomy dimensions.
+must_fail(
+    lambda: build_semantic_reliability_report(
+        report_id="KU2D-SR-BAD-DIMENSION", task_pairs={"counter_semantics": dimension_pairs},
+        task_code_families={"counter_semantics": "invented_dimension"}, taxonomy=taxonomy,
+        provenance_references=["fixtures/core_intelligence_quality/reviewed_examples.json"],
+    ),
+    "reliability report accepted an invented taxonomy family",
+)
+
+print("Core Intelligence Quality Foundation deterministic tests passed (QF1-QF42).")

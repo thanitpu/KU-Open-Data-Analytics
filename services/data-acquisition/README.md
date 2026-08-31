@@ -405,6 +405,6 @@ Open/unmerged historical evidence is retained separately in the Candidate Learni
 
 ## Core Intelligence Quality Foundation v1
 
-`docs/CORE_INTELLIGENCE_QUALITY_FOUNDATION.md` adds a deterministic quality layer before broader recommendation work: immutable evidence-stage provenance, a backward-compatible codebook adapter, first/second-cycle coding, ontology-open no-fit/novel outcomes, analytical memos, negative cases, Finding Verification, blinded independent-coding contracts, task-level reliability helpers, and provenance-linked analysis projections.
+`docs/CORE_INTELLIGENCE_QUALITY_FOUNDATION.md` adds a deterministic quality layer before broader recommendation work: immutable evidence-stage provenance, a dimension-aware backward-compatible codebook adapter with explicit partial coverage, distinct Code/Theme/Descriptor/Interpretation layers, first/second-cycle coding, ontology-open no-fit/novel outcomes, analytical memos, negative cases, Finding Verification, taxonomy-family-aware independent coding and reliability helpers, and provenance-linked analysis projections.
 
 The quality layer is explicitly invoked and non-authorizing. It does not perform acquisition, promote Candidate Learning Evidence, write runtime state, create an ML dataset, run ML, schedule work, or approve production.
