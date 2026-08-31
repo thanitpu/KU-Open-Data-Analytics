@@ -1,0 +1,133 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000006",
+  "prompt_id": "KU2D-P-000006",
+  "submitted_at": "2026-08-31T11:18:33+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "Applied the five semantic policies explicitly confirmed by KU2D-H-000001 through existing Learning Memory, Human Confirmation, Ground Truth, taxonomy, and Reviewed Learning Corpus contracts. The revised price policy preserves temporal status separately from price role. All 11 unmerged source-history observations remain candidate-only.",
+  "evidence_references": [
+    "PR:#45",
+    "commit:3721dff2222390f1a743b07386185540498af116",
+    "KU2D-P-000006",
+    "KU2D-R-000005",
+    "KU2D-V-000005",
+    "KU2D-H-000001"
+  ],
+  "repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-core-knowledge-backfill-v1",
+    "implementation_commit_sha": "3721dff2222390f1a743b07386185540498af116",
+    "pull_request_number": 45,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/45",
+    "pull_request_base": "integration/data-acquisition-platform",
+    "pull_request_draft": true,
+    "pull_request_merged": false
+  },
+  "human_confirmed_semantic_policies": {
+    "source_human_decision_id": "KU2D-H-000001",
+    "policy_count": 5,
+    "learning_record_count": 5,
+    "human_confirmation_record_count": 5,
+    "ground_truth_record_count": 5,
+    "review_feedback_record_count": 0,
+    "policies": [
+      "bare counters remain unknown until an explicit semantic role label",
+      "source temporal evidence governs price temporal status separately from price role",
+      "product identity match does not imply variant identity match",
+      "displayed order is not demand or rank without an explicit sort contract",
+      "approved alternative-environment success preserves technique validity across an environment boundary"
+    ],
+    "authority_scope": "semantic-policy-only-not-source-outcome"
+  },
+  "price_semantics": {
+    "current_active_official_business_page_without_contrary_history": "current_advertised_price",
+    "current_advertised_price_temporal_reference": "observed_at",
+    "known_historical_evidence": "historical_observed_price",
+    "unresolved_temporality": "temporal_status_unknown",
+    "acquisition_method_alone_determines_temporality": false,
+    "temporal_status_separate_from_price_role": true,
+    "does_not_imply": [
+      "transaction_price",
+      "all_branch_price",
+      "variant_equivalence"
+    ]
+  },
+  "corpus_and_candidate_state": {
+    "reviewed_source_or_contract_episode_count": 16,
+    "human_confirmed_policy_episode_count": 5,
+    "total_reviewed_corpus_episode_count": 21,
+    "unmerged_source_candidate_count": 11,
+    "promoted_source_candidate_count": 0,
+    "coverage_state_changes_from_source_candidates": 0
+  },
+  "ml_knowledge_map": {
+    "task_count": 8,
+    "human_policy_authority_integrated": true,
+    "price_role_and_temporal_status_separate": true,
+    "training_or_inference_enabled": false,
+    "dataset_export_enabled": false,
+    "ml_training_dataset_exists": false
+  },
+  "branch_authority_safeguard": {
+    "authoritative_branch": "codex/ku2d-core-knowledge-backfill-v1",
+    "top_level_prompt_metadata_supported": true,
+    "legacy_provenance_metadata_supported": true,
+    "contradictory_locations_fail_closed": true,
+    "current_prompt_queue_branch_match_validated": true
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "git_diff_check": "passed",
+    "json_parse": "79 files passed before Result submission",
+    "yaml_parse": "16 workflows passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service, tools passed",
+    "core_knowledge_tests": "CK1-CK30 passed",
+    "learning_memory_tests": "LM1-LM30 passed",
+    "agent_handoff_tests": "AH1-AH23 passed",
+    "complete_deterministic_corpus": "38/38 passed",
+    "security_and_runtime_isolation": "passed through Learning Memory and Core Knowledge deterministic checks",
+    "supermarket_regressions": "passed",
+    "retail_transfer_regressions": "passed",
+    "live_request_count": 0
+  },
+  "ci": {
+    "status_at_result_submission": "pending branch push",
+    "pull_request_kept_draft": true
+  },
+  "security": {
+    "credentials_or_private_material_added": false,
+    "source_candidate_promotion": false,
+    "production_store": false,
+    "production_approval": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  },
+  "uncertainties": [
+    "The five Human Confirmations govern semantic policy only and do not independently validate any acquisition source outcome.",
+    "All 11 recovered source observations remain candidate-only because their evidence remains in open unmerged Draft PRs.",
+    "Human-confirmed Learning Memory eligibility is an authority signal, not permission to create or export an ML dataset.",
+    "Price temporal status still requires source temporal evidence for each observation; the acquisition method cannot supply that evidence by itself."
+  ],
+  "blockers": [],
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-core-knowledge-backfill-v1",
+    "authoritative_branch": "codex/ku2d-core-knowledge-backfill-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000006.json",
+    "depends_on_result": "KU2D-R-000005",
+    "depends_on_review": "KU2D-V-000005",
+    "depends_on_human_decision": "KU2D-H-000001",
+    "target_pr": 45,
+    "learning_memory_record_id": null
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

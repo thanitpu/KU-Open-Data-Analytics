@@ -1,9 +1,9 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T10:16:00+07:00",
+  "updated_at": "2026-08-31T11:18:33+07:00",
   "authoritative_branch": "codex/ku2d-core-knowledge-backfill-v1",
   "latest_prompt": "KU2D-P-000006",
-  "latest_result": "KU2D-R-000005",
+  "latest_result": "KU2D-R-000006",
   "latest_review": "KU2D-V-000005",
   "latest_human_decision": "KU2D-H-000001",
   "prompt_states": {
@@ -12,7 +12,7 @@
     "KU2D-P-000003": "completed",
     "KU2D-P-000004": "completed",
     "KU2D-P-000005": "completed",
-    "KU2D-P-000006": "ready_for_codex"
+    "KU2D-P-000006": "result_submitted"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -22,12 +22,12 @@
     "KU2D-P-000005"
   ],
   "next_action": {
-    "actor": "codex",
+    "actor": "assistant",
     "prompt_id": "KU2D-P-000006",
-    "result_id": null,
+    "result_id": "KU2D-R-000006",
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "Explicit Human Decision KU2D-H-000001 confirmed all five core semantic policies, including revised price temporal semantics. KU2D-P-000006 is authorized for Codex to integrate those policies into Core Knowledge/Learning Memory only. Eleven unmerged source observations remain candidate-only. No source expansion, live acquisition, ML execution, production authorization, or Survey/SEM work is authorized."
+  "notes": "KU2D-R-000006 submitted the five KU2D-H-000001 semantic policies through Learning Memory, Human Confirmation, Ground Truth, taxonomy, and Reviewed Corpus contracts for independent assistant review. All 11 unmerged source observations remain candidate-only. No live acquisition, ML execution/export, production authorization, scheduling, or scope expansion occurred."
 }
