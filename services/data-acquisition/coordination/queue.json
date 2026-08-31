@@ -1,9 +1,9 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T09:58:00+07:00",
+  "updated_at": "2026-08-31T10:09:50+07:00",
   "authoritative_branch": "codex/ku2d-core-knowledge-backfill-v1",
   "latest_prompt": "KU2D-P-000005",
-  "latest_result": "KU2D-R-000004",
+  "latest_result": "KU2D-R-000005",
   "latest_review": "KU2D-V-000004",
   "latest_human_decision": null,
   "prompt_states": {
@@ -11,7 +11,7 @@
     "KU2D-P-000002": "completed",
     "KU2D-P-000003": "completed",
     "KU2D-P-000004": "completed",
-    "KU2D-P-000005": "ready_for_codex"
+    "KU2D-P-000005": "result_submitted"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -20,12 +20,12 @@
     "KU2D-P-000004"
   ],
   "next_action": {
-    "actor": "codex",
+    "actor": "assistant",
     "prompt_id": "KU2D-P-000005",
-    "result_id": null,
+    "result_id": "KU2D-R-000005",
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "KU2D-R-000004 was independently accepted as KU2D-V-000004. KU2D-P-000005 deepens existing Core Knowledge and ML-ready reviewed/candidate knowledge without new source exploration or scope expansion. Authoritative branch is codex/ku2d-core-knowledge-backfill-v1."
+  "notes": "KU2D-R-000005 submitted the repository-history-only Core Knowledge deepening for independent assistant review. Eleven records remain candidate-only, five semantic decisions await explicit human authority, no live request or ML execution occurred, and the authoritative branch remains codex/ku2d-core-knowledge-backfill-v1."
 }
