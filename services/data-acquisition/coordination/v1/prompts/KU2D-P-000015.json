@@ -1,0 +1,49 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000015",
+  "created_at": "2026-08-31T13:45:00+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "title": "Parked Synthesis Review v1",
+  "objective": "Recover, inspect, and independently review the unique unmerged synthesis in PR #42 / codex/overnight-acquisition-technique-transfer-matrix and PR #43 / codex/overnight-exploration-summary without merging those parked PRs, promoting candidate evidence, or altering source/runtime behavior.",
+  "repository": "thanitpu/KU-Open-Data-Analytics",
+  "authoritative_branch": "codex/ku2d-parked-synthesis-review-v1",
+  "base_branch": "integration/data-acquisition-platform",
+  "depends_on_human_decision": "KU2D-H-000005",
+  "instructions": [
+    "Remain on codex/ku2d-parked-synthesis-review-v1. Pull latest remote state and read the current coordination queue before work.",
+    "Treat PR #42 and PR #43 as historical parked evidence surfaces, not as authoritative knowledge. Do not modify either parked branch or PR.",
+    "Fetch and inspect the exact unique delta of PR #42 and PR #43 relative to their historical base/current integration as appropriate. Preserve provenance down to branch, PR, commit, file, and claim/evidence references.",
+    "Separate source observations from synthesis/inference. Do not convert an old synthesis statement into Reviewed Learning Corpus, Core Knowledge, Ground Truth, or production authority merely because it appeared in a parked branch.",
+    "For every distinct synthesis claim, classify its current status using bounded review states such as already_integrated_equivalent, candidate_supported, candidate_partially_supported, contradicted_or_stale, insufficient_evidence, or duplicate_of_current_knowledge. Explain why and point to current durable evidence when available.",
+    "Review the transfer-matrix claims against the current Core Knowledge taxonomy, Reviewed Learning Corpus, Candidate Learning Evidence registry, Quality Foundation semantics, and Branch/PR Governance. Technique must remain distinct from execution environment; evidence must remain distinct from interpretation; demand/popularity semantics and product/variant identity rules must remain conservative.",
+    "Review the exploration-summary claims as synthesis only. Identify which conclusions are already represented durably, which remain useful candidate synthesis, which depend only on unreviewed candidate sources, and which should be retired or rewritten.",
+    "Create a storage-neutral durable synthesis-review artifact and concise human-readable report. The artifact must never claim that review equals promotion. Include an explicit evidence dependency graph or equivalent mapping so future reviewers can trace each claim back to reviewed/candidate evidence.",
+    "If a candidate synthesis is useful but not sufficiently supported, preserve it as a candidate with an explicit missing-evidence requirement rather than forcing it into an existing taxonomy code or reviewed pattern.",
+    "Do not add live requests, new sources, source promotions, branch deletions, branch mutations, production authorization/storage/scheduling, runtime auto-write, ML training/inference/export, embeddings/vector storage, Survey/Google Forms/DoE/SEM, or broader recommendation/ranking engine behavior.",
+    "Add deterministic validation/tests for provenance completeness, evidence-status separation, no silent promotion, duplicate/current-knowledge detection, and fail-closed handling of unsupported synthesis claims. Run the full deterministic Data Acquisition corpus and relevant CI.",
+    "Open or update one Draft PR dedicated to this synthesis-review work, based on integration/data-acquisition-platform. Keep it Draft and unmerged.",
+    "Write KU2D-R-000015 with exact branch/PR/head/test/CI state, claim counts by review status, retained candidate synthesis, retired/duplicate claims, and all boundaries. Update the coordination queue so control returns to assistant, then stop."
+  ],
+  "acceptance_criteria": [
+    "PR #42 and #43 unique synthesis is fully inventoried with exact provenance.",
+    "No historical synthesis claim is silently promoted to reviewed/core/ground-truth status.",
+    "Every retained synthesis claim has an explicit evidence dependency and current review status.",
+    "Current Quality Foundation semantic boundaries are preserved.",
+    "No parked branch is mutated or merged and no branch is deleted.",
+    "Deterministic tests and current-head CI pass with zero live requests.",
+    "A Draft PR and KU2D-R-000015 are produced, then control returns to assistant."
+  ],
+  "boundaries": {
+    "merge_parked_prs": false,
+    "promote_candidate_evidence": false,
+    "branch_deletion": false,
+    "branch_mutation": false,
+    "production_authorized": false,
+    "live_acquisition": false,
+    "ml_training_or_inference": false,
+    "broader_core_intelligence_recommendation_or_ranking": false
+  }
+}
