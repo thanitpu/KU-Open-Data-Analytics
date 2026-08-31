@@ -396,3 +396,7 @@ Gourmet Market is now evaluated with source-specific supermarket patterns learne
 - **Gourmet GraphQL / Network Catalog Discovery**: combines the official GraphQL endpoint, browser network evidence, and GTIN-bearing product media requests into source-specific discovery evidence.
 - Gourmet Market is now treated as a retail catalog source by Deep Audit, so Product & Price coverage, semantic product quality, price completeness and product-track repeatability use the same hard gates as the other approved supermarkets.
 - The global `TECHNIQUE_ENGINE_VERSION` intentionally remains `0.24`; installing v0.28 does not invalidate the already approved Lotus’s, Big C, Makro or Tops profiles. Only an explicit **Update Monitoring Techniques** changes a persisted source profile.
+
+## Core Knowledge Backfill v1
+
+`docs/CORE_KNOWLEDGE_BACKFILL.md` defines the storage-neutral Reviewed Learning Corpus, reusable capability coverage matrix, ranked knowledge gaps, and non-executing ML Knowledge Map. These reviewed artifacts preserve positive and negative historical evidence without starting acquisition, exporting a training dataset, training a model, authorizing production, or writing runtime state.

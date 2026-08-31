@@ -1,0 +1,153 @@
+{
+  "schema": "ku2d.reviewed-learning-corpus.v1",
+  "version": "1.0",
+  "taxonomy_schema": "ku2d.core-knowledge-taxonomy.v1",
+  "description": "A sanitized reviewed projection of high-confidence repository evidence; it is neither raw Learning Memory nor an ML Training Dataset.",
+  "production_authorized": false,
+  "ml_training_dataset_exists": false,
+  "automatic_export": false,
+  "eligibility_rules": [
+    "Evidence must be sanitized and referenced by a repository-relative path.",
+    "The episode must preserve technique, execution environment, evidence, interpretation, outcome, authority, and production boundaries separately.",
+    "Human review may be claimed only with explicit human-review provenance.",
+    "Candidate, contradictory, sensitive, or unsupported source outcomes are excluded.",
+    "Eligibility for this corpus does not make an episode eligible for model training."
+  ],
+  "episodes": [
+    {
+      "schema": "ku2d.reviewed-learning-episode.v1", "episode_id": "KU2D-CKE-000001", "learning_key": "lotus-product-price-technique", "title": "Lotus official structured catalog", "polarity": "positive",
+      "source": {"name": "Lotus's", "domain": "Supermarket", "source_characteristic_ids": ["SC-OFFICIAL-PUBLIC", "SC-STRUCTURED-CATALOG"]},
+      "knowledge": {"acquisition_technique_id": "AT-OFFICIAL-API", "execution_environment_id": "EE-CLOUD", "evidence_type_ids": ["ET-STRUCTURED-RESPONSE", "ET-WORKFLOW-VALIDATION"], "semantic_interpretation_ids": ["SI-SELLABLE-PRODUCT-PRICE", "SI-DISCOVERY-FRONTIER"], "semantic_label": "official-api-product-price-and-discovery", "acquisition_outcome_id": "AO-USABLE-EVIDENCE", "failure_boundary_type_id": null, "transferability_id": "TR-GENERIC", "change_drift_id": "CD-PROFILE-FINGERPRINT", "data_quality_yield_id": "DQ-STRONG", "request_cost_latency_id": "RC-NOT-EVIDENCED", "privacy_authorization_id": "PA-PUBLIC-NO-AUTH"},
+      "authority": {"evidence_strength_id": "ES-REVIEWED-DURABLE", "review_authority_id": "RA-REPOSITORY-REVIEWED", "eligibility": "eligible_reviewed_corpus", "human_reviewed": false},
+      "provenance": {"repository_references": ["config/supermarket_acquisition_patterns.json", "docs/SUPERMARKET_ACQUISITION_PATTERN_LIBRARY.md"], "provenance_class_ids": ["PV-CONFIG-REGISTRY", "PV-DOC-CONTRACT"], "sanitized": true},
+      "boundaries": {"observation_is_ground_truth": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "automatic_ml_export": false}
+    },
+    {
+      "schema": "ku2d.reviewed-learning-episode.v1", "episode_id": "KU2D-CKE-000002", "learning_key": "bigc-product-price-technique", "title": "Big C sitemap to canonical detail", "polarity": "positive",
+      "source": {"name": "Big C", "domain": "Supermarket", "source_characteristic_ids": ["SC-OFFICIAL-PUBLIC", "SC-STATIC-DISCOVERY"]},
+      "knowledge": {"acquisition_technique_id": "AT-SITEMAP-CANONICAL-DETAIL", "execution_environment_id": "EE-CLOUD", "evidence_type_ids": ["ET-SITEMAP", "ET-CANONICAL-DETAIL"], "semantic_interpretation_ids": ["SI-SELLABLE-PRODUCT-PRICE", "SI-DISCOVERY-FRONTIER"], "semantic_label": "sitemap-frontier-canonical-product-detail", "acquisition_outcome_id": "AO-USABLE-EVIDENCE", "failure_boundary_type_id": null, "transferability_id": "TR-GENERIC", "change_drift_id": "CD-PROFILE-FINGERPRINT", "data_quality_yield_id": "DQ-STRONG", "request_cost_latency_id": "RC-NOT-EVIDENCED", "privacy_authorization_id": "PA-PUBLIC-NO-AUTH"},
+      "authority": {"evidence_strength_id": "ES-REVIEWED-DURABLE", "review_authority_id": "RA-REPOSITORY-REVIEWED", "eligibility": "eligible_reviewed_corpus", "human_reviewed": false},
+      "provenance": {"repository_references": ["config/supermarket_acquisition_patterns.json", "docs/ARCHITECTURE_v0.28.md"], "provenance_class_ids": ["PV-CONFIG-REGISTRY", "PV-DOC-CONTRACT"], "sanitized": true},
+      "boundaries": {"observation_is_ground_truth": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "automatic_ml_export": false}
+    },
+    {
+      "schema": "ku2d.reviewed-learning-episode.v1", "episode_id": "KU2D-CKE-000003", "learning_key": "makro-product-price-technique", "title": "Makro SSR catalog materialization", "polarity": "positive",
+      "source": {"name": "Makro", "domain": "Supermarket", "source_characteristic_ids": ["SC-OFFICIAL-PUBLIC", "SC-RENDERED-COMMERCE"]},
+      "knowledge": {"acquisition_technique_id": "AT-SSR-CATALOG", "execution_environment_id": "EE-CLOUD", "evidence_type_ids": ["ET-RENDERED-CARD", "ET-WORKFLOW-VALIDATION"], "semantic_interpretation_ids": ["SI-SELLABLE-PRODUCT-PRICE", "SI-DISCOVERY-FRONTIER"], "semantic_label": "ssr-catalog-with-reported-total-discovery", "acquisition_outcome_id": "AO-USABLE-EVIDENCE", "failure_boundary_type_id": null, "transferability_id": "TR-GENERIC", "change_drift_id": "CD-PROFILE-FINGERPRINT", "data_quality_yield_id": "DQ-STRONG", "request_cost_latency_id": "RC-NOT-EVIDENCED", "privacy_authorization_id": "PA-PUBLIC-NO-AUTH"},
+      "authority": {"evidence_strength_id": "ES-REVIEWED-DURABLE", "review_authority_id": "RA-REPOSITORY-REVIEWED", "eligibility": "eligible_reviewed_corpus", "human_reviewed": false},
+      "provenance": {"repository_references": ["config/supermarket_acquisition_patterns.json", "docs/SUPERMARKET_ACQUISITION_PATTERN_LIBRARY.md"], "provenance_class_ids": ["PV-CONFIG-REGISTRY", "PV-DOC-CONTRACT"], "sanitized": true},
+      "boundaries": {"observation_is_ground_truth": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "automatic_ml_export": false}
+    },
+    {
+      "schema": "ku2d.reviewed-learning-episode.v1", "episode_id": "KU2D-CKE-000004", "learning_key": "tops-product-price-technique", "title": "Tops confirms reusable sitemap-detail pattern", "polarity": "positive",
+      "source": {"name": "Tops", "domain": "Supermarket", "source_characteristic_ids": ["SC-OFFICIAL-PUBLIC", "SC-STATIC-DISCOVERY"]},
+      "knowledge": {"acquisition_technique_id": "AT-SITEMAP-CANONICAL-DETAIL", "execution_environment_id": "EE-CLOUD", "evidence_type_ids": ["ET-SITEMAP", "ET-CANONICAL-DETAIL"], "semantic_interpretation_ids": ["SI-SELLABLE-PRODUCT-PRICE", "SI-DISCOVERY-FRONTIER"], "semantic_label": "sitemap-frontier-canonical-product-detail", "acquisition_outcome_id": "AO-USABLE-EVIDENCE", "failure_boundary_type_id": null, "transferability_id": "TR-GENERIC", "change_drift_id": "CD-PROFILE-FINGERPRINT", "data_quality_yield_id": "DQ-STRONG", "request_cost_latency_id": "RC-NOT-EVIDENCED", "privacy_authorization_id": "PA-PUBLIC-NO-AUTH"},
+      "authority": {"evidence_strength_id": "ES-REVIEWED-DURABLE", "review_authority_id": "RA-REPOSITORY-REVIEWED", "eligibility": "eligible_reviewed_corpus", "human_reviewed": false},
+      "provenance": {"repository_references": ["config/supermarket_acquisition_patterns.json", "docs/ARCHITECTURE_v0.28.md"], "provenance_class_ids": ["PV-CONFIG-REGISTRY", "PV-DOC-CONTRACT"], "sanitized": true},
+      "boundaries": {"observation_is_ground_truth": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "automatic_ml_export": false}
+    },
+    {
+      "schema": "ku2d.reviewed-learning-episode.v1", "episode_id": "KU2D-CKE-000005", "learning_key": "gourmet-product-price-technique", "title": "Gourmet rendered cards own Product and Price", "polarity": "positive",
+      "source": {"name": "Gourmet Market", "domain": "Supermarket", "source_characteristic_ids": ["SC-OFFICIAL-PUBLIC", "SC-RENDERED-COMMERCE", "SC-SPA"]},
+      "knowledge": {"acquisition_technique_id": "AT-RENDERED-DOM", "execution_environment_id": "EE-EDGE-TH", "evidence_type_ids": ["ET-RENDERED-CARD", "ET-WORKFLOW-VALIDATION"], "semantic_interpretation_ids": ["SI-SELLABLE-PRODUCT-PRICE"], "semantic_label": "rendered-product-cards-own-product-price", "acquisition_outcome_id": "AO-USABLE-EVIDENCE", "failure_boundary_type_id": null, "transferability_id": "TR-DOMAIN", "change_drift_id": "CD-PROFILE-FINGERPRINT", "data_quality_yield_id": "DQ-STRONG", "request_cost_latency_id": "RC-NOT-EVIDENCED", "privacy_authorization_id": "PA-PUBLIC-NO-AUTH"},
+      "authority": {"evidence_strength_id": "ES-REVIEWED-DURABLE", "review_authority_id": "RA-REPOSITORY-REVIEWED", "eligibility": "eligible_reviewed_corpus", "human_reviewed": false},
+      "provenance": {"repository_references": ["config/supermarket_acquisition_patterns.json", "../../docs/validation/gourmet-edge-approval-2026-08-29.json"], "provenance_class_ids": ["PV-CONFIG-REGISTRY", "PV-DURABLE-VALIDATION"], "sanitized": true},
+      "boundaries": {"observation_is_ground_truth": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "automatic_ml_export": false}
+    },
+    {
+      "schema": "ku2d.reviewed-learning-episode.v1", "episode_id": "KU2D-CKE-000006", "learning_key": "gourmet-discovery-technique", "title": "Gourmet first-party network owns Discovery", "polarity": "positive",
+      "source": {"name": "Gourmet Market", "domain": "Supermarket", "source_characteristic_ids": ["SC-OFFICIAL-PUBLIC", "SC-STRUCTURED-CATALOG", "SC-SPA"]},
+      "knowledge": {"acquisition_technique_id": "AT-FIRST-PARTY-NETWORK-DISCOVERY", "execution_environment_id": "EE-EDGE-TH", "evidence_type_ids": ["ET-STRUCTURED-RESPONSE", "ET-WORKFLOW-VALIDATION"], "semantic_interpretation_ids": ["SI-DISCOVERY-FRONTIER"], "semantic_label": "network-discovery-not-product-price-owner", "acquisition_outcome_id": "AO-USABLE-EVIDENCE", "failure_boundary_type_id": null, "transferability_id": "TR-GENERIC", "change_drift_id": "CD-PROFILE-FINGERPRINT", "data_quality_yield_id": "DQ-STRONG", "request_cost_latency_id": "RC-NOT-EVIDENCED", "privacy_authorization_id": "PA-PUBLIC-NO-AUTH"},
+      "authority": {"evidence_strength_id": "ES-REVIEWED-DURABLE", "review_authority_id": "RA-REPOSITORY-REVIEWED", "eligibility": "eligible_reviewed_corpus", "human_reviewed": false},
+      "provenance": {"repository_references": ["config/supermarket_acquisition_patterns.json", "../../docs/validation/gourmet-live-latest.json"], "provenance_class_ids": ["PV-CONFIG-REGISTRY", "PV-DURABLE-VALIDATION"], "sanitized": true},
+      "boundaries": {"observation_is_ground_truth": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "automatic_ml_export": false}
+    },
+    {
+      "schema": "ku2d.reviewed-learning-episode.v1", "episode_id": "KU2D-CKE-000007", "learning_key": "gourmet-cloud-access-boundary", "title": "Gourmet cloud access boundary is environmental", "polarity": "negative",
+      "source": {"name": "Gourmet Market", "domain": "Supermarket", "source_characteristic_ids": ["SC-OFFICIAL-PUBLIC", "SC-SPA"]},
+      "knowledge": {"acquisition_technique_id": "AT-FIRST-PARTY-NETWORK-DISCOVERY", "execution_environment_id": "EE-CLOUD", "evidence_type_ids": ["ET-NEGATIVE-ACCESS", "ET-WORKFLOW-VALIDATION"], "semantic_interpretation_ids": ["SI-DISCOVERY-FRONTIER"], "semantic_label": "cloud-blocked-does-not-disprove-technique", "acquisition_outcome_id": "AO-BOUNDARY-REACHED", "failure_boundary_type_id": "FB-CLOUD-ACCESS-BLOCKED", "transferability_id": "TR-GENERIC", "change_drift_id": "CD-REFRESH-REQUIRED", "data_quality_yield_id": "DQ-NEGATIVE-ZERO-USABLE", "request_cost_latency_id": "RC-NOT-EVIDENCED", "privacy_authorization_id": "PA-STOP-ON-ACCESS-CONTROL"},
+      "authority": {"evidence_strength_id": "ES-REVIEWED-DURABLE", "review_authority_id": "RA-REPOSITORY-REVIEWED", "eligibility": "eligible_reviewed_corpus", "human_reviewed": false},
+      "provenance": {"repository_references": ["../../docs/validation/gourmet-access-environment-2026-08-29.json", "docs/SUPERMARKET_ACQUISITION_PATTERN_LIBRARY.md"], "provenance_class_ids": ["PV-DURABLE-VALIDATION", "PV-DOC-CONTRACT"], "sanitized": true},
+      "boundaries": {"observation_is_ground_truth": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "automatic_ml_export": false}
+    },
+    {
+      "schema": "ku2d.reviewed-learning-episode.v1", "episode_id": "KU2D-CKE-000008", "learning_key": "jib-product-price-technique", "title": "JIB canonical detail validates IT Retail Product and Price", "polarity": "positive",
+      "source": {"name": "JIB", "domain": "IT Retail", "source_characteristic_ids": ["SC-OFFICIAL-PUBLIC", "SC-RENDERED-COMMERCE"]},
+      "knowledge": {"acquisition_technique_id": "AT-CANONICAL-DETAIL", "execution_environment_id": "EE-CLOUD", "evidence_type_ids": ["ET-CANONICAL-DETAIL", "ET-WORKFLOW-VALIDATION"], "semantic_interpretation_ids": ["SI-SELLABLE-PRODUCT-PRICE"], "semantic_label": "canonical-detail-product-price", "acquisition_outcome_id": "AO-USABLE-EVIDENCE", "failure_boundary_type_id": null, "transferability_id": "TR-GENERIC", "change_drift_id": "CD-PROFILE-FINGERPRINT", "data_quality_yield_id": "DQ-STRONG", "request_cost_latency_id": "RC-NOT-EVIDENCED", "privacy_authorization_id": "PA-PRODUCTION-DISABLED"},
+      "authority": {"evidence_strength_id": "ES-REVIEWED-DURABLE", "review_authority_id": "RA-REPOSITORY-REVIEWED", "eligibility": "eligible_reviewed_corpus", "human_reviewed": false},
+      "provenance": {"repository_references": ["config/retail_domain_validations.json", "../../docs/validation/jib-retail-validation-2026-08-30.json"], "provenance_class_ids": ["PV-CONFIG-REGISTRY", "PV-DURABLE-VALIDATION"], "sanitized": true},
+      "boundaries": {"observation_is_ground_truth": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "automatic_ml_export": false}
+    },
+    {
+      "schema": "ku2d.reviewed-learning-episode.v1", "episode_id": "KU2D-CKE-000009", "learning_key": "jib-discovery-technique", "title": "JIB app bundle validates Discovery only", "polarity": "positive",
+      "source": {"name": "JIB", "domain": "IT Retail", "source_characteristic_ids": ["SC-OFFICIAL-PUBLIC", "SC-SPA"]},
+      "knowledge": {"acquisition_technique_id": "AT-APP-BUNDLE-DISCOVERY", "execution_environment_id": "EE-CLOUD", "evidence_type_ids": ["ET-APP-BUNDLE", "ET-WORKFLOW-VALIDATION"], "semantic_interpretation_ids": ["SI-DISCOVERY-FRONTIER"], "semantic_label": "app-bundle-discovery-not-product-price", "acquisition_outcome_id": "AO-USABLE-EVIDENCE", "failure_boundary_type_id": null, "transferability_id": "TR-GENERIC", "change_drift_id": "CD-PROFILE-FINGERPRINT", "data_quality_yield_id": "DQ-STRONG", "request_cost_latency_id": "RC-NOT-EVIDENCED", "privacy_authorization_id": "PA-PRODUCTION-DISABLED"},
+      "authority": {"evidence_strength_id": "ES-REVIEWED-DURABLE", "review_authority_id": "RA-REPOSITORY-REVIEWED", "eligibility": "eligible_reviewed_corpus", "human_reviewed": false},
+      "provenance": {"repository_references": ["config/retail_domain_validations.json", "docs/SUPERMARKET_ACQUISITION_PATTERN_LIBRARY.md"], "provenance_class_ids": ["PV-CONFIG-REGISTRY", "PV-DOC-CONTRACT"], "sanitized": true},
+      "boundaries": {"observation_is_ground_truth": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "automatic_ml_export": false}
+    },
+    {
+      "schema": "ku2d.reviewed-learning-episode.v1", "episode_id": "KU2D-CKE-000010", "learning_key": "shopee-public-access-outcome", "title": "Shopee public access paused at application shell and traffic verification", "polarity": "negative",
+      "source": {"name": "Shopee Thailand", "domain": "Commerce Market Observation", "source_characteristic_ids": ["SC-OFFICIAL-PUBLIC", "SC-PUBLIC-MARKETPLACE", "SC-SPA"]},
+      "knowledge": {"acquisition_technique_id": "AT-BROWSER-OBSERVATION", "execution_environment_id": "EE-EDGE-TH", "evidence_type_ids": ["ET-NEGATIVE-ACCESS", "ET-BROWSER-CAPTURE"], "semantic_interpretation_ids": ["SI-DISPLAY-ORDER-ONLY", "SI-UNKNOWN-COUNTER"], "semantic_label": "paused-no-compliant-public-technique-validated", "acquisition_outcome_id": "AO-BOUNDARY-REACHED", "failure_boundary_type_id": "FB-TRAFFIC-VERIFICATION", "transferability_id": "TR-GENERIC", "change_drift_id": "CD-REFRESH-REQUIRED", "data_quality_yield_id": "DQ-NEGATIVE-ZERO-USABLE", "request_cost_latency_id": "RC-NOT-EVIDENCED", "privacy_authorization_id": "PA-STOP-ON-ACCESS-CONTROL"},
+      "authority": {"evidence_strength_id": "ES-REVIEWED-DURABLE", "review_authority_id": "RA-REPOSITORY-REVIEWED", "eligibility": "eligible_reviewed_corpus", "human_reviewed": false},
+      "provenance": {"repository_references": ["config/shopee_commerce_pulse_sources.json", "docs/SHOPEE_COMMERCE_PULSE.md"], "provenance_class_ids": ["PV-CONFIG-REGISTRY", "PV-DOC-CONTRACT"], "sanitized": true},
+      "boundaries": {"observation_is_ground_truth": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "automatic_ml_export": false}
+    },
+    {
+      "schema": "ku2d.reviewed-learning-episode.v1", "episode_id": "KU2D-CKE-000011", "learning_key": "lazada-static-http-outcome", "title": "Lazada static HTTP application shell is evidence withheld", "polarity": "negative",
+      "source": {"name": "Lazada Thailand", "domain": "Commerce Market Observation", "source_characteristic_ids": ["SC-OFFICIAL-PUBLIC", "SC-PUBLIC-MARKETPLACE", "SC-SPA"]},
+      "knowledge": {"acquisition_technique_id": "AT-RENDERED-DOM", "execution_environment_id": "EE-STATIC-HTTP", "evidence_type_ids": ["ET-NEGATIVE-ACCESS"], "semantic_interpretation_ids": ["SI-DISPLAY-ORDER-ONLY"], "semantic_label": "static-application-shell-without-product-evidence", "acquisition_outcome_id": "AO-BOUNDARY-REACHED", "failure_boundary_type_id": "FB-APPLICATION-SHELL", "transferability_id": "TR-GENERIC", "change_drift_id": "CD-REFRESH-REQUIRED", "data_quality_yield_id": "DQ-NEGATIVE-ZERO-USABLE", "request_cost_latency_id": "RC-NOT-EVIDENCED", "privacy_authorization_id": "PA-PUBLIC-NO-AUTH"},
+      "authority": {"evidence_strength_id": "ES-REVIEWED-DURABLE", "review_authority_id": "RA-REPOSITORY-REVIEWED", "eligibility": "eligible_reviewed_corpus", "human_reviewed": false},
+      "provenance": {"repository_references": ["config/lazada_commerce_pulse_sources.json", "docs/LAZADA_COMMERCE_PULSE.md"], "provenance_class_ids": ["PV-CONFIG-REGISTRY", "PV-DOC-CONTRACT"], "sanitized": true},
+      "boundaries": {"observation_is_ground_truth": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "automatic_ml_export": false}
+    },
+    {
+      "schema": "ku2d.reviewed-learning-episode.v1", "episode_id": "KU2D-CKE-000012", "learning_key": "lazada-browser-product-price", "title": "Lazada rendered browser evidence supports bounded product and price observation", "polarity": "mixed",
+      "source": {"name": "Lazada Thailand", "domain": "Commerce Market Observation", "source_characteristic_ids": ["SC-OFFICIAL-PUBLIC", "SC-PUBLIC-MARKETPLACE", "SC-RENDERED-COMMERCE"]},
+      "knowledge": {"acquisition_technique_id": "AT-BROWSER-OBSERVATION", "execution_environment_id": "EE-NORMAL-BROWSER", "evidence_type_ids": ["ET-BROWSER-CAPTURE", "ET-RENDERED-CARD"], "semantic_interpretation_ids": ["SI-SELLABLE-PRODUCT-PRICE", "SI-DISPLAY-ORDER-ONLY", "SI-UNKNOWN-COUNTER", "SI-VARIANT-UNRESOLVED"], "semantic_label": "product-price-usable-counter-and-variant-unresolved", "acquisition_outcome_id": "AO-PARTIAL-EVIDENCE", "failure_boundary_type_id": "FB-INSUFFICIENT-EVIDENCE", "transferability_id": "TR-GENERIC", "change_drift_id": "CD-REFRESH-REQUIRED", "data_quality_yield_id": "DQ-PARTIAL", "request_cost_latency_id": "RC-NOT-EVIDENCED", "privacy_authorization_id": "PA-PRODUCTION-DISABLED"},
+      "authority": {"evidence_strength_id": "ES-REVIEWED-DURABLE", "review_authority_id": "RA-REPOSITORY-REVIEWED", "eligibility": "eligible_reviewed_corpus", "human_reviewed": false},
+      "provenance": {"repository_references": ["config/lazada_commerce_pulse_sources.json", "fixtures/lazada_rendered_dom_audit/audit_package.json"], "provenance_class_ids": ["PV-CONFIG-REGISTRY", "PV-DURABLE-VALIDATION"], "sanitized": true},
+      "boundaries": {"observation_is_ground_truth": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "automatic_ml_export": false}
+    },
+    {
+      "schema": "ku2d.reviewed-learning-episode.v1", "episode_id": "KU2D-CKE-000013", "learning_key": "lazada-price-counter-semantics", "title": "Lazada price roles and counters remain explicitly typed or unknown", "polarity": "mixed",
+      "source": {"name": "Lazada sanitized fixtures", "domain": "Semantic normalization", "source_characteristic_ids": ["SC-PUBLIC-MARKETPLACE"]},
+      "knowledge": {"acquisition_technique_id": "AT-RENDERED-DOM", "execution_environment_id": "EE-NOT-EVIDENCED", "evidence_type_ids": ["ET-DETERMINISTIC-FIXTURE"], "semantic_interpretation_ids": ["SI-PRICE-ROLE-PRESERVED", "SI-UNKNOWN-COUNTER", "SI-TYPED-SOLD-COUNTER", "SI-VARIANT-UNRESOLVED"], "semantic_label": "typed-price-and-counter-semantics-with-unknowns", "acquisition_outcome_id": "AO-PARTIAL-EVIDENCE", "failure_boundary_type_id": "FB-INSUFFICIENT-EVIDENCE", "transferability_id": "TR-GENERIC", "change_drift_id": "CD-NOT-EVIDENCED", "data_quality_yield_id": "DQ-PARTIAL", "request_cost_latency_id": "RC-NOT-EVIDENCED", "privacy_authorization_id": "PA-PRODUCTION-DISABLED"},
+      "authority": {"evidence_strength_id": "ES-DETERMINISTIC-REGRESSION", "review_authority_id": "RA-DETERMINISTIC-VALIDATION", "eligibility": "eligible_reviewed_corpus", "human_reviewed": false},
+      "provenance": {"repository_references": ["fixtures/acquisition_learning_memory/sanitized_historical_episodes.json", "tools/SELF_TEST_ACQUISITION_LEARNING_MEMORY.py"], "provenance_class_ids": ["PV-DETERMINISTIC-FIXTURE"], "sanitized": true},
+      "boundaries": {"observation_is_ground_truth": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "automatic_ml_export": false}
+    },
+    {
+      "schema": "ku2d.reviewed-learning-episode.v1", "episode_id": "KU2D-CKE-000014", "learning_key": "youtube-official-metadata", "title": "Q-Diving official YouTube metadata foundation contract", "polarity": "positive",
+      "source": {"name": "YouTube Data API v3", "domain": "Q-Diving video knowledge", "source_characteristic_ids": ["SC-OFFICIAL-METADATA", "SC-OFFICIAL-PUBLIC"]},
+      "knowledge": {"acquisition_technique_id": "AT-OFFICIAL-API", "execution_environment_id": "EE-NOT-EVIDENCED", "evidence_type_ids": ["ET-DETERMINISTIC-FIXTURE", "ET-POLICY-CONTRACT"], "semantic_interpretation_ids": ["SI-METADATA-NOT-TRANSCRIPT", "SI-DISCOVERY-FRONTIER"], "semantic_label": "official-metadata-contract-staged-for-human-review-not-live-validation", "acquisition_outcome_id": "AO-CANDIDATE-ONLY", "failure_boundary_type_id": null, "transferability_id": "TR-DOMAIN", "change_drift_id": "CD-REFRESH-REQUIRED", "data_quality_yield_id": "DQ-NOT-MEASURED", "request_cost_latency_id": "RC-QUOTA-EVIDENCED", "privacy_authorization_id": "PA-PRODUCTION-DISABLED"},
+      "authority": {"evidence_strength_id": "ES-DETERMINISTIC-REGRESSION", "review_authority_id": "RA-DETERMINISTIC-VALIDATION", "eligibility": "eligible_reviewed_corpus", "human_reviewed": false},
+      "provenance": {"repository_references": ["config/youtube_api_policy.json", "docs/YOUTUBE_SOURCE_FOUNDATION.md"], "provenance_class_ids": ["PV-CONFIG-REGISTRY", "PV-DOC-CONTRACT"], "sanitized": true},
+      "boundaries": {"observation_is_ground_truth": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "automatic_ml_export": false}
+    },
+    {
+      "schema": "ku2d.reviewed-learning-episode.v1", "episode_id": "KU2D-CKE-000015", "learning_key": "youtube-channel-monitoring", "title": "YouTube uploads-playlist dry-monitoring contract", "polarity": "positive",
+      "source": {"name": "YouTube channel uploads playlist", "domain": "Q-Diving video knowledge", "source_characteristic_ids": ["SC-OFFICIAL-METADATA", "SC-OFFICIAL-PUBLIC"]},
+      "knowledge": {"acquisition_technique_id": "AT-UPLOADS-PLAYLIST", "execution_environment_id": "EE-NOT-EVIDENCED", "evidence_type_ids": ["ET-DETERMINISTIC-FIXTURE", "ET-POLICY-CONTRACT"], "semantic_interpretation_ids": ["SI-METADATA-NOT-TRANSCRIPT"], "semantic_label": "review-required-dry-monitoring-contract-not-live-scheduling", "acquisition_outcome_id": "AO-CANDIDATE-ONLY", "failure_boundary_type_id": null, "transferability_id": "TR-DOMAIN", "change_drift_id": "CD-REFRESH-REQUIRED", "data_quality_yield_id": "DQ-NOT-MEASURED", "request_cost_latency_id": "RC-QUOTA-EVIDENCED", "privacy_authorization_id": "PA-PRODUCTION-DISABLED"},
+      "authority": {"evidence_strength_id": "ES-DETERMINISTIC-REGRESSION", "review_authority_id": "RA-DETERMINISTIC-VALIDATION", "eligibility": "eligible_reviewed_corpus", "human_reviewed": false},
+      "provenance": {"repository_references": ["docs/YOUTUBE_HUMAN_REVIEW.md", "config/youtube_knowledge_dataset_schema.json"], "provenance_class_ids": ["PV-DOC-CONTRACT", "PV-CONFIG-REGISTRY"], "sanitized": true},
+      "boundaries": {"observation_is_ground_truth": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "automatic_ml_export": false}
+    },
+    {
+      "schema": "ku2d.reviewed-learning-episode.v1", "episode_id": "KU2D-CKE-000016", "learning_key": "punthai-menu-detail-contract", "title": "PunThai official menu detail deterministic contract", "polarity": "positive",
+      "source": {"name": "PunThai Coffee", "domain": "Coffee", "source_characteristic_ids": ["SC-OFFICIAL-PUBLIC", "SC-RENDERED-COMMERCE"]},
+      "knowledge": {"acquisition_technique_id": "AT-OFFICIAL-MENU-DETAIL", "execution_environment_id": "EE-NOT-EVIDENCED", "evidence_type_ids": ["ET-DETERMINISTIC-FIXTURE", "ET-CANONICAL-DETAIL"], "semantic_interpretation_ids": ["SI-SELLABLE-PRODUCT-PRICE"], "semantic_label": "official-menu-detail-parser-contract-not-live-validation", "acquisition_outcome_id": "AO-CANDIDATE-ONLY", "failure_boundary_type_id": null, "transferability_id": "TR-DOMAIN", "change_drift_id": "CD-NOT-EVIDENCED", "data_quality_yield_id": "DQ-NOT-MEASURED", "request_cost_latency_id": "RC-NOT-EVIDENCED", "privacy_authorization_id": "PA-PRODUCTION-DISABLED"},
+      "authority": {"evidence_strength_id": "ES-DETERMINISTIC-REGRESSION", "review_authority_id": "RA-DETERMINISTIC-VALIDATION", "eligibility": "eligible_reviewed_corpus", "human_reviewed": false},
+      "provenance": {"repository_references": ["acquisition/coffee_techniques.py", "tools/SELF_TEST_COFFEE_PUNTHAI_v0.1.py"], "provenance_class_ids": ["PV-DETERMINISTIC-FIXTURE"], "sanitized": true},
+      "boundaries": {"observation_is_ground_truth": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "automatic_ml_export": false}
+    }
+  ],
+  "excluded_candidates": [
+    {"name": "LINE SHOPPING", "eligibility": "excluded_insufficient_evidence", "reason": "No completed reviewed source episode or durable validation artifact was found; absence is not a source-outcome claim.", "repository_references": ["config/source_registry.json", "config/domain_catalog.json"]},
+    {"name": "NocNoc", "eligibility": "excluded_insufficient_evidence", "reason": "No repository-grounded ceased-source artifact was found, so ceased status is not backfilled.", "repository_references": ["docs/ACQUISITION_LEARNING_MEMORY.md", "config/source_registry.json"]},
+    {"name": "TikTok Shop", "eligibility": "excluded_candidate_only", "reason": "A source-registry seed exists but no completed reviewed access-boundary episode was found.", "repository_references": ["config/source_registry.json"]},
+    {"name": "Agoda and Traveloka", "eligibility": "excluded_candidate_only", "reason": "OTA seeds and candidate surfaces exist, but no completed reviewed acquisition or boundary result is durable in the repository.", "repository_references": ["config/domain_catalog.json", "config/domain_source_candidates.json", "config/source_registry.json"]},
+    {"name": "Other Coffee sources", "eligibility": "excluded_candidate_only", "reason": "Playbook candidates are not completed source validation; only the PunThai deterministic parser contract is represented.", "repository_references": ["config/domain_playbooks.json", "config/source_registry.json"]}
+  ]
+}

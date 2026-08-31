@@ -131,6 +131,12 @@ Eligibility assessment is classification for possible future export, not a train
 
 No V1 process trains, exports, auto-labels, or automatically promotes an example.
 
+## Reviewed Learning Corpus and Core Knowledge
+
+Learning Memory is the broad evidence layer; it is not itself a training set. The narrower Reviewed Learning Corpus is a deterministic, sanitized projection whose episodes have verified repository provenance, explicit authority, contradiction checks, and non-production boundaries. See `docs/CORE_KNOWLEDGE_BACKFILL.md`.
+
+The flow is therefore **Learning Memory → Reviewed Learning Corpus → future task-specific ML Training Dataset**. The last stage does not exist in v1. Corpus inclusion does not grant training eligibility, production approval, storage permission, scheduling authority, or Human Confirmation, and no automatic export is permitted.
+
 ## Safety and authorization
 
 Validation rejects credentials, cookies, authorization headers, tokens, sessions, browser profiles, storage state, device identifiers, raw NetLogs, private personal data, non-JSON-safe values, malformed identity/provenance, and fabricated Human Review provenance.

@@ -1,0 +1,165 @@
+{
+  "schema": "ku2d.core-knowledge-taxonomy.v1",
+  "version": "1.0",
+  "storage_neutral": true,
+  "production_authorized": false,
+  "principles": [
+    "Acquisition Technique is not Execution Environment.",
+    "Evidence is not Semantic Interpretation.",
+    "Observation is not Ground Truth.",
+    "Displayed Order is not Demand.",
+    "Product Identity is not Variant Identity.",
+    "Blocked access is not extraction failure."
+  ],
+  "dimensions": [
+    {
+      "dimension": "source_characteristic",
+      "values": [
+        {"id": "SC-OFFICIAL-PUBLIC", "label": "Official public surface", "definition": "An official customer-facing source reachable without supplied credentials."},
+        {"id": "SC-STRUCTURED-CATALOG", "label": "Structured catalog", "definition": "A first-party structured representation of a catalog."},
+        {"id": "SC-STATIC-DISCOVERY", "label": "Static discovery surface", "definition": "Robots, sitemap, or other static public discovery material."},
+        {"id": "SC-RENDERED-COMMERCE", "label": "Rendered commerce surface", "definition": "A rendered page exposing attributable commerce observations."},
+        {"id": "SC-SPA", "label": "Single-page application", "definition": "A client-rendered application whose discovery and extraction paths may differ."},
+        {"id": "SC-PUBLIC-MARKETPLACE", "label": "Public marketplace surface", "definition": "A contextual marketplace page whose displays are observations rather than national truth."},
+        {"id": "SC-OFFICIAL-METADATA", "label": "Official metadata service", "definition": "A documented official metadata interface with explicit policy and quota boundaries."}
+      ]
+    },
+    {
+      "dimension": "acquisition_technique",
+      "values": [
+        {"id": "AT-OFFICIAL-API", "label": "Official API", "definition": "Read an official documented or validated public structured interface."},
+        {"id": "AT-SITEMAP-CANONICAL-DETAIL", "label": "Sitemap to canonical detail", "definition": "Discover canonical detail URLs through sitemap evidence and extract the detail surface."},
+        {"id": "AT-CANONICAL-DETAIL", "label": "Canonical detail catalog", "definition": "Extract attributable product identity and fields from bounded official canonical detail pages."},
+        {"id": "AT-SSR-CATALOG", "label": "SSR catalog", "definition": "Materialize product observations from server-rendered or embedded catalog state."},
+        {"id": "AT-RENDERED-DOM", "label": "Rendered DOM", "definition": "Extract bounded attributable observations from rendered page content."},
+        {"id": "AT-BROWSER-OBSERVATION", "label": "Browser observation", "definition": "Use one reviewed browser page-load or capture without access-control circumvention."},
+        {"id": "AT-APP-BUNDLE-DISCOVERY", "label": "Application-bundle discovery", "definition": "Mine public application bundles for discovery clues without treating names as validated data."},
+        {"id": "AT-FIRST-PARTY-NETWORK-DISCOVERY", "label": "First-party network discovery", "definition": "Use bounded first-party network evidence to discover a catalog frontier."},
+        {"id": "AT-UPLOADS-PLAYLIST", "label": "Uploads playlist monitoring", "definition": "Use an official channel uploads playlist for reviewed dry monitoring plans."},
+        {"id": "AT-OFFICIAL-MENU-DETAIL", "label": "Official menu detail", "definition": "Extract explicitly price-labelled items from official public menu detail pages."}
+      ]
+    },
+    {
+      "dimension": "execution_environment",
+      "values": [
+        {"id": "EE-CLOUD", "label": "Cloud runner", "definition": "Default cloud-hosted execution environment."},
+        {"id": "EE-EDGE-TH", "label": "Thailand Edge runner", "definition": "Separately approved normal-network Thailand execution environment."},
+        {"id": "EE-NORMAL-BROWSER", "label": "Normal unauthenticated browser", "definition": "Fresh normal browser context with no supplied session material."},
+        {"id": "EE-STATIC-HTTP", "label": "Static public HTTP", "definition": "Ordinary unauthenticated HTTP execution."},
+        {"id": "EE-NOT-EVIDENCED", "label": "Environment not evidenced", "definition": "Repository evidence does not establish an execution-environment requirement."}
+      ]
+    },
+    {
+      "dimension": "evidence_type",
+      "values": [
+        {"id": "ET-STRUCTURED-RESPONSE", "label": "Structured response", "definition": "Sanitized structured fields from a validated official response."},
+        {"id": "ET-SITEMAP", "label": "Sitemap evidence", "definition": "Official robots or sitemap discovery evidence."},
+        {"id": "ET-CANONICAL-DETAIL", "label": "Canonical detail evidence", "definition": "Attributable official product-detail identity and fields."},
+        {"id": "ET-RENDERED-CARD", "label": "Rendered card evidence", "definition": "Bounded rendered cards with attributable identity and semantics."},
+        {"id": "ET-BROWSER-CAPTURE", "label": "Sanitized browser capture", "definition": "A bounded capture excluding credentials, browser state, and raw private material."},
+        {"id": "ET-APP-BUNDLE", "label": "Public app-bundle evidence", "definition": "Sanitized public bundle strings or operations used for discovery."},
+        {"id": "ET-WORKFLOW-VALIDATION", "label": "Workflow validation", "definition": "Durable evidence from a deterministic or reviewed lifecycle workflow."},
+        {"id": "ET-NEGATIVE-ACCESS", "label": "Negative access evidence", "definition": "A sanitized challenge, shell, login, or environment-boundary observation."},
+        {"id": "ET-DETERMINISTIC-FIXTURE", "label": "Deterministic fixture", "definition": "Synthetic or sanitized fixture evidence used to verify semantic behavior."},
+        {"id": "ET-POLICY-CONTRACT", "label": "Policy contract", "definition": "Repository policy defining permitted and prohibited behavior."}
+      ]
+    },
+    {
+      "dimension": "semantic_interpretation",
+      "values": [
+        {"id": "SI-SELLABLE-PRODUCT-PRICE", "label": "Sellable product and price", "definition": "Price is attributable to a sellable product identity."},
+        {"id": "SI-DISCOVERY-FRONTIER", "label": "Discovery frontier", "definition": "Evidence expands discovery but is not automatically the extraction source."},
+        {"id": "SI-DISPLAY-ORDER-ONLY", "label": "Displayed order only", "definition": "Position is contextual display order and not demand or national rank."},
+        {"id": "SI-UNKNOWN-COUNTER", "label": "Unknown counter", "definition": "Raw numeric display is retained without asserting sold, orders, or reviews."},
+        {"id": "SI-TYPED-SOLD-COUNTER", "label": "Explicit sold counter", "definition": "A source-labelled public sold display, not a transaction ledger."},
+        {"id": "SI-VARIANT-UNRESOLVED", "label": "Variant unresolved", "definition": "Product identity match does not establish equivalent selected variants."},
+        {"id": "SI-METADATA-NOT-TRANSCRIPT", "label": "Metadata not transcript", "definition": "Official video metadata does not imply transcript or audiovisual acquisition."},
+        {"id": "SI-PRICE-ROLE-PRESERVED", "label": "Price role preserved", "definition": "Current, from, promotional, discount, and unknown price roles remain distinct."}
+      ]
+    },
+    {
+      "dimension": "acquisition_outcome",
+      "values": [
+        {"id": "AO-USABLE-EVIDENCE", "label": "Usable evidence", "definition": "The bounded technique produced evidence valid for its stated scope."},
+        {"id": "AO-PARTIAL-EVIDENCE", "label": "Partial evidence", "definition": "Some scoped evidence is usable while important semantics or coverage remain unresolved."},
+        {"id": "AO-BOUNDARY-REACHED", "label": "Boundary reached", "definition": "Execution stopped safely at an authentication, challenge, or environment boundary."},
+        {"id": "AO-CANDIDATE-ONLY", "label": "Candidate only", "definition": "A deterministic contract or clue exists without a live validated outcome."}
+      ]
+    },
+    {
+      "dimension": "failure_boundary_type",
+      "values": [
+        {"id": "FB-APPLICATION-SHELL", "label": "Application shell", "definition": "HTTP completed but no stable usable product signal was present."},
+        {"id": "FB-TRAFFIC-VERIFICATION", "label": "Traffic verification", "definition": "A challenge/access-control page stopped the attempt."},
+        {"id": "FB-LOGIN-REQUIRED", "label": "Login required", "definition": "The public attempt reached a required authentication boundary."},
+        {"id": "FB-CLOUD-ACCESS-BLOCKED", "label": "Cloud access blocked", "definition": "The cloud environment was unsuitable while the technique was not itself disproven."},
+        {"id": "FB-INSUFFICIENT-EVIDENCE", "label": "Insufficient evidence", "definition": "Evidence was too weak to assert the intended semantic or outcome."}
+      ]
+    },
+    {
+      "dimension": "transferability",
+      "values": [
+        {"id": "TR-GENERIC", "label": "Cross-domain generic", "definition": "The pattern can transfer across domains with source-specific field mapping."},
+        {"id": "TR-DOMAIN", "label": "Domain-level", "definition": "The pattern is reusable within a domain subject to validation."},
+        {"id": "TR-SOURCE-SPECIFIC", "label": "Source-specific", "definition": "The technique or conclusion depends on one source's contract."}
+      ]
+    },
+    {
+      "dimension": "evidence_strength",
+      "values": [
+        {"id": "ES-REVIEWED-DURABLE", "label": "Reviewed durable evidence", "definition": "A durable reviewed validation or registry artifact."},
+        {"id": "ES-DETERMINISTIC-REGRESSION", "label": "Deterministic regression evidence", "definition": "A repeatable fixture or contract enforced by tests."},
+        {"id": "ES-CONTRACT-ONLY", "label": "Contract only", "definition": "A documented candidate without completed source validation."}
+      ]
+    },
+    {
+      "dimension": "review_authority",
+      "values": [
+        {"id": "RA-REPOSITORY-REVIEWED", "label": "Repository reviewed", "definition": "Accepted durable repository evidence without claiming human Ground Truth."},
+        {"id": "RA-DETERMINISTIC-VALIDATION", "label": "Deterministic validation", "definition": "Authority is limited to repeatable deterministic behavior."},
+        {"id": "RA-HUMAN-CONFIRMED", "label": "Explicit human confirmation", "definition": "A human-confirmed label with explicit reviewer provenance."}
+      ]
+    },
+    {
+      "dimension": "change_drift",
+      "values": [
+        {"id": "CD-PROFILE-FINGERPRINT", "label": "Technique-profile fingerprint", "definition": "Material technique configuration changes invalidate stale approval evidence."},
+        {"id": "CD-REFRESH-REQUIRED", "label": "Refresh required", "definition": "Time-sensitive source evidence requires bounded revalidation before reuse."},
+        {"id": "CD-NOT-EVIDENCED", "label": "Drift not evidenced", "definition": "No reviewed change/drift conclusion is available."}
+      ]
+    },
+    {
+      "dimension": "data_quality_yield",
+      "values": [
+        {"id": "DQ-STRONG", "label": "Strong scoped quality", "definition": "Scoped validation passed its documented quality and provenance gates."},
+        {"id": "DQ-PARTIAL", "label": "Partial scoped quality", "definition": "Evidence is usable but incomplete for one or more intended semantics."},
+        {"id": "DQ-NEGATIVE-ZERO-USABLE", "label": "Zero usable evidence", "definition": "The bounded attempt produced no usable normalized evidence and remains valuable negative learning."},
+        {"id": "DQ-NOT-MEASURED", "label": "Quality not measured", "definition": "No reviewed source-quality or yield measurement is claimed."}
+      ]
+    },
+    {
+      "dimension": "request_cost_latency",
+      "values": [
+        {"id": "RC-QUOTA-EVIDENCED", "label": "Quota evidenced", "definition": "A documented API quota or bounded request budget is explicitly preserved."},
+        {"id": "RC-NOT-EVIDENCED", "label": "Cost and latency not evidenced", "definition": "No exact cost or latency is asserted."}
+      ]
+    },
+    {
+      "dimension": "privacy_authorization",
+      "values": [
+        {"id": "PA-PUBLIC-NO-AUTH", "label": "Public no-auth", "definition": "Only official public surfaces without supplied authentication are used."},
+        {"id": "PA-STOP-ON-ACCESS-CONTROL", "label": "Stop on access control", "definition": "Authentication, CAPTCHA, challenge, and access-control boundaries must not be bypassed."},
+        {"id": "PA-PRODUCTION-DISABLED", "label": "Production disabled", "definition": "Evidence does not authorize production storage, scheduling, or approval."}
+      ]
+    },
+    {
+      "dimension": "provenance_class",
+      "values": [
+        {"id": "PV-DURABLE-VALIDATION", "label": "Durable validation artifact", "definition": "Repository-retained validation evidence with explicit scope."},
+        {"id": "PV-CONFIG-REGISTRY", "label": "Configuration registry", "definition": "Versioned machine-readable source or technique registry evidence."},
+        {"id": "PV-DETERMINISTIC-FIXTURE", "label": "Deterministic fixture", "definition": "Sanitized fixture and test evidence."},
+        {"id": "PV-DOC-CONTRACT", "label": "Documentation contract", "definition": "Reviewed repository documentation defining semantics and boundaries."}
+      ]
+    }
+  ]
+}
