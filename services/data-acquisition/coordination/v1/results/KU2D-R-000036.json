@@ -1,0 +1,197 @@
+{
+  "schema":"ku2d.agent-handoff-result.v1",
+  "result_id":"KU2D-R-000036",
+  "prompt_id":"KU2D-P-000036",
+  "submitted_at":"2026-09-01T00:30:01+07:00",
+  "submitted_by":{"actor":"codex","actor_id":"codex/data-acquisition-agent"},
+  "status":"succeeded",
+  "summary":"Completed KU2D-BH-000010 and the H11-authorized Q-Diving pilot preflight. The pilot stopped fail-closed with evidence_withheld / exit 2 because merged reviewed evidence resolved 0 of the exactly 2 required non-sanitized, explicitly Human-Reviewed canonical YouTube video identities. P36 forbids substitution, search, or discovery, so no credential or transport boundary was opened and live request, quota, page, metadata, comment, reply, caption, transcript, and OAuth counts are all zero. Added durable sanitized evidence, a pure fail-closed identity/evidence validator, offline cases, QDP1-QDP40, a report, and CI coverage. All 52 deterministic scripts pass. PR #62 is Ready, green, open, mergeable, and unmerged.",
+  "evidence_references":[
+    "KU2D-BH-000010","KU2D-H-000011","KU2D-R-000035","KU2D-V-000035",
+    "config/youtube_qdiving_live_pilot_v1.json",
+    "acquisition/youtube_qdiving_live_pilot.py",
+    "fixtures/youtube_qdiving_live_pilot/reviewed_identity_cases.json",
+    "docs/YOUTUBE_QDIVING_LIVE_PILOT_V1.md",
+    "tools/SELF_TEST_YOUTUBE_QDIVING_LIVE_PILOT.py",
+    "commit:6c27b9616d72be38b8f8b8f332c4558f796822ac",
+    "commit:916c40a02019388e78fb2f8e8f2d7dad1c6b634e",
+    "PR:#62",
+    "workflow:Data Acquisition Platform CI#346",
+    "workflow:Frontend CI#1292",
+    "workflow:Frontend CI#1293",
+    "workflow:PR Browser Preview Link#249"
+  ],
+  "repository_state":{
+    "repository":"thanitpu/KU-Open-Data-Analytics",
+    "source_branch":"codex/ku2d-youtube-content-acquisition-v2",
+    "source_close_commit_sha":"5b6ba64f21c56f8e577a6db42d2efd6f1f1eb763",
+    "target_branch":"codex/ku2d-youtube-qdiving-live-pilot-v1",
+    "authoritative_branch":"codex/ku2d-youtube-qdiving-live-pilot-v1",
+    "base_branch":"integration/data-acquisition-platform",
+    "base_sha":"b93dfbfa26260bb7613a7fbb56f76d62242c5b1b",
+    "target_initialization_commit_sha":"6c27b9616d72be38b8f8b8f332c4558f796822ac",
+    "implementation_commit_sha":"916c40a02019388e78fb2f8e8f2d7dad1c6b634e",
+    "pull_request_number":62,
+    "pull_request_url":"https://github.com/thanitpu/KU-Open-Data-Analytics/pull/62",
+    "pull_request_open":true,
+    "pull_request_draft":false,
+    "pull_request_ready_for_review":true,
+    "pull_request_mergeable":true,
+    "pull_request_merged":false
+  },
+  "branch_handoff_outcome":{
+    "handoff_id":"KU2D-BH-000010",
+    "from_branch":"codex/ku2d-youtube-content-acquisition-v2",
+    "to_branch":"codex/ku2d-youtube-qdiving-live-pilot-v1",
+    "source_closed_before_switch":true,
+    "source_next_actor_after_close":"none",
+    "target_initialization_succeeded":true,
+    "target_initial_head_matches_base":true,
+    "target_prompt_id":"KU2D-P-000036",
+    "completed_history_preserved":true,
+    "dual_active_authority":false,
+    "human_authority_required_for_handoff":false
+  },
+  "pilot_outcome":{
+    "schema":"ku2d.youtube-qdiving-live-pilot.v1",
+    "pilot_id":"KU2D-YT-QDIVING-PILOT-000001",
+    "classification":"evidence_withheld",
+    "exit_classification":2,
+    "technical_completion":true,
+    "human_decision_id":"KU2D-H-000011",
+    "authorized_video_count":2,
+    "exact_video_identities":null,
+    "resolved_video_ids":[],
+    "resolved_video_count":0,
+    "identity_status":"insufficient_reviewed_identity_evidence",
+    "withheld_reason":"Merged reviewed Q-Diving evidence contains policy/contract records and sanitized fixtures, but no non-sanitized, explicitly Human-Reviewed canonical YouTube video identity. P36 prohibits substitution, search, or discovery of new videos.",
+    "credential_status":"not_evaluated_due_identity_preflight",
+    "live_execution_started":false
+  },
+  "identity_evidence_findings":[
+    {"path":"config/q_diving_source_registry.json","finding":"query profiles only; no reviewed video identities"},
+    {"path":"config/reviewed_learning_corpus.json","episode_ids":["KU2D-CKE-000014","KU2D-CKE-000015"],"finding":"sanitized deterministic policy contracts; human_reviewed=false; no video identities"},
+    {"path":"fixtures/youtube_human_review/sanitized_foundation_result.json","finding":"sanitized fixture candidates only; not durable non-sanitized Human Review identities"},
+    {"path":"config/youtube_knowledge_dataset_schema.json","finding":"dataset schema only; no instantiated reviewed dataset"}
+  ],
+  "live_request_quota_page_counts":{
+    "total_request_count":0,
+    "estimated_quota_units":0,
+    "videos_list_request_count":0,
+    "comment_threads_list_request_count":0,
+    "comments_list_request_count":0,
+    "comment_threads_page_count":0,
+    "per_video":[]
+  },
+  "metadata_outcomes":{
+    "module_requirement":"required",
+    "status":"evidence_withheld",
+    "video_result_count":0,
+    "channel_identity_count":0,
+    "statistics_snapshot_count":0,
+    "provenance_record_count":0
+  },
+  "comment_reply_outcomes":{
+    "module_requirement":"optional",
+    "status":"not_attempted_identity_preflight_withheld",
+    "top_level_comment_count":0,
+    "reply_count":0,
+    "partial_reply_thread_count":0,
+    "comments_disabled_video_count":0,
+    "no_comments_video_count":0,
+    "pagination_truncated_video_count":0,
+    "ordering_or_count_interpretation_count":0
+  },
+  "transcript_caption_non_execution":{
+    "allowed_languages":["th","en"],
+    "metadata_level_caption_language_signal_count":0,
+    "captions_list_request_count":0,
+    "captions_download_request_count":0,
+    "transcript_content_record_count":0,
+    "other_language_transcript_text_count":0,
+    "oauth_flow_count":0,
+    "audio_video_download_count":0
+  },
+  "deep_audit":{
+    "passed":false,
+    "hard_failures":["required exact reviewed video identity gate resolved 0 of 2","required metadata module was not executed"],
+    "gates":{
+      "exact_reviewed_identity_count":"failed",
+      "metadata_identity_completeness":"failed",
+      "metadata_provenance_completeness":"failed",
+      "request_quota_accounting":"passed",
+      "comment_page_bound_preserved":"passed",
+      "relationship_integrity":"not_evaluated",
+      "evidence_written_before_live_request":"passed",
+      "transcript_caption_boundary_preserved":"passed"
+    }
+  },
+  "files_changed_for_pilot":[
+    ".github/workflows/data-acquisition-platform-ci.yml",
+    "services/data-acquisition/acquisition/youtube_qdiving_live_pilot.py",
+    "services/data-acquisition/config/youtube_qdiving_live_pilot_v1.json",
+    "services/data-acquisition/docs/YOUTUBE_QDIVING_LIVE_PILOT_V1.md",
+    "services/data-acquisition/fixtures/youtube_qdiving_live_pilot/reviewed_identity_cases.json",
+    "services/data-acquisition/tools/SELF_TEST_YOUTUBE_QDIVING_LIVE_PILOT.py"
+  ],
+  "verification":{
+    "deterministic_tests_passed":true,
+    "live_request_count":0,
+    "git_diff_check":"passed",
+    "json_parse":"191 JSON files passed",
+    "yaml_parse":"16 workflow files passed",
+    "python_compilation":"acquisition, api, repository, control_plane, service, tools passed under Python 3.12",
+    "targeted_qdiving_pilot_tests":"QDP1-QDP40 passed",
+    "youtube_v2_tests":"YT2-1-YT2-132 passed",
+    "agent_handoff_tests":"AH1-AH31 passed",
+    "complete_deterministic_corpus":"52/52 scripts passed",
+    "supermarket_retail_jib_regressions":"passed",
+    "youtube_marketplace_coffee_knowledge_governance_regressions":"passed"
+  },
+  "exact_implementation_head_ci":{
+    "head_sha":"916c40a02019388e78fb2f8e8f2d7dad1c6b634e",
+    "data_acquisition_platform_ci":{"run_number":346,"run_id":33419747879,"status":"completed","conclusion":"success"},
+    "frontend_ci":[
+      {"run_number":1292,"run_id":33419707072,"status":"completed","conclusion":"success"},
+      {"run_number":1293,"run_id":33419747855,"status":"completed","conclusion":"success"}
+    ],
+    "pr_browser_preview_link":{"run_number":249,"run_id":33419747805,"status":"completed","conclusion":"success"}
+  },
+  "pr_operations":{
+    "draft_created":true,
+    "description_created_and_current":true,
+    "exact_implementation_head_checks_successful":true,
+    "ready_transition_completed":true,
+    "merge_attempted":false,
+    "merged":false
+  },
+  "security_and_boundaries":{
+    "api_credential_read_or_logged":false,
+    "api_key_committed":false,
+    "oauth_material_count":0,
+    "cookie_or_session_material_count":0,
+    "browser_or_edge_request_count":0,
+    "html_scraping_request_count":0,
+    "undocumented_endpoint_request_count":0,
+    "proxy_login_captcha_or_bypass_count":0,
+    "active_youtube_comment_policy_mutation_count":0,
+    "authority_promotion_count":0,
+    "knowledge_mutation_count":0,
+    "parked_ref_mutation_count":0,
+    "production_authorized":false,
+    "production_store":false,
+    "scheduler_action":null,
+    "main_or_integration_mutation_count":0,
+    "pr_merge_count":0
+  },
+  "completed_queue_summary":{
+    "work_completed":"Completed BH10, resolved the P36 identity preflight fail-closed, recorded sanitized durable exit-2 evidence, added a pure identity/evidence validator, deterministic cases, QDP1-QDP40, report and CI coverage, and opened/marked Ready green PR #62.",
+    "key_findings_results":"Exact reviewed video identities are none: 0 of 2 resolved. Merged evidence contains query profiles, sanitized deterministic contracts/fixtures, and a dataset schema, but no durable non-sanitized explicitly Human-Reviewed canonical ID. Consequently every live request, quota, page, metadata, comment, reply, caption, transcript and OAuth count is zero; Deep Audit is withheld on required identity and metadata gates.",
+    "repo_knowledge_state_changes":"Added only non-authorizing pilot-boundary evidence, validator, offline cases, report, tests and CI coverage. No active YouTube policy, Human Decision, review, production approval, knowledge authority, ground truth, candidate registry, parked ref, or scheduler state changed.",
+    "important_out_of_scope_actions_not_performed":"No video substitution/search/discovery, credential evaluation, YouTube API/content request, captions.list/download, OAuth, transcript acquisition, comment acquisition, browser/Edge, HTML scraping, undocumented endpoint, proxy/login/CAPTCHA/bypass, production/store/scheduler action, authority promotion, parked-ref mutation, integration/main mutation, or PR merge.",
+    "remaining_blockers_risks":"The pilot cannot execute until separately governed durable merged evidence supplies exactly two non-sanitized, explicitly Human-Reviewed canonical YouTube video IDs. H11 does not authorize discovering or substituting those identities. Adding identities is a new governance action and must preserve provenance, consent/privacy, and the exact two-video boundary.",
+    "recommended_next_logical_step":"Assistant independently reviews KU2D-R-000036 and Ready PR #62. If accepted, decide whether to integrate this fail-closed boundary. A separate Prompt/Human Review process may later establish exactly two durable identities; do not automatically rerun this pilot or broaden H11."
+  },
+  "provenance":{"repository":"thanitpu/KU-Open-Data-Analytics","branch":"codex/ku2d-youtube-qdiving-live-pilot-v1","authoritative_branch":"codex/ku2d-youtube-qdiving-live-pilot-v1","source_prompt":"coordination/v1/prompts/KU2D-P-000036.json","branch_handoff_record":"coordination/v1/branch-handoffs/KU2D-BH-000010.json","depends_on_result":"KU2D-R-000035","depends_on_review":"KU2D-V-000035","depends_on_human_decision":"KU2D-H-000011","target_pr":62,"learning_memory_record_id":null},
+  "boundaries":{"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
