@@ -1,16 +1,16 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T18:02:00+07:00",
-  "authoritative_branch": "codex/ku2d-coffee-recovery-next-step-v1",
-  "latest_prompt": "KU2D-P-000026",
+  "updated_at": "2026-08-31T18:23:00+07:00",
+  "authoritative_branch": "codex/ku2d-coffee-hardened-rerun-v1",
+  "latest_prompt": "KU2D-P-000027",
   "latest_result": "KU2D-R-000026",
   "latest_review": "KU2D-V-000026",
-  "latest_human_decision": "KU2D-H-000009",
+  "latest_human_decision": "KU2D-H-000010",
   "prompt_states": {
-    "KU2D-P-000001":"completed","KU2D-P-000002":"completed","KU2D-P-000003":"completed","KU2D-P-000004":"completed","KU2D-P-000005":"completed","KU2D-P-000006":"completed","KU2D-P-000007":"completed","KU2D-P-000008":"superseded","KU2D-P-000009":"reviewed","KU2D-P-000010":"reviewed","KU2D-P-000011":"reviewed","KU2D-P-000012":"completed","KU2D-P-000013":"reviewed","KU2D-P-000014":"completed","KU2D-P-000015":"reviewed","KU2D-P-000016":"completed","KU2D-P-000017":"reviewed","KU2D-P-000018":"completed","KU2D-P-000019":"reviewed","KU2D-P-000020":"completed","KU2D-P-000021":"reviewed","KU2D-P-000022":"completed","KU2D-P-000023":"reviewed","KU2D-P-000024":"completed","KU2D-P-000025":"completed","KU2D-P-000026":"completed"
+    "KU2D-P-000001":"completed","KU2D-P-000002":"completed","KU2D-P-000003":"completed","KU2D-P-000004":"completed","KU2D-P-000005":"completed","KU2D-P-000006":"completed","KU2D-P-000007":"completed","KU2D-P-000008":"superseded","KU2D-P-000009":"reviewed","KU2D-P-000010":"reviewed","KU2D-P-000011":"reviewed","KU2D-P-000012":"completed","KU2D-P-000013":"reviewed","KU2D-P-000014":"completed","KU2D-P-000015":"reviewed","KU2D-P-000016":"completed","KU2D-P-000017":"reviewed","KU2D-P-000018":"completed","KU2D-P-000019":"reviewed","KU2D-P-000020":"completed","KU2D-P-000021":"reviewed","KU2D-P-000022":"completed","KU2D-P-000023":"reviewed","KU2D-P-000024":"completed","KU2D-P-000025":"completed","KU2D-P-000026":"completed","KU2D-P-000027":"in_progress"
   },
   "completed_prompt_ids": ["KU2D-P-000001","KU2D-P-000002","KU2D-P-000003","KU2D-P-000004","KU2D-P-000005","KU2D-P-000006","KU2D-P-000007","KU2D-P-000012","KU2D-P-000014","KU2D-P-000016","KU2D-P-000018","KU2D-P-000020","KU2D-P-000022","KU2D-P-000024","KU2D-P-000025","KU2D-P-000026"],
-  "next_action": {"actor":"none","prompt_id":null,"result_id":null,"review_id":null,"human_decision_id":null,"replay_requested":false},
-  "branch_handoff":{"phase":"completed","handoff_id":"KU2D-BH-000002","from_branch":"codex/ku2d-branch-handoff-protocol-v1","to_branch":"codex/ku2d-coffee-recovery-next-step-v1","base_sha":"f74b22ca0018b9a6fa6bc99d641679858ac10e26","target_initial_head_sha":"f74b22ca0018b9a6fa6bc99d641679858ac10e26","source_close_commit_sha":"ae182a230b8205dfe95280ccca1be7cbc6143552","target_prompt_id":"KU2D-P-000026","close_source_queue_before_switch":true,"initialize_target_queue":true,"target_initialization_succeeded":true,"human_authority_required":false},
-  "notes": "KU2D-P-000026 and KU2D-BH-000002 are accepted and complete. Option A is the recommended next action but remains separately authorized. PR #54 is Ready for controlled squash integration."
+  "next_action": {"actor":"codex","prompt_id":"KU2D-P-000027","result_id":null,"review_id":null,"human_decision_id":null,"replay_requested":false},
+  "branch_handoff":{"phase":"target_initialized","handoff_id":"KU2D-BH-000003","from_branch":"codex/ku2d-coffee-recovery-next-step-v1","to_branch":"codex/ku2d-coffee-hardened-rerun-v1","base_sha":"ca80865951846bea8a8cc0f2b298a672046db6c9","target_initial_head_sha":"ca80865951846bea8a8cc0f2b298a672046db6c9","source_close_commit_sha":"3cd1394d45cb85d9cb5694f17468afd069c8d4ca","target_prompt_id":"KU2D-P-000027","close_source_queue_before_switch":true,"initialize_target_queue":true,"target_initialization_succeeded":true,"human_authority_required":false},
+  "notes": "Target queue initialized for KU2D-BH-000003 at exact integration merge ca80865951846bea8a8cc0f2b298a672046db6c9 after source closure commit 3cd1394d45cb85d9cb5694f17468afd069c8d4ca. No live request has occurred; deterministic preflight is required first."
 }
