@@ -1,0 +1,179 @@
+{
+  "schema": "ku2d.roots-semantics-diagnosis.v1",
+  "diagnosed_at": "2026-08-31T18:53:00+07:00",
+  "authoritative_branch": "codex/ku2d-roots-semantics-diagnosis-v1",
+  "objective": "Diagnose the retained Roots strict coffee-product-semantics failure without a live request or authority promotion.",
+  "evidence_basis": {
+    "references": [
+      "KU2D-R-000027",
+      "KU2D-V-000027",
+      "docs/validation/coffee-hardened-rerun-2026-08-31.json",
+      "acquisition/coffee_evidence_recovery.py",
+      "fixtures/coffee_evidence_recovery/roots_product.html",
+      "fixtures/coffee_evidence_recovery/nana_product.html"
+    ],
+    "repository_evidence_only": true,
+    "external_request_count": 0,
+    "historical_result_reinterpreted_as_success": false,
+    "offline_fixture_treated_as_live_response": false
+  },
+  "roots_retained_evidence": {
+    "http_status": 200,
+    "transport_completed": true,
+    "response_bytes": 90453,
+    "response_sha256": "61690ed7c2e0f583d211d64531f0f07f9e866546b90e91df18390b0105243e47",
+    "final_url": "https://shop.rootsbkk.com/collections/frontpage/products/house-blend-coffee",
+    "canonical_url_evidence": "https://shop.rootsbkk.com/products/house-blend-coffee",
+    "canonical_path_classification": "official-product-route-with-coffee-slug",
+    "structured_product_subset": {"offer": {}},
+    "labeled_field_subset": {},
+    "retained_record": false,
+    "retained_field_provenance_count": 0,
+    "normalization_failure_reason": "normalized product withheld: coffee_product_semantics",
+    "raw_html_retained": false,
+    "headers_retained": false
+  },
+  "strict_contract_gate_results": {
+    "failed_gate_count": 1,
+    "product_name": {
+      "result": "inferred-pass-value-not-retained",
+      "classification": "missing_retained_evidence",
+      "basis": "The normalizer would have listed product_name in the failure reason if it were absent, but the withheld path retained neither its sanitized value nor extraction path."
+    },
+    "attributable_displayed_price": {
+      "result": "inferred-pass-value-not-retained",
+      "classification": "missing_retained_evidence",
+      "basis": "The failure reason omitted attributable_displayed_price, but the withheld path retained neither the sanitized value nor extraction path."
+    },
+    "canonical_identity": {
+      "result": "passed-and-retained",
+      "classification": "parser_normalizer_limitation",
+      "basis": "The same-host canonical URL and non-empty house-blend-coffee slug are retained explicitly."
+    },
+    "coffee_product_semantics": {
+      "result": "failed",
+      "classification": "parser_normalizer_limitation",
+      "basis": "The matcher uses Product JSON-LD, explicit coffee-bean text, or a coffee name plus labeled attributes, but ignores the retained official /products/ route and coffee-bearing canonical slug."
+    },
+    "retail_product_not_cafe_menu": {
+      "result": "inferred-pass",
+      "classification": "unresolved_from_retained_evidence",
+      "basis": "The normalizer did not emit the menu-only failure and the retained canonical is a /products/ route, but raw visible text was intentionally not retained."
+    }
+  },
+  "semantic_witness_diagnosis": [
+    {
+      "witness": "jsonld_product_type",
+      "current_result": false,
+      "classification": "missing_retained_evidence",
+      "explanation": "The sanitized structured subset contains only an empty offer and no retained Product type or name."
+    },
+    {
+      "witness": "explicit_coffee_bean_or_roasted_coffee_text",
+      "current_result": false,
+      "classification": "missing_retained_evidence",
+      "explanation": "The composite gate failed, but the exact sanitized name and visible lexical candidates were not retained."
+    },
+    {
+      "witness": "coffee_name_plus_labeled_attributes",
+      "current_result": false,
+      "classification": "missing_retained_evidence",
+      "explanation": "The retained labeled-field subset is empty and the exact sanitized product name was not retained."
+    },
+    {
+      "witness": "official_product_route_plus_coffee_slug",
+      "current_result": "available-but-not-evaluated",
+      "classification": "parser_normalizer_limitation",
+      "explanation": "The retained same-host canonical path is /products/house-blend-coffee, but the current semantic matcher has no canonical-route witness."
+    }
+  ],
+  "nana_comparator": {
+    "comparison_role": "successful-contract-shape-not-source-equivalence",
+    "retained_record_count": 2,
+    "coffee_product_id": "nanacoffeeroasters.com:house-blend",
+    "price_values": [470.0, 470.0],
+    "currency": "THB",
+    "structured_witnesses": ["jsonld.Product", "jsonld.Product.name", "jsonld.Product.offers.price", "jsonld.Product.offers.priceCurrency", "jsonld.Product.offers.availability"],
+    "labeled_witnesses": ["origin", "process", "tasting_notes"],
+    "field_provenance_count_per_record": 13,
+    "identity_repeatability_pct": 100.0,
+    "canonical_repeatability_pct": 100.0,
+    "source_audit_passed": true,
+    "roots_required_to_use_nana_structure": false
+  },
+  "correction_decision": {
+    "deterministic_parser_correction_justified": true,
+    "live_request_required_to_implement_or_test": false,
+    "historical_roots_record_can_be_reconstructed": false,
+    "historical_result_remains": "evidence_withheld",
+    "smallest_semantic_correction": {
+      "description": "Add one high-confidence coffee semantic witness when the already-required name and attributable price are present and the same-host canonical path is an official /products/ route whose slug contains an explicit coffee token.",
+      "accepted_route_shape": "/(?:collections/<collection>/)?products/<slug>",
+      "required_slug_tokens": ["coffee", "bean", "beans", "roast", "roasted"],
+      "unchanged_required_gates": ["product_name", "attributable_displayed_price", "official_same_host_canonical", "non_menu_semantics", "field_level_provenance", "repeatability", "deep_audit"],
+      "generic_product_route_alone_is_sufficient": false,
+      "target_configuration_alone_is_sufficient": false
+    },
+    "independent_retention_hardening": {
+      "description": "For future withheld normalization, retain sanitized candidate field values and extraction paths for every gate evaluated before the record decision.",
+      "required_fields": ["product_name", "displayed_price", "currency", "canonical_url", "semantic_witnesses", "menu_only_result"],
+      "raw_html_required": false,
+      "headers_or_session_material_required": false
+    }
+  },
+  "required_offline_tests_and_fixtures": [
+    {
+      "id": "RSD-F01",
+      "purpose": "Positive official product route with a coffee-bearing slug, sanitized name and price, no Product JSON-LD, and no labeled coffee attributes.",
+      "expected": "semantic witness passes while every existing identity, price, canonical, menu, and provenance gate remains required"
+    },
+    {
+      "id": "RSD-F02",
+      "purpose": "Negative official product route with a non-coffee slug and no other coffee witness.",
+      "expected": "record remains withheld"
+    },
+    {
+      "id": "RSD-F03",
+      "purpose": "Negative menu/drink route containing a coffee token and price.",
+      "expected": "menu-only gate still withholds the record"
+    },
+    {
+      "id": "RSD-F04",
+      "purpose": "Negative coffee-bearing product slug with missing product name or attributable price.",
+      "expected": "missing strict identity or price still withholds the record"
+    },
+    {
+      "id": "RSD-F05",
+      "purpose": "Withheld normalization retains only sanitized candidate values, extraction paths, and semantic decisions.",
+      "expected": "diagnosis is replayable without raw HTML, headers, cookies, credentials, or session material"
+    },
+    {
+      "id": "RSD-F06",
+      "purpose": "Existing Roots and Nana fixtures plus the durable exit-2 artifact remain unchanged.",
+      "expected": "no historical reinterpretation and no frozen regression"
+    }
+  ],
+  "next_step": {
+    "recommendation": "Implement the two offline-only parser and diagnostic-retention changes with RSD-F01 through RSD-F06, then request independent review before considering any separately authorized live validation.",
+    "separate_prompt_required": true,
+    "live_request_authorized": false,
+    "candidate_promotion_authorized": false
+  },
+  "boundaries": {
+    "planning_only": true,
+    "live_request_count": 0,
+    "parser_or_runtime_code_changed": false,
+    "historical_result_reinterpreted": false,
+    "candidate_promotion_count": 0,
+    "learning_memory_write": false,
+    "reviewed_corpus_write": false,
+    "core_knowledge_write": false,
+    "human_confirmation_write": false,
+    "ground_truth_write": false,
+    "production_authorized": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "ml_training_or_inference": false,
+    "survey_doe_sem_work": false
+  }
+}
