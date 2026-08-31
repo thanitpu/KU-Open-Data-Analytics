@@ -211,8 +211,9 @@ def validate_branch_pr_disposition_registry(
         if not name.startswith("codex/"):
             raise ValueError("registry may contain only codex/* branches")
         _text(branch.get("purpose"), "purpose")
-        if _observed_at(branch.get("observed_at"), "branch.observed_at") != observed_at:
-            raise ValueError("every branch must use the registry observation timestamp")
+        branch_observed_at = _observed_at(branch.get("observed_at"), "branch.observed_at")
+        if datetime.fromisoformat(branch_observed_at) > datetime.fromisoformat(observed_at):
+            raise ValueError("branch evidence cannot be newer than the registry snapshot")
         head_sha = _sha(branch.get("head_sha"), "head_sha")
         actual_heads[name] = head_sha
         disposition = branch.get("disposition")
@@ -281,8 +282,15 @@ def validate_branch_pr_disposition_registry(
 
     if active != [authoritative]:
         raise ValueError("registry must have exactly one authoritative active branch")
-    if expected_branch_heads is not None and actual_heads != expected_branch_heads:
-        raise ValueError("registry branch heads are stale or incomplete")
+    if expected_branch_heads is not None:
+        if set(actual_heads) != set(expected_branch_heads):
+            raise ValueError("registry branch heads are stale or incomplete")
+        stale = {
+            name for name, sha in actual_heads.items()
+            if name != authoritative and expected_branch_heads.get(name) != sha
+        }
+        if stale:
+            raise ValueError(f"registry branch heads are stale: {sorted(stale)}")
     if expected_pr_states is not None and actual_pr_states != expected_pr_states:
         raise ValueError("registry PR states are stale or incomplete")
 

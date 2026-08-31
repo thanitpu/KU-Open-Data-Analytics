@@ -4,7 +4,7 @@ This checkpoint turns the accepted read-only branch inventory into a durable, st
 
 ## Current evidence snapshot
 
-The register was observed at `2026-08-31T13:00:31+07:00` after fresh remote-ref and GitHub PR checks. The authoritative base is integration squash commit `d497f1b8311e2f7ec410dd1b52735c31befa3d5d`.
+The register was finalized at `2026-08-31T13:08:02+07:00` after fresh remote-ref and GitHub PR checks and creation of Draft PR #47. Unchanged historical branch records retain their earlier per-record observation time; no branch evidence may be newer than the top-level snapshot. The authoritative base is integration squash commit `d497f1b8311e2f7ec410dd1b52735c31befa3d5d`.
 
 | Group | Count | Meaning |
 |---|---:|---|
@@ -16,7 +16,7 @@ The register was observed at `2026-08-31T13:00:31+07:00` after fresh remote-ref 
 | Candidate Learning Evidence records | 11 | Candidate-only projections across six parked branches; none promoted |
 | Branch deletions | 0 | Deletion requires a later explicit human-approved action |
 
-The active branch is not a cleanup candidate. Its recorded head is the point-in-time head used to create this snapshot; callers can pass freshly fetched head/PR maps to the pure validator so later drift fails closed.
+The active branch is not a cleanup candidate. Its recorded head is the implementation head used to create Draft PR #47; publishing this registry and later coordination records necessarily advance that same active branch, so exact fresh-head reconciliation applies to every non-active branch while the active record remains explicitly non-deletable. Callers can pass freshly fetched head/PR maps to the pure validator so historical or parked ref drift, missing branches, and PR-state changes fail closed.
 
 ## Parked unique work
 

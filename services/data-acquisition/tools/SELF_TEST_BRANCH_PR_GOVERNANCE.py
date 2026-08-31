@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import sys
 from copy import deepcopy
+from datetime import datetime
 from pathlib import Path
 
 
@@ -143,6 +144,11 @@ rejects(lambda item: item["branches"][parked_index].update(evidence_references=[
 # BG15: fresh expected branch-head reconciliation detects stale or missing evidence.
 expected_heads = {item["branch"]: item["head_sha"] for item in branches}
 validate_branch_pr_disposition_registry(registry, expected_branch_heads=expected_heads)
+# The active branch necessarily advances when publishing the register; all
+# non-active historical/parked refs remain exact and fail closed on drift.
+advanced_active_heads = dict(expected_heads)
+advanced_active_heads[registry["authoritative_branch"]] = "f" * 40
+validate_branch_pr_disposition_registry(registry, expected_branch_heads=advanced_active_heads)
 stale_heads = dict(expected_heads)
 stale_heads[parked[0]["branch"]] = "0" * 40
 try:
@@ -209,8 +215,12 @@ serialized_text = json.dumps(serialized, ensure_ascii=False, sort_keys=True)
 for forbidden_text in ("authorization", "cookie", "session_token", "api_key", "password"):
     assert forbidden_text not in serialized_text.lower()
 
-# BG24: each record retains the same timezone-aware evidence timestamp.
-assert {item["observed_at"] for item in branches} == {registry["observed_at"]}
+# BG24: every record retains timezone-aware evidence no newer than the snapshot.
+assert all(
+    datetime.fromisoformat(item["observed_at"]) <= datetime.fromisoformat(registry["observed_at"])
+    for item in branches
+)
+assert active[0]["observed_at"] == registry["observed_at"]
 rejects(lambda item: item["branches"][0].update(observed_at="2026-08-31T13:00:31"), "timezone-free evidence validated")
 
 # BG25: the register performs no deletion, mutation, live request, production, or ML action.
