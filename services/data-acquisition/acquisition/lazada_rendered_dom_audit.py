@@ -42,7 +42,9 @@ def _price_role(raw: str, *, field: str) -> tuple[str, bool]:
         return "from_price", False
     if field == "promotional_price_text" or re.search(r"(?:promotion|promo|flash\s*sale|โปรโมชั่น|ลดเหลือ)", lowered):
         return "promotional", False
-    if field in {"current_price_text", "visible_price_text"}:
+    if re.search(r"(?:current\s+price|selling\s+price|sale\s+price|ราคาปัจจุบัน|ราคาขาย)", lowered):
+        return "current", False
+    if field == "current_price_text":
         return "current", False
     return "unknown_display_price", False
 
@@ -101,13 +103,14 @@ def price_evidence(
         raw = _normalized(row.get(field))
         if not raw or _amount(raw) is None:
             continue
-        role, conditional = _price_role(raw, field=field)
+        cue = _normalized(row.get(f"{field}_cue")) or None
+        role, conditional = _price_role(" ".join(filter(None, (cue, raw))), field=field)
         observations.append(_price_observation(
             raw, field=field, role=role, conditional=conditional,
             price_surface=price_surface, source_surface=source_surface,
             observed_at=observed_at, platform_product_id=platform_product_id,
             variant_identity=variant_identity, shop_id=shop_id, seller_id=seller_id,
-            cue=_normalized(row.get(f"{field}_cue")) or None,
+            cue=cue,
         ))
 
     range_raw = _normalized(row.get("variation_price_text")) or None
@@ -140,8 +143,8 @@ def price_evidence(
     current_observation = next((
         item for item in observations
         if item["provenance"]["field"] in {
-            "current_price_text", "visible_price_text", "promotional_price_text",
-        } and item["price_role"] in {"current", "promotional", "from_price"}
+            "current_price_text", "visible_price_text", "visible_text", "promotional_price_text",
+        } and item["price_role"] in {"current", "promotional"}
     ), None)
     original_observation = next((item for item in observations if item["price_role"] == "original"), None)
     return {
@@ -352,6 +355,16 @@ def correlate_search_detail(search: dict[str, Any], detail: dict[str, Any]) -> d
     title_consistent = bool(search_title and detail_title and (search_title == detail_title or search_title in detail_title or detail_title in search_title))
     search_price = search["price"].get("current_price")
     detail_price = detail["price"].get("current_price")
+    search_comparison = next((
+        item for item in search["price"].get("price_observations", [])
+        if item.get("price_role") in {"current", "promotional", "from_price"}
+    ), None)
+    detail_comparison = next((
+        item for item in detail["price"].get("price_observations", [])
+        if item.get("price_role") in {"current", "promotional", "from_price"}
+    ), None)
+    search_comparison_price = search_comparison.get("observed_price") if search_comparison else None
+    detail_comparison_price = detail_comparison.get("observed_price") if detail_comparison else None
     minimum = detail["price"].get("variation_min_price")
     maximum = detail["price"].get("variation_max_price")
     search_minimum = search["price"].get("variation_min_price")
@@ -374,16 +387,16 @@ def correlate_search_detail(search: dict[str, Any], detail: dict[str, Any]) -> d
     if not same_identity or same_variant is False:
         price_relation = "not_comparable"
         reason = "Different product identity." if not same_identity else "Explicit variant identities differ."
-    elif search_price is None or detail_price is None:
+    elif search_comparison_price is None or detail_comparison_price is None:
         price_relation = "insufficient_evidence"
-        reason = "Both surfaces need an explicit comparable current, promotional, or from-price slot."
-    elif search_price == detail_price:
+        reason = "Both surfaces need an explicit comparable current, promotional, or from-price observation."
+    elif search_comparison_price == detail_comparison_price:
         price_relation = "exact_match"
         reason = "The explicit observed amounts match; canonical or variant equivalence is not implied."
-    elif minimum is not None and maximum is not None and minimum <= search_price <= maximum:
+    elif minimum is not None and maximum is not None and minimum <= search_comparison_price <= maximum:
         price_relation = "search_within_detail_variant_range"
         reason = "The search amount is within the explicit detail variation range."
-    elif search_minimum is not None and search_maximum is not None and search_minimum <= detail_price <= search_maximum:
+    elif search_minimum is not None and search_maximum is not None and search_minimum <= detail_comparison_price <= search_maximum:
         price_relation = "detail_within_search_variant_range"
         reason = "The detail amount is within the explicit search variation range."
     elif "from_price" in search_roles ^ detail_roles:
@@ -409,6 +422,10 @@ def correlate_search_detail(search: dict[str, Any], detail: dict[str, Any]) -> d
         "canonical_price": None,
         "price_consistent_or_within_detail_range": price_consistent,
         "search_price": search_price, "detail_price": detail_price,
+        "search_comparison_price": search_comparison_price,
+        "search_comparison_price_role": search_comparison.get("price_role") if search_comparison else None,
+        "detail_comparison_price": detail_comparison_price,
+        "detail_comparison_price_role": detail_comparison.get("price_role") if detail_comparison else None,
         "search_variation_range": [search_minimum, search_maximum] if search_minimum is not None and search_maximum is not None else None,
         "detail_variation_range": [minimum, maximum] if minimum is not None and maximum is not None else None,
         "rating_review_comparable": bool(search["rating_review"].get("review_count") is not None and detail["rating_review"].get("review_count") is not None),

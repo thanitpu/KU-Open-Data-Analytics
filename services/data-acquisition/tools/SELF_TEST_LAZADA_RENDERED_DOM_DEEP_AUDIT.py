@@ -101,7 +101,9 @@ role_explained = correlate_search_detail(
 assert role_explained["price_relation"] == "different_but_explained_by_explicit_roles"
 assert role_explained["same_variant_identity"] == "unknown"
 assert role_explained["canonical_price_asserted"] is False
-assert record("keyword-search", current_price_text="เริ่มต้น ฿25")["price"]["price_observations"][0]["price_role"] == "from_price"
+from_price_record = record("keyword-search", current_price_text="เริ่มต้น ฿25")["price"]
+assert from_price_record["price_observations"][0]["price_role"] == "from_price"
+assert from_price_record["current_price"] is None
 
 # E: current and original displays remain independent observations.
 current_original = price_evidence({"current_price_text": "฿49", "original_price_text": "฿79"})
@@ -182,6 +184,61 @@ for document in (json.loads(FIXTURE.read_text(encoding="utf-8")), audit):
     forbidden = {"authorization", "cookie", "cookies", "credential", "credentials", "session", "token", "device_id"}
     assert not (forbidden & set(keys(document)))
 
+# P: an untyped visible-price field remains an unknown display observation.
+visible_price = price_evidence({"visible_price_text": "฿25"})
+assert visible_price["price_observations"][0]["price_role"] == "unknown_display_price"
+assert visible_price["current_price"] is None
+
+# Q: the explicitly typed current-price field remains compatible current price.
+typed_current = price_evidence({"current_price_text": "฿25"})
+assert typed_current["price_observations"][0]["price_role"] == "current"
+assert typed_current["current_price"] == 25.0
+
+# R: a from-price in a typed current slot is authoritative evidence, not current.
+typed_from = price_evidence({"current_price_text": "เริ่มต้น ฿25"})
+assert typed_from["price_observations"][0]["price_role"] == "from_price"
+assert typed_from["current_price"] is None
+assert typed_from["current_price_raw"] is None
+assert typed_from["current_price_semantics"] == "not-observed"
+
+# S: the same conservative rule applies to an untyped visible-price slot.
+visible_from = price_evidence({"visible_price_text": "เริ่มต้น ฿25"})
+assert visible_from["price_observations"][0]["price_role"] == "from_price"
+assert visible_from["current_price"] is None
+
+# T: an explicitly typed promotional selling price may populate compatibility current.
+promotional = price_evidence({"promotional_price_text": "โปรโมชั่น ฿49"})
+assert promotional["price_observations"][0]["price_role"] == "promotional"
+assert promotional["current_price"] == 49.0
+
+# U/V: voucher and member amounts remain conditional evidence only.
+explicit_voucher = price_evidence({"voucher_text": "ลดเพิ่ม ฿10"})
+member_price = price_evidence({"member_price_text": "สมาชิก ฿39"})
+assert explicit_voucher["price_observations"][0]["price_role"] == "voucher_or_conditional"
+assert explicit_voucher["current_price"] is None
+assert member_price["price_observations"][0]["price_role"] == "member_or_account_conditional"
+assert member_price["current_price"] is None
+
+# W: explicit variation endpoints remain authoritative observations independent of current.
+variation_only = price_evidence({"variation_price_text": "฿25–฿49"})
+assert [item["price_role"] for item in variation_only["price_observations"]] == ["variation_min", "variation_max"]
+assert [item["observed_price"] for item in variation_only["price_observations"]] == [25.0, 49.0]
+assert variation_only["current_price"] is None
+
+# A reviewed cue may type visible_price_text; its field name alone never does.
+cued_visible_current = price_evidence({
+    "visible_price_text": "฿25", "visible_price_text_cue": "selling price",
+})
+assert cued_visible_current["price_observations"][0]["price_role"] == "current"
+assert cued_visible_current["current_price"] == 25.0
+
+# X/Y: the 25/49 result and all earlier A-O invariants remain unchanged.
+assert unresolved["same_product_identity"] is True
+assert unresolved["variant_equivalence_status"] == "unknown"
+assert unresolved["price_relation"] == "different_unresolved"
+assert unresolved["canonical_price_asserted"] is False
+assert unresolved["canonical_price"] is None
+
 # Existing identity, generic scope, ranking, parser, and CLI contracts remain.
 assert {row["platform_product_id"] for row in (search, detail, category, shop)} == {"100001"}
 assert all(row["identity_basis"] == "canonical-public-product-url" for row in (search, detail, category, shop))
@@ -255,4 +312,4 @@ assert durable_correlation["price_relation"] == "different_unresolved"
 assert durable_correlation["canonical_price_asserted"] is False
 assert durable_correlation["canonical_price"] is None
 
-print("Lazada rendered-DOM Deep Audit deterministic tests passed (A-O).")
+print("Lazada rendered-DOM Deep Audit deterministic tests passed (A-Z).")
