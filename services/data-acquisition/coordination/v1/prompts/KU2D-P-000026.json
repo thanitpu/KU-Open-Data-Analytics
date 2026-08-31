@@ -1,0 +1,29 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000026",
+  "created_at": "2026-08-31T17:38:00+07:00",
+  "created_by": {"actor":"assistant","actor_id":"assistant_review"},
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-branch-handoff-protocol-v1",
+  "objective": "Use Branch Handoff Protocol v1 to transition into a bounded Coffee withheld-evidence follow-up decision task and determine the next evidence-recovery action without making a live request.",
+  "instructions": [
+    "Use branch_handoff v1 mechanically: close this source queue before switching, then create/switch to codex/ku2d-coffee-recovery-next-step-v1 from integration/data-acquisition-platform at merge commit f74b22ca0018b9a6fa6bc99d641679858ac10e26 and initialize the target queue as sole authority.",
+    "Review the merged Coffee evidence-recovery result and distinguish detector false-positive risk, environment/access risk, technique failure, and evidence-retention failure without reinterpreting the completed observation as success.",
+    "Compare exactly three next-step options: (A) one separately bounded rerun with the hardened detector on the same Roots/Nana URLs, (B) move next to Q-Diving evidence recovery, (C) stop Coffee recovery for now and retain the negative result as candidate evidence.",
+    "Score the options using expected evidence gain, cross-source reuse value, incremental request/risk cost, ability to resolve the specific Coffee gap, and dependency reduction. Recommend exactly one next action, but do not execute any live request.",
+    "If option A is recommended, define the smallest safe rerun envelope and the exact evidence that would constitute success, withheld evidence, or a new access boundary; execution remains unauthorized until separately queued.",
+    "Do not promote Candidate Learning Evidence, mutate Reviewed Corpus/Core Knowledge/Ground Truth, touch parked refs, perform cleanup, production, scheduler, ML, Survey/DoE/SEM, or broaden source scope.",
+    "Open a Draft PR, perform mechanical PR operations such as description refresh and Draft-to-Ready when safely possible, and do not merge.",
+    "Return completed_queue_summary with only the important items: work completed; key findings/results; repo/knowledge state changes; important out-of-scope actions not performed; remaining blockers/risks; recommended next logical step."
+  ],
+  "expected_result": {"result_id":"KU2D-R-000026","next_actor":"assistant"},
+  "provenance": {
+    "repository":"thanitpu/KU-Open-Data-Analytics",
+    "source_branch":"codex/ku2d-branch-handoff-protocol-v1",
+    "target_branch":"codex/ku2d-coffee-recovery-next-step-v1",
+    "depends_on_merge":"f74b22ca0018b9a6fa6bc99d641679858ac10e26",
+    "depends_on_result":"KU2D-R-000024",
+    "depends_on_review":"KU2D-V-000025"
+  },
+  "boundaries": {"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
