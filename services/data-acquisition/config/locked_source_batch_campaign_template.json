@@ -1,0 +1,30 @@
+{
+  "schema":"ku2d.locked-source-batch-campaign-template.v1",
+  "template_only":true,
+  "campaign_status":"not-configured-not-authorized-not-executable",
+  "campaign_id":null,
+  "reviewed_manifest_id":null,
+  "sources":[],
+  "source_template":{
+    "source_id":"REQUIRED",
+    "source_name":"REQUIRED",
+    "readiness_tier":"A-or-explicitly-reviewed-B",
+    "technique_lock":{"technique_id":"REQUIRED","technique_profile_fingerprint":"REQUIRED","automatic_switch_allowed":false},
+    "environment_lock":{"environment_id":"REQUIRED","separate_environment_approval_reference":"REQUIRED-IF-NONDEFAULT","automatic_switch_allowed":false},
+    "budgets":{"max_transport_requests":"REQUIRED-POSITIVE-INTEGER","max_pages":"REQUIRED-NONNEGATIVE-INTEGER","max_records":"REQUIRED-POSITIVE-INTEGER","timeout_seconds":"REQUIRED-POSITIVE-INTEGER","retry_policy":"EXPLICIT-BOUNDED-OR-NONE"},
+    "bounded_objective":{"expected_record_min":"REQUIRED-NONNEGATIVE-INTEGER","expected_record_max":"REQUIRED-POSITIVE-INTEGER","required_tracks":["REQUIRED"],"optional_tracks":[]},
+    "provenance_contract":{"source_surface":true,"observed_at":true,"request_or_capture_context":true,"canonical_identity":true,"raw_to_normalized_field_paths":true,"technique_profile_fingerprint":true},
+    "quality_gates":{"repeatability_threshold_pct":"REQUIRED","deep_audit_required":true,"identity_threshold_pct":"REQUIRED","provenance_threshold_pct":"REQUIRED","track_specific_gates":"REQUIRED"},
+    "drift_and_anomaly_metrics":["profile_fingerprint_changed","schema_or_field_path_changed","identity_yield_out_of_range","price_or_value_completeness_out_of_range","provenance_completeness_out_of_range","request_or_page_budget_pressure"],
+    "stop_conditions":["locked technique fails","locked environment cannot access the source","challenge, authentication, login, or access control appears","profile fingerprint changes","request/page/time budget is exhausted","required identity or provenance gate fails","record yield is outside the reviewed range without an accepted explanation"],
+    "exit_classification":{"0":"technical completion and every reviewed source/track/audit gate passed","1":"technical/runtime/evidence-writing failure","2":"technical completion with evidence written but source or approval gate withheld"},
+    "failure_behavior":"Stop this source, write boundary/drift evidence, and continue only sources whose independent locks remain valid.",
+    "forbidden_automatic_escalation":["different extraction technique","different execution environment","browser or Edge fallback","login or authentication","CAPTCHA or challenge handling","private API","proxy or session reuse","budget expansion","production approval or scheduling"]
+  },
+  "readiness_recommendations":{
+    "eligible_for_first_manifest_after_separate_review":["Lotus's","Big C","Makro","Tops"],
+    "conditional_only":[{"source":"Gourmet Market","caveat":"Requires explicit approved Thailand Edge environment lock when cloud is blocked."},{"source":"JIB","caveat":"Validated only in isolated staging; production Human Approve remains false."}],
+    "excluded_until_new_evidence_or_authority":["Watsons","Lazada Thailand","Shopee Thailand","YouTube Q-Diving","Nana Coffee Roasters","Roots Coffee","LINE SHOPPING","Agoda","Traveloka","SSI Blog","Scubadoo Koh Tao","Aquamaster Thailand"]
+  },
+  "boundaries":{"manifest_template_only":true,"execution_enabled":false,"live_request_count":0,"automatic_technique_switch":false,"automatic_environment_switch":false,"production_authorized":false,"production_store":false,"scheduler_action":null}
+}
