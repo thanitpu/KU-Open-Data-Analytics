@@ -1,0 +1,443 @@
+{
+  "schema": "ku2d.coffee-evidence-recovery.v1",
+  "package_id": "KU2D-CER-000001",
+  "completed_at": "2026-08-31T11:28:10.442052+00:00",
+  "classification": "evidence_withheld",
+  "technical_completion": true,
+  "usable_candidate_evidence": false,
+  "observations": [
+    {
+      "source_id": "roots_coffee",
+      "source": "Roots Coffee",
+      "attempt_index": 1,
+      "acquisition_attempted": true,
+      "transport_completed": true,
+      "observed_at": "2026-08-31T11:28:09.306695+00:00",
+      "state": "request-completed",
+      "transport_requests": 1,
+      "http_status": 200,
+      "final_url": "https://shop.rootsbkk.com/collections/frontpage/products/house-blend-coffee",
+      "content_type": "text/html; charset=utf-8",
+      "response_bytes_read": 90453,
+      "redirect_chain": [],
+      "access_boundary": null,
+      "access_boundary_evidence": null,
+      "technical_failure": null,
+      "sanitized_response": {
+        "capture": "sanitized-official-product-detail-fields",
+        "http_status": 200,
+        "content_type": "text/html; charset=utf-8",
+        "response_bytes": 90453,
+        "response_sha256": "61690ed7c2e0f583d211d64531f0f07f9e866546b90e91df18390b0105243e47",
+        "final_url": "https://shop.rootsbkk.com/collections/frontpage/products/house-blend-coffee",
+        "canonical_url_evidence": "https://shop.rootsbkk.com/products/house-blend-coffee",
+        "structured_product_subset": {
+          "offer": {}
+        },
+        "labeled_field_subset": {},
+        "raw_html_retained": false,
+        "headers_retained": false
+      },
+      "record": null,
+      "field_provenance": {},
+      "normalization_failure_reason": "normalized product withheld: coffee_product_semantics"
+    },
+    {
+      "source_id": "nana_coffee_roasters",
+      "source": "Nana Coffee Roasters",
+      "attempt_index": 1,
+      "acquisition_attempted": true,
+      "transport_completed": true,
+      "observed_at": "2026-08-31T11:28:09.858309+00:00",
+      "state": "request-completed",
+      "transport_requests": 1,
+      "http_status": 200,
+      "final_url": "https://nanacoffeeroasters.com/products/house-blend",
+      "content_type": "text/html; charset=utf-8",
+      "response_bytes_read": 137297,
+      "redirect_chain": [],
+      "access_boundary": null,
+      "access_boundary_evidence": null,
+      "technical_failure": null,
+      "sanitized_response": {
+        "capture": "sanitized-official-product-detail-fields",
+        "http_status": 200,
+        "content_type": "text/html; charset=utf-8",
+        "response_bytes": 137297,
+        "response_sha256": "fad73e7cc1b02ef174067df2be6ccc64f801b09519386bdd39f85683f68e6efe",
+        "final_url": "https://nanacoffeeroasters.com/products/house-blend",
+        "canonical_url_evidence": "https://nanacoffeeroasters.com/products/house-blend",
+        "structured_product_subset": {
+          "@type": "Product",
+          "name": "House Blend Coffee Beans (Medium Roast) - 200g / 500g / 1kg",
+          "offer": {
+            "price": "470.0",
+            "priceCurrency": "THB",
+            "availability": "http://schema.org/InStock"
+          }
+        },
+        "labeled_field_subset": {
+          "origin": "Colombia, Brazil, Kenya, Ethiopia",
+          "process": "Washed & Natural",
+          "tasting_notes": "Floral, Fruity Acidity & Sweetness, Cacao Finish"
+        },
+        "raw_html_retained": false,
+        "headers_retained": false
+      },
+      "record": {
+        "record_type": "CoffeeProductCandidate",
+        "coffee_product_id": "nanacoffeeroasters.com:house-blend",
+        "product_name": "House Blend Coffee Beans (Medium Roast) - 200g / 500g / 1kg",
+        "canonical_url": "https://nanacoffeeroasters.com/products/house-blend",
+        "price": 470.0,
+        "currency": "THB",
+        "price_role": "displayed_product_price",
+        "availability": "InStock",
+        "variant": null,
+        "origin": "Colombia, Brazil, Kenya, Ethiopia",
+        "process": "Washed & Natural",
+        "tasting_notes": "Floral, Fruity Acidity & Sweetness, Cacao Finish",
+        "roast_level": null,
+        "package_size": null,
+        "source": "Nana Coffee Roasters",
+        "source_surface": "official-public-product-detail",
+        "observed_at": "2026-08-31T11:28:09.858309+00:00",
+        "production_approved": false,
+        "production_store": false,
+        "scheduler_action": null
+      },
+      "field_provenance": {
+        "coffee_product_id": {
+          "raw_value": "https://nanacoffeeroasters.com/products/house-blend",
+          "extraction_path": "canonical-url-host-and-slug",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:09.858309+00:00"
+        },
+        "product_name": {
+          "raw_value": "House Blend Coffee Beans (Medium Roast) - 200g / 500g / 1kg",
+          "extraction_path": "jsonld.Product.name",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:09.858309+00:00"
+        },
+        "canonical_url": {
+          "raw_value": "https://nanacoffeeroasters.com/products/house-blend",
+          "extraction_path": "link[rel=canonical]",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:09.858309+00:00"
+        },
+        "price": {
+          "raw_value": "470.0",
+          "extraction_path": "jsonld.Product.offers.price",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:09.858309+00:00"
+        },
+        "currency": {
+          "raw_value": "THB",
+          "extraction_path": "jsonld.Product.offers.priceCurrency",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:09.858309+00:00"
+        },
+        "price_role": {
+          "raw_value": "470.0",
+          "extraction_path": "jsonld.Product.offers.price",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:09.858309+00:00"
+        },
+        "availability": {
+          "raw_value": "http://schema.org/InStock",
+          "extraction_path": "jsonld.Product.offers.availability",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:09.858309+00:00"
+        },
+        "origin": {
+          "raw_value": "Colombia, Brazil, Kenya, Ethiopia",
+          "extraction_path": "visible-label:Origin",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:09.858309+00:00"
+        },
+        "process": {
+          "raw_value": "Washed & Natural",
+          "extraction_path": "visible-label:Process",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:09.858309+00:00"
+        },
+        "tasting_notes": {
+          "raw_value": "Floral, Fruity Acidity & Sweetness, Cacao Finish",
+          "extraction_path": "visible-label:Taste Notes",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:09.858309+00:00"
+        },
+        "source": {
+          "raw_value": "Nana Coffee Roasters",
+          "extraction_path": "recovery-package.target.source",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:09.858309+00:00"
+        },
+        "source_surface": {
+          "raw_value": "official-public-product-detail",
+          "extraction_path": "recovery-package.target.surface",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:09.858309+00:00"
+        },
+        "observed_at": {
+          "raw_value": "2026-08-31T11:28:09.858309+00:00",
+          "extraction_path": "transport.observed_at",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:09.858309+00:00"
+        }
+      },
+      "normalization_failure_reason": null
+    },
+    {
+      "source_id": "nana_coffee_roasters",
+      "source": "Nana Coffee Roasters",
+      "attempt_index": 2,
+      "acquisition_attempted": true,
+      "transport_completed": true,
+      "observed_at": "2026-08-31T11:28:10.179223+00:00",
+      "state": "request-completed",
+      "transport_requests": 1,
+      "http_status": 200,
+      "final_url": "https://nanacoffeeroasters.com/products/house-blend",
+      "content_type": "text/html; charset=utf-8",
+      "response_bytes_read": 137297,
+      "redirect_chain": [],
+      "access_boundary": null,
+      "access_boundary_evidence": null,
+      "technical_failure": null,
+      "sanitized_response": {
+        "capture": "sanitized-official-product-detail-fields",
+        "http_status": 200,
+        "content_type": "text/html; charset=utf-8",
+        "response_bytes": 137297,
+        "response_sha256": "3ef60397b8fb5e666912152a6efe2a03fe44a1304123aed93d44105aa9e1046f",
+        "final_url": "https://nanacoffeeroasters.com/products/house-blend",
+        "canonical_url_evidence": "https://nanacoffeeroasters.com/products/house-blend",
+        "structured_product_subset": {
+          "@type": "Product",
+          "name": "House Blend Coffee Beans (Medium Roast) - 200g / 500g / 1kg",
+          "offer": {
+            "price": "470.0",
+            "priceCurrency": "THB",
+            "availability": "http://schema.org/InStock"
+          }
+        },
+        "labeled_field_subset": {
+          "origin": "Colombia, Brazil, Kenya, Ethiopia",
+          "process": "Washed & Natural",
+          "tasting_notes": "Floral, Fruity Acidity & Sweetness, Cacao Finish"
+        },
+        "raw_html_retained": false,
+        "headers_retained": false
+      },
+      "record": {
+        "record_type": "CoffeeProductCandidate",
+        "coffee_product_id": "nanacoffeeroasters.com:house-blend",
+        "product_name": "House Blend Coffee Beans (Medium Roast) - 200g / 500g / 1kg",
+        "canonical_url": "https://nanacoffeeroasters.com/products/house-blend",
+        "price": 470.0,
+        "currency": "THB",
+        "price_role": "displayed_product_price",
+        "availability": "InStock",
+        "variant": null,
+        "origin": "Colombia, Brazil, Kenya, Ethiopia",
+        "process": "Washed & Natural",
+        "tasting_notes": "Floral, Fruity Acidity & Sweetness, Cacao Finish",
+        "roast_level": null,
+        "package_size": null,
+        "source": "Nana Coffee Roasters",
+        "source_surface": "official-public-product-detail",
+        "observed_at": "2026-08-31T11:28:10.179223+00:00",
+        "production_approved": false,
+        "production_store": false,
+        "scheduler_action": null
+      },
+      "field_provenance": {
+        "coffee_product_id": {
+          "raw_value": "https://nanacoffeeroasters.com/products/house-blend",
+          "extraction_path": "canonical-url-host-and-slug",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:10.179223+00:00"
+        },
+        "product_name": {
+          "raw_value": "House Blend Coffee Beans (Medium Roast) - 200g / 500g / 1kg",
+          "extraction_path": "jsonld.Product.name",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:10.179223+00:00"
+        },
+        "canonical_url": {
+          "raw_value": "https://nanacoffeeroasters.com/products/house-blend",
+          "extraction_path": "link[rel=canonical]",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:10.179223+00:00"
+        },
+        "price": {
+          "raw_value": "470.0",
+          "extraction_path": "jsonld.Product.offers.price",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:10.179223+00:00"
+        },
+        "currency": {
+          "raw_value": "THB",
+          "extraction_path": "jsonld.Product.offers.priceCurrency",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:10.179223+00:00"
+        },
+        "price_role": {
+          "raw_value": "470.0",
+          "extraction_path": "jsonld.Product.offers.price",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:10.179223+00:00"
+        },
+        "availability": {
+          "raw_value": "http://schema.org/InStock",
+          "extraction_path": "jsonld.Product.offers.availability",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:10.179223+00:00"
+        },
+        "origin": {
+          "raw_value": "Colombia, Brazil, Kenya, Ethiopia",
+          "extraction_path": "visible-label:Origin",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:10.179223+00:00"
+        },
+        "process": {
+          "raw_value": "Washed & Natural",
+          "extraction_path": "visible-label:Process",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:10.179223+00:00"
+        },
+        "tasting_notes": {
+          "raw_value": "Floral, Fruity Acidity & Sweetness, Cacao Finish",
+          "extraction_path": "visible-label:Taste Notes",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:10.179223+00:00"
+        },
+        "source": {
+          "raw_value": "Nana Coffee Roasters",
+          "extraction_path": "recovery-package.target.source",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:10.179223+00:00"
+        },
+        "source_surface": {
+          "raw_value": "official-public-product-detail",
+          "extraction_path": "recovery-package.target.surface",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:10.179223+00:00"
+        },
+        "observed_at": {
+          "raw_value": "2026-08-31T11:28:10.179223+00:00",
+          "extraction_path": "transport.observed_at",
+          "source_url": "https://nanacoffeeroasters.com/products/house-blend",
+          "observed_at": "2026-08-31T11:28:10.179223+00:00"
+        }
+      },
+      "normalization_failure_reason": null
+    }
+  ],
+  "deep_audit": {
+    "audit_passed": false,
+    "source_audits": [
+      {
+        "source_id": "roots_coffee",
+        "source": "Roots Coffee",
+        "attempt_count": 1,
+        "retained_record_count": 0,
+        "gate_checks": {
+          "bounded_attempts_completed": false,
+          "product_identity_and_price_yield": false,
+          "official_https_canonical_identity": false,
+          "stable_product_identity": false,
+          "field_level_provenance": false,
+          "retail_product_not_cafe_menu": false
+        },
+        "audit_passed": false,
+        "hard_failures": [
+          "bounded_attempts_completed",
+          "product_identity_and_price_yield",
+          "official_https_canonical_identity",
+          "stable_product_identity",
+          "field_level_provenance",
+          "retail_product_not_cafe_menu"
+        ],
+        "repeatability": {
+          "identity_repeatability_pct": 0.0,
+          "canonical_repeatability_pct": 0.0,
+          "price_values": [],
+          "availability_values": []
+        },
+        "deviations": [],
+        "access_boundaries": []
+      },
+      {
+        "source_id": "nana_coffee_roasters",
+        "source": "Nana Coffee Roasters",
+        "attempt_count": 2,
+        "retained_record_count": 2,
+        "gate_checks": {
+          "bounded_attempts_completed": true,
+          "product_identity_and_price_yield": true,
+          "official_https_canonical_identity": true,
+          "stable_product_identity": true,
+          "field_level_provenance": true,
+          "retail_product_not_cafe_menu": true
+        },
+        "audit_passed": true,
+        "hard_failures": [],
+        "repeatability": {
+          "identity_repeatability_pct": 100.0,
+          "canonical_repeatability_pct": 100.0,
+          "price_values": [
+            470.0,
+            470.0
+          ],
+          "availability_values": [
+            "InStock",
+            "InStock"
+          ]
+        },
+        "deviations": [],
+        "access_boundaries": []
+      }
+    ],
+    "hard_failures": [
+      "roots_coffee:bounded_attempts_completed",
+      "roots_coffee:product_identity_and_price_yield",
+      "roots_coffee:official_https_canonical_identity",
+      "roots_coffee:stable_product_identity",
+      "roots_coffee:field_level_provenance",
+      "roots_coffee:retail_product_not_cafe_menu"
+    ],
+    "warnings": []
+  },
+  "request_accounting": {
+    "acquisition_attempts": 3,
+    "maximum_acquisition_attempts": 4,
+    "transport_requests": 3,
+    "maximum_transport_requests": 12,
+    "retries": 0,
+    "pagination": 0
+  },
+  "authority": {
+    "candidate_only": true,
+    "candidate_evidence_ids": [
+      "KU2D-CLE-000006",
+      "KU2D-CLE-000007"
+    ],
+    "candidate_promoted": false,
+    "reviewed_corpus_authorized": false,
+    "human_confirmed": false,
+    "ground_truth_asserted": false
+  },
+  "boundaries": {
+    "public_read_only": true,
+    "raw_html_retained": false,
+    "headers_or_session_material_retained": false,
+    "production_approved": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "knowledge_mutation": false,
+    "automatic_learning_memory_export": false
+  },
+  "run_state": "complete"
+}

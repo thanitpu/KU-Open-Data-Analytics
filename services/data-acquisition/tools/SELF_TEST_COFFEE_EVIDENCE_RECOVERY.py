@@ -247,4 +247,29 @@ assert live["authority"]["candidate_promoted"] is False
 assert live["boundaries"]["production_approved"] is live["boundaries"]["production_store"] is False
 assert live["boundaries"]["scheduler_action"] is None and live["boundaries"]["knowledge_mutation"] is False
 
-print("Coffee evidence recovery deterministic tests passed (CER1-CER55).")
+# CER56-CER69: the separately authorized hardened rerun obeyed staged stopping,
+# retained repeatable Nana evidence, withheld Roots, and changed no authority.
+rerun_path = ROOT.parents[1] / "docs" / "validation" / "coffee-hardened-rerun-2026-08-31.json"
+rerun = json.loads(rerun_path.read_text(encoding="utf-8"))
+assert rerun["schema"] == "ku2d.coffee-evidence-recovery.v1"
+assert rerun["classification"] == "evidence_withheld"
+assert rerun["technical_completion"] is True and rerun["usable_candidate_evidence"] is False
+assert rerun["request_accounting"]["acquisition_attempts"] == rerun["request_accounting"]["transport_requests"] == 3
+assert rerun["request_accounting"]["retries"] == rerun["request_accounting"]["pagination"] == 0
+roots_rows = [row for row in rerun["observations"] if row["source_id"] == "roots_coffee"]
+nana_rows = [row for row in rerun["observations"] if row["source_id"] == "nana_coffee_roasters"]
+assert len(roots_rows) == 1 and roots_rows[0]["record"] is None
+assert roots_rows[0]["normalization_failure_reason"] == "normalized product withheld: coffee_product_semantics"
+assert len(nana_rows) == 2 and all(row["record"]["coffee_product_id"] == "nanacoffeeroasters.com:house-blend" for row in nana_rows)
+assert all(row["record"]["price"] == 470.0 and row["record"]["currency"] == "THB" for row in nana_rows)
+assert all(row["field_provenance"] and row["sanitized_response"]["raw_html_retained"] is False for row in nana_rows)
+rerun_audits = {row["source_id"]: row for row in rerun["deep_audit"]["source_audits"]}
+assert rerun_audits["roots_coffee"]["audit_passed"] is False
+assert rerun_audits["nana_coffee_roasters"]["audit_passed"] is True
+assert rerun_audits["nana_coffee_roasters"]["repeatability"]["identity_repeatability_pct"] == 100.0
+assert rerun_audits["nana_coffee_roasters"]["repeatability"]["canonical_repeatability_pct"] == 100.0
+assert rerun["authority"]["candidate_promoted"] is False
+assert rerun["boundaries"]["production_approved"] is rerun["boundaries"]["production_store"] is False
+assert rerun["boundaries"]["scheduler_action"] is None and rerun["boundaries"]["knowledge_mutation"] is False
+
+print("Coffee evidence recovery deterministic tests passed (CER1-CER69).")

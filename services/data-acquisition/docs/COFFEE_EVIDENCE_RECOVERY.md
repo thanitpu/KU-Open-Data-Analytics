@@ -78,3 +78,27 @@ Audit failed. The CLI now requires explicit HTTP status, visible/title/widget,
 challenge-markup, or route evidence for future boundary classification; a
 script-only occurrence of the word `captcha` is a deterministic negative
 fixture. This checkpoint did not rerun after improving that detector.
+
+## Separately authorized hardened rerun
+
+Human Decision `KU2D-H-000010` and Prompt `KU2D-P-000027` separately
+authorized exactly one same-URL rerun. The request package now validates that
+authority, and the runner stops a source after an unusable first observation;
+it makes observation two only after a strict first product record. The durable
+result is `docs/validation/coffee-hardened-rerun-2026-08-31.json`.
+
+The rerun completed technically with exit `2`, three acquisition attempts,
+three transport requests, no retry, no pagination, and no access boundary.
+Roots returned HTTP 200, but its first response did not meet the strict coffee
+product-semantics gate, so no Roots record was retained and the source stopped
+without a second request. Nana returned two attributable House Blend records
+at 470 THB. Both Nana records retained field-level provenance, stable identity
+and canonical URL, and 100% identity/canonical repeatability; the Nana source
+audit passed. The aggregate Deep Audit failed because Roots retained zero
+records.
+
+This result is candidate-only evidence pending independent review. It does not
+promote either Candidate Learning Evidence record and does not authorize a
+Reviewed Corpus, Core Knowledge, Human Confirmation, Ground Truth, production,
+storage, or scheduler mutation. No automatic rerun or environment escalation
+occurred.
