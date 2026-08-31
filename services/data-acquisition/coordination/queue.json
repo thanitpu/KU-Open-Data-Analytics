@@ -1,15 +1,15 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T09:27:00+07:00",
+  "updated_at": "2026-08-31T09:50:26+07:00",
   "latest_prompt": "KU2D-P-000004",
-  "latest_result": "KU2D-R-000003",
+  "latest_result": "KU2D-R-000004",
   "latest_review": "KU2D-V-000003",
   "latest_human_decision": null,
   "prompt_states": {
     "KU2D-P-000001": "completed",
     "KU2D-P-000002": "completed",
     "KU2D-P-000003": "completed",
-    "KU2D-P-000004": "ready_for_codex"
+    "KU2D-P-000004": "result_submitted"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -17,12 +17,12 @@
     "KU2D-P-000003"
   ],
   "next_action": {
-    "actor": "codex",
+    "actor": "assistant",
     "prompt_id": "KU2D-P-000004",
-    "result_id": null,
+    "result_id": "KU2D-R-000004",
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "PR #44 was independently rechecked and squash-merged as d594592f07594bba8d16ca0d42ec51b4861c6bf6. The next bounded task strengthens KU2D Core Knowledge and ML-ready reviewed knowledge before any acquisition-scope expansion. Survey/Google Forms/DoE/Bias/SEM remain parked."
+  "notes": "KU2D-R-000004 implemented Core Knowledge Backfill & Coverage Audit v1 and opened Draft PR #45. Control is handed to assistant for independent review. No live requests, production authorization, ML dataset export, training, or acquisition-scope expansion occurred."
 }

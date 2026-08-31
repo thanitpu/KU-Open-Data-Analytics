@@ -1,0 +1,168 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000004",
+  "prompt_id": "KU2D-P-000004",
+  "submitted_at": "2026-08-31T09:50:26+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "Implemented KU2D Core Knowledge Backfill & Coverage Audit v1 as a storage-neutral, deterministic, non-authorizing review layer. Opened Draft PR #45 without expanding acquisition scope or making live requests.",
+  "evidence_references": [
+    "PR:#45",
+    "commit:a4394d16d0be790a698b81275e475b8d66ff6bd9",
+    "base:d594592f07594bba8d16ca0d42ec51b4861c6bf6",
+    "workflow:Data Acquisition Platform CI#196",
+    "workflow:PR Browser Preview Link#116"
+  ],
+  "repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-core-knowledge-backfill-v1",
+    "base_merge_sha": "d594592f07594bba8d16ca0d42ec51b4861c6bf6",
+    "implementation_commit_sha": "a4394d16d0be790a698b81275e475b8d66ff6bd9",
+    "pull_request_number": 45,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/45",
+    "pull_request_base": "integration/data-acquisition-platform",
+    "pull_request_draft": true,
+    "pull_request_merged": false
+  },
+  "files_changed": [
+    ".github/workflows/data-acquisition-platform-ci.yml",
+    "services/data-acquisition/README.md",
+    "services/data-acquisition/acquisition/core_knowledge.py",
+    "services/data-acquisition/config/core_coverage_matrix.json",
+    "services/data-acquisition/config/core_knowledge_taxonomy.json",
+    "services/data-acquisition/config/knowledge_gap_register.json",
+    "services/data-acquisition/config/ml_knowledge_map.json",
+    "services/data-acquisition/config/reviewed_learning_corpus.json",
+    "services/data-acquisition/docs/ACQUISITION_LEARNING_MEMORY.md",
+    "services/data-acquisition/docs/CORE_KNOWLEDGE_BACKFILL.md",
+    "services/data-acquisition/tools/SELF_TEST_CORE_KNOWLEDGE.py",
+    "services/data-acquisition/coordination/queue.json",
+    "services/data-acquisition/coordination/v1/results/KU2D-R-000004.json"
+  ],
+  "schemas_and_taxonomy": {
+    "schemas": [
+      "ku2d.core-knowledge-taxonomy.v1",
+      "ku2d.reviewed-learning-episode.v1",
+      "ku2d.reviewed-learning-corpus.v1",
+      "ku2d.core-coverage-matrix.v1",
+      "ku2d.ml-knowledge-map.v1",
+      "ku2d.knowledge-gap-register.v1"
+    ],
+    "taxonomy_dimension_count": 15,
+    "distinctions_preserved": [
+      "technique != execution environment",
+      "evidence != interpretation",
+      "observation != ground truth",
+      "displayed order != demand",
+      "product identity != variant identity",
+      "blocked access != extraction failure"
+    ],
+    "storage_neutral": true,
+    "deterministic_serialization": true
+  },
+  "historical_backfill": {
+    "included_episode_count": 16,
+    "included": [
+      "Lotus official structured catalog",
+      "Big C sitemap to canonical detail",
+      "Makro SSR catalog",
+      "Tops sitemap to canonical detail",
+      "Gourmet rendered Product and Price",
+      "Gourmet first-party network Discovery",
+      "Gourmet cloud environment boundary",
+      "JIB canonical-detail Product and Price",
+      "JIB app-bundle Discovery",
+      "Shopee application-shell and traffic-verification boundary",
+      "Lazada static application shell",
+      "Lazada bounded browser product and price observation",
+      "Lazada deterministic price and counter semantics",
+      "Q-Diving official YouTube metadata foundation contract",
+      "YouTube uploads-playlist dry-monitoring contract",
+      "PunThai official-menu deterministic parser contract"
+    ],
+    "excluded": [
+      {"source": "LINE SHOPPING", "reason": "no completed reviewed episode or durable validation artifact found"},
+      {"source": "NocNoc", "reason": "no repository-grounded ceased-source artifact found; ceased status was not fabricated"},
+      {"source": "TikTok Shop", "reason": "registry seed only; no completed reviewed access-boundary episode"},
+      {"source": "Agoda and Traveloka", "reason": "seed and candidate records only; no completed durable outcome"},
+      {"source": "other Coffee sources", "reason": "playbook candidates only; PunThai is retained strictly as a deterministic parser contract"}
+    ],
+    "positive_negative_and_mixed_present": true,
+    "fabricated_human_review_count": 0
+  },
+  "coverage_matrix": {
+    "capability_count": 19,
+    "unit": "reusable acquisition capability or pattern",
+    "states": ["validated_multi_source", "validated_single_source", "partial", "boundary_validated", "contract_only", "gap"],
+    "explicit_gap": "cross-source matching",
+    "partial_areas": ["browser acquisition", "pagination", "change monitoring", "incremental refresh", "entity resolution", "temporal observation", "provenance/review", "request cost/latency"]
+  },
+  "knowledge_gap_register": {
+    "gap_count": 8,
+    "ranked_by_pattern_not_brand": true,
+    "highest_ranked_gap": "cross-source product and variant identity",
+    "exploration_started": false
+  },
+  "ml_knowledge_map": {
+    "task_count": 8,
+    "tasks": ["price semantics", "counter semantics", "source classification", "technique selection", "access outcome prediction", "field semantic mapping", "evidence strength", "review prioritization"],
+    "training_or_inference_enabled": false,
+    "dataset_export_enabled": false,
+    "ml_training_dataset_exists": false,
+    "readiness_claimed": false
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "git_diff_check": "passed",
+    "json_parse": "59 files passed before Result submission",
+    "yaml_parse": "16 workflows passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service, tools passed",
+    "core_knowledge_tests": "CK1-CK17 passed",
+    "learning_memory_tests": "LM1-LM24 passed",
+    "agent_handoff_tests": "AH1-AH18 passed before Result submission",
+    "complete_deterministic_corpus": "38/38 passed",
+    "supermarket_regressions": "passed",
+    "retail_transfer_regressions": "passed",
+    "runtime_core_knowledge_imports": 0,
+    "live_request_count": 0
+  },
+  "ci": {
+    "implementation_head": "a4394d16d0be790a698b81275e475b8d66ff6bd9",
+    "data_acquisition_platform_ci": {"run_number": 196, "run_id": 33351880506, "conclusion": "success"},
+    "pr_browser_preview_link": {"run_number": 116, "run_id": 33351880491, "conclusion": "success"},
+    "frontend_ci": {"run_number": 930, "run_id": 33351880521, "status_at_submission": "in_progress"}
+  },
+  "security": {
+    "sensitive_material_rejection_tested": true,
+    "credentials_or_private_material_added": false,
+    "automatic_runtime_writes": false,
+    "automatic_learning_memory_export": false,
+    "production_store": false,
+    "scheduler_action": null
+  },
+  "uncertainties": [
+    "No completed reviewed LINE SHOPPING outcome is present in the repository.",
+    "No repository-grounded NocNoc ceased-source artifact was found.",
+    "TikTok and OTA entries remain seeds or candidates rather than reviewed outcomes.",
+    "YouTube and PunThai backfill items are deterministic contracts, not live-validation claims.",
+    "Most retained episodes do not have explicit Human Confirmation and no ML Training Dataset exists."
+  ],
+  "blockers": [],
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-core-knowledge-backfill-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000004.json",
+    "depends_on_review": "KU2D-V-000003",
+    "depends_on_merge": "d594592f07594bba8d16ca0d42ec51b4861c6bf6",
+    "learning_memory_record_id": null
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
