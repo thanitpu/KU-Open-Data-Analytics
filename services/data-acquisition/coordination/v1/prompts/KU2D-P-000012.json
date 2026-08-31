@@ -1,0 +1,42 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000012",
+  "created_at": "2026-08-31T12:42:00+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-core-intelligence-v1",
+  "objective": "Finalize Draft PR #46 Core Intelligence Quality Foundation v1 for independent merge review without adding branch-governance artifacts or broader Core Intelligence recommendation/ranking scope.",
+  "instructions": [
+    "BRANCH HANDOFF: remain on codex/ku2d-core-intelligence-v1. Fetch/pull the latest remote state and read queue.json from this branch before any work.",
+    "Treat KU2D-R-000011 and KU2D-V-000011 as accepted inventory evidence only. Do not add the durable Branch/PR Disposition Register, cleanup validator, or branch-deletion actions to PR #46; that work is explicitly deferred to a separate branch after PR #46 is merged.",
+    "Review the full PR #46 delta for exact scope consistency across: evidence chain, taxonomy/codebook family model, Descriptor/Code/Theme/Interpretation separation, first/second-cycle coding, ontology openness, Analytical Memo, Negative/Deviant Case, Finding Verification, Independent Coding, Semantic Reliability, analysis projections, Quality Loop, documentation, fixtures, and CI registration.",
+    "Confirm the KU2D-V-000009 correction remains satisfied: taxonomy is authoritative for code family; AT-* remains acquisition_technique, FB-* remains failure_boundary_type, SI-* remains semantic_interpretation where defined; only semantic_interpretation codes may be described as semantic codes in the narrow semantic sense.",
+    "Confirm codebook coverage metadata remains exact and does not imply full taxonomy coverage. Preserve the current explicit partial-coverage accounting and fail closed on unsupported or contradictory family claims.",
+    "Confirm the quality foundation remains non-authorizing and storage-neutral: no new source, no live acquisition, no candidate-source promotion, no runtime auto-write, no production authorization/storage/scheduling, no ML training/inference/embedding/vector storage/dataset export, and no Survey/Google Forms/DoE/Bias/SEM work.",
+    "Re-run git diff --check, JSON/YAML parsing, Python compilation, QF tests, Core Knowledge tests, Learning Memory tests, Agent Handoff tests, the complete deterministic Data Acquisition corpus, and relevant regressions.",
+    "Check exact current-head CI after all coordination-only commits. Update the PR #46 description if necessary so the documented head, tests, and scope match reality.",
+    "If technically clean, attempt to mark PR #46 Ready for review. If the connector fails, record the limitation; do not use an unsafe workaround.",
+    "Write KU2D-R-000012 with exact head SHA, PR state, final scope audit, exact test/CI state, confirmation that branch-governance material was not added, and any remaining blocker. Hand control back to assistant.",
+    "Do not merge PR #46. Do not begin broader Core Intelligence recommendation/ranking. Do not create the branch-governance branch yet."
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000012",
+    "next_actor": "assistant"
+  },
+  "provenance": {
+    "depends_on_result": "KU2D-R-000011",
+    "depends_on_review": "KU2D-V-000011",
+    "target_pr": 46,
+    "deferred_follow_up": "dedicated branch/PR for Branch/PR Disposition Register after PR #46 merge",
+    "authoritative_branch": "codex/ku2d-core-intelligence-v1"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
