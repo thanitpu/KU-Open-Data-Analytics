@@ -1,0 +1,40 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000002",
+  "created_at": "2026-08-31T09:07:00+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "objective": "Produce a bounded architecture assessment for Survey/Questionnaire Data Acquisition and future SEM support without adding implementation scope to PR #44",
+  "instructions": [
+    "Do not implement Google Forms, survey runtime, DoE, bias verification, SEM, KU2A UI, or new production integration in PR #44.",
+    "Inspect the current KU2D/KU2A architecture and identify where user-generated survey/questionnaire acquisition should sit relative to public Internet acquisition, uploaded files, existing-system connectors, and KU2A dataset intake.",
+    "Assess a staged survey workflow from simple Excel question-bank upload to generated Google Form, response linkage, collection-progress dashboard, automatic analysis, and the advanced case where the user starts only with a research/business question and the system recommends whether a questionnaire is appropriate.",
+    "Define conceptual contracts for questionnaire specification, question/answer types, constructs/scales, consent/privacy metadata, sampling frame, response provenance, collection status, bias/quality diagnostics, and dataset handoff. Preserve human review before publishing a form.",
+    "Explain how DoE/experimental-design concepts relate to, but differ from, questionnaire/survey design; identify where randomization, treatment assignment, sampling design, nonresponse, selection bias, common-method bias, wording/order effects, and measurement validity belong.",
+    "Propose how Google Forms should be treated as one connector/provider behind a generic Survey Collection Provider contract so other providers can be added later.",
+    "Propose the future SEM analysis placement in KU2A, including measurement model, latent constructs, CFA, structural model, fit indices, reliability/validity diagnostics, mediation/moderation where appropriate, and prerequisites from questionnaire metadata without implementing SEM now.",
+    "Identify the minimum shared metadata that should flow from questionnaire design/acquisition into KU2A so later SEM can understand constructs, indicators, reverse-coded items, scale types, missingness, respondent IDs, grouping variables, and sampling/design information.",
+    "Assess privacy/authorization boundaries for Google account connection and survey responses; do not request credentials or add any live connector.",
+    "Recommend a phased roadmap and branch/PR boundaries. Keep Learning Memory and Agent Handoff infrastructure logically separate from survey respondent data.",
+    "Return KU2D-R-000002 and update the coordination queue so next_action.actor=assistant. Make no live request and no unrelated code change."
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000002",
+    "next_actor": "assistant",
+    "deliverable": "architecture assessment and phased implementation recommendation only"
+  },
+  "provenance": {
+    "depends_on_result": "KU2D-R-000001",
+    "depends_on_review": "KU2D-V-000001",
+    "source_context": "User requested future questionnaire/survey acquisition from simple question upload through assisted design, Google Form generation, response dashboards, bias/DoE verification, plus future SEM analysis in KU2A."
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

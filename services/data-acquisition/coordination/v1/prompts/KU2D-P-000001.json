@@ -1,0 +1,32 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000001",
+  "created_at": "2026-08-31T08:06:00+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "objective": "Add GitHub-mediated Agent Handoff Protocol v1 to KU2D Learning Memory PR #44",
+  "instructions": [
+    "Implement storage-neutral Prompt, Result, Assistant Review, Human Decision, and Queue contracts.",
+    "Validate IDs, references, authority, state transitions, replay protection, and sensitive-material boundaries.",
+    "Preserve coordination history separately from Learning Memory and production authorization.",
+    "Emit KU2D-R-000001 and return queue control to assistant after deterministic verification."
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000001",
+    "next_actor": "assistant"
+  },
+  "provenance": {
+    "bootstrap_record": "coordination/prompts/KU2D-P-000001.json",
+    "review_comment": "PR-44-assistant-review-comment-5472631012",
+    "migration_note": "Validated v1 projection; the bootstrap.v0 source remains unchanged."
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

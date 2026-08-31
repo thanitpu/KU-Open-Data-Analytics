@@ -1,0 +1,39 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000003",
+  "created_at": "2026-08-31T09:10:00+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "objective": "Finalize Draft PR #44 for merge readiness without expanding scope",
+  "instructions": [
+    "Pull the latest codex/ku2d-learning-memory-v1 branch and validate the current Agent Handoff + Learning Memory v1 state.",
+    "Do not implement Survey/Questionnaire, Google Forms, DoE, bias diagnostics, KU2A SEM, provider connectors, UI, live requests, or any other new feature in PR #44.",
+    "Treat KU2D-R-000002 and KU2D-V-000002 as an accepted architecture assessment only; preserve it in coordination history without moving survey architecture into runtime code in this PR.",
+    "Update the PR #44 description if needed so it accurately includes Agent Handoff Protocol v1 in addition to Learning Memory v1, current deterministic corpus counts, safety boundaries, and coordination bootstrap status.",
+    "Run git diff --check, JSON/YAML parsing, Python compilation, Agent Handoff tests, Learning Memory tests, existing Acquisition Learning Record tests, and the complete deterministic Data Acquisition corpus.",
+    "Confirm normal acquisition runtime still has zero automatic Learning Memory or coordination writes, no production authorization, and scheduler_action remains null.",
+    "If all checks pass, mark PR #44 ready for review using available GitHub/gh capability. If the environment cannot change Draft status, report that limitation without workarounds.",
+    "Write KU2D-R-000003, update queue.json so the next actor is assistant, push the branch, and stop. Do not merge PR #44."
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000003",
+    "next_actor": "assistant"
+  },
+  "provenance": {
+    "depends_on": [
+      "KU2D-R-000002",
+      "KU2D-V-000002"
+    ],
+    "target_pr": 44,
+    "scope_note": "Finalize current infrastructure PR only; survey/SEM implementation belongs to a later dedicated branch/PR after PR #44 merges."
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

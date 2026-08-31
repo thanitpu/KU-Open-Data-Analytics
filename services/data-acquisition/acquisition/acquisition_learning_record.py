@@ -47,6 +47,34 @@ def _required_mapping(record: dict[str, Any], key: str) -> dict[str, Any]:
     return value
 
 
+def validate_safe_json_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    """Apply the shared sensitive-material and JSON-safety boundary."""
+    if not isinstance(payload, dict):
+        raise ValueError("payload must be a JSON object")
+    for path, key, value in _walk(payload):
+        if key in _FORBIDDEN_KEYS:
+            raise ValueError(f"sensitive field is prohibited at {path}.{key}")
+        if isinstance(value, str) and _SENSITIVE_VALUE_RE.search(value):
+            raise ValueError(f"credential/session material is prohibited at {path}.{key}")
+        if key == "source_surface" and isinstance(value, str):
+            parsed = urlsplit(value)
+            if parsed.username or parsed.password:
+                raise ValueError("credential-bearing source_surface is prohibited")
+    try:
+        json.dumps(payload, ensure_ascii=False, allow_nan=False)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"payload is not JSON safe: {exc}") from exc
+    return payload
+
+
+def serialize_json_object(payload: dict[str, Any]) -> dict[str, Any]:
+    """Return a detached object in deterministic key order."""
+    validate_safe_json_payload(payload)
+    return json.loads(json.dumps(
+        payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False,
+    ))
+
+
 def validate_learning_record(record: dict[str, Any]) -> dict[str, Any]:
     """Fail closed on malformed, unsafe, or provenance-poor records."""
     if not isinstance(record, dict):
@@ -115,21 +143,7 @@ def validate_learning_record(record: dict[str, Any]) -> dict[str, Any]:
     if reviewer and decision_source != "human_review":
         raise ValueError("reviewer provenance cannot be attached to a non-human decision")
 
-    for path, key, value in _walk(record):
-        if key in _FORBIDDEN_KEYS:
-            raise ValueError(f"sensitive field is prohibited at {path}.{key}")
-        if isinstance(value, str) and _SENSITIVE_VALUE_RE.search(value):
-            raise ValueError(f"credential/session material is prohibited at {path}.{key}")
-        if key == "source_surface" and isinstance(value, str):
-            parsed = urlsplit(value)
-            if parsed.username or parsed.password:
-                raise ValueError("credential-bearing source_surface is prohibited")
-
-    try:
-        json.dumps(record, ensure_ascii=False, allow_nan=False)
-    except (TypeError, ValueError) as exc:
-        raise ValueError(f"learning record is not JSON safe: {exc}") from exc
-    return record
+    return validate_safe_json_payload(record)
 
 
 def build_learning_record(
@@ -158,9 +172,7 @@ def build_learning_record(
 def serialize_learning_record(record: dict[str, Any]) -> dict[str, Any]:
     """Return a detached, deterministic-key-order, JSON-safe object."""
     validate_learning_record(record)
-    return json.loads(json.dumps(
-        record, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False,
-    ))
+    return serialize_json_object(record)
 
 
 def serialize_learning_record_json(record: dict[str, Any]) -> str:
