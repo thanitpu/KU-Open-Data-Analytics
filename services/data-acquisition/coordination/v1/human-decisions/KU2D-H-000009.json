@@ -1,0 +1,36 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000009",
+  "prompt_id": "KU2D-P-000022",
+  "result_id": "KU2D-R-000022",
+  "review_id": "KU2D-V-000022",
+  "decided_at": "2026-08-31T16:31:00+07:00",
+  "decided_by": {"actor":"human","actor_id":"project_owner"},
+  "decision": "confirmed",
+  "reason_note": "Project owner instructed the workflow to continue after PR #51 was marked Ready and successfully squash-merged at 2f06a082f53e9fa8781f7ecab4bbccd29c950c09. The owner also requested that mechanical Ready-for-review transitions not require human intervention when Codex can perform them, and that every Codex Result include a concise completed-queue summary.",
+  "scope": "Proceed with the first targeted evidence recovery package selected by Evidence Recovery Prioritization v1: Roots Coffee and Nana Coffee Roasters official product-detail evidence recovery. Keep the rerun bounded, public, read-only, evidence-before-exit, and focused on repairing the known evidence-retention gaps. Mechanical PR finalization may be performed by Codex where technically possible, but semantic promotion, knowledge authority changes, production authorization, destructive cleanup, or broader scope changes remain human/assistant governed.",
+  "authorizations": {
+    "coffee_targeted_evidence_recovery": true,
+    "bounded_public_read_only_live_acquisition": true,
+    "create_review_artifacts": true,
+    "create_draft_pr": true,
+    "attempt_mechanical_ready_transition": true,
+    "candidate_promotion": false,
+    "knowledge_mutation": false,
+    "close_parked_prs": false,
+    "merge_parked_prs": false,
+    "delete_branches": false,
+    "production_authorization": false,
+    "ml_training_or_inference": false
+  },
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_context": "Project owner said continue after PR #51 merge and explicitly requested continuous mechanical PR handling plus concise Codex completed-queue reporting",
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "base_branch": "integration/data-acquisition-platform",
+    "depends_on_merge": "2f06a082f53e9fa8781f7ecab4bbccd29c950c09",
+    "target_branch": "codex/ku2d-coffee-evidence-recovery-v1",
+    "authoritative_branch": "codex/ku2d-coffee-evidence-recovery-v1"
+  },
+  "boundaries": {"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
