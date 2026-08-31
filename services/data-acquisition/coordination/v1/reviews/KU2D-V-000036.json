@@ -1,0 +1,15 @@
+{
+  "schema":"ku2d.agent-handoff-assistant-review.v1",
+  "review_id":"KU2D-V-000036",
+  "prompt_id":"KU2D-P-000036",
+  "result_id":"KU2D-R-000036",
+  "reviewed_at":"2026-09-01T00:34:00+07:00",
+  "reviewed_by":{"actor":"assistant","actor_id":"assistant_review","human_authority_claimed":false},
+  "review_result":"accepted",
+  "requires_human_decision":false,
+  "reason_code":"qdiving_pilot_identity_boundary_accepted_fail_closed",
+  "explanation":"Accepted the Q-Diving pilot outcome as a correct fail-closed evidence_withheld / exit-2 result. The authorized live pilot did not start because merged durable evidence resolved 0 of the exactly 2 required non-sanitized explicitly Human-Reviewed canonical YouTube video identities. This review accepts the identity boundary, zero-request outcome, Deep Audit withholding, validator, tests, and durable evidence. It does not authorize discovering or substituting videos, broadening H11, caption/OAuth execution, production, knowledge promotion, or an automatic rerun.",
+  "evidence_references":["KU2D-R-000036","KU2D-H-000011","PR:#62","commit:9e16c05ad7197a606000435dd3fb01abfaef0757","workflow:Data Acquisition Platform CI#347","workflow:Frontend CI#1295","workflow:PR Browser Preview Link#250"],
+  "provenance":{"repository":"thanitpu/KU-Open-Data-Analytics","branch":"codex/ku2d-youtube-qdiving-live-pilot-v1","target_pr":62,"reviewed_result":"KU2D-R-000036"},
+  "boundaries":{"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
