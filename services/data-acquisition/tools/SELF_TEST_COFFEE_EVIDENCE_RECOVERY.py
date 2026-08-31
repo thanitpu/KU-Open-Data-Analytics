@@ -361,6 +361,7 @@ assert wrong_host["sanitized_response"]["candidate_fields"]["canonical_url"] == 
 assert wrong_host["sanitized_response"]["semantic_witnesses"]["official_product_route_plus_coffee_slug"] is False
 assert wrong_host["normalization_failure_reason"] == "normalized product withheld: coffee_product_semantics"
 assert rerun["classification"] == "evidence_withheld" and rerun["usable_candidate_evidence"] is False
-assert hashlib.sha256(rerun_path.read_bytes()).hexdigest() == "904e9ab187543ff5877888b6a32616153d908507b18481de1a9a7029cd7b3d05"
+historical_text = rerun_path.read_text(encoding="utf-8").replace("\r\n", "\n")
+assert hashlib.sha256(historical_text.encode("utf-8")).hexdigest() == "8df9510e962e1b4be00584ca195a481b2dd402f5d70ecc9c495a843efcae098d"
 
 print("Coffee evidence recovery deterministic tests passed (CER1-CER96; RSD-F01-RSD-F06).")
