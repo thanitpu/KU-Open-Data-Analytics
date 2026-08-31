@@ -1,0 +1,15 @@
+{
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
+  "review_id": "KU2D-V-000018",
+  "prompt_id": "KU2D-P-000018",
+  "result_id": "KU2D-R-000018",
+  "reviewed_at": "2026-08-31T15:21:00+07:00",
+  "reviewed_by": {"actor":"assistant","actor_id":"assistant_review","human_authority_claimed":false},
+  "review_result": "human_decision_required",
+  "requires_human_decision": true,
+  "reason_code": "TECHNICALLY_ACCEPTED_READY_TRANSITION_REQUIRES_HUMAN",
+  "explanation": "Parked Candidate Review v1 is technically accepted. Current-head CI passes; parked PRs #36-#41 remain unchanged and unmerged; all 59 findings remain non-authorizing; CLE-000001 through CLE-000011 remain candidate-only and non-lossless; no candidate promotion, knowledge-layer mutation, live acquisition, cleanup, broader ranking, production, scheduler, or ML scope was added. The only remaining action before merge is the human Ready-for-review transition.",
+  "evidence_references": ["KU2D-R-000018","PR:#49","commit:ea586bcde3b46de2e6f7932f0e786fb18a51f8bb","workflow:Data Acquisition Platform CI#260","workflow:Frontend CI#1075","workflow:PR Browser Preview Link#176"],
+  "provenance": {"repository":"thanitpu/KU-Open-Data-Analytics","branch":"codex/ku2d-parked-candidate-review-v1","authoritative_branch":"codex/ku2d-parked-candidate-review-v1","target_pr":49},
+  "boundaries": {"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
