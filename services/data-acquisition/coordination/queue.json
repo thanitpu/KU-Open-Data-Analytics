@@ -1,24 +1,26 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
   "updated_at": "2026-08-31T09:10:00+07:00",
-  "latest_prompt": "KU2D-P-000002",
+  "latest_prompt": "KU2D-P-000003",
   "latest_result": "KU2D-R-000002",
-  "latest_review": "KU2D-V-000001",
+  "latest_review": "KU2D-V-000002",
   "latest_human_decision": null,
   "prompt_states": {
     "KU2D-P-000001": "completed",
-    "KU2D-P-000002": "result_submitted"
+    "KU2D-P-000002": "completed",
+    "KU2D-P-000003": "ready_for_codex"
   },
   "completed_prompt_ids": [
-    "KU2D-P-000001"
+    "KU2D-P-000001",
+    "KU2D-P-000002"
   ],
   "next_action": {
-    "actor": "assistant",
-    "prompt_id": "KU2D-P-000002",
-    "result_id": "KU2D-R-000002",
+    "actor": "codex",
+    "prompt_id": "KU2D-P-000003",
+    "result_id": null,
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "KU2D-R-000002 contains the requested Survey/Questionnaire and future KU2A SEM architecture assessment. It is ready for assistant review; no implementation, live request, or Human Decision was created."
+  "notes": "KU2D-R-000002 architecture assessment was accepted as KU2D-V-000002. KU2D-P-000003 asks Codex to finalize PR #44 for merge readiness only; survey/SEM implementation remains deferred to a later dedicated PR."
 }
