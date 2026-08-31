@@ -157,9 +157,11 @@ This establishes an approved-candidate pattern for Product Identity & Price obse
 
 ### Price semantics and product-detail correlation
 
-Explicit baht displays normalize without hidden scaling. Current, original/strikethrough, and variation-range fields remain separate, retain their raw display text, and expose range minimum/maximum only when a genuine explicit range is present.
+Explicit baht displays normalize without hidden scaling. Each amount is now retained as a surface-scoped price observation with its raw display, explicit currency, price role, visible cue, source surface, timestamp, product identity, explicit-only variant identity, shop/seller identity, conditional state, and sanitized rendered-DOM provenance. Roles distinguish current, original, variation minimum/maximum, from-price, promotional, voucher/conditional, member/account-conditional, and unknown display prices. The compatibility current/original/range fields remain, but a currency amount found only in broad unlabeled visible text is not promoted to current price.
 
-The correlated item displayed `฿25.00` on the earlier search card and `฿49.00` current plus `฿99.00` original on the current detail page. The item ID and title are consistent, but the prices are not equal and no explicit detail variation range explains the difference. The audit therefore records price consistency as false and does not assert SKU or variant equivalence.
+The correlated item displayed `฿25.00` on the earlier search card and `฿49.00` current plus `฿99.00` original on the current detail page. The item ID and title are consistent, but product identity does not imply purchasable variant identity. The prices are not equal and no explicit detail variation range or price-role cue explains the difference. The authoritative relation is therefore `different_unresolved`; variant equivalence is `unknown` because no explicit variant/SKU field was captured. The audit does not infer variant identity from a URL segment, assert a canonical price, treat a voucher as product price, or choose a value based on numeric magnitude. The older `price_consistent_or_within_detail_range` and `variant_equivalence_asserted` fields remain false for compatibility.
+
+Search/detail comparisons use the explicit relations `exact_match`, `search_within_detail_variant_range`, `detail_within_search_variant_range`, `different_but_explained_by_explicit_roles`, `different_unresolved`, `not_comparable`, and `insufficient_evidence`. Even an exact amount match does not establish canonical price or variant equivalence. Category and shop prices remain observations scoped to those surfaces and do not imply demand, marketplace rank, or national popularity.
 
 ### Counter and rating/review semantics
 
