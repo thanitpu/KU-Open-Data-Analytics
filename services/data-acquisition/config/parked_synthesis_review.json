@@ -1,7 +1,7 @@
 {
   "schema": "ku2d.parked-synthesis-review.v1",
   "version": "1.0",
-  "reviewed_at": "2026-08-31T14:05:00+07:00",
+  "reviewed_at": "2026-08-31T14:00:00+07:00",
   "repository": "thanitpu/KU-Open-Data-Analytics",
   "authoritative_branch": "codex/ku2d-parked-synthesis-review-v1",
   "base_branch": "integration/data-acquisition-platform",
