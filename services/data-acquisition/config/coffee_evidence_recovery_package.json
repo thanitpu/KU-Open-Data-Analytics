@@ -1,0 +1,91 @@
+{
+  "schema": "ku2d.coffee-evidence-recovery-package.v1",
+  "package_id": "KU2D-CER-000001",
+  "defined_at": "2026-08-31T16:45:00+07:00",
+  "objective": "Repair the durable evidence-retention gaps for two official specialty-roaster product details without promoting candidate knowledge.",
+  "authorization": {
+    "prompt_id": "KU2D-P-000023",
+    "human_decision_id": "KU2D-H-000009",
+    "historical_pr": 39,
+    "candidate_evidence_ids": ["KU2D-CLE-000006", "KU2D-CLE-000007"],
+    "bounded_public_read_only_live_acquisition": true,
+    "candidate_promotion": false,
+    "knowledge_mutation": false,
+    "production_authorized": false
+  },
+  "targets": [
+    {
+      "source_id": "roots_coffee",
+      "source": "Roots Coffee",
+      "official_host": "shop.rootsbkk.com",
+      "url": "https://shop.rootsbkk.com/collections/frontpage/products/house-blend-coffee",
+      "surface": "official-public-product-detail",
+      "candidate_evidence_id": "KU2D-CLE-000006"
+    },
+    {
+      "source_id": "nana_coffee_roasters",
+      "source": "Nana Coffee Roasters",
+      "official_host": "nanacoffeeroasters.com",
+      "url": "https://nanacoffeeroasters.com/products/house-blend",
+      "surface": "official-public-product-detail",
+      "candidate_evidence_id": "KU2D-CLE-000007"
+    }
+  ],
+  "request_budget": {
+    "observations_per_source": 2,
+    "maximum_acquisition_attempts": 4,
+    "maximum_redirects_per_attempt": 2,
+    "maximum_transport_requests": 12,
+    "retries": 0,
+    "pagination": 0,
+    "maximum_response_bytes": 1000000,
+    "timeout_seconds": 15
+  },
+  "fields_to_capture": [
+    "product_identity", "canonical_url", "product_name", "displayed_price",
+    "currency", "availability", "variant", "origin", "process",
+    "tasting_notes", "roast_level", "package_size", "source_surface", "observed_at"
+  ],
+  "raw_to_normalized_provenance": {
+    "required_for_every_non_null_normalized_field": true,
+    "retained_raw_material": "bounded sanitized field values, extraction paths, response digest and response metadata only",
+    "raw_html_retained": false,
+    "headers_retained": false,
+    "cookies_or_session_material_retained": false
+  },
+  "repeatability_criteria": {
+    "same_source_attempts_required": 2,
+    "stable_product_identity_required": true,
+    "stable_canonical_url_required": true,
+    "price_and_availability_changes": "record as temporal deviations; never infer a transaction price or cross-branch validity"
+  },
+  "deep_audit_criteria": [
+    "all bounded attempts complete without a transport/runtime failure",
+    "both sources yield attributable sellable roasted-coffee product identity and displayed price",
+    "official HTTPS canonical identity remains stable across both observations",
+    "every retained non-null normalized field has raw-to-normalized provenance",
+    "retail roasted-bean products remain distinct from cafe menu prices",
+    "repeat observations retain identity while recording price, availability, variant or attribute deviations"
+  ],
+  "stop_conditions": [
+    "stop after four acquisition attempts regardless of yield",
+    "stop a source immediately on authentication, CAPTCHA, challenge, access-control or anti-bot evidence",
+    "stop on redirect outside the configured official host",
+    "stop before retaining a response larger than the configured byte limit",
+    "stop with technical failure if durable evidence cannot be written",
+    "never escalate to browser, Edge Runner, proxy, session reuse or private API"
+  ],
+  "boundaries": {
+    "public_official_surfaces_only": true,
+    "authentication": false,
+    "captcha_or_challenge_handling": false,
+    "access_control_bypass": false,
+    "proxy_rotation": false,
+    "browser_escalation": false,
+    "private_api": false,
+    "production_store": false,
+    "production_approved": false,
+    "scheduler_action": null,
+    "automatic_learning_memory_export": false
+  }
+}
