@@ -1,12 +1,15 @@
 {
-  "schema": "ku2d.agent-handoff-review.v1",
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
   "review_id": "KU2D-V-000021",
   "prompt_id": "KU2D-P-000021",
   "result_id": "KU2D-R-000021",
   "reviewed_at": "2026-08-31T16:18:00+07:00",
-  "reviewed_by": {"actor":"assistant","actor_id":"assistant_review"},
-  "decision": "accepted",
-  "summary": "Accepted Evidence Recovery Prioritization v1. The bounded weighted comparison is internally consistent, keeps all three candidates non-authorizing, and recommends PR #39 Coffee first at 4.50 ahead of PR #40 Q-Diving at 4.30 and PR #37 Marketplace at 3.70. Current PR #51 is open, Draft, mergeable; exact current-head CI is green. No rerun execution, live request, promotion, knowledge mutation, parked-ref mutation, cleanup, production, scheduler, ML, Survey/DoE/SEM, or broader ranking is authorized by this review.",
+  "reviewed_by": {"actor":"assistant","actor_id":"assistant_review","human_authority_claimed":false},
+  "review_result": "accepted",
+  "requires_human_decision": false,
+  "reason_code": "EVIDENCE_RECOVERY_PRIORITIZATION_ACCEPTED",
+  "explanation": "Accepted Evidence Recovery Prioritization v1. The bounded weighted comparison is internally consistent, keeps all three candidates non-authorizing, and recommends PR #39 Coffee first at 4.50 ahead of PR #40 Q-Diving at 4.30 and PR #37 Marketplace at 3.70. Current PR #51 is open, Draft, mergeable; exact current-head CI is green. No rerun execution, live request, promotion, knowledge mutation, parked-ref mutation, cleanup, production, scheduler, ML, Survey/DoE/SEM, or broader ranking is authorized by this review.",
+  "evidence_references": ["KU2D-R-000021","PR:#51","commit:d72dc102403a515a69f36b84594e5d4bf735a820"],
   "findings": {
     "blocking": [],
     "non_blocking": [
@@ -22,5 +25,5 @@
     "reviewed_result":"KU2D-R-000021",
     "observed_current_head":"d72dc102403a515a69f36b84594e5d4bf735a820"
   },
-  "boundaries": {"coordination_only":true,"rerun_execution_authorized":false,"live_requests":0,"candidate_promotion":false,"knowledge_mutation":false,"parked_ref_mutation":false,"cleanup_execution":false,"production_authorized":false,"scheduler_action":null,"ml_training_or_inference":false}
+  "boundaries": {"coordination_only":true,"automatic_learning_memory_export":false,"rerun_execution_authorized":false,"live_requests":0,"candidate_promotion":false,"knowledge_mutation":false,"parked_ref_mutation":false,"cleanup_execution":false,"production_authorized":false,"scheduler_action":null,"ml_training_or_inference":false}
 }

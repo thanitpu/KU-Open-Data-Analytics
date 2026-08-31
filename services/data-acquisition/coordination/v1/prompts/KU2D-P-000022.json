@@ -20,5 +20,5 @@
   ],
   "expected_result": {"result_id":"KU2D-R-000022","next_actor":"assistant"},
   "provenance": {"repository":"thanitpu/KU-Open-Data-Analytics","depends_on_result":"KU2D-R-000021","depends_on_review":"KU2D-V-000021","target_pr":51,"authoritative_branch":"codex/ku2d-evidence-recovery-prioritization-v1"},
-  "boundaries": {"coordination_only":true,"rerun_execution_authorized":false,"live_requests":0,"candidate_promotion":false,"knowledge_mutation":false,"parked_ref_mutation":false,"cleanup_execution":false,"production_authorized":false,"scheduler_action":null,"ml_training_or_inference":false}
+  "boundaries": {"coordination_only":true,"automatic_learning_memory_export":false,"rerun_execution_authorized":false,"live_requests":0,"candidate_promotion":false,"knowledge_mutation":false,"parked_ref_mutation":false,"cleanup_execution":false,"production_authorized":false,"scheduler_action":null,"ml_training_or_inference":false}
 }
