@@ -1,0 +1,2400 @@
+{
+  "schema": "ku2d.parked-candidate-review.v1",
+  "version": "1.0",
+  "reviewed_at": "2026-08-31T14:56:31+07:00",
+  "repository": "thanitpu/KU-Open-Data-Analytics",
+  "authoritative_branch": "codex/ku2d-parked-candidate-review-v1",
+  "base_branch": "integration/data-acquisition-platform",
+  "base_sha": "6bc49deb7602d8e8499308bbb0390ab718830f8b",
+  "parked_surfaces": [
+    {
+      "surface_id": "KU2D-PC-PR36",
+      "pr_number": 36,
+      "branch": "codex/overnight-tiktok-shop-commerce-pulse-explore",
+      "head_sha": "9f62c33f933989bb12581fdb3b2a6fb21a1ca6b5",
+      "base_branch": "integration/data-acquisition-platform",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "open_at_review": true,
+      "draft_at_review": true,
+      "merged_at_review": false,
+      "mutated_by_review": false,
+      "unique_files": [
+        ".github/workflows/data-acquisition-platform-ci.yml",
+        "services/data-acquisition/acquisition/tiktok_shop_commerce_pulse.py",
+        "services/data-acquisition/config/tiktok_shop_commerce_pulse_sources.json",
+        "services/data-acquisition/docs/TIKTOK_SHOP_COMMERCE_PULSE.md",
+        "services/data-acquisition/fixtures/tiktok_shop_commerce_pulse/public_product.html",
+        "services/data-acquisition/fixtures/tiktok_shop_commerce_pulse/public_product.json",
+        "services/data-acquisition/tools/SELF_TEST_TIKTOK_SHOP_COMMERCE_PULSE.py",
+        "services/data-acquisition/tools/TIKTOK_SHOP_COMMERCE_PULSE_EXPLORE.py"
+      ]
+    },
+    {
+      "surface_id": "KU2D-PC-PR37",
+      "pr_number": 37,
+      "branch": "codex/overnight-marketplace-source-inventory",
+      "head_sha": "0e99926c72cec7e83e259408c153fd6c99fd1492",
+      "base_branch": "integration/data-acquisition-platform",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "open_at_review": true,
+      "draft_at_review": true,
+      "merged_at_review": false,
+      "mutated_by_review": false,
+      "unique_files": [
+        "services/data-acquisition/config/marketplace_source_inventory.json",
+        "services/data-acquisition/docs/MARKETPLACE_SOURCE_INVENTORY.md"
+      ]
+    },
+    {
+      "surface_id": "KU2D-PC-PR38",
+      "pr_number": 38,
+      "branch": "codex/overnight-ota-source-expansion",
+      "head_sha": "8c8ac59c5ef852bf2bbd33be6c8ff44e55e00c73",
+      "base_branch": "integration/data-acquisition-platform",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "open_at_review": true,
+      "draft_at_review": true,
+      "merged_at_review": false,
+      "mutated_by_review": false,
+      "unique_files": [
+        "services/data-acquisition/config/ota_source_expansion_2026_08_31.json",
+        "services/data-acquisition/docs/OTA_SOURCE_EXPANSION_2026_08_31.md"
+      ]
+    },
+    {
+      "surface_id": "KU2D-PC-PR39",
+      "pr_number": 39,
+      "branch": "codex/overnight-coffee-source-expansion",
+      "head_sha": "441c71d678a30cc62b742ea58f23f629a9d1e2d6",
+      "base_branch": "integration/data-acquisition-platform",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "open_at_review": true,
+      "draft_at_review": true,
+      "merged_at_review": false,
+      "mutated_by_review": false,
+      "unique_files": [
+        ".github/workflows/data-acquisition-platform-ci.yml",
+        "services/data-acquisition/acquisition/coffee_techniques.py",
+        "services/data-acquisition/config/coffee_source_expansion_2026_08_31.json",
+        "services/data-acquisition/docs/COFFEE_SOURCE_EXPANSION_2026_08_31.md",
+        "services/data-acquisition/fixtures/coffee_roaster_products/nana_house_blend.html",
+        "services/data-acquisition/fixtures/coffee_roaster_products/roots_house_blend.html",
+        "services/data-acquisition/tools/SELF_TEST_COFFEE_ROASTER_PRODUCTS.py"
+      ]
+    },
+    {
+      "surface_id": "KU2D-PC-PR40",
+      "pr_number": 40,
+      "branch": "codex/overnight-qdiving-source-expansion",
+      "head_sha": "5f972d456415dbd0d8ae695f02c056e4a7c76e56",
+      "base_branch": "integration/data-acquisition-platform",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "open_at_review": true,
+      "draft_at_review": true,
+      "merged_at_review": false,
+      "mutated_by_review": false,
+      "unique_files": [
+        ".github/workflows/data-acquisition-platform-ci.yml",
+        "services/data-acquisition/acquisition/qdiving_source_expansion.py",
+        "services/data-acquisition/config/q_diving_source_registry.json",
+        "services/data-acquisition/config/qdiving_source_expansion_2026_08_31.json",
+        "services/data-acquisition/docs/QDIVING_SOURCE_EXPANSION_2026_08_31.md",
+        "services/data-acquisition/fixtures/qdiving_source_expansion/aquamaster_equipment.html",
+        "services/data-acquisition/fixtures/qdiving_source_expansion/scubadoo_courses.html",
+        "services/data-acquisition/fixtures/qdiving_source_expansion/ssi_blog.html",
+        "services/data-acquisition/tools/SELF_TEST_QDIVING_SOURCE_EXPANSION.py"
+      ]
+    },
+    {
+      "surface_id": "KU2D-PC-PR41",
+      "pr_number": 41,
+      "branch": "codex/overnight-cross-domain-source-gap-scan",
+      "head_sha": "408e4a3889a70b89b71cbd076b0b980d1aaae2d3",
+      "base_branch": "integration/data-acquisition-platform",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "open_at_review": true,
+      "draft_at_review": true,
+      "merged_at_review": false,
+      "mutated_by_review": false,
+      "unique_files": [
+        "services/data-acquisition/config/cross_domain_source_gap_scan_2026_08_31.json",
+        "services/data-acquisition/docs/CROSS_DOMAIN_SOURCE_GAP_SCAN_2026_08_31.md"
+      ]
+    }
+  ],
+  "evidence_nodes": [
+    {
+      "evidence_id": "KU2D-EV-CANDIDATES",
+      "authority": "candidate_only",
+      "references": [
+        "config/candidate_learning_evidence_registry.json#KU2D-CLE-000001..KU2D-CLE-000011"
+      ],
+      "promotion_authorized": false
+    },
+    {
+      "evidence_id": "KU2D-EV-REVIEWED",
+      "authority": "reviewed_current",
+      "references": [
+        "config/reviewed_learning_corpus.json"
+      ],
+      "promotion_authorized": false
+    },
+    {
+      "evidence_id": "KU2D-EV-CORE",
+      "authority": "current_core_contract",
+      "references": [
+        "config/core_knowledge_taxonomy.json",
+        "config/core_knowledge_codebook.json"
+      ],
+      "promotion_authorized": false
+    },
+    {
+      "evidence_id": "KU2D-EV-SYNTHESIS",
+      "authority": "reviewed_non_authorizing_projection",
+      "references": [
+        "config/parked_synthesis_review.json"
+      ],
+      "promotion_authorized": false
+    },
+    {
+      "evidence_id": "KU2D-EV-GOVERNANCE",
+      "authority": "governance_snapshot",
+      "references": [
+        "config/branch_pr_disposition_registry.json"
+      ],
+      "promotion_authorized": false
+    },
+    {
+      "evidence_id": "KU2D-EV-HUMAN",
+      "authority": "human_confirmed_policy",
+      "references": [
+        "config/human_confirmed_core_semantic_policies.json"
+      ],
+      "promotion_authorized": false
+    },
+    {
+      "evidence_id": "KU2D-EV-QUALITY",
+      "authority": "current_quality_contract",
+      "references": [
+        "docs/CORE_INTELLIGENCE_QUALITY_FOUNDATION.md"
+      ],
+      "promotion_authorized": false
+    },
+    {
+      "evidence_id": "KU2D-EV-PR36",
+      "authority": "historical_open_draft",
+      "references": [
+        "PR:#36@9f62c33f933989bb12581fdb3b2a6fb21a1ca6b5"
+      ],
+      "promotion_authorized": false
+    },
+    {
+      "evidence_id": "KU2D-EV-PR37",
+      "authority": "historical_open_draft",
+      "references": [
+        "PR:#37@0e99926c72cec7e83e259408c153fd6c99fd1492"
+      ],
+      "promotion_authorized": false
+    },
+    {
+      "evidence_id": "KU2D-EV-PR38",
+      "authority": "historical_open_draft",
+      "references": [
+        "PR:#38@8c8ac59c5ef852bf2bbd33be6c8ff44e55e00c73"
+      ],
+      "promotion_authorized": false
+    },
+    {
+      "evidence_id": "KU2D-EV-PR39",
+      "authority": "historical_open_draft",
+      "references": [
+        "PR:#39@441c71d678a30cc62b742ea58f23f629a9d1e2d6"
+      ],
+      "promotion_authorized": false
+    },
+    {
+      "evidence_id": "KU2D-EV-PR40",
+      "authority": "historical_open_draft",
+      "references": [
+        "PR:#40@5f972d456415dbd0d8ae695f02c056e4a7c76e56"
+      ],
+      "promotion_authorized": false
+    },
+    {
+      "evidence_id": "KU2D-EV-PR41",
+      "authority": "historical_open_draft",
+      "references": [
+        "PR:#41@408e4a3889a70b89b71cbd076b0b980d1aaae2d3"
+      ],
+      "promotion_authorized": false
+    }
+  ],
+  "candidate_coverage": [
+    {
+      "candidate_id": "KU2D-CLE-000001",
+      "pr_number": 36,
+      "lossless_projection": false,
+      "unrepresented_unique_knowledge": [
+        "Official API authorization/scoping boundary; four public-surface patterns; parser/CLI contracts; fixtures; response metrics."
+      ],
+      "future_promotion_evidence": [
+        "Reviewed first-party authorization and scope snapshot; repeated stable-identity evidence; raw-to-normalized provenance; parser fingerprint; Deep Audit."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "candidate_id": "KU2D-CLE-000002",
+      "pr_number": 37,
+      "lossless_projection": false,
+      "unrepresented_unique_knowledge": [
+        "Exact 10-of-28 LINE ledger; DOM/static uncertainty; collection/detail questions; surface replay semantics."
+      ],
+      "future_promotion_evidence": [
+        "Sanitized records and page provenance; repeat observations; canonical detail correlation; price-role/availability review; surface-aware deduplication."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "candidate_id": "KU2D-CLE-000003",
+      "pr_number": 37,
+      "lossless_projection": false,
+      "unrepresented_unique_knowledge": [
+        "Exact cessation dates; HTTP/browser ledger; stale-index warning; no-further-acquisition rationale."
+      ],
+      "future_promotion_evidence": [
+        "Durable official cessation notice; independent lifecycle review; policy decision on archival retention and retry."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "candidate_id": "KU2D-CLE-000004",
+      "pr_number": 38,
+      "lossless_projection": false,
+      "unrepresented_unique_knowledge": [
+        "Exact Agoda query, response size/status, transfer hypothesis, and absent identity/rate fields."
+      ],
+      "future_promotion_evidence": [
+        "Sanitized challenge evidence; reviewed access classification; separately authorized compliant technique; contextual identity/rate evidence and repeatability."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "candidate_id": "KU2D-CLE-000005",
+      "pr_number": 38,
+      "lossless_projection": false,
+      "unrepresented_unique_knowledge": [
+        "Traveloka incomplete query context, response ledger, and discovery-only versus rate boundary."
+      ],
+      "future_promotion_evidence": [
+        "Sanitized challenge evidence; exact future query context; reviewed access classification; attributable property/rate provenance."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "candidate_id": "KU2D-CLE-000006",
+      "pr_number": 39,
+      "lossless_projection": false,
+      "unrepresented_unique_knowledge": [
+        "Fixture parser, exact indexed Roots attributes, request-accounting failure, and provenance semantics."
+      ],
+      "future_promotion_evidence": [
+        "Evidence-before-exit rerun; captured official response and normalized record; time-specific price/availability; repeatability and field provenance."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "candidate_id": "KU2D-CLE-000007",
+      "pr_number": 39,
+      "lossless_projection": false,
+      "unrepresented_unique_knowledge": [
+        "Fixture parser, exact indexed Nana attributes, request-accounting failure, and roasted-product semantic guard."
+      ],
+      "future_promotion_evidence": [
+        "Evidence-before-exit rerun; captured official response and normalized record; time-specific price/availability; repeatability and field provenance."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "candidate_id": "KU2D-CLE-000008",
+      "pr_number": 40,
+      "lossless_projection": false,
+      "unrepresented_unique_knowledge": [
+        "SSI count, parser, relative-date null rule, mixed-topic boundary, and transfer reasoning."
+      ],
+      "future_promotion_evidence": [
+        "Sanitized records; repeat observations; identity stability; publication semantics; Human Review; Deep Audit."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "candidate_id": "KU2D-CLE-000009",
+      "pr_number": 40,
+      "lossless_projection": false,
+      "unrepresented_unique_knowledge": [
+        "Scubadoo count, service schema, package fields, dormant-plugin diagnostic, and booking prohibition."
+      ],
+      "future_promotion_evidence": [
+        "Sanitized courses; repeatability; service identity/package-change audit; service-price provenance; Deep Audit."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "candidate_id": "KU2D-CLE-000010",
+      "pr_number": 40,
+      "lossless_projection": false,
+      "unrepresented_unique_knowledge": [
+        "Aquamaster count, range parser, dormant-plugin diagnostic, and detail-correlation question."
+      ],
+      "future_promotion_evidence": [
+        "Sanitized products; repeatability; product/variant identity; price-role provenance; detail correlation; Deep Audit."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "candidate_id": "KU2D-CLE-000011",
+      "pr_number": 41,
+      "lossless_projection": false,
+      "unrepresented_unique_knowledge": [
+        "Akha 10-record ledger, request accounting, cross-domain context, and catalog/detail questions."
+      ],
+      "future_promotion_evidence": [
+        "Sanitized catalog records; catalog/detail correlation; variant identity; current price/availability; origin/process/package provenance; repeatability; Deep Audit."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "KU2D-PCR-000001",
+      "source_surface_id": "KU2D-PC-PR36",
+      "file": "services/data-acquisition/config/tiktok_shop_commerce_pulse_sources.json",
+      "location": "domain_boundary",
+      "statement": "Commerce Market Observation remains separate from Retail Product & Price and cannot claim national transaction truth.",
+      "review_status": "duplicate_of_current_knowledge",
+      "evidence_dependencies": [
+        "KU2D-EV-PR36",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-CORE",
+        "KU2D-EV-HUMAN"
+      ],
+      "candidate_evidence_ids": [],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "no_new_knowledge",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000002",
+      "source_surface_id": "KU2D-PC-PR36",
+      "file": "services/data-acquisition/config/tiktok_shop_commerce_pulse_sources.json",
+      "location": "official_api_boundary",
+      "statement": "TikTok Shop official APIs are seller/creator/partner authorized rather than a national public marketplace feed.",
+      "review_status": "candidate_partially_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR36",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-CORE"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000001"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_with_gaps",
+      "missing_promotion_evidence": [
+        "Current reviewed official documentation snapshot and provider-scope verification."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000003",
+      "source_surface_id": "KU2D-PC-PR36",
+      "file": "services/data-acquisition/config/tiktok_shop_commerce_pulse_sources.json",
+      "location": "techniques",
+      "statement": "Four public customer-surface techniques were proposed: keyword/category, detail, shop/creator-linked, and unauthenticated structured state.",
+      "review_status": "insufficient_evidence",
+      "evidence_dependencies": [
+        "KU2D-EV-PR36",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000001"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_historical_only",
+      "missing_promotion_evidence": [
+        "Live attributable evidence for each surface; exact stable identity and access provenance; Deep Audit."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000004",
+      "source_surface_id": "KU2D-PC-PR36",
+      "file": "services/data-acquisition/acquisition/tiktok_shop_commerce_pulse.py",
+      "location": "product_identity",
+      "statement": "The parser accepts official numeric product identity and rejects host, nonnumeric, or URL/field contradictions.",
+      "review_status": "candidate_partially_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR36",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000001"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_with_gaps",
+      "missing_promotion_evidence": [
+        "Reviewed live raw-to-normalized examples and repeatability beyond deterministic fixtures."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000005",
+      "source_surface_id": "KU2D-PC-PR36",
+      "file": "services/data-acquisition/acquisition/tiktok_shop_commerce_pulse.py",
+      "location": "explicit_baht",
+      "statement": "Only explicit baht text is normalized; bare numeric scaling stays unknown.",
+      "review_status": "duplicate_of_current_knowledge",
+      "evidence_dependencies": [
+        "KU2D-EV-PR36",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-CORE",
+        "KU2D-EV-HUMAN"
+      ],
+      "candidate_evidence_ids": [],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "no_new_knowledge",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000006",
+      "source_surface_id": "KU2D-PC-PR36",
+      "file": "services/data-acquisition/acquisition/tiktok_shop_commerce_pulse.py",
+      "location": "counter_semantics",
+      "statement": "Sold, orders, and unlabeled counters remain typed separately and never become a transaction ledger.",
+      "review_status": "duplicate_of_current_knowledge",
+      "evidence_dependencies": [
+        "KU2D-EV-PR36",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-CORE",
+        "KU2D-EV-HUMAN"
+      ],
+      "candidate_evidence_ids": [],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "no_new_knowledge",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000007",
+      "source_surface_id": "KU2D-PC-PR36",
+      "file": "services/data-acquisition/acquisition/tiktok_shop_commerce_pulse.py",
+      "location": "normalize_json / normalize_html",
+      "statement": "A deterministic generic Commerce observation normalizer exists for public structured JSON or embedded JSON.",
+      "review_status": "candidate_partially_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR36",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000001"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_with_gaps",
+      "missing_promotion_evidence": [
+        "Live source response provenance, profile fingerprint, field coverage, and repeatability."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000008",
+      "source_surface_id": "KU2D-PC-PR36",
+      "file": "services/data-acquisition/tools/TIKTOK_SHOP_COMMERCE_PULSE_EXPLORE.py",
+      "location": "main / exit contract",
+      "statement": "The bounded CLI writes evidence before exit 0/2/1, caps records, and stops on challenge markers.",
+      "review_status": "candidate_partially_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR36",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-QUALITY"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000001"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_with_gaps",
+      "missing_promotion_evidence": [
+        "Independent technical audit of CLI evidence on a current compliant surface."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000009",
+      "source_surface_id": "KU2D-PC-PR36",
+      "file": "services/data-acquisition/config/tiktok_shop_commerce_pulse_sources.json",
+      "location": "bounded_live_pilot",
+      "statement": "One HTTP 200 response of 5,506 bytes reached a challenge/required-login boundary with zero normalized records and no escalation.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR36",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000001"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_only",
+      "missing_promotion_evidence": [
+        "Sanitized durable response diagnostics and independent access-boundary review."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000010",
+      "source_surface_id": "KU2D-PC-PR36",
+      "file": "services/data-acquisition/docs/TIKTOK_SHOP_COMMERCE_PULSE.md",
+      "location": "Explore #1 live result",
+      "statement": "The exact one-request/no-retry/no-browser ledger is source- and date-specific historical evidence.",
+      "review_status": "source_specific_historical_only",
+      "evidence_dependencies": [
+        "KU2D-EV-PR36",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000001"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_historical_only",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000011",
+      "source_surface_id": "KU2D-PC-PR37",
+      "file": "services/data-acquisition/config/marketplace_source_inventory.json",
+      "location": "LINE SHOPPING candidate and bounded pilot",
+      "statement": "A public seller collection retained 10 stable product/shop/collection/title/price observations from 28 visible items.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR37",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000002"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_only",
+      "missing_promotion_evidence": [
+        "Sanitized per-record evidence, repeatability, and canonical detail correlation."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000012",
+      "source_surface_id": "KU2D-PC-PR37",
+      "file": "services/data-acquisition/docs/MARKETPLACE_SOURCE_INVENTORY.md",
+      "location": "Bounded LINE SHOPPING check",
+      "statement": "Recommended collection order is seller-local display context, not demand or rank.",
+      "review_status": "duplicate_of_current_knowledge",
+      "evidence_dependencies": [
+        "KU2D-EV-PR37",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-CORE",
+        "KU2D-EV-HUMAN"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000002"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "no_new_knowledge",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000013",
+      "source_surface_id": "KU2D-PC-PR37",
+      "file": "services/data-acquisition/docs/MARKETPLACE_SOURCE_INVENTORY.md",
+      "location": "Bounded LINE SHOPPING check",
+      "statement": "Browser DOM confirmed identity, while equivalent static-HTML identity extraction remained untested.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR37",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000002"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_only",
+      "missing_promotion_evidence": [
+        "Static-response retention and direct extraction comparison against rendered DOM."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000014",
+      "source_surface_id": "KU2D-PC-PR37",
+      "file": "services/data-acquisition/docs/MARKETPLACE_SOURCE_INVENTORY.md",
+      "location": "Boundaries and next steps",
+      "statement": "LINE requires collection/detail identity, price-role, availability, refresh, and replay-deduplication audit.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR37",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000002"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_only",
+      "missing_promotion_evidence": [
+        "A separately reviewed Deep Audit with repeated observations and field provenance."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000015",
+      "source_surface_id": "KU2D-PC-PR37",
+      "file": "services/data-acquisition/config/marketplace_source_inventory.json",
+      "location": "Kaidee candidate",
+      "statement": "Classified asking-price listings require a separate listing-observation contract rather than forced Commerce Product semantics.",
+      "review_status": "insufficient_evidence",
+      "evidence_dependencies": [
+        "KU2D-EV-PR37",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_historical_only",
+      "missing_promotion_evidence": [
+        "Architecture review, representative sanitized listing evidence, and explicit identity/price/source-role semantics."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000016",
+      "source_surface_id": "KU2D-PC-PR37",
+      "file": "services/data-acquisition/config/marketplace_source_inventory.json",
+      "location": "Central Online candidate",
+      "statement": "Central Online belongs to Retail Product & Price rather than Commerce Market Observation.",
+      "review_status": "already_integrated_equivalent",
+      "evidence_dependencies": [
+        "KU2D-EV-PR37",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-CORE"
+      ],
+      "candidate_evidence_ids": [],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "use_current_equivalent",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000017",
+      "source_surface_id": "KU2D-PC-PR37",
+      "file": "services/data-acquisition/config/marketplace_source_inventory.json",
+      "location": "Temu candidate",
+      "statement": "Thailand localization, destination, tax, personalization, and public access were unresolved research questions.",
+      "review_status": "insufficient_evidence",
+      "evidence_dependencies": [
+        "KU2D-EV-PR37",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_historical_only",
+      "missing_promotion_evidence": [
+        "Current official Thailand surface evidence, destination-explicit price provenance, and terms/access review."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000018",
+      "source_surface_id": "KU2D-PC-PR37",
+      "file": "services/data-acquisition/config/marketplace_source_inventory.json",
+      "location": "AliExpress candidate",
+      "statement": "Currency, shipping, tax, destination, personalization, and session context prevent an unqualified Thailand price observation.",
+      "review_status": "insufficient_evidence",
+      "evidence_dependencies": [
+        "KU2D-EV-PR37",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_historical_only",
+      "missing_promotion_evidence": [
+        "Destination-explicit observation contract and attributable public price/shipping/tax evidence."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000019",
+      "source_surface_id": "KU2D-PC-PR37",
+      "file": "services/data-acquisition/config/marketplace_source_inventory.json",
+      "location": "NocNoc candidate and bounded pilot",
+      "statement": "The official page reported cessation dates and produced zero commerce records after one HTTP and one browser load.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR37",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000003"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_only",
+      "missing_promotion_evidence": [
+        "Durable sanitized official notice and independent source-lifecycle review."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000020",
+      "source_surface_id": "KU2D-PC-PR37",
+      "file": "services/data-acquisition/config/marketplace_source_inventory.json",
+      "location": "JD Central candidate",
+      "statement": "The 2023 Thailand closure statement is an unreviewed historical source-lifecycle note.",
+      "review_status": "source_specific_historical_only",
+      "evidence_dependencies": [
+        "KU2D-EV-PR37",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_historical_only",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000021",
+      "source_surface_id": "KU2D-PC-PR37",
+      "file": "services/data-acquisition/config/marketplace_source_inventory.json",
+      "location": "priority and scores",
+      "statement": "The branch source priorities and 0-5 scores were not reviewed and cannot govern current work.",
+      "review_status": "contradicted_or_stale",
+      "evidence_dependencies": [
+        "KU2D-EV-PR37",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-GOVERNANCE",
+        "KU2D-EV-SYNTHESIS"
+      ],
+      "candidate_evidence_ids": [],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "rewrite_before_reuse",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000022",
+      "source_surface_id": "KU2D-PC-PR38",
+      "file": "services/data-acquisition/config/ota_source_expansion_2026_08_31.json",
+      "location": "existing_validated_fixture_technique",
+      "statement": "Booking.com fixed destination/date/occupancy/currency requirements already exist in current durable contracts.",
+      "review_status": "already_integrated_equivalent",
+      "evidence_dependencies": [
+        "KU2D-EV-PR38",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-REVIEWED",
+        "KU2D-EV-CORE"
+      ],
+      "candidate_evidence_ids": [],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "use_current_equivalent",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000023",
+      "source_surface_id": "KU2D-PC-PR38",
+      "file": "services/data-acquisition/config/ota_source_expansion_2026_08_31.json",
+      "location": "Agoda selected source",
+      "statement": "One contextual Agoda request returned HTTP 200 with a challenge marker and zero identity/rate records.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR38",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000004"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_only",
+      "missing_promotion_evidence": [
+        "Sanitized response diagnostic and independent access classification."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000024",
+      "source_surface_id": "KU2D-PC-PR38",
+      "file": "services/data-acquisition/docs/OTA_SOURCE_EXPANSION_2026_08_31.md",
+      "location": "Agoda transfer assessment",
+      "statement": "Booking-style contextual cards were considered transferable, but Agoda access and fields were not validated.",
+      "review_status": "candidate_partially_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR38",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000004"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_with_gaps",
+      "missing_promotion_evidence": [
+        "A separately authorized compliant technique with attributable property identity, rate context, and repeatability."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000025",
+      "source_surface_id": "KU2D-PC-PR38",
+      "file": "services/data-acquisition/config/ota_source_expansion_2026_08_31.json",
+      "location": "Traveloka selected source",
+      "statement": "One Traveloka request returned HTTP 403 with a challenge marker and zero records; browser escalation did not occur.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR38",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000005"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_only",
+      "missing_promotion_evidence": [
+        "Sanitized response diagnostic and independent access classification."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000026",
+      "source_surface_id": "KU2D-PC-PR38",
+      "file": "services/data-acquisition/docs/OTA_SOURCE_EXPANSION_2026_08_31.md",
+      "location": "Traveloka",
+      "statement": "Without dates, occupancy, currency, identity, or rates, the observation is an access/discovery boundary only.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR38",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000005"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_only",
+      "missing_promotion_evidence": [
+        "A future authorized exact-context observation with attributable property/rate evidence."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000027",
+      "source_surface_id": "KU2D-PC-PR38",
+      "file": "services/data-acquisition/docs/OTA_SOURCE_EXPANSION_2026_08_31.md",
+      "location": "Transfer assessment boundaries",
+      "statement": "A challenge boundary requires pause and does not establish technique failure or authorize environment escalation.",
+      "review_status": "duplicate_of_current_knowledge",
+      "evidence_dependencies": [
+        "KU2D-EV-PR38",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-CORE",
+        "KU2D-EV-HUMAN"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000004",
+        "KU2D-CLE-000005"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "no_new_knowledge",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000028",
+      "source_surface_id": "KU2D-PC-PR38",
+      "file": "services/data-acquisition/config/ota_source_expansion_2026_08_31.json",
+      "location": "request fields",
+      "statement": "The exact Agoda and Traveloka status/byte/request counts are source- and date-specific historical ledger facts.",
+      "review_status": "source_specific_historical_only",
+      "evidence_dependencies": [
+        "KU2D-EV-PR38",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000004",
+        "KU2D-CLE-000005"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_historical_only",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000029",
+      "source_surface_id": "KU2D-PC-PR39",
+      "file": "services/data-acquisition/acquisition/coffee_techniques.py",
+      "location": "roaster_product_record",
+      "statement": "A deterministic official-product-detail parser can stage canonical coffee identity, price, origin, process, notes, roast, size, and availability.",
+      "review_status": "candidate_partially_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR39",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000006",
+        "KU2D-CLE-000007"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_with_gaps",
+      "missing_promotion_evidence": [
+        "Live retained raw-to-normalized evidence, per-field provenance, repeatability, and Deep Audit."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000030",
+      "source_surface_id": "KU2D-PC-PR39",
+      "file": "services/data-acquisition/config/coffee_source_expansion_2026_08_31.json",
+      "location": "Roots Coffee",
+      "statement": "The Roots request completed but no durable console evidence was retained, so live success is withheld.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR39",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000006"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_only",
+      "missing_promotion_evidence": [
+        "Bounded evidence-before-exit rerun with captured official response and normalized record."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000031",
+      "source_surface_id": "KU2D-PC-PR39",
+      "file": "services/data-acquisition/config/coffee_source_expansion_2026_08_31.json",
+      "location": "Nana Coffee Roasters",
+      "statement": "The Nana request completed but no durable console evidence was retained, so live success is withheld.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR39",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000007"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_only",
+      "missing_promotion_evidence": [
+        "Bounded evidence-before-exit rerun with captured official response and normalized record."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000032",
+      "source_surface_id": "KU2D-PC-PR39",
+      "file": "services/data-acquisition/config/coffee_source_expansion_2026_08_31.json",
+      "location": "Roots indexed_public_evidence",
+      "statement": "The exact Roots price/origin/process/note details are indexed research, not retained live acquisition.",
+      "review_status": "source_specific_historical_only",
+      "evidence_dependencies": [
+        "KU2D-EV-PR39",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000006"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_historical_only",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000033",
+      "source_surface_id": "KU2D-PC-PR39",
+      "file": "services/data-acquisition/config/coffee_source_expansion_2026_08_31.json",
+      "location": "Nana indexed_public_evidence",
+      "statement": "The Nana origin/process/roast/package cues are indexed research, not retained live acquisition.",
+      "review_status": "source_specific_historical_only",
+      "evidence_dependencies": [
+        "KU2D-EV-PR39",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000007"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_historical_only",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000034",
+      "source_surface_id": "KU2D-PC-PR39",
+      "file": "services/data-acquisition/docs/COFFEE_SOURCE_EXPANSION_2026_08_31.md",
+      "location": "Technique boundary",
+      "statement": "Roasted-bean product price, cafe menu price, provenance, and time-specific availability remain separate.",
+      "review_status": "duplicate_of_current_knowledge",
+      "evidence_dependencies": [
+        "KU2D-EV-PR39",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-CORE",
+        "KU2D-EV-HUMAN"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000006",
+        "KU2D-CLE-000007"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "no_new_knowledge",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000035",
+      "source_surface_id": "KU2D-PC-PR39",
+      "file": "services/data-acquisition/config/coffee_source_expansion_2026_08_31.json",
+      "location": "Akha Ama Coffee",
+      "statement": "The research-only Akha status is stale because PR #41 contains a later bounded catalog observation.",
+      "review_status": "contradicted_or_stale",
+      "evidence_dependencies": [
+        "KU2D-EV-PR39",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-PR41"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000011"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "rewrite_before_reuse",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000036",
+      "source_surface_id": "KU2D-PC-PR39",
+      "file": "services/data-acquisition/config/coffee_source_expansion_2026_08_31.json",
+      "location": "request_accounting",
+      "statement": "Two requests, one pre-request import failure, zero retries, and zero retained records form a historical ledger.",
+      "review_status": "source_specific_historical_only",
+      "evidence_dependencies": [
+        "KU2D-EV-PR39",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000006",
+        "KU2D-CLE-000007"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_historical_only",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000037",
+      "source_surface_id": "KU2D-PC-PR39",
+      "file": "services/data-acquisition/docs/COFFEE_SOURCE_EXPANSION_2026_08_31.md",
+      "location": "next action",
+      "statement": "Official roaster detail remains a candidate for evidence-retaining Deep Audit, not a validated technique.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR39",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000006",
+        "KU2D-CLE-000007"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_only",
+      "missing_promotion_evidence": [
+        "Reviewed bounded reruns, repeatability, field provenance, and source-specific Deep Audit."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000038",
+      "source_surface_id": "KU2D-PC-PR40",
+      "file": "services/data-acquisition/config/qdiving_source_expansion_2026_08_31.json",
+      "location": "SSI Blog",
+      "statement": "One static page retained 10 canonical article candidates; relevance and authority remain Human Review decisions.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR40",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000008"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_only",
+      "missing_promotion_evidence": [
+        "Sanitized per-record evidence, identity repeatability, publication semantics, and Human Review."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000039",
+      "source_surface_id": "KU2D-PC-PR40",
+      "file": "services/data-acquisition/config/qdiving_source_expansion_2026_08_31.json",
+      "location": "Scubadoo Koh Tao",
+      "statement": "One static page retained 10 course-service candidates with explicit THB price and package context.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR40",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000009"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_only",
+      "missing_promotion_evidence": [
+        "Sanitized per-record evidence, service identity repeatability, package-change audit, and Deep Audit."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000040",
+      "source_surface_id": "KU2D-PC-PR40",
+      "file": "services/data-acquisition/config/qdiving_source_expansion_2026_08_31.json",
+      "location": "Aquamaster Thailand",
+      "statement": "One static page retained 10 equipment candidates with canonical identity and explicit current price or range.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR40",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000010"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_only",
+      "missing_promotion_evidence": [
+        "Sanitized per-record evidence, product/variant audit, detail correlation, price-role provenance, and repeatability."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000041",
+      "source_surface_id": "KU2D-PC-PR40",
+      "file": "services/data-acquisition/acquisition/qdiving_source_expansion.py",
+      "location": "three parser functions",
+      "statement": "Deterministic static-HTML parsers keep content, course service, and retail equipment in distinct record types.",
+      "review_status": "candidate_partially_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR40",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000008",
+        "KU2D-CLE-000009",
+        "KU2D-CLE-000010"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_with_gaps",
+      "missing_promotion_evidence": [
+        "Live raw-to-normalized provenance, parser fingerprints, negative fixtures, and repeatability."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000042",
+      "source_surface_id": "KU2D-PC-PR40",
+      "file": "services/data-acquisition/config/qdiving_source_expansion_2026_08_31.json",
+      "location": "access_diagnostics",
+      "statement": "Dormant CAPTCHA/form-plugin strings were not treated as an access challenge because complete public records were present.",
+      "review_status": "source_specific_historical_only",
+      "evidence_dependencies": [
+        "KU2D-EV-PR40",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000009",
+        "KU2D-CLE-000010"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_historical_only",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000043",
+      "source_surface_id": "KU2D-PC-PR40",
+      "file": "services/data-acquisition/config/qdiving_source_expansion_2026_08_31.json",
+      "location": "request_accounting",
+      "statement": "Static HTTP sufficed for three dated observations; no browser or Edge was needed in that historical run.",
+      "review_status": "source_specific_historical_only",
+      "evidence_dependencies": [
+        "KU2D-EV-PR40",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000008",
+        "KU2D-CLE-000009",
+        "KU2D-CLE-000010"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_historical_only",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000044",
+      "source_surface_id": "KU2D-PC-PR40",
+      "file": "services/data-acquisition/docs/QDIVING_SOURCE_EXPANSION_2026_08_31.md",
+      "location": "SSI evidence contract",
+      "statement": "Relative display dates remain null rather than becoming invented publication timestamps.",
+      "review_status": "candidate_partially_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR40",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-HUMAN"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000008"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_with_gaps",
+      "missing_promotion_evidence": [
+        "Captured raw date strings, locale/timezone semantics, and repeat observations."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000045",
+      "source_surface_id": "KU2D-PC-PR40",
+      "file": "services/data-acquisition/docs/QDIVING_SOURCE_EXPANSION_2026_08_31.md",
+      "location": "Scubadoo evidence contract",
+      "statement": "Dive-course service price is not Retail Product & Price, room rate, or demand evidence.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR40",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-CORE"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000009"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_only",
+      "missing_promotion_evidence": [
+        "Reviewed service schema and source-specific repeatability before promotion."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000046",
+      "source_surface_id": "KU2D-PC-PR40",
+      "file": "services/data-acquisition/docs/QDIVING_SOURCE_EXPANSION_2026_08_31.md",
+      "location": "Aquamaster evidence contract",
+      "statement": "Variant ranges remain ranges and sale-page position remains provenance rather than demand.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR40",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-CORE",
+        "KU2D-EV-HUMAN"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000010"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_only",
+      "missing_promotion_evidence": [
+        "Product/variant identity correlation, price-role audit, and repeated observations."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000047",
+      "source_surface_id": "KU2D-PC-PR40",
+      "file": "services/data-acquisition/docs/QDIVING_SOURCE_EXPANSION_2026_08_31.md",
+      "location": "Technique transfer",
+      "statement": "OTA, Retail, PADI, and YouTube patterns were proposed only as bounded analogies across three source roles.",
+      "review_status": "candidate_partially_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR40",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-SYNTHESIS"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000008",
+        "KU2D-CLE-000009",
+        "KU2D-CLE-000010"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_with_gaps",
+      "missing_promotion_evidence": [
+        "Source-specific validated evidence showing each transferred rule improves provenance without role contamination."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000048",
+      "source_surface_id": "KU2D-PC-PR40",
+      "file": "services/data-acquisition/config/q_diving_source_registry.json",
+      "location": "Q-Diving source registry additions",
+      "statement": "SSI, Scubadoo, and Aquamaster source definitions are unique unmerged candidate registry changes.",
+      "review_status": "candidate_partially_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR40",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000008",
+        "KU2D-CLE-000009",
+        "KU2D-CLE-000010"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_with_gaps",
+      "missing_promotion_evidence": [
+        "Independent source review plus exact registry-field and source-role validation before integration."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000049",
+      "source_surface_id": "KU2D-PC-PR41",
+      "file": "services/data-acquisition/config/cross_domain_source_gap_scan_2026_08_31.json",
+      "location": "domain_inventory",
+      "statement": "The cross-domain inventory is a point-in-time snapshot at historical base 820994f and is not current authority.",
+      "review_status": "source_specific_historical_only",
+      "evidence_dependencies": [
+        "KU2D-EV-PR41",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-GOVERNANCE"
+      ],
+      "candidate_evidence_ids": [],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_historical_only",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000050",
+      "source_surface_id": "KU2D-PC-PR41",
+      "file": "services/data-acquisition/config/cross_domain_source_gap_scan_2026_08_31.json",
+      "location": "Akha Ama ranked gap",
+      "statement": "One bounded Akha catalog load retained 10 canonical product/name/price observations with roast/package cues.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": [
+        "KU2D-EV-PR41",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000011"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_candidate_only",
+      "missing_promotion_evidence": [
+        "Sanitized per-record evidence, detail correlation, variant identity, price/availability timestamp, and repeatability."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000051",
+      "source_surface_id": "KU2D-PC-PR41",
+      "file": "services/data-acquisition/config/cross_domain_source_gap_scan_2026_08_31.json",
+      "location": "Watsons ranked gap",
+      "statement": "Watsons Discovery evidence exists while Product & Price remains a required-track gap.",
+      "review_status": "already_integrated_equivalent",
+      "evidence_dependencies": [
+        "KU2D-EV-PR41",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-REVIEWED",
+        "KU2D-EV-CORE"
+      ],
+      "candidate_evidence_ids": [],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "use_current_equivalent",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000052",
+      "source_surface_id": "KU2D-PC-PR41",
+      "file": "services/data-acquisition/config/cross_domain_source_gap_scan_2026_08_31.json",
+      "location": "LINE SHOPPING ranked gap",
+      "statement": "The LINE result reuses PR #37 candidate evidence and adds no independent observation.",
+      "review_status": "duplicate_of_current_knowledge",
+      "evidence_dependencies": [
+        "KU2D-EV-PR41",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-PR37"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000002"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "no_new_knowledge",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000053",
+      "source_surface_id": "KU2D-PC-PR41",
+      "file": "services/data-acquisition/config/cross_domain_source_gap_scan_2026_08_31.json",
+      "location": "ranked_gaps order",
+      "statement": "The P0/P1/P2 ordering and numeric ranks were never reviewed and cannot govern current work.",
+      "review_status": "contradicted_or_stale",
+      "evidence_dependencies": [
+        "KU2D-EV-PR41",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-GOVERNANCE",
+        "KU2D-EV-SYNTHESIS"
+      ],
+      "candidate_evidence_ids": [],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "rewrite_before_reuse",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000054",
+      "source_surface_id": "KU2D-PC-PR41",
+      "file": "services/data-acquisition/config/cross_domain_source_gap_scan_2026_08_31.json",
+      "location": "Pantip ranked gap",
+      "statement": "Privacy, minimization, provenance, identity, and Human Review contracts were proposed before any Pantip Explore.",
+      "review_status": "insufficient_evidence",
+      "evidence_dependencies": [
+        "KU2D-EV-PR41",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-HUMAN"
+      ],
+      "candidate_evidence_ids": [],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_historical_only",
+      "missing_promotion_evidence": [
+        "Architecture/privacy review and bounded public-only source contract before any request."
+      ],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000055",
+      "source_surface_id": "KU2D-PC-PR41",
+      "file": "services/data-acquisition/config/cross_domain_source_gap_scan_2026_08_31.json",
+      "location": "Expedia ranked gap",
+      "statement": "A future Expedia observation was constrained to fixed dates, occupancy, currency, and public non-personalized context.",
+      "review_status": "duplicate_of_current_knowledge",
+      "evidence_dependencies": [
+        "KU2D-EV-PR41",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-CORE",
+        "KU2D-EV-HUMAN"
+      ],
+      "candidate_evidence_ids": [],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "no_new_knowledge",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000056",
+      "source_surface_id": "KU2D-PC-PR41",
+      "file": "services/data-acquisition/config/cross_domain_source_gap_scan_2026_08_31.json",
+      "location": "request_accounting",
+      "statement": "One new Akha load plus two reused LINE loads is a historical campaign ledger, not a current total.",
+      "review_status": "source_specific_historical_only",
+      "evidence_dependencies": [
+        "KU2D-EV-PR41",
+        "KU2D-EV-CANDIDATES"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000011"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_historical_only",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000057",
+      "source_surface_id": "KU2D-PC-PR41",
+      "file": "services/data-acquisition/docs/CROSS_DOMAIN_SOURCE_GAP_SCAN_2026_08_31.md",
+      "location": "Supermarket and IT Retail inventory",
+      "statement": "Supermarket frozen status and isolated-staging JIB boundaries are already current reviewed knowledge.",
+      "review_status": "already_integrated_equivalent",
+      "evidence_dependencies": [
+        "KU2D-EV-PR41",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-REVIEWED",
+        "KU2D-EV-CORE"
+      ],
+      "candidate_evidence_ids": [],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "use_current_equivalent",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000058",
+      "source_surface_id": "KU2D-PC-PR41",
+      "file": "services/data-acquisition/config/cross_domain_source_gap_scan_2026_08_31.json",
+      "location": "Commerce Market Observation inventory",
+      "statement": "The statement that Lazada remained only promising/no live validation is stale after reviewed Lazada evidence.",
+      "review_status": "contradicted_or_stale",
+      "evidence_dependencies": [
+        "KU2D-EV-PR41",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-REVIEWED"
+      ],
+      "candidate_evidence_ids": [],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "rewrite_before_reuse",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "claim_id": "KU2D-PCR-000059",
+      "source_surface_id": "KU2D-PC-PR41",
+      "file": "services/data-acquisition/config/cross_domain_source_gap_scan_2026_08_31.json",
+      "location": "Coffee and Q-Diving inventory",
+      "statement": "Cross-domain lifecycle summaries tied to PRs #39/#40 remain historical and cannot imply domain validation.",
+      "review_status": "source_specific_historical_only",
+      "evidence_dependencies": [
+        "KU2D-EV-PR41",
+        "KU2D-EV-CANDIDATES",
+        "KU2D-EV-GOVERNANCE"
+      ],
+      "candidate_evidence_ids": [
+        "KU2D-CLE-000006",
+        "KU2D-CLE-000007",
+        "KU2D-CLE-000008",
+        "KU2D-CLE-000009",
+        "KU2D-CLE-000010"
+      ],
+      "rationale": "The exact parked delta is preserved as evidence, while current authority and missing provenance constrain reuse.",
+      "disposition": "retain_historical_only",
+      "missing_promotion_evidence": [],
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    }
+  ],
+  "evidence_dependency_graph": {
+    "KU2D-PCR-000001": [
+      "KU2D-EV-PR36",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-CORE",
+      "KU2D-EV-HUMAN"
+    ],
+    "KU2D-PCR-000002": [
+      "KU2D-EV-PR36",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-CORE"
+    ],
+    "KU2D-PCR-000003": [
+      "KU2D-EV-PR36",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000004": [
+      "KU2D-EV-PR36",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000005": [
+      "KU2D-EV-PR36",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-CORE",
+      "KU2D-EV-HUMAN"
+    ],
+    "KU2D-PCR-000006": [
+      "KU2D-EV-PR36",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-CORE",
+      "KU2D-EV-HUMAN"
+    ],
+    "KU2D-PCR-000007": [
+      "KU2D-EV-PR36",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000008": [
+      "KU2D-EV-PR36",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-QUALITY"
+    ],
+    "KU2D-PCR-000009": [
+      "KU2D-EV-PR36",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000010": [
+      "KU2D-EV-PR36",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000011": [
+      "KU2D-EV-PR37",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000012": [
+      "KU2D-EV-PR37",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-CORE",
+      "KU2D-EV-HUMAN"
+    ],
+    "KU2D-PCR-000013": [
+      "KU2D-EV-PR37",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000014": [
+      "KU2D-EV-PR37",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000015": [
+      "KU2D-EV-PR37",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000016": [
+      "KU2D-EV-PR37",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-CORE"
+    ],
+    "KU2D-PCR-000017": [
+      "KU2D-EV-PR37",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000018": [
+      "KU2D-EV-PR37",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000019": [
+      "KU2D-EV-PR37",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000020": [
+      "KU2D-EV-PR37",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000021": [
+      "KU2D-EV-PR37",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-GOVERNANCE",
+      "KU2D-EV-SYNTHESIS"
+    ],
+    "KU2D-PCR-000022": [
+      "KU2D-EV-PR38",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-REVIEWED",
+      "KU2D-EV-CORE"
+    ],
+    "KU2D-PCR-000023": [
+      "KU2D-EV-PR38",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000024": [
+      "KU2D-EV-PR38",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000025": [
+      "KU2D-EV-PR38",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000026": [
+      "KU2D-EV-PR38",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000027": [
+      "KU2D-EV-PR38",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-CORE",
+      "KU2D-EV-HUMAN"
+    ],
+    "KU2D-PCR-000028": [
+      "KU2D-EV-PR38",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000029": [
+      "KU2D-EV-PR39",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000030": [
+      "KU2D-EV-PR39",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000031": [
+      "KU2D-EV-PR39",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000032": [
+      "KU2D-EV-PR39",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000033": [
+      "KU2D-EV-PR39",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000034": [
+      "KU2D-EV-PR39",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-CORE",
+      "KU2D-EV-HUMAN"
+    ],
+    "KU2D-PCR-000035": [
+      "KU2D-EV-PR39",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-PR41"
+    ],
+    "KU2D-PCR-000036": [
+      "KU2D-EV-PR39",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000037": [
+      "KU2D-EV-PR39",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000038": [
+      "KU2D-EV-PR40",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000039": [
+      "KU2D-EV-PR40",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000040": [
+      "KU2D-EV-PR40",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000041": [
+      "KU2D-EV-PR40",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000042": [
+      "KU2D-EV-PR40",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000043": [
+      "KU2D-EV-PR40",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000044": [
+      "KU2D-EV-PR40",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-HUMAN"
+    ],
+    "KU2D-PCR-000045": [
+      "KU2D-EV-PR40",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-CORE"
+    ],
+    "KU2D-PCR-000046": [
+      "KU2D-EV-PR40",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-CORE",
+      "KU2D-EV-HUMAN"
+    ],
+    "KU2D-PCR-000047": [
+      "KU2D-EV-PR40",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-SYNTHESIS"
+    ],
+    "KU2D-PCR-000048": [
+      "KU2D-EV-PR40",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000049": [
+      "KU2D-EV-PR41",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-GOVERNANCE"
+    ],
+    "KU2D-PCR-000050": [
+      "KU2D-EV-PR41",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000051": [
+      "KU2D-EV-PR41",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-REVIEWED",
+      "KU2D-EV-CORE"
+    ],
+    "KU2D-PCR-000052": [
+      "KU2D-EV-PR41",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-PR37"
+    ],
+    "KU2D-PCR-000053": [
+      "KU2D-EV-PR41",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-GOVERNANCE",
+      "KU2D-EV-SYNTHESIS"
+    ],
+    "KU2D-PCR-000054": [
+      "KU2D-EV-PR41",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-HUMAN"
+    ],
+    "KU2D-PCR-000055": [
+      "KU2D-EV-PR41",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-CORE",
+      "KU2D-EV-HUMAN"
+    ],
+    "KU2D-PCR-000056": [
+      "KU2D-EV-PR41",
+      "KU2D-EV-CANDIDATES"
+    ],
+    "KU2D-PCR-000057": [
+      "KU2D-EV-PR41",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-REVIEWED",
+      "KU2D-EV-CORE"
+    ],
+    "KU2D-PCR-000058": [
+      "KU2D-EV-PR41",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-REVIEWED"
+    ],
+    "KU2D-PCR-000059": [
+      "KU2D-EV-PR41",
+      "KU2D-EV-CANDIDATES",
+      "KU2D-EV-GOVERNANCE"
+    ]
+  },
+  "summary": {
+    "parked_surface_count": 6,
+    "unique_file_count": 30,
+    "candidate_coverage_count": 11,
+    "claim_count": 59,
+    "review_status_counts": {
+      "already_integrated_equivalent": 4,
+      "candidate_supported": 17,
+      "candidate_partially_supported": 10,
+      "contradicted_or_stale": 4,
+      "insufficient_evidence": 5,
+      "duplicate_of_current_knowledge": 8,
+      "source_specific_historical_only": 11
+    },
+    "disposition_counts": {
+      "use_current_equivalent": 4,
+      "retain_candidate_only": 17,
+      "retain_candidate_with_gaps": 10,
+      "rewrite_before_reuse": 4,
+      "retire_historical_claim": 0,
+      "retain_historical_only": 16,
+      "no_new_knowledge": 8
+    },
+    "surface_claim_counts": {
+      "KU2D-PC-PR36": 10,
+      "KU2D-PC-PR37": 11,
+      "KU2D-PC-PR38": 7,
+      "KU2D-PC-PR39": 9,
+      "KU2D-PC-PR40": 11,
+      "KU2D-PC-PR41": 11
+    },
+    "lossless_candidate_projection_count": 0,
+    "candidate_promotion_count": 0,
+    "parked_branch_mutation_count": 0,
+    "parked_pr_merge_count": 0
+  },
+  "boundaries": {
+    "storage_neutral": true,
+    "review_equals_promotion": false,
+    "candidate_promotion_count": 0,
+    "learning_memory_write": false,
+    "reviewed_corpus_write": false,
+    "core_knowledge_write": false,
+    "human_confirmation_write": false,
+    "ground_truth_write": false,
+    "parked_branch_mutation_count": 0,
+    "parked_pr_merge_count": 0,
+    "branch_deletion_count": 0,
+    "live_request_count": 0,
+    "runtime_auto_write": false,
+    "production_authorized": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "ml_training_or_inference": false,
+    "ml_dataset_export": false,
+    "survey_doe_sem_work": false,
+    "broader_recommendation_or_ranking": false
+  }
+}
