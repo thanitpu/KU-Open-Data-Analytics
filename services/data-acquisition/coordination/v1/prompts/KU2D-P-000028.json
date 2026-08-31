@@ -1,0 +1,22 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000028",
+  "created_at": "2026-08-31T18:45:00+07:00",
+  "created_by": {"actor":"assistant","actor_id":"assistant_review"},
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-coffee-hardened-rerun-v1",
+  "objective": "Use Branch Handoff Protocol v1, then perform a planning-only Roots Coffee strict-product-semantics diagnosis using only retained repository evidence; do not make a live request.",
+  "instructions": [
+    "Use branch_handoff mechanically: close this source queue before switching, then create/switch to codex/ku2d-roots-semantics-diagnosis-v1 from integration/data-acquisition-platform at merge commit fa60f7f13463c682f809fbfa402f80efe489d3ad and initialize the target queue as sole authority.",
+    "Inspect the retained sanitized Roots evidence from KU2D-R-000027 and the current Coffee recovery parser/normalization/strict coffee-product-semantics logic. Do not fetch Roots, Nana, or any external source.",
+    "Identify exactly which strict semantic gates failed for Roots and classify each failure as one of: missing retained evidence, parser/normalizer limitation, overly strict contract, genuinely non-product/cafe-menu ambiguity, or unresolved from retained evidence.",
+    "Compare the Roots retained field set against the successful Nana record contract and against the existing Coffee semantic contract without forcing equivalence where source structures differ.",
+    "Determine whether a deterministic parser/normalization correction can be justified from retained evidence alone. If yes, specify the smallest correction and tests/fixtures needed; if not, specify the exact missing evidence that would be required before another request could be justified.",
+    "Do not reinterpret KU2D-R-000027 as success, do not promote Nana or Roots evidence, do not mutate Reviewed Corpus/Core Knowledge/Human Confirmation/Ground Truth, and do not authorize any further live request.",
+    "Open a Draft PR against integration/data-acquisition-platform, perform safe mechanical PR operations including Ready transition when possible, and do not merge.",
+    "Return completed_queue_summary with only the important items: work completed; key findings/results; repo/knowledge state changes; important out-of-scope actions not performed; remaining blockers/risks; recommended next logical step."
+  ],
+  "expected_result": {"result_id":"KU2D-R-000028","next_actor":"assistant"},
+  "provenance": {"repository":"thanitpu/KU-Open-Data-Analytics","source_branch":"codex/ku2d-coffee-hardened-rerun-v1","target_branch":"codex/ku2d-roots-semantics-diagnosis-v1","depends_on_result":"KU2D-R-000027","depends_on_review":"KU2D-V-000027","depends_on_merge":"fa60f7f13463c682f809fbfa402f80efe489d3ad"},
+  "boundaries": {"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
