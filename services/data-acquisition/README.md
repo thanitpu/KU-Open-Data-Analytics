@@ -428,3 +428,9 @@ The candidate review preserves exact future evidence requirements without promot
 The Parked Evidence Disposition Plan in config/parked_evidence_disposition_plan.json and docs/PARKED_EVIDENCE_DISPOSITION_PLAN.md adds a non-executing disposition and closure-prerequisite plan for parked Draft PRs #36–#43. Every PR retains exact branch/head provenance, durable candidate or synthesis dependencies, non-lossless gaps, and concrete prerequisites before any future human closure decision.
 
 No parked PR is currently closure-eligible and no lossless-preservation claim is made. The pure validator rejects executable close/merge/delete/mutation fields, stale PR provenance, unsupported closure eligibility, authority promotion, live reruns, action-count drift, or recommendation/ranking behavior.
+
+## Evidence Recovery Prioritization v1
+
+`config/evidence_recovery_prioritization.json` and `docs/EVIDENCE_RECOVERY_PRIORITIZATION.md` compare only the three reviewed targeted-rerun candidates: Marketplace PR #37, Coffee PR #39, and Q-Diving PR #40. A deterministic six-criterion matrix recommends Coffee first because a bounded official-detail evidence-before-exit package directly repairs its known retention failure at the lowest expected compliance and effort cost.
+
+The recommendation is not execution authority. The artifact maps every relevant CLE and reviewed claim dependency to an explicit evidence gap or no-rerun reason, explains why the other candidates wait and what would change the ranking, and keeps live requests, rerun execution, promotion, knowledge/runtime writes, parked-ref actions, production, scheduling, ML, Survey/DoE/SEM, and broader ranking disabled.

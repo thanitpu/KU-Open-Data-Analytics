@@ -77,6 +77,7 @@ jobs:
           python tools/SELF_TEST_PARKED_SYNTHESIS_REVIEW.py
           python tools/SELF_TEST_PARKED_CANDIDATE_REVIEW.py
           python tools/SELF_TEST_PARKED_EVIDENCE_DISPOSITION_PLAN.py
+          python tools/SELF_TEST_EVIDENCE_RECOVERY_PRIORITIZATION.py
           python tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
           python tools/SELF_TEST_LIFECYCLE_ACCEPTANCE.py
