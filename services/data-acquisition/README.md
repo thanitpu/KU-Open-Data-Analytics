@@ -408,3 +408,9 @@ Open/unmerged historical evidence is retained separately in the Candidate Learni
 `docs/CORE_INTELLIGENCE_QUALITY_FOUNDATION.md` adds a deterministic quality layer before broader recommendation work: immutable evidence-stage provenance, a dimension-aware backward-compatible codebook adapter with explicit partial coverage, distinct Code/Theme/Descriptor/Interpretation layers, first/second-cycle coding, ontology-open no-fit/novel outcomes, analytical memos, negative cases, Finding Verification, taxonomy-family-aware independent coding and reliability helpers, and provenance-linked analysis projections.
 
 The quality layer is explicitly invoked and non-authorizing. It does not perform acquisition, promote Candidate Learning Evidence, write runtime state, create an ML dataset, run ML, schedule work, or approve production.
+
+## Branch and PR Governance v1
+
+`config/branch_pr_disposition_registry.json` and `docs/BRANCH_PR_GOVERNANCE.md` retain a point-in-time, evidence-backed disposition for every remote `codex/*` branch. The pure validator requires internally reconciled branch/PR counts, exact proof for advisory safe-delete candidates, preservation of open Draft branches with unique work, and strict Candidate Learning Evidence non-promotion. Fresh expected head/PR maps can be supplied so later repository drift fails closed.
+
+The register performs no git, GitHub, acquisition, runtime, production, scheduler, or ML action. `SAFE_TO_DELETE_CANDIDATE` is not deletion authority; every future deletion requires a separate human-approved checkpoint with refreshed evidence and explicit targets.

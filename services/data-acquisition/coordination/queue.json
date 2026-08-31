@@ -1,11 +1,11 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T12:51:00+07:00",
-  "authoritative_branch": "codex/ku2d-core-intelligence-v1",
-  "latest_prompt": "KU2D-P-000012",
-  "latest_result": "KU2D-R-000012",
-  "latest_review": "KU2D-V-000012",
-  "latest_human_decision": "KU2D-H-000002",
+  "updated_at": "2026-08-31T13:33:00+07:00",
+  "authoritative_branch": "codex/ku2d-branch-governance-v1",
+  "latest_prompt": "KU2D-P-000014",
+  "latest_result": "KU2D-R-000014",
+  "latest_review": "KU2D-V-000014",
+  "latest_human_decision": "KU2D-H-000004",
   "prompt_states": {
     "KU2D-P-000001": "completed",
     "KU2D-P-000002": "completed",
@@ -18,7 +18,9 @@
     "KU2D-P-000009": "reviewed",
     "KU2D-P-000010": "reviewed",
     "KU2D-P-000011": "reviewed",
-    "KU2D-P-000012": "human_decision_required"
+    "KU2D-P-000012": "completed",
+    "KU2D-P-000013": "reviewed",
+    "KU2D-P-000014": "human_decision_required"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -27,15 +29,16 @@
     "KU2D-P-000004",
     "KU2D-P-000005",
     "KU2D-P-000006",
-    "KU2D-P-000007"
+    "KU2D-P-000007",
+    "KU2D-P-000012"
   ],
   "next_action": {
     "actor": "human",
-    "prompt_id": "KU2D-P-000012",
-    "result_id": "KU2D-R-000012",
-    "review_id": "KU2D-V-000012",
+    "prompt_id": "KU2D-P-000014",
+    "result_id": "KU2D-R-000014",
+    "review_id": "KU2D-V-000014",
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "PR #46 Core Intelligence Quality Foundation v1 is technically accepted. Current PR head is open, mergeable, Draft, and all current-head CI workflows pass. Human action is required only to mark PR #46 Ready for review because the available connector cannot perform the Draft-to-Ready transition due to the known Repository.fullDatabaseId GraphQL schema error. No merge is authorized until Ready status is independently confirmed and exact current head/CI are rechecked."
+  "notes": "PR #47 Branch/PR Governance v1 is technically accepted. Fresh evidence preserves eight parked-unreviewed unique-work branches and keeps sixteen safe-delete candidates advisory/non-executable; all current-head CI passes. Human action is required only to mark PR #47 Ready for review because the available connector cannot safely complete the known Repository.fullDatabaseId GraphQL transition. No merge or branch cleanup is authorized until Ready status is independently confirmed and exact head/CI are rechecked."
 }

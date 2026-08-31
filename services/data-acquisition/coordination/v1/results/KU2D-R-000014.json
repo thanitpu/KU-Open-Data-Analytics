@@ -1,0 +1,225 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000014",
+  "prompt_id": "KU2D-P-000014",
+  "submitted_at": "2026-08-31T13:30:00+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "partial",
+  "summary": "Completed bounded final technical and merge-readiness validation of Draft PR #47 at exact audited content head 7e84f17091ea1963d672e03c0b356cd037fdd27f. Fresh evidence still reconciles 25 remote codex branches and 25 associated PRs: one active branch, eight preserved parked-unreviewed branches with unique unmerged work, and sixteen advisory safe-delete candidates with closed/merged PR state and zero-file merged-tree proof. All 40 deterministic scripts and exact-head CI pass, and the PR description is current. The authorized Ready-for-review transition was attempted but the GitHub connector failed because its GraphQL response requests unavailable Repository.fullDatabaseId; no workaround was attempted, so PR #47 remains Draft and unmerged.",
+  "evidence_references": [
+    "PR:#47",
+    "commit:7e84f17091ea1963d672e03c0b356cd037fdd27f",
+    "base:d497f1b8311e2f7ec410dd1b52735c31befa3d5d",
+    "KU2D-P-000014",
+    "KU2D-R-000013",
+    "KU2D-V-000013",
+    "config/branch_pr_disposition_registry.json",
+    "docs/BRANCH_PR_GOVERNANCE.md",
+    "workflow:Data Acquisition Platform CI#239",
+    "workflow:Frontend CI#1027",
+    "workflow:PR Browser Preview Link#157"
+  ],
+  "repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-branch-governance-v1",
+    "authoritative_branch": "codex/ku2d-branch-governance-v1",
+    "base_branch": "integration/data-acquisition-platform",
+    "base_sha": "d497f1b8311e2f7ec410dd1b52735c31befa3d5d",
+    "validated_content_head_sha": "7e84f17091ea1963d672e03c0b356cd037fdd27f",
+    "pull_request_number": 47,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/47",
+    "pull_request_title": "KU2D: Add Branch and PR Governance v1",
+    "pull_request_open": true,
+    "pull_request_mergeable": true,
+    "pull_request_draft": true,
+    "pull_request_merged": false,
+    "changed_file_count_before_result_submission": 13,
+    "additions_before_result_submission": 1144,
+    "deletions_before_result_submission": 14
+  },
+  "refreshed_inventory": {
+    "remote_codex_branch_count": 25,
+    "associated_pr_count": 25,
+    "active_count": 1,
+    "merged_historical_count": 0,
+    "parked_reviewed_count": 0,
+    "parked_unreviewed_count": 8,
+    "needs_review_count": 0,
+    "superseded_count": 0,
+    "safe_to_delete_candidate_count": 16,
+    "safe_delete_tree_equivalence_recheck": "16/16 passed",
+    "candidate_learning_evidence_record_count": 11,
+    "candidate_projected_parked_branch_count": 6,
+    "not_durably_projected_parked_branch_count": 2,
+    "branch_deletion_count": 0,
+    "branch_mutation_count": 0,
+    "material_state_change_since_registry_snapshot": false,
+    "register_or_report_refresh_required": false
+  },
+  "parked_unique_work": [
+    {
+      "branch": "codex/overnight-marketplace-source-inventory",
+      "pr": 37,
+      "projection": "candidate_learning_evidence_only",
+      "preserved": true,
+      "adjudicated": false
+    },
+    {
+      "branch": "codex/overnight-ota-source-expansion",
+      "pr": 38,
+      "projection": "candidate_learning_evidence_only",
+      "preserved": true,
+      "adjudicated": false
+    },
+    {
+      "branch": "codex/overnight-qdiving-source-expansion",
+      "pr": 40,
+      "projection": "candidate_learning_evidence_only",
+      "preserved": true,
+      "adjudicated": false
+    },
+    {
+      "branch": "codex/overnight-coffee-source-expansion",
+      "pr": 39,
+      "projection": "candidate_learning_evidence_only",
+      "preserved": true,
+      "adjudicated": false
+    },
+    {
+      "branch": "codex/overnight-tiktok-shop-commerce-pulse-explore",
+      "pr": 36,
+      "projection": "candidate_learning_evidence_only",
+      "preserved": true,
+      "adjudicated": false
+    },
+    {
+      "branch": "codex/overnight-cross-domain-source-gap-scan",
+      "pr": 41,
+      "projection": "candidate_learning_evidence_only",
+      "preserved": true,
+      "adjudicated": false
+    },
+    {
+      "branch": "codex/overnight-acquisition-technique-transfer-matrix",
+      "pr": 42,
+      "projection": "not_durably_projected",
+      "preserved": true,
+      "adjudicated": false
+    },
+    {
+      "branch": "codex/overnight-exploration-summary",
+      "pr": 43,
+      "projection": "not_durably_projected",
+      "preserved": true,
+      "adjudicated": false
+    }
+  ],
+  "governance_audit": {
+    "full_pr_delta_reviewed": true,
+    "register_validator_report_tests_and_docs_consistent": true,
+    "fresh_nonactive_branch_heads_exact": true,
+    "fresh_pr_states_reconciled": true,
+    "parked_prs_36_through_43_open_and_draft": true,
+    "parked_unique_work_preserved": true,
+    "candidate_learning_evidence_promoted": false,
+    "safe_delete_is_advisory_only": true,
+    "safe_delete_is_executable": false,
+    "branch_deletion_performed": false,
+    "branch_mutation_performed": false,
+    "parked_work_adjudicated": false,
+    "register_or_report_changed": false
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "git_diff_check": "passed against origin/integration/data-acquisition-platform...HEAD",
+    "json_parse": "96 files passed before Result submission",
+    "yaml_parse": "16 workflows passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service, tools passed",
+    "branch_governance_tests": "BG1-BG25 passed",
+    "quality_foundation_tests": "QF1-QF42 passed",
+    "core_knowledge_tests": "CK1-CK30 passed",
+    "learning_memory_tests": "LM1-LM30 passed",
+    "agent_handoff_tests": "AH1-AH23 passed",
+    "complete_deterministic_corpus": "40/40 scripts passed",
+    "supermarket_regressions": "passed",
+    "retail_transfer_regressions": "passed",
+    "youtube_regressions": "passed",
+    "shopee_regressions": "passed",
+    "lazada_regressions": "passed",
+    "jib_and_lifecycle_regressions": "passed",
+    "live_request_count": 0
+  },
+  "ci": {
+    "head_sha": "7e84f17091ea1963d672e03c0b356cd037fdd27f",
+    "data_acquisition_platform_ci": {
+      "run_number": 239,
+      "run_id": 33363638627,
+      "conclusion": "success"
+    },
+    "frontend_ci": {
+      "run_number": 1027,
+      "run_id": 33363638618,
+      "conclusion": "success"
+    },
+    "pr_browser_preview_link": {
+      "run_number": 157,
+      "run_id": 33363638613,
+      "conclusion": "success"
+    }
+  },
+  "pull_request_finalization": {
+    "description_updated": true,
+    "description_head_sha": "7e84f17091ea1963d672e03c0b356cd037fdd27f",
+    "description_inventory_test_ci_and_boundaries_exact": true,
+    "ready_transition_requested": true,
+    "ready_transition_completed": false,
+    "connector_error": "GitHub GraphQL response requested Repository.fullDatabaseId, which is unavailable in the repository schema",
+    "unsafe_workaround_attempted": false,
+    "draft_remains": true,
+    "merged": false
+  },
+  "files_changed_by_this_result": [
+    "services/data-acquisition/coordination/queue.json",
+    "services/data-acquisition/coordination/v1/results/KU2D-R-000014.json"
+  ],
+  "remaining_blockers": [
+    "PR #47 cannot be marked Ready through the available connector until its GraphQL Repository.fullDatabaseId response selection is corrected or an independently authorized reviewer performs the transition."
+  ],
+  "security_and_boundaries": {
+    "credentials_or_private_material_added": false,
+    "new_source_count": 0,
+    "live_request_count": 0,
+    "candidate_source_promotion_count": 0,
+    "branch_deletion_count": 0,
+    "branch_mutation_count": 0,
+    "production_authorized": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "runtime_auto_write": false,
+    "ml_training_or_inference": false,
+    "embedding_or_vector_storage": false,
+    "ml_dataset_export": false,
+    "survey_doe_sem_work": false,
+    "broader_core_intelligence_recommendation_or_ranking": false
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-branch-governance-v1",
+    "authoritative_branch": "codex/ku2d-branch-governance-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000014.json",
+    "depends_on_result": "KU2D-R-000013",
+    "depends_on_review": "KU2D-V-000013",
+    "depends_on_merge": "d497f1b8311e2f7ec410dd1b52735c31befa3d5d",
+    "target_pr": 47,
+    "learning_memory_record_id": null
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

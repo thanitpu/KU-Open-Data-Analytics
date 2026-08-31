@@ -1,0 +1,43 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000014",
+  "created_at": "2026-08-31T13:19:00+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-branch-governance-v1",
+  "objective": "Finalize Draft PR #47 for independent merge review without deleting branches or adjudicating parked work.",
+  "instructions": [
+    "BRANCH HANDOFF: remain on codex/ku2d-branch-governance-v1. Fetch/pull the latest remote state and read queue.json from this branch before any work.",
+    "Review the complete PR #47 delta for consistency across Branch/PR Disposition Register, validator, governance report, Agent Handoff updates, tests, and documentation.",
+    "Refresh remote codex refs and PR states and ensure the register remains fail-closed if observed evidence has changed. Update the register/report only when necessary to reflect fresh state.",
+    "Do not delete or mutate any branch. SAFE_TO_DELETE_CANDIDATE is advisory only and must remain non-executable.",
+    "Do not merge, close, supersede, or otherwise adjudicate parked Draft PRs #36-#43. Preserve all eight unique unmerged branches for later independent content review.",
+    "Do not promote Candidate Learning Evidence or change Learning Memory, Reviewed Learning Corpus, Core Knowledge, source scope, production state, scheduler state, ML state, Survey/DoE/SEM, or broader Core Intelligence recommendation/ranking.",
+    "Verify the two not-durably-projected synthesis branches remain explicitly identifiable and protected from cleanup: codex/overnight-acquisition-technique-transfer-matrix and codex/overnight-exploration-summary.",
+    "Run git diff --check, JSON/YAML parsing, Python compilation, Branch Governance tests, Quality Foundation tests, Core Knowledge tests, Learning Memory tests, Agent Handoff tests, complete deterministic Data Acquisition corpus, and relevant regressions.",
+    "Ensure PR #47 description states exact fresh inventory counts, exact audited head, test/CI state, and non-deletion boundaries.",
+    "If technically clean, attempt to mark PR #47 Ready for review. If the known GitHub connector GraphQL issue prevents the transition, record the blocker and do not attempt an unsafe workaround.",
+    "Write KU2D-R-000014 with exact audited head, refreshed branch/PR counts and disposition counts, protected parked-work list, tests/CI, Ready status, blockers, and hand control to assistant.",
+    "Do not merge."
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000014",
+    "next_actor": "assistant"
+  },
+  "provenance": {
+    "depends_on_result": "KU2D-R-000013",
+    "depends_on_review": "KU2D-V-000013",
+    "depends_on_merge": "d497f1b8311e2f7ec410dd1b52735c31befa3d5d",
+    "target_pr": 47,
+    "authoritative_branch": "codex/ku2d-branch-governance-v1"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

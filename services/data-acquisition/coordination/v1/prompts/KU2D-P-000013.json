@@ -1,0 +1,49 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000013",
+  "created_at": "2026-08-31T12:53:00+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-branch-governance-v1",
+  "objective": "Create a durable, evidence-backed KU2D Branch/PR Disposition Register and governance validator from the accepted KU2D-R-000011 inventory, without deleting branches or changing acquisition/runtime behavior.",
+  "instructions": [
+    "BRANCH HANDOFF IS MANDATORY: switch to codex/ku2d-branch-governance-v1, fetch/pull the latest remote state, then read services/data-acquisition/coordination/queue.json from that branch. Do not continue work on codex/ku2d-core-intelligence-v1.",
+    "Confirm this branch starts from integration/data-acquisition-platform after squash merge d497f1b8311e2f7ec410dd1b52735c31befa3d5d and contains KU2D-H-000004 and this prompt before implementation.",
+    "Treat KU2D-R-000011 as accepted coordination evidence, but independently re-fetch current remote codex/* branch refs and associated PR state before materializing the durable register so stale classifications fail closed.",
+    "Create a storage-neutral machine-readable Branch/PR Disposition Register with one record per remote codex/* branch. At minimum retain: branch, purpose, PR number/state/draft/merged/base, branch head SHA, merged/squash SHA if any, disposition, unique_code_unmerged, knowledge_projection, candidate_evidence_references, dependencies, recommended_next_action, deletion_risk_note, evidence references, observed_at, and review status.",
+    "Use explicit dispositions such as ACTIVE, MERGED_HISTORICAL, PARKED_REVIEWED, PARKED_UNREVIEWED, NEEDS_REVIEW, SUPERSEDED, SAFE_TO_DELETE_CANDIDATE. Do not use branch-name heuristics as authority; disposition must be evidence-backed.",
+    "SAFE_TO_DELETE_CANDIDATE is advisory only. Require proof that the PR is merged/closed and the retained branch tree is equivalent to its merged/squash result, plus a low tree-loss risk note. Do not delete any branch in this PR.",
+    "Open Draft PRs with unique unmerged commits must remain preserved and non-deletable. Candidate Learning Evidence projection is not equivalent to review, promotion, merge, or lossless knowledge preservation.",
+    "Add a deterministic validator that rejects contradictory branch/PR states, missing provenance, deletion-safe claims without tree-equivalence proof, active branches marked deletable, parked-unreviewed branches marked reviewed, candidate-only knowledge represented as Reviewed Learning Corpus/Core Knowledge, or missing unique-work warnings.",
+    "Add a concise human-readable governance report summarizing total branches and disposition counts, the active branch, all parked-unreviewed/needs-review branches with unique unmerged work, and safe-to-delete candidates. Highlight the eight unique-unmerged branches identified by the prior inventory if still current, but update counts/names if current evidence differs.",
+    "For each parked branch, state whether its knowledge is represented in integration, Learning Memory, Reviewed Learning Corpus, Core Knowledge, Candidate Learning Evidence only, or nowhere durable. Preserve exact distinctions.",
+    "Add review-priority guidance for parked-unreviewed branches based on knowledge value, dependency/synthesis role, and risk of losing unique work. Rank patterns/capabilities rather than merely brands where possible, but do not review or promote the parked branch contents in this prompt.",
+    "Add explicit cleanup governance: deletion requires a later human-approved action after register review; this PR may only identify SAFE_TO_DELETE_CANDIDATE branches. No automatic deletion, no bulk cleanup, no branch mutation outside this feature branch.",
+    "Preserve all Core Intelligence Quality Foundation, Learning Memory, Core Knowledge, Candidate Evidence, Human Confirmation, runtime, production, scheduler, privacy, and ML boundaries. No new acquisition source, live request, candidate promotion, production authorization, ML training/inference/export, Survey/DoE/SEM, or broader Core Intelligence recommendation/ranking.",
+    "Add deterministic tests covering at least: exact branch count reconciliation, unique branch IDs/names, PR linkage, active non-deletability, merged-tree proof for safe-delete candidates, parked-unreviewed preservation, candidate-only non-promotion, knowledge-projection validity, stale/missing evidence fail-closed behavior, deletion action absent, no live requests, no runtime import/auto-write, no production/ML side effects.",
+    "Run git diff --check, JSON/YAML parsing, Python compilation, the new branch-governance tests, Core Intelligence Quality tests, Core Knowledge tests, Learning Memory tests, Agent Handoff tests, and the complete deterministic Data Acquisition corpus/regressions.",
+    "Open a new Draft PR targeting integration/data-acquisition-platform titled 'KU2D: Add Branch and PR Governance v1'. Keep it bounded to governance registry/validator/report/tests/coordination only.",
+    "Write KU2D-R-000013 with exact branch/head/base, PR number, current branch/PR counts, disposition counts, parked unique-work list, safe-delete candidate list, knowledge-projection summary, files changed, tests/CI, zero-deletion confirmation, live-request count, production/ML state, uncertainties and blockers. Then hand control to assistant.",
+    "Do not merge and do not delete any branch."
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000013",
+    "next_actor": "assistant"
+  },
+  "provenance": {
+    "depends_on_result": "KU2D-R-000011",
+    "depends_on_review": "KU2D-V-000011",
+    "depends_on_human_decision": "KU2D-H-000004",
+    "depends_on_merge": "d497f1b8311e2f7ec410dd1b52735c31befa3d5d",
+    "authoritative_branch": "codex/ku2d-branch-governance-v1"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
