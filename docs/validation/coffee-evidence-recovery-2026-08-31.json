@@ -1,0 +1,211 @@
+{
+  "schema": "ku2d.coffee-evidence-recovery.v1",
+  "package_id": "KU2D-CER-000001",
+  "completed_at": "2026-08-31T09:50:32.327340+00:00",
+  "classification": "evidence_withheld",
+  "technical_completion": true,
+  "usable_candidate_evidence": false,
+  "observations": [
+    {
+      "source_id": "roots_coffee",
+      "source": "Roots Coffee",
+      "attempt_index": 1,
+      "acquisition_attempted": true,
+      "transport_completed": true,
+      "observed_at": "2026-08-31T09:50:31.462977+00:00",
+      "state": "request-completed",
+      "transport_requests": 1,
+      "http_status": 200,
+      "final_url": "https://shop.rootsbkk.com/collections/frontpage/products/house-blend-coffee",
+      "content_type": "text/html; charset=utf-8",
+      "response_bytes_read": 90453,
+      "redirect_chain": [],
+      "access_boundary": "captcha_or_human_verification",
+      "access_boundary_evidence": {
+        "detector": "v1-bounded-body-substring",
+        "marker": "captcha",
+        "confidence": "screening-only",
+        "challenge_not_independently_confirmed": true
+      },
+      "technical_failure": null,
+      "record": null,
+      "field_provenance": {},
+      "sanitized_response": {
+        "capture": "sanitized-access-boundary-metadata",
+        "http_status": 200,
+        "content_type": "text/html; charset=utf-8",
+        "response_bytes_read": 90453,
+        "final_url": "https://shop.rootsbkk.com/collections/frontpage/products/house-blend-coffee",
+        "access_boundary_evidence": {
+          "detector": "v1-bounded-body-substring",
+          "marker": "captcha",
+          "confidence": "screening-only",
+          "challenge_not_independently_confirmed": true
+        },
+        "raw_html_retained": false,
+        "headers_retained": false
+      },
+      "normalization_failure_reason": "extraction not attempted because an access/environment boundary was observed"
+    },
+    {
+      "source_id": "nana_coffee_roasters",
+      "source": "Nana Coffee Roasters",
+      "attempt_index": 1,
+      "acquisition_attempted": true,
+      "transport_completed": true,
+      "observed_at": "2026-08-31T09:50:31.869391+00:00",
+      "state": "request-completed",
+      "transport_requests": 1,
+      "http_status": 200,
+      "final_url": "https://nanacoffeeroasters.com/products/house-blend",
+      "content_type": "text/html; charset=utf-8",
+      "response_bytes_read": 138473,
+      "redirect_chain": [],
+      "access_boundary": "captcha_or_human_verification",
+      "access_boundary_evidence": {
+        "detector": "v1-bounded-body-substring",
+        "marker": "captcha",
+        "confidence": "screening-only",
+        "challenge_not_independently_confirmed": true
+      },
+      "technical_failure": null,
+      "record": null,
+      "field_provenance": {},
+      "sanitized_response": {
+        "capture": "sanitized-access-boundary-metadata",
+        "http_status": 200,
+        "content_type": "text/html; charset=utf-8",
+        "response_bytes_read": 138473,
+        "final_url": "https://nanacoffeeroasters.com/products/house-blend",
+        "access_boundary_evidence": {
+          "detector": "v1-bounded-body-substring",
+          "marker": "captcha",
+          "confidence": "screening-only",
+          "challenge_not_independently_confirmed": true
+        },
+        "raw_html_retained": false,
+        "headers_retained": false
+      },
+      "normalization_failure_reason": "extraction not attempted because an access/environment boundary was observed"
+    }
+  ],
+  "deep_audit": {
+    "audit_passed": false,
+    "source_audits": [
+      {
+        "source_id": "roots_coffee",
+        "source": "Roots Coffee",
+        "attempt_count": 1,
+        "retained_record_count": 0,
+        "gate_checks": {
+          "bounded_attempts_completed": false,
+          "product_identity_and_price_yield": false,
+          "official_https_canonical_identity": false,
+          "stable_product_identity": false,
+          "field_level_provenance": false,
+          "retail_product_not_cafe_menu": false
+        },
+        "audit_passed": false,
+        "hard_failures": [
+          "bounded_attempts_completed",
+          "product_identity_and_price_yield",
+          "official_https_canonical_identity",
+          "stable_product_identity",
+          "field_level_provenance",
+          "retail_product_not_cafe_menu"
+        ],
+        "repeatability": {
+          "identity_repeatability_pct": 0.0,
+          "canonical_repeatability_pct": 0.0,
+          "price_values": [],
+          "availability_values": []
+        },
+        "deviations": [],
+        "access_boundaries": [
+          "captcha_or_human_verification"
+        ]
+      },
+      {
+        "source_id": "nana_coffee_roasters",
+        "source": "Nana Coffee Roasters",
+        "attempt_count": 1,
+        "retained_record_count": 0,
+        "gate_checks": {
+          "bounded_attempts_completed": false,
+          "product_identity_and_price_yield": false,
+          "official_https_canonical_identity": false,
+          "stable_product_identity": false,
+          "field_level_provenance": false,
+          "retail_product_not_cafe_menu": false
+        },
+        "audit_passed": false,
+        "hard_failures": [
+          "bounded_attempts_completed",
+          "product_identity_and_price_yield",
+          "official_https_canonical_identity",
+          "stable_product_identity",
+          "field_level_provenance",
+          "retail_product_not_cafe_menu"
+        ],
+        "repeatability": {
+          "identity_repeatability_pct": 0.0,
+          "canonical_repeatability_pct": 0.0,
+          "price_values": [],
+          "availability_values": []
+        },
+        "deviations": [],
+        "access_boundaries": [
+          "captcha_or_human_verification"
+        ]
+      }
+    ],
+    "hard_failures": [
+      "roots_coffee:bounded_attempts_completed",
+      "roots_coffee:product_identity_and_price_yield",
+      "roots_coffee:official_https_canonical_identity",
+      "roots_coffee:stable_product_identity",
+      "roots_coffee:field_level_provenance",
+      "roots_coffee:retail_product_not_cafe_menu",
+      "nana_coffee_roasters:bounded_attempts_completed",
+      "nana_coffee_roasters:product_identity_and_price_yield",
+      "nana_coffee_roasters:official_https_canonical_identity",
+      "nana_coffee_roasters:stable_product_identity",
+      "nana_coffee_roasters:field_level_provenance",
+      "nana_coffee_roasters:retail_product_not_cafe_menu"
+    ],
+    "warnings": [
+      "roots_coffee access boundary observed; no technique escalation occurred",
+      "nana_coffee_roasters access boundary observed; no technique escalation occurred"
+    ]
+  },
+  "request_accounting": {
+    "acquisition_attempts": 2,
+    "maximum_acquisition_attempts": 4,
+    "transport_requests": 2,
+    "maximum_transport_requests": 12,
+    "retries": 0,
+    "pagination": 0
+  },
+  "authority": {
+    "candidate_only": true,
+    "candidate_evidence_ids": [
+      "KU2D-CLE-000006",
+      "KU2D-CLE-000007"
+    ],
+    "candidate_promoted": false,
+    "reviewed_corpus_authorized": false,
+    "human_confirmed": false,
+    "ground_truth_asserted": false
+  },
+  "boundaries": {
+    "public_read_only": true,
+    "raw_html_retained": false,
+    "headers_or_session_material_retained": false,
+    "production_approved": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "knowledge_mutation": false,
+    "automatic_learning_memory_export": false
+  },
+  "run_state": "complete"
+}

@@ -57,3 +57,24 @@ Any recovered records remain candidate evidence for `KU2D-CLE-000006` and
 Evidence Registry and every higher-authority knowledge layer remain unchanged.
 `production_approved=false`, `production_store=false`, and
 `scheduler_action=null` are invariant.
+
+## Bounded run outcome
+
+The authorized run completed technically and retained
+`docs/validation/coffee-evidence-recovery-2026-08-31.json` before exit. It used
+two acquisition attempts and two transport requests: one per source, with no
+redirect, retry, pagination, browser, authentication, or production action.
+Both exact official URLs returned HTTP 200 HTML. The first detector version
+found the string `captcha` somewhere in each bounded document and followed the
+reviewed stop condition, so it did not make the second observation or attempt
+extraction. Because raw HTML was intentionally not retained, those string
+matches cannot be independently classified as a visible challenge rather than
+script-only text. The durable evidence therefore labels them screening-only,
+not confirmed CAPTCHA challenges.
+
+Exit classification is `2`: `technical_completion=true`, candidate evidence
+withheld, zero retained product records, repeatability unavailable, and Deep
+Audit failed. The CLI now requires explicit HTTP status, visible/title/widget,
+challenge-markup, or route evidence for future boundary classification; a
+script-only occurrence of the word `captcha` is a deterministic negative
+fixture. This checkpoint did not rerun after improving that detector.

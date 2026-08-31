@@ -161,7 +161,15 @@ try:
 except ValueError:
     pass
 
-# CER33: a price deviation is temporal evidence and does not invent a transaction price.
+# CER33-CER35: script-only captcha words do not create a false boundary, while
+# explicit visible challenges and access status do.
+assert cli._access_marker(200, "<script>const captcha='optional';</script><h1>House Blend Coffee</h1>") == (None, None)
+visible_boundary, visible_evidence = cli._access_marker(200, "<title>Verify you are human</title>")
+assert visible_boundary == "captcha_or_human_verification" and visible_evidence["evidence_path"] == "document-title"
+status_boundary, status_evidence = cli._access_marker(403, "")
+assert status_boundary == "http_status_403" and status_evidence["confidence"] == "explicit"
+
+# CER36: a price deviation is temporal evidence and does not invent a transaction price.
 observations = []
 for index, price in enumerate((450.0, 460.0), 1):
     row = {
@@ -181,4 +189,21 @@ deviant = build_result(package, observations, completed_at=observed)
 roots_audit = next(row for row in deviant["deep_audit"]["source_audits"] if row["source_id"] == "roots_coffee")
 assert roots_audit["deviations"][0]["interpretation"] == "temporal display deviation; transaction price not inferred"
 
-print("Coffee evidence recovery deterministic tests passed (CER1-CER33).")
+# CER37-CER48: the retained live artifact is bounded, non-authorizing, and
+# honest about the first detector's screening-only stop classification.
+live_path = ROOT.parents[1] / "docs" / "validation" / "coffee-evidence-recovery-2026-08-31.json"
+live = json.loads(live_path.read_text(encoding="utf-8"))
+assert live["schema"] == "ku2d.coffee-evidence-recovery.v1"
+assert live["classification"] == "evidence_withheld"
+assert live["technical_completion"] is True and live["usable_candidate_evidence"] is False
+assert live["request_accounting"]["acquisition_attempts"] == live["request_accounting"]["transport_requests"] == 2
+assert live["request_accounting"]["retries"] == live["request_accounting"]["pagination"] == 0
+assert {row["source_id"] for row in live["observations"]} == {"roots_coffee", "nana_coffee_roasters"}
+assert all(row["access_boundary_evidence"]["challenge_not_independently_confirmed"] is True for row in live["observations"])
+assert all(row["record"] is None and not row["field_provenance"] for row in live["observations"])
+assert live["deep_audit"]["audit_passed"] is False
+assert live["authority"]["candidate_promoted"] is False
+assert live["boundaries"]["production_approved"] is live["boundaries"]["production_store"] is False
+assert live["boundaries"]["scheduler_action"] is None and live["boundaries"]["knowledge_mutation"] is False
+
+print("Coffee evidence recovery deterministic tests passed (CER1-CER48).")

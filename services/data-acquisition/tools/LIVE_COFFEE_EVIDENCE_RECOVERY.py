@@ -102,18 +102,43 @@ def _read_bounded(response, maximum_bytes: int) -> tuple[str, int, bool]:  # noq
     return retained.decode(charset, "replace"), len(raw), exceeded
 
 
-def _access_marker(status: int, body: str) -> str | None:
+def _access_marker(status: int, body: str) -> tuple[str | None, dict[str, Any] | None]:
     if status in {401, 403, 429}:
-        return f"http_status_{status}"
-    lowered = body[:250_000].casefold()
-    markers = {
-        "captcha": "captcha_or_human_verification",
-        "verify you are human": "captcha_or_human_verification",
-        "cf-chl-": "anti_bot_challenge",
-        "/verify/traffic/": "traffic_verification",
-        "access denied": "access_denied",
-    }
-    return next((classification for marker, classification in markers.items() if marker in lowered), None)
+        classification = f"http_status_{status}"
+        return classification, {"detector": "http-status", "marker": status, "confidence": "explicit"}
+    bounded = body[:250_000]
+    soup = None
+    try:
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(bounded, "html.parser")
+    except Exception:
+        pass
+    title = " ".join((soup.title.get_text(" ", strip=True) if soup and soup.title else "").split()).casefold()
+    visible = " ".join((soup.get_text(" ", strip=True) if soup else "").split()).casefold()
+    checks = (
+        ("captcha_or_human_verification", "verify you are human", title, "document-title"),
+        ("captcha_or_human_verification", "verify you are human", visible, "visible-text"),
+        ("access_denied", "access denied", title, "document-title"),
+        ("access_denied", "access denied", visible[:2_000], "leading-visible-text"),
+        ("traffic_verification", "/verify/traffic/", bounded.casefold(), "document-route-marker"),
+        ("anti_bot_challenge", "cf-chl-", bounded.casefold(), "challenge-markup"),
+    )
+    for classification, marker, haystack, evidence_path in checks:
+        if marker in haystack:
+            return classification, {
+                "detector": "bounded-visible-challenge-v2",
+                "marker": marker,
+                "evidence_path": evidence_path,
+                "confidence": "explicit-screening-evidence",
+            }
+    if soup and soup.find(attrs={"class": re.compile(r"(?:^|\s)(?:g-recaptcha|h-captcha)(?:\s|$)", re.I)}):
+        return "captcha_or_human_verification", {
+            "detector": "bounded-visible-challenge-v2",
+            "marker": "captcha-widget",
+            "evidence_path": "dom-class",
+            "confidence": "explicit-screening-evidence",
+        }
+    return None, None
 
 
 def fetch_public_detail(target: dict[str, Any], budget: dict[str, Any], attempt_index: int) -> dict[str, Any]:
@@ -152,9 +177,13 @@ def fetch_public_detail(target: dict[str, Any], budget: dict[str, Any], attempt_
         failure.transport_requests = 1 + len(tracker.redirects)  # type: ignore[attr-defined]
         raise failure from exc
 
-    access_boundary = _access_marker(status, body)
+    access_boundary, access_boundary_evidence = _access_marker(status, body)
     if exceeded:
         access_boundary = "response_size_limit"
+        access_boundary_evidence = {
+            "detector": "response-byte-limit", "marker": maximum,
+            "confidence": "explicit",
+        }
         body = ""
     return {
         "transport_completed": True,
@@ -165,6 +194,7 @@ def fetch_public_detail(target: dict[str, Any], budget: dict[str, Any], attempt_
         "response_bytes_read": bytes_read,
         "redirect_chain": tracker.redirects,
         "access_boundary": access_boundary,
+        "access_boundary_evidence": access_boundary_evidence,
         "body": body,
     }
 
@@ -239,6 +269,7 @@ def run_recovery(
                     "response_bytes_read": fetched.get("response_bytes_read"),
                     "redirect_chain": fetched.get("redirect_chain") or [],
                     "access_boundary": fetched.get("access_boundary"),
+                    "access_boundary_evidence": fetched.get("access_boundary_evidence"),
                     "technical_failure": None,
                 })
                 body = str(fetched.get("body") or "")
@@ -263,6 +294,7 @@ def run_recovery(
                             "content_type": pending.get("content_type"),
                             "response_bytes_read": pending.get("response_bytes_read"),
                             "final_url": pending.get("final_url"),
+                            "access_boundary_evidence": pending.get("access_boundary_evidence"),
                             "raw_html_retained": False,
                             "headers_retained": False,
                         },
