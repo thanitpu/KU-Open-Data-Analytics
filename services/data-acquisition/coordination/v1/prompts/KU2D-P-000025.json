@@ -1,0 +1,24 @@
+{
+  "schema":"ku2d.agent-handoff-prompt.v1",
+  "prompt_id":"KU2D-P-000025",
+  "created_at":"2026-08-31T17:12:00+07:00",
+  "created_by":{"actor":"assistant","actor_id":"assistant_review"},
+  "status":"ready_for_codex",
+  "authoritative_branch":"codex/ku2d-coffee-evidence-recovery-v1",
+  "objective":"Implement Branch Handoff Protocol v1 and use it to transition from the completed Coffee branch to a new protocol-development branch.",
+  "instructions":[
+    "Treat this as a mechanical branch-transition and protocol-hardening task; no human judgment is required.",
+    "First close the source-branch queue cleanly: record acknowledgement/result for this transition, preserve completed history, and ensure no unfinished source-branch next_action remains before switching.",
+    "Create or switch to target branch codex/ku2d-branch-handoff-protocol-v1 from integration/data-acquisition-platform at merge commit 56e551acf35e0978851f6cafe03bd8ffa0fd2305.",
+    "Initialize the target branch queue so it alone becomes authoritative for the continuing task. Do not allow the same active prompt to be authoritative on both branches.",
+    "Add a deterministic branch_handoff primitive to Agent Handoff Protocol with explicit from_branch, to_branch, base_sha, close_source_queue_before_switch=true, initialize_target_queue=true, target_prompt_id, human_authority_required=false for mechanical transitions, and fail-closed behavior if target initialization fails.",
+    "Add tests that reject dual-authority, switch-before-close, stale source queue, mismatched base/head provenance, and downstream pointers inappropriate to the next actor.",
+    "Preserve Git-versioned coordination history; do not introduce a database or external queue service.",
+    "After target initialization, continue implementation and open a Draft PR against integration/data-acquisition-platform.",
+    "Perform mechanical PR operations such as description refresh and Draft-to-Ready when safely possible without waiting for human input; do not merge the PR.",
+    "Return a completed_queue_summary with: work completed, key findings/results, repo/knowledge state changes, important out-of-scope actions not performed, remaining blockers/risks, and recommended next logical step."
+  ],
+  "expected_result":{"result_id":"KU2D-R-000025","next_actor":"assistant"},
+  "provenance":{"repository":"thanitpu/KU-Open-Data-Analytics","source_branch":"codex/ku2d-coffee-evidence-recovery-v1","target_branch":"codex/ku2d-branch-handoff-protocol-v1","depends_on_merge":"56e551acf35e0978851f6cafe03bd8ffa0fd2305"},
+  "boundaries":{"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
