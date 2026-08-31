@@ -1,6 +1,6 @@
 {
   "schema":"ku2d.youtube-operational-hardening.v1",
-  "prepared_at":"2026-09-01T01:20:00+07:00",
+  "prepared_at":"2026-09-01T01:00:00+07:00",
   "documentation_provenance":[
     {"title":"Videos: list","url":"https://developers.google.com/youtube/v3/docs/videos/list","accessed_at":"2026-09-01","facts":{"documented_unit_cost":1,"exact_id_filter_supported":true}},
     {"title":"CommentThreads: list","url":"https://developers.google.com/youtube/v3/docs/commentThreads/list","accessed_at":"2026-09-01","facts":{"documented_unit_cost":1,"max_results_range":"1-100","page_token_supported":true,"comments_disabled_error_documented":true}},

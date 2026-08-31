@@ -1,7 +1,7 @@
 {
   "schema":"ku2d.reviewed-youtube-video-identity-registry.v1",
   "registry_id":"KU2D-YT-REVIEWED-IDENTITIES-000001",
-  "prepared_at":"2026-09-01T01:20:00+07:00",
+  "prepared_at":"2026-09-01T01:00:00+07:00",
   "entries":[],
   "candidate_only_evidence":[
     {"candidate_identity":"SAN-VID-001","evidence_class":"sanitized_fixture","provenance":"fixtures/youtube_human_review/sanitized_foundation_result.json","review_status":"not_human_reviewed","privacy_safe":true,"usable_for_live_acquisition":false},
