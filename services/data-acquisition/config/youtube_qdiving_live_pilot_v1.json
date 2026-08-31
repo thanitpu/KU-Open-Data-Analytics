@@ -1,0 +1,65 @@
+{
+  "schema":"ku2d.youtube-qdiving-live-pilot.v1",
+  "pilot_id":"KU2D-YT-QDIVING-PILOT-000001",
+  "observed_at":"2026-09-01T00:26:44+07:00",
+  "classification":"evidence_withheld",
+  "exit_classification":2,
+  "technical_completion":true,
+  "authority":{
+    "human_decision_id":"KU2D-H-000011",
+    "decision":"confirmed",
+    "authorized_limits":{"video_count":2,"comment_threads_max_pages_per_video":2,"transcript_languages":["th","en"]},
+    "scope_broadened":false
+  },
+  "identity_preflight":{
+    "status":"insufficient_reviewed_identity_evidence",
+    "required_video_count":2,
+    "resolved_video_count":0,
+    "resolved_video_ids":[],
+    "exact_video_identities":null,
+    "reason":"Merged reviewed Q-Diving evidence contains policy/contract records and sanitized fixtures, but no non-sanitized, explicitly Human-Reviewed canonical YouTube video identity. P36 prohibits substitution, search, or discovery of new videos.",
+    "merged_evidence_inspected":[
+      {"path":"config/q_diving_source_registry.json","finding":"query profiles only; no reviewed video identities"},
+      {"path":"config/reviewed_learning_corpus.json","episode_ids":["KU2D-CKE-000014","KU2D-CKE-000015"],"finding":"sanitized deterministic policy contracts; human_reviewed=false; no video identities"},
+      {"path":"fixtures/youtube_human_review/sanitized_foundation_result.json","finding":"sanitized fixture candidates only; not durable non-sanitized Human Review identities"},
+      {"path":"config/youtube_knowledge_dataset_schema.json","finding":"dataset schema only; no instantiated reviewed dataset"}
+    ]
+  },
+  "credential_boundary":{"status":"not_evaluated","reason":"Identity preflight failed before any credential or transport requirement."},
+  "request_quota_ledger":{
+    "request_count":0,
+    "estimated_quota_units":0,
+    "videos_list_request_count":0,
+    "comment_threads_list_request_count":0,
+    "comments_list_request_count":0,
+    "comment_threads_page_count":0,
+    "per_video":[]
+  },
+  "metadata_outcome":{"module_requirement":"required","status":"evidence_withheld","video_result_count":0,"statistics_snapshot_count":0},
+  "comments_outcome":{"module_requirement":"optional","status":"not_attempted_identity_preflight_withheld","top_level_comment_count":0,"reply_count":0,"partial_reply_thread_count":0,"comments_disabled_video_count":0,"pagination_truncated_video_count":0},
+  "transcript_caption_boundary":{"allowed_languages":["th","en"],"metadata_level_signals_observed":0,"captions_list_request_count":0,"captions_download_request_count":0,"transcript_content_record_count":0,"oauth_flow_count":0,"audio_video_download_count":0},
+  "deep_audit":{
+    "passed":false,
+    "hard_failures":["required exact reviewed video identity gate resolved 0 of 2","required metadata module was not executed"],
+    "gates":{
+      "exact_reviewed_identity_count":false,
+      "metadata_identity_completeness":false,
+      "metadata_provenance_completeness":false,
+      "request_quota_accounting":true,
+      "comment_page_bound_preserved":true,
+      "relationship_integrity":"not_evaluated",
+      "evidence_written_before_live_request":true,
+      "transcript_caption_boundary_preserved":true
+    }
+  },
+  "interpretation_boundaries":{
+    "statistics_are_observation_snapshots":true,
+    "ordering_is_representative":false,
+    "counts_imply_sentiment_popularity_or_demand":false,
+    "transcript_absence_implies_irrelevance":false
+  },
+  "warnings":["No live pilot request was permitted because exact reviewed video identities were unavailable.","KU2D-H-000011 remains narrow authority and does not authorize video discovery or substitution."],
+  "production_approval_state_mutated":false,
+  "knowledge_authority_state_mutated":false,
+  "boundaries":{"production_authorized":false,"production_store":false,"production_approved":false,"comments_globally_enabled":false,"scheduler_action":null,"authority_promoted":false,"parked_refs_mutated":false}
+}
