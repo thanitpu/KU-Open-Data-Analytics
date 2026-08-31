@@ -1,0 +1,56 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000009",
+  "created_at": "2026-08-31T11:36:00+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-core-intelligence-v1",
+  "supersedes_prompt_id": "KU2D-P-000008",
+  "objective": "Strengthen KU2D evidence-quality, coding, analytical-memory, and finding-verification foundations before implementing the broader Core Intelligence recommendation layer.",
+  "instructions": [
+    "BRANCH HANDOFF: remain on codex/ku2d-core-intelligence-v1. Fetch/pull the latest remote state and read queue.json from this branch before any work. Do not execute superseded KU2D-P-000008.",
+    "Treat this as a quality-foundation checkpoint, not as source exploration and not as ML implementation. Do not add new acquisition sources, live requests, Survey/Google Forms/DoE/Bias/SEM, connectors, production scheduling, training, embeddings, vector storage, inference, or dataset export.",
+    "Inspect merged Core Knowledge, Learning Memory, Reviewed Learning Corpus, Candidate Learning Evidence Registry, Human Confirmation/Ground Truth chains, taxonomy, Agent Handoff, Deep Audit, source registries, domain playbooks, and current tests before editing. Reuse generic contracts where possible.",
+    "Formalize the separation Raw/Observed Evidence -> Prepared Evidence -> Descriptor -> Code -> Interpretation -> Decision. Preserve every stage and provenance; never overwrite raw evidence with later interpretations.",
+    "Upgrade the KU2D Core Knowledge taxonomy into a formal codebook discipline. For applicable codes add machine-readable guidance such as definition, include_when, exclude_when, positive_examples, counter_examples, parent/child relationship where relevant, commonly_confused_with, and evidence_required. Keep backward compatibility or provide a deterministic migration/adapter if the existing taxonomy shape must remain stable.",
+    "Explicitly preserve Code != Theme != Descriptor. Add validation/tests preventing descriptors or broad themes from being silently substituted for semantic codes.",
+    "Add first-cycle versus second-cycle coding states for learning/review workflows. A first-pass system/Codex classification must remain visible after review; second-cycle/refined coding must append or reference the first-cycle state rather than overwrite it.",
+    "Add an Analytical Memo contract, storage-neutral and append-only in meaning. A memo should support: memo_id, observed episodes/evidence references, emerging concept or working hypothesis, supporting evidence, counter-evidence/negative cases, unresolved questions, author/actor type, status such as working_hypothesis/pattern_candidate/reviewed_pattern, and provenance. Analytical Memo is not Ground Truth and cannot authorize production.",
+    "Add explicit Negative/Deviant Case support. A pattern candidate must be able to record expected_pattern, contradictory_observation, alternative_explanations, policy_or_taxonomy_impact, learning_value, and evidence references. Negative cases must be first-class learning examples, not discarded failures.",
+    "Add a Finding Verification gate before any future pattern is promoted into Core Knowledge. Verification should require appropriate checks such as raw-evidence return, provenance completeness, alternative-explanation review, negative/deviant-case search, cross-episode or cross-source support where applicable, limitation statement, and human confirmation when policy authority is required. Not every finding requires every gate, but skipped gates must be explicit and justified.",
+    "Add ontology-lock-in protection. The system must be able to return no_existing_code_fits and novel_pattern_candidate instead of forcing every observation into the nearest existing taxonomy code. Candidate novel codes/patterns must remain non-authoritative until reviewed.",
+    "Design an Independent Coding / Inter-Agent Reliability contract for future use by Codex and Assistant as blinded independent coders. It must support a sample/episode ID, codebook version, coder identity/type, independent label(s), agreement/disagreement status, adjudication-needed flag, and optional reliability metrics. Do not fabricate independent Assistant labels in this PR and do not claim human inter-rater reliability.",
+    "Provide deterministic reliability helpers for agreement rate and, where the categorical assumptions are satisfied, Cohen's kappa or an explicitly equivalent chance-corrected agreement measure. Fail closed or return not_applicable when assumptions/data are insufficient. Keep this as evaluation infrastructure, not ML.",
+    "Add a Semantic Reliability report schema that can summarize agreement by task such as price semantics, counter semantics, source classification, technique selection, evidence strength, or review prioritization, while preserving sample size and disagreement cases. No single aggregate score may hide task-level disagreement.",
+    "Add internal analysis-display contracts or deterministic projections for Source x Technique matrix, Evidence x Interpretation matrix, and/or pattern/negative-case summaries. These are analysis aids only; every cell/edge must link back to evidence/provenance and must not become authority merely because it is displayed.",
+    "Preserve the principle that software architecture must not dictate the ontology. Add tests demonstrating that an unknown/novel observation can remain unclassified or novel rather than being coerced into an existing code.",
+    "Define a Quality Loop state model suitable for later Core Intelligence: observed_evidence -> first_cycle_code -> codebook_check -> second_cycle_code -> negative_case_check -> analytical_memo -> pattern_candidate -> finding_verification -> independent_coding_check -> human_adjudication_if_needed -> reviewed_pattern/core_knowledge. Do not require every acquisition episode to reach every stage.",
+    "Backfill only a small set of already-reviewed historical examples to validate the quality contracts. Prefer contradiction-rich examples already in repository history: bare marketplace counters, active-page price temporality/role separation, product-vs-variant identity, displayed-order-vs-demand, cloud-vs-approved-Edge environment boundary, application-shell/traffic-verification, and sitemap/detail or app-bundle discovery distinctions. No live requests and no candidate-source promotion.",
+    "Do not promote the 11 unmerged source-history candidates. Candidate evidence may be used only to test candidate/novel/uncertain paths if provenance remains explicitly candidate-only.",
+    "Add deterministic tests covering at minimum: raw evidence immutability; descriptor/code/theme distinction; codebook include/exclude guidance; first-cycle retained after second-cycle revision; analytical memo non-authority; negative case preservation; alternative-explanation field; finding-verification gating; no_existing_code_fits; novel_pattern_candidate; blinded-coder record separation; agreement-rate calculation; kappa valid-case calculation; kappa not-applicable/fail-closed cases; disagreement requiring adjudication; candidate-only evidence cannot become reviewed authority; display projection links to provenance; no live requests; no production authorization; no ML execution/export; no automatic runtime writes.",
+    "Extend documentation to explain the quality philosophy: evidence before interpretation, iterative coding, codebook discipline, negative-case search, analytical memoing, independent coding/reliability, finding verification, ontology openness, and the distinction Learning Memory -> Reviewed Learning Corpus -> future task-specific ML dataset.",
+    "Run git diff --check, JSON/YAML parsing, Python compilation, all new quality tests, Core Knowledge tests, Learning Memory tests, Agent Handoff tests, complete deterministic Data Acquisition corpus, and relevant regressions.",
+    "Open or update a Draft PR targeting integration/data-acquisition-platform titled 'KU2D: Add Core Intelligence Quality Foundation v1'. If no PR exists yet for this branch, open one; if an appropriate Draft PR already exists, keep it bounded to this quality foundation. Do not merge.",
+    "Write KU2D-R-000009 with exact branch/head, PR number, files changed, contracts added, codebook changes, iterative coding behavior, memo/negative-case/finding-verification behavior, reliability behavior, ontology-lock-in safeguards, backfilled examples, tests/CI/security/live-request count, production state, and blockers. Then hand control to assistant.",
+    "STOP after reporting. Do not proceed to the broader recommendation/ranking work from superseded KU2D-P-000008 until a later prompt explicitly authorizes it."
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000009",
+    "next_actor": "assistant"
+  },
+  "provenance": {
+    "depends_on_human_decision": "KU2D-H-000003",
+    "supersedes_prompt_id": "KU2D-P-000008",
+    "depends_on_merge": "7f0e7d72517754dcd0e90e5243cabf56120cc224",
+    "authoritative_branch": "codex/ku2d-core-intelligence-v1"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
