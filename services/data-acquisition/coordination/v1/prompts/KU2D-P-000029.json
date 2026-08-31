@@ -1,0 +1,24 @@
+{
+  "schema":"ku2d.agent-handoff-prompt.v1",
+  "prompt_id":"KU2D-P-000029",
+  "created_at":"2026-08-31T18:48:00+07:00",
+  "created_by":{"actor":"assistant","actor_id":"assistant_review"},
+  "status":"ready_for_codex",
+  "authoritative_branch":"codex/ku2d-coffee-hardened-rerun-v1",
+  "objective":"Use Branch Handoff Protocol v1 to diagnose the unresolved Roots Coffee strict coffee-product-semantics failure from retained evidence only, without any new live request.",
+  "instructions":[
+    "Use branch_handoff mechanically: close this source queue before switching, then create/switch to codex/ku2d-roots-semantics-diagnosis-v1 from integration/data-acquisition-platform at merge commit fa60f7f13463c682f809fbfa402f80efe489d3ad and initialize the target queue as sole authority.",
+    "Inspect only merged/retained artifacts from the Roots/Nana Coffee recovery chain, including sanitized field evidence, normalized outputs, deterministic fixtures, parser/normalizer logic, audit contracts, and relevant historical PR #39 artifacts already in Git history. Do not make any live source request.",
+    "Diagnose the Roots failure by separating at least these hypotheses: missing retained evidence, parser/normalizer limitation, contract too strict, genuine non-product or cafe-menu ambiguity, source-page semantics insufficient, and evidence currently insufficient to decide.",
+    "Trace which exact strict coffee-product-semantics predicates failed for Roots and what retained fields/evidence supported or failed each predicate. Do not infer hidden page content that was not retained.",
+    "Compare Roots against Nana only where the retained evidence contracts are actually comparable; do not treat Nana success as proof that Roots should pass.",
+    "If the failure can be corrected deterministically from retained evidence alone, propose and implement the smallest parser/normalizer/contract correction with explicit fixtures/tests and no semantic broadening beyond the retained evidence. Do not reinterpret the completed live run retroactively as success; any corrected evaluation should be labeled retrospective_diagnostic only.",
+    "If retained evidence is insufficient, specify the minimum additional evidence needed before a future live request could be justified. Do not authorize or execute that request.",
+    "Do not promote Candidate Learning Evidence or mutate Reviewed Corpus/Core Knowledge/Human Confirmation/Ground Truth automatically. Do not touch parked refs, production, scheduler, ML, Survey/DoE/SEM, or cleanup.",
+    "Open/update a PR against integration/data-acquisition-platform, perform safe mechanical PR operations including Ready transition where possible, and do not merge.",
+    "Return completed_queue_summary with only important items: work completed; key findings/results; repo/knowledge state changes; important out-of-scope actions not performed; remaining blockers/risks; recommended next logical step."
+  ],
+  "expected_result":{"result_id":"KU2D-R-000029","next_actor":"assistant"},
+  "provenance":{"repository":"thanitpu/KU-Open-Data-Analytics","source_branch":"codex/ku2d-coffee-hardened-rerun-v1","target_branch":"codex/ku2d-roots-semantics-diagnosis-v1","depends_on_result":"KU2D-R-000027","depends_on_review":"KU2D-V-000027","depends_on_merge":"fa60f7f13463c682f809fbfa402f80efe489d3ad"},
+  "boundaries":{"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
