@@ -1,10 +1,10 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T13:13:30+07:00",
+  "updated_at": "2026-08-31T13:20:00+07:00",
   "authoritative_branch": "codex/ku2d-branch-governance-v1",
-  "latest_prompt": "KU2D-P-000013",
+  "latest_prompt": "KU2D-P-000014",
   "latest_result": "KU2D-R-000013",
-  "latest_review": "KU2D-V-000012",
+  "latest_review": "KU2D-V-000013",
   "latest_human_decision": "KU2D-H-000004",
   "prompt_states": {
     "KU2D-P-000001": "completed",
@@ -19,7 +19,8 @@
     "KU2D-P-000010": "reviewed",
     "KU2D-P-000011": "reviewed",
     "KU2D-P-000012": "completed",
-    "KU2D-P-000013": "result_submitted"
+    "KU2D-P-000013": "reviewed",
+    "KU2D-P-000014": "ready_for_codex"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -32,12 +33,12 @@
     "KU2D-P-000012"
   ],
   "next_action": {
-    "actor": "assistant",
-    "prompt_id": "KU2D-P-000013",
-    "result_id": "KU2D-R-000013",
+    "actor": "codex",
+    "prompt_id": "KU2D-P-000014",
+    "result_id": null,
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "KU2D-R-000013 creates the bounded Branch/PR Governance v1 register, pure validator, report, and BG1-BG25 tests in Draft PR #47. Fresh evidence records 25 remote codex branches and 25 PRs: 1 active, 8 preserved parked-unreviewed branches with unique unmerged work, and 16 advisory safe-delete candidates with closed/merged and zero-file tree proof. The complete 40/40 deterministic corpus and exact-head CI pass. No branch was deleted or mutated; no source, candidate, runtime, production, scheduler, ML, Survey/DoE/SEM, or broader recommendation scope changed. Control returns to assistant for independent review."
+  "notes": "KU2D-R-000013 is independently accepted. PR #47 Branch/PR Governance v1 remains Draft and is now queued for bounded final merge-readiness validation only. Codex must refresh branch/PR evidence, preserve all eight parked-unreviewed unique-work branches, keep safe-delete status advisory and non-executable, rerun deterministic/regression/CI checks, and attempt Ready-for-review without unsafe workaround. No branch deletion, parked-work adjudication, source expansion, candidate promotion, broader Core Intelligence, production, scheduler, ML, Survey/DoE/SEM, or live acquisition is authorized."
 }
