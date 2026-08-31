@@ -1,10 +1,10 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T11:30:10+07:00",
+  "updated_at": "2026-08-31T11:27:00+07:00",
   "authoritative_branch": "codex/ku2d-core-knowledge-backfill-v1",
   "latest_prompt": "KU2D-P-000007",
   "latest_result": "KU2D-R-000007",
-  "latest_review": "KU2D-V-000006",
+  "latest_review": "KU2D-V-000007",
   "latest_human_decision": "KU2D-H-000001",
   "prompt_states": {
     "KU2D-P-000001": "completed",
@@ -13,7 +13,7 @@
     "KU2D-P-000004": "completed",
     "KU2D-P-000005": "completed",
     "KU2D-P-000006": "completed",
-    "KU2D-P-000007": "result_submitted"
+    "KU2D-P-000007": "human_decision_required"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -24,12 +24,12 @@
     "KU2D-P-000006"
   ],
   "next_action": {
-    "actor": "assistant",
+    "actor": "human",
     "prompt_id": "KU2D-P-000007",
     "result_id": "KU2D-R-000007",
-    "review_id": null,
+    "review_id": "KU2D-V-000007",
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "KU2D-R-000007 completed final technical validation for PR #45 at content head 96b61a52d8fd532011fed26581cb5eccc20e3e8f. All local tests and exact-head CI passed, and the PR is open and mergeable. The GitHub connector failed to mark Ready because Repository.fullDatabaseId is unavailable; no workaround was attempted. PR #45 remains Draft and unmerged for assistant review."
+  "notes": "PR #45 is technically accepted and current-head CI passes. Human action is required only to mark PR #45 Ready for review because the available connector cannot perform the Draft-to-Ready transition due to its GraphQL Repository.fullDatabaseId schema error. No merge is authorized until the Ready transition is independently confirmed."
 }
