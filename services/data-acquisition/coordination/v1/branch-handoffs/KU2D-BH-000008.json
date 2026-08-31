@@ -1,0 +1,36 @@
+{
+  "schema":"ku2d.agent-handoff-branch-handoff.v1",
+  "handoff_id":"KU2D-BH-000008",
+  "created_at":"2026-08-31T21:15:00+07:00",
+  "from_branch":"codex/ku2d-acquisition-consolidation-readiness-v1",
+  "to_branch":"codex/ku2d-tier-a-locked-source-batch-manifest-v1",
+  "base_sha":"f97ab206cf0c92563d20519b292a0eb7e949d604",
+  "close_source_queue_before_switch":true,
+  "initialize_target_queue":true,
+  "target_prompt_id":"KU2D-P-000033",
+  "human_authority_required":false,
+  "source_close_commit_sha":"717295622192e19306825af900418bba0119f203",
+  "target_initial_head_sha":"f97ab206cf0c92563d20519b292a0eb7e949d604",
+  "target_initialization_succeeded":true,
+  "source_queue_snapshot":{
+    "updated_at":"2026-08-31T21:14:20+07:00",
+    "authoritative_branch":"codex/ku2d-acquisition-consolidation-readiness-v1",
+    "latest_prompt":"KU2D-P-000033",
+    "prompt_state":"in_progress",
+    "completed_prompt_ids":["KU2D-P-000001","KU2D-P-000002","KU2D-P-000003","KU2D-P-000004","KU2D-P-000005","KU2D-P-000006","KU2D-P-000007","KU2D-P-000012","KU2D-P-000014","KU2D-P-000016","KU2D-P-000018","KU2D-P-000020","KU2D-P-000022","KU2D-P-000024","KU2D-P-000025","KU2D-P-000026","KU2D-P-000027","KU2D-P-000028","KU2D-P-000030","KU2D-P-000031","KU2D-P-000032"],
+    "next_action":{"actor":"none","prompt_id":null,"result_id":null,"review_id":null,"human_decision_id":null,"replay_requested":false},
+    "branch_handoff":{"phase":"source_closed","handoff_id":"KU2D-BH-000008","from_branch":"codex/ku2d-acquisition-consolidation-readiness-v1","to_branch":"codex/ku2d-tier-a-locked-source-batch-manifest-v1","base_sha":"f97ab206cf0c92563d20519b292a0eb7e949d604","target_prompt_id":"KU2D-P-000033","close_source_queue_before_switch":true,"initialize_target_queue":true,"human_authority_required":false}
+  },
+  "target_queue_snapshot":{
+    "updated_at":"2026-08-31T21:15:00+07:00",
+    "authoritative_branch":"codex/ku2d-tier-a-locked-source-batch-manifest-v1",
+    "latest_prompt":"KU2D-P-000033",
+    "prompt_state":"in_progress",
+    "completed_prompt_ids":["KU2D-P-000001","KU2D-P-000002","KU2D-P-000003","KU2D-P-000004","KU2D-P-000005","KU2D-P-000006","KU2D-P-000007","KU2D-P-000012","KU2D-P-000014","KU2D-P-000016","KU2D-P-000018","KU2D-P-000020","KU2D-P-000022","KU2D-P-000024","KU2D-P-000025","KU2D-P-000026","KU2D-P-000027","KU2D-P-000028","KU2D-P-000030","KU2D-P-000031","KU2D-P-000032"],
+    "next_action":{"actor":"codex","prompt_id":"KU2D-P-000033","result_id":null,"review_id":null,"human_decision_id":null,"replay_requested":false},
+    "branch_handoff":{"phase":"target_initialized","handoff_id":"KU2D-BH-000008","from_branch":"codex/ku2d-acquisition-consolidation-readiness-v1","to_branch":"codex/ku2d-tier-a-locked-source-batch-manifest-v1","base_sha":"f97ab206cf0c92563d20519b292a0eb7e949d604","target_initial_head_sha":"f97ab206cf0c92563d20519b292a0eb7e949d604","source_close_commit_sha":"717295622192e19306825af900418bba0119f203","target_prompt_id":"KU2D-P-000033","close_source_queue_before_switch":true,"initialize_target_queue":true,"target_initialization_succeeded":true,"human_authority_required":false}
+  },
+  "source_queue_fingerprint":"5391945a3dafb86c5b920c72fd5d0cb777f2f334f28bada526474367d548c919",
+  "target_queue_fingerprint":"a763501f7e70f5596389decdcab2148e49fe3183f768f238d7a27b85ab875f4d",
+  "boundaries":{"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
