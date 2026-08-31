@@ -1,0 +1,18 @@
+{
+  "schema":"ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id":"KU2D-H-000011",
+  "prompt_id":"KU2D-P-000034",
+  "result_id":"KU2D-R-000034",
+  "review_id":"KU2D-V-000034",
+  "decided_at":"2026-08-31T22:56:00+07:00",
+  "decided_by":{"actor":"human","actor_id":"project_owner"},
+  "decision":"confirmed",
+  "reason_note":"Project owner explicitly approved the bounded Q-Diving live pilot proposed after the accepted YouTube v2 contract review. Authorize only the smallest non-production pilot: exactly two reviewed Q-Diving videos, public metadata plus at most two comment pages per video, Thai/English transcript handling only, and no caption download or OAuth/owner-authorized caption execution unless separately and explicitly authorized. Preserve all provenance, quota, stop, fail-closed, no-browser, no-bypass, no-production, and no-authority-promotion boundaries.",
+  "provenance":{
+    "decision_source":"explicit_human_input",
+    "source_context":"User said 'อนุมัติ pilot' immediately after the assistant presented the bounded Q-Diving live pilot and requested explicit authorization.",
+    "repository":"thanitpu/KU-Open-Data-Analytics",
+    "depends_on_review":"KU2D-V-000034"
+  },
+  "boundaries":{"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
