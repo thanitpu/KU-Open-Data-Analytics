@@ -1,0 +1,42 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://ku2d.local/schemas/youtube-content-dataset-v2.json",
+  "title":"YouTubeContentDatasetV2",
+  "description":"Storage-neutral, non-production KU2D-to-KU2A contract for reviewed YouTube metadata, Thai/English transcript segments, and comments/replies.",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["schema","dataset_id","domain","source_type","acquired_at","module_requirements","module_status","channels","playlists","videos","transcript_segments","comments","comment_replies","quality","required_module_gaps","technical_completion","approved","exit_classification","production_approved","production_store","scheduler_action"],
+  "properties":{
+    "schema":{"const":"ku2d.youtube-content-dataset.v2"},
+    "dataset_id":{"type":"string","minLength":1},
+    "domain":{"const":"q_diving"},
+    "source_type":{"const":"youtube"},
+    "acquired_at":{"type":"string","format":"date-time"},
+    "module_requirements":{"type":"object","additionalProperties":false,"required":["metadata","transcript","comments"],"properties":{"metadata":{"const":"required"},"transcript":{"enum":["required","optional","disabled"]},"comments":{"enum":["required","optional","disabled"]}}},
+    "module_status":{"type":"object"},
+    "channels":{"type":"array","items":{"$ref":"#/$defs/channel"}},
+    "playlists":{"type":"array","items":{"$ref":"#/$defs/playlist"}},
+    "videos":{"type":"array","items":{"$ref":"#/$defs/video"}},
+    "transcript_segments":{"type":"array","items":{"$ref":"#/$defs/transcript_segment"}},
+    "comments":{"type":"array","items":{"$ref":"#/$defs/comment"}},
+    "comment_replies":{"type":"array","items":{"$ref":"#/$defs/comment_reply"}},
+    "quality":{"type":"object","required":["metadata_identity_complete","provenance_complete","relationships_valid","other_language_transcript_text_count","representativeness_claim_count"],"properties":{"metadata_identity_complete":{"const":true},"provenance_complete":{"const":true},"relationships_valid":{"const":true},"other_language_transcript_text_count":{"const":0},"representativeness_claim_count":{"const":0}}},
+    "required_module_gaps":{"type":"array","items":{"type":"string"},"uniqueItems":true},
+    "technical_completion":{"const":true},
+    "approved":{"type":"boolean"},
+    "exit_classification":{"enum":[0,2]},
+    "production_approved":{"const":false},
+    "production_store":{"const":false},
+    "scheduler_action":{"type":"null"}
+  },
+  "$defs":{
+    "provenance":{"type":"object","minProperties":1},
+    "quality":{"type":"object","minProperties":1},
+    "channel":{"type":"object","required":["channel_id","title","published_at","acquired_at","provenance","module_status","quality"],"properties":{"channel_id":{"type":"string","minLength":1},"title":{"type":"string"},"published_at":{"type":["string","null"]},"acquired_at":{"type":"string"},"provenance":{"$ref":"#/$defs/provenance"},"module_status":{"type":"string"},"quality":{"$ref":"#/$defs/quality"}}},
+    "playlist":{"type":"object","required":["playlist_id","channel_id","title","published_at","acquired_at","provenance","module_status","quality"],"properties":{"playlist_id":{"type":"string","minLength":1},"channel_id":{"type":"string","minLength":1},"title":{"type":"string"},"published_at":{"type":["string","null"]},"acquired_at":{"type":"string"},"provenance":{"$ref":"#/$defs/provenance"},"module_status":{"type":"string"},"quality":{"$ref":"#/$defs/quality"}}},
+    "video":{"type":"object","required":["video_id","channel_id","title","published_at","default_language","default_audio_language","duration_iso8601","live_broadcast_content","statistics_snapshot","acquired_at","provenance","module_status","quality"],"properties":{"video_id":{"type":"string","minLength":1},"channel_id":{"type":"string","minLength":1},"title":{"type":"string"},"published_at":{"type":["string","null"]},"default_language":{"type":["string","null"]},"default_audio_language":{"type":["string","null"]},"duration_iso8601":{"type":["string","null"]},"live_broadcast_content":{"enum":["none","live","upcoming",null]},"statistics_snapshot":{"type":"object"},"acquired_at":{"type":"string"},"provenance":{"$ref":"#/$defs/provenance"},"module_status":{"type":"string"},"quality":{"$ref":"#/$defs/quality"}}},
+    "transcript_segment":{"type":"object","required":["video_id","track_id","segment_order","start_seconds","end_seconds","duration_seconds","text","language","caption_kind","is_original_language","is_translated","is_auto_generated","source_surface","acquired_at","provenance","completeness","module_status","quality"],"properties":{"video_id":{"type":"string","minLength":1},"track_id":{"type":"string","minLength":1},"segment_order":{"type":"integer","minimum":0},"start_seconds":{"type":["number","null"],"minimum":0},"end_seconds":{"type":["number","null"],"minimum":0},"duration_seconds":{"type":["number","null"],"minimum":0},"text":{"type":"string","minLength":1},"language":{"enum":["th","en"]},"caption_kind":{"enum":["manual_original","manual_translated","auto_generated_original","auto_generated_translated"]},"is_original_language":{"type":"boolean"},"is_translated":{"type":"boolean"},"is_auto_generated":{"type":"boolean"},"source_surface":{"type":"string"},"acquired_at":{"type":"string"},"provenance":{"$ref":"#/$defs/provenance"},"completeness":{"type":"object"},"module_status":{"type":"string"},"quality":{"$ref":"#/$defs/quality"}}},
+    "comment":{"type":"object","required":["comment_id","thread_id","video_id","parent_comment_id","text","published_at","updated_at","acquired_at","provenance","completeness","module_status","quality"],"properties":{"comment_id":{"type":"string","minLength":1},"thread_id":{"type":"string","minLength":1},"video_id":{"type":"string","minLength":1},"parent_comment_id":{"type":"null"},"text":{"type":"string","minLength":1},"published_at":{"type":"string"},"updated_at":{"type":"string"},"acquired_at":{"type":"string"},"provenance":{"$ref":"#/$defs/provenance"},"completeness":{"type":"object"},"module_status":{"type":"string"},"quality":{"$ref":"#/$defs/quality"}}},
+    "comment_reply":{"type":"object","required":["comment_id","thread_id","video_id","parent_comment_id","text","published_at","updated_at","acquired_at","provenance","completeness","module_status","quality"],"properties":{"comment_id":{"type":"string","minLength":1},"thread_id":{"type":"string","minLength":1},"video_id":{"type":"string","minLength":1},"parent_comment_id":{"type":"string","minLength":1},"text":{"type":"string","minLength":1},"published_at":{"type":"string"},"updated_at":{"type":"string"},"acquired_at":{"type":"string"},"provenance":{"$ref":"#/$defs/provenance"},"completeness":{"type":"object"},"module_status":{"type":"string"},"quality":{"$ref":"#/$defs/quality"}}}
+  }
+}
