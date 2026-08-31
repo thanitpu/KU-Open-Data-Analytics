@@ -1,6 +1,7 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
   "updated_at": "2026-08-31T09:58:00+07:00",
+  "authoritative_branch": "codex/ku2d-core-knowledge-backfill-v1",
   "latest_prompt": "KU2D-P-000005",
   "latest_result": "KU2D-R-000004",
   "latest_review": "KU2D-V-000004",

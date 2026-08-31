@@ -1,0 +1,50 @@
+{
+  "schema": "ku2d.human-confirmation-candidate-packet.v1",
+  "version": "1.0",
+  "purpose": "Small contradiction-rich review request list. It does not create Human Confirmation or Ground Truth.",
+  "explicit_human_authority_required": true,
+  "human_confirmation_created": false,
+  "production_authorized": false,
+  "items": [
+    {
+      "candidate_id": "KU2D-HC-000001", "review_status": "awaiting_explicit_human_authority", "human_confirmation_record_id": null, "final_decision": null,
+      "question": "When a marketplace counter has a number and unit but no explicit sold, order, review, or item-role label, should KU2D retain its semantic type as unknown?",
+      "candidate_options": ["unknown-until-explicit-label", "infer-sold-from-context", "exclude-entire-observation"],
+      "system_suggestion": "unknown-until-explicit-label",
+      "evidence_references": ["fixtures/acquisition_learning_memory/sanitized_historical_episodes.json", "config/lazada_commerce_pulse_sources.json", "docs/SHOPEE_COMMERCE_PULSE.md"],
+      "why_high_value": "Prevents numeric magnitude or marketplace conventions from fabricating sales labels."
+    },
+    {
+      "candidate_id": "KU2D-HC-000002", "review_status": "awaiting_explicit_human_authority", "human_confirmation_record_id": null, "final_decision": null,
+      "question": "Should a visible currency amount without a current, from, range, promotional, or discount role remain unknown_display_price rather than canonical current price?",
+      "candidate_options": ["unknown-display-price", "current-price", "exclude-price"],
+      "system_suggestion": "unknown-display-price",
+      "evidence_references": ["fixtures/acquisition_learning_memory/sanitized_historical_episodes.json", "config/lazada_commerce_pulse_sources.json"],
+      "why_high_value": "Avoids contaminating price labels when the display role or selected variant is unresolved."
+    },
+    {
+      "candidate_id": "KU2D-HC-000003", "review_status": "awaiting_explicit_human_authority", "human_confirmation_record_id": null, "final_decision": null,
+      "question": "Does matching a canonical product or item identity across surfaces leave selected variant identity unresolved unless explicit variant-equivalence evidence is present?",
+      "candidate_options": ["product-match-variant-unresolved", "product-match-implies-variant-match", "do-not-correlate"],
+      "system_suggestion": "product-match-variant-unresolved",
+      "evidence_references": ["config/lazada_commerce_pulse_sources.json", "config/retail_commerce_core_patterns.json"],
+      "why_high_value": "Protects price correlation from false equivalence across sizes, colors, bundles, or configurations."
+    },
+    {
+      "candidate_id": "KU2D-HC-000004", "review_status": "awaiting_explicit_human_authority", "human_confirmation_record_id": null, "final_decision": null,
+      "question": "Should default or recommended marketplace collection order remain display-order context and never be labelled demand or national rank without an explicit sort contract?",
+      "candidate_options": ["display-order-only", "demand-rank", "exclude-position"],
+      "system_suggestion": "display-order-only",
+      "evidence_references": ["config/lazada_commerce_pulse_sources.json", "config/candidate_learning_evidence_registry.json"],
+      "why_high_value": "Prevents contextual merchandising or personalization from becoming unsupported demand Ground Truth."
+    },
+    {
+      "candidate_id": "KU2D-HC-000005", "review_status": "awaiting_explicit_human_authority", "human_confirmation_record_id": null, "final_decision": null,
+      "question": "When cloud access is blocked but the same technique works in a separately approved normal-network environment, should the label remain environment-boundary rather than technique failure?",
+      "candidate_options": ["environment-boundary-not-technique-failure", "technique-failure", "source-unavailable"],
+      "system_suggestion": "environment-boundary-not-technique-failure",
+      "evidence_references": ["../../docs/validation/gourmet-access-environment-2026-08-29.json", "config/supermarket_acquisition_patterns.json"],
+      "why_high_value": "Keeps execution-environment selection separate from extraction-technique validity."
+    }
+  ]
+}

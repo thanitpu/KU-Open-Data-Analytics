@@ -18,6 +18,8 @@ EPISODE_SCHEMA = "ku2d.reviewed-learning-episode.v1"
 COVERAGE_SCHEMA = "ku2d.core-coverage-matrix.v1"
 ML_MAP_SCHEMA = "ku2d.ml-knowledge-map.v1"
 GAP_REGISTER_SCHEMA = "ku2d.knowledge-gap-register.v1"
+CANDIDATE_REGISTRY_SCHEMA = "ku2d.candidate-learning-evidence-registry.v1"
+HUMAN_CANDIDATE_PACKET_SCHEMA = "ku2d.human-confirmation-candidate-packet.v1"
 
 REQUIRED_DIMENSIONS = {
     "source_characteristic", "acquisition_technique", "execution_environment",
@@ -39,6 +41,10 @@ ML_READINESS_STATES = {
     "review_required", "blocked_by_label_authority",
 }
 POLARITIES = {"positive", "negative", "mixed"}
+CANDIDATE_STATUSES = {
+    "unmerged_draft_observation", "unmerged_draft_boundary",
+    "unmerged_deterministic_contract", "seed_only",
+}
 _ID_RE = re.compile(r"^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$")
 
 
@@ -123,6 +129,7 @@ def validate_episode(record: dict[str, Any], taxonomy: dict[str, Any]) -> dict[s
     authority = _mapping(record, "authority")
     provenance = _mapping(record, "provenance")
     boundaries = _mapping(record, "boundaries")
+    ml_projection = _mapping(record, "ml_projection")
     index = taxonomy_index(taxonomy)
 
     scalar_refs = {
@@ -169,6 +176,22 @@ def validate_episode(record: dict[str, Any], taxonomy: dict[str, Any]) -> dict[s
         raise ValueError("episode provenance must use repository-relative references")
     if provenance.get("sanitized") is not True:
         raise ValueError("Reviewed Learning Corpus evidence must be sanitized")
+    features = _nonempty_list(
+        ml_projection.get("candidate_feature_families"), "candidate_feature_families",
+    )
+    decision = _mapping(ml_projection, "label_or_decision")
+    _nonempty(decision.get("target_family"), "label_or_decision.target_family")
+    if decision.get("value") != knowledge.get("semantic_label"):
+        raise ValueError("ML label/decision value must preserve the reviewed semantic label")
+    if decision.get("authority_id") != authority.get("review_authority_id"):
+        raise ValueError("ML label/decision authority must match episode authority")
+    excluded = _nonempty_list(
+        ml_projection.get("excluded_leakage_fields"), "excluded_leakage_fields",
+    )
+    if set(features) & set(excluded):
+        raise ValueError("feature families and excluded leakage fields must be disjoint")
+    if ml_projection.get("training_eligible") is not False:
+        raise ValueError("Reviewed corpus episodes are not automatically training eligible")
     if boundaries != {
         "observation_is_ground_truth": False,
         "production_authorized": False,
@@ -247,12 +270,99 @@ def validate_ml_knowledge_map(record: dict[str, Any]) -> dict[str, Any]:
     for task in _nonempty_list(record.get("tasks"), "tasks"):
         _nonempty(task.get("task_id"), "task_id")
         _nonempty_list(task.get("candidate_inputs"), "candidate_inputs")
+        feature_families = _nonempty_list(task.get("feature_families"), "feature_families")
         _nonempty(task.get("target_label"), "target_label")
+        _nonempty(task.get("label_family"), "label_family")
         _nonempty_list(task.get("evidence_sources"), "evidence_sources")
         _nonempty(task.get("label_authority"), "label_authority")
+        _nonempty(task.get("authority_requirement"), "authority_requirement")
+        _nonempty_list(task.get("exclusion_criteria"), "exclusion_criteria")
         _nonempty_list(task.get("leakage_risks"), "leakage_risks")
+        if set(feature_families) & set(task["exclusion_criteria"]):
+            raise ValueError("ML feature families and exclusion criteria must be disjoint")
         if task.get("readiness") not in ML_READINESS_STATES:
             raise ValueError("invalid ML readiness state")
+    return validate_safe_json_payload(record)
+
+
+def validate_candidate_registry(record: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(record, dict) or record.get("schema") != CANDIDATE_REGISTRY_SCHEMA:
+        raise ValueError(f"schema must be {CANDIDATE_REGISTRY_SCHEMA}")
+    required_false = (
+        "production_authorized", "automatic_promotion_to_reviewed_corpus",
+        "ground_truth_authorized", "ml_dataset_export_enabled",
+    )
+    if any(record.get(key) is not False for key in required_false):
+        raise ValueError("Candidate Registry must remain non-authorizing and non-promoting")
+    ids: set[str] = set()
+    for candidate in _nonempty_list(record.get("candidates"), "candidates"):
+        candidate_id = _nonempty(candidate.get("candidate_id"), "candidate_id")
+        if candidate_id in ids or not _ID_RE.fullmatch(candidate_id):
+            raise ValueError("candidate IDs must be unique typed IDs")
+        ids.add(candidate_id)
+        _nonempty(candidate.get("source"), "candidate.source")
+        _nonempty(candidate.get("domain"), "candidate.domain")
+        if candidate.get("polarity") not in POLARITIES:
+            raise ValueError("candidate polarity is invalid")
+        if candidate.get("candidate_status") not in CANDIDATE_STATUSES:
+            raise ValueError("candidate status is invalid")
+        _nonempty(candidate.get("observation_summary"), "observation_summary")
+        ml_projection = _mapping(candidate, "ml_projection")
+        features = _nonempty_list(
+            ml_projection.get("candidate_feature_families"), "candidate_feature_families",
+        )
+        label = _mapping(ml_projection, "label_candidate")
+        _nonempty(label.get("target_family"), "label_candidate.target_family")
+        _nonempty(label.get("value"), "label_candidate.value")
+        excluded = _nonempty_list(
+            ml_projection.get("excluded_leakage_fields"), "excluded_leakage_fields",
+        )
+        if set(features) & set(excluded) or ml_projection.get("training_eligible") is not False:
+            raise ValueError("candidate ML projection leaks labels or claims training eligibility")
+        authority = _mapping(candidate, "authority")
+        if authority != {
+            "candidate_only": True,
+            "reviewed_corpus_authorized": False,
+            "human_confirmed": False,
+            "ground_truth_asserted": False,
+            "promoted_to_reviewed_episode_id": None,
+        }:
+            raise ValueError("candidate authority must remain explicitly non-promoted")
+        provenance = _mapping(candidate, "provenance")
+        if provenance.get("artifact_state") != "open-unmerged-draft-pr":
+            raise ValueError("candidate evidence must retain its unmerged Draft PR state")
+        if not isinstance(provenance.get("pr_number"), int) or provenance["pr_number"] <= 0:
+            raise ValueError("candidate PR number is required")
+        if not re.fullmatch(r"[0-9a-f]{40}", str(provenance.get("head_commit_sha") or "")):
+            raise ValueError("candidate head commit SHA is invalid")
+        _nonempty(provenance.get("source_file"), "candidate provenance.source_file")
+        if candidate.get("production_store") is not False or candidate.get("scheduler_action") is not None:
+            raise ValueError("candidate evidence cannot store or schedule production work")
+    return validate_safe_json_payload(record)
+
+
+def validate_human_candidate_packet(record: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(record, dict) or record.get("schema") != HUMAN_CANDIDATE_PACKET_SCHEMA:
+        raise ValueError(f"schema must be {HUMAN_CANDIDATE_PACKET_SCHEMA}")
+    if (record.get("explicit_human_authority_required") is not True
+            or record.get("production_authorized") is not False
+            or record.get("human_confirmation_created") is not False):
+        raise ValueError("Human candidate packet must remain an unconfirmed review request")
+    ids: set[str] = set()
+    for item in _nonempty_list(record.get("items"), "items"):
+        item_id = _nonempty(item.get("candidate_id"), "human candidate id")
+        if item_id in ids or not _ID_RE.fullmatch(item_id):
+            raise ValueError("human candidate IDs must be unique typed IDs")
+        ids.add(item_id)
+        if item.get("review_status") != "awaiting_explicit_human_authority":
+            raise ValueError("human candidate must await explicit human authority")
+        if item.get("human_confirmation_record_id") is not None or item.get("final_decision") is not None:
+            raise ValueError("candidate packet cannot fabricate Human Confirmation or a final decision")
+        _nonempty(item.get("question"), "human candidate question")
+        _nonempty_list(item.get("candidate_options"), "candidate_options")
+        _nonempty(item.get("system_suggestion"), "system_suggestion")
+        _nonempty_list(item.get("evidence_references"), "evidence_references")
+        _nonempty(item.get("why_high_value"), "why_high_value")
     return validate_safe_json_payload(record)
 
 

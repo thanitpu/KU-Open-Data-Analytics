@@ -13,16 +13,20 @@ if str(ROOT / "acquisition") not in sys.path:
     sys.path.insert(0, str(ROOT / "acquisition"))
 
 from core_knowledge import (
+    CANDIDATE_REGISTRY_SCHEMA,
     CORPUS_SCHEMA,
     COVERAGE_STATES,
     GAP_REGISTER_SCHEMA,
+    HUMAN_CANDIDATE_PACKET_SCHEMA,
     ML_MAP_SCHEMA,
     TAXONOMY_SCHEMA,
     serialize_core_knowledge,
     taxonomy_index,
+    validate_candidate_registry,
     validate_corpus,
     validate_coverage_matrix,
     validate_gap_register,
+    validate_human_candidate_packet,
     validate_ml_knowledge_map,
     validate_taxonomy,
 )
@@ -37,6 +41,8 @@ corpus = load("reviewed_learning_corpus.json")
 coverage = load("core_coverage_matrix.json")
 ml_map = load("ml_knowledge_map.json")
 gaps = load("knowledge_gap_register.json")
+candidate_registry = load("candidate_learning_evidence_registry.json")
+human_candidates = load("human_confirmation_candidate_packet.json")
 
 # CK1: every top-level schema is explicit and validates.
 assert taxonomy["schema"] == TAXONOMY_SCHEMA
@@ -44,11 +50,15 @@ assert corpus["schema"] == CORPUS_SCHEMA
 assert coverage["schema"] == "ku2d.core-coverage-matrix.v1"
 assert ml_map["schema"] == ML_MAP_SCHEMA
 assert gaps["schema"] == GAP_REGISTER_SCHEMA
+assert candidate_registry["schema"] == CANDIDATE_REGISTRY_SCHEMA
+assert human_candidates["schema"] == HUMAN_CANDIDATE_PACKET_SCHEMA
 validate_taxonomy(taxonomy)
 validate_corpus(corpus, taxonomy)
 validate_coverage_matrix(coverage)
 validate_ml_knowledge_map(ml_map)
 validate_gap_register(gaps)
+validate_candidate_registry(candidate_registry)
+validate_human_candidate_packet(human_candidates)
 
 # CK2: taxonomy identifiers are unique and technique/environment remain separate.
 index = taxonomy_index(taxonomy)
@@ -61,6 +71,11 @@ for episode in corpus["episodes"]:
     assert episode["provenance"]["sanitized"] is True
     assert episode["provenance"]["repository_references"]
     assert episode["authority"]["eligibility"] == "eligible_reviewed_corpus"
+    assert episode["ml_projection"]["training_eligible"] is False
+    assert set(episode["ml_projection"]["candidate_feature_families"]).isdisjoint(
+        episode["ml_projection"]["excluded_leakage_fields"]
+    )
+    assert episode["ml_projection"]["label_or_decision"]["value"] == episode["knowledge"]["semantic_label"]
     assert episode["boundaries"] == {
         "observation_is_ground_truth": False,
         "production_authorized": False,
@@ -76,6 +91,12 @@ reference_groups = [
     *(item["evidence_references"] for item in coverage["capabilities"]),
     *(task["evidence_sources"] for task in ml_map["tasks"]),
     *(gap["evidence_references"] for gap in gaps["gaps"]),
+    *(
+        [ref.split("#", 1)[0] for ref in item.get("candidate_evidence_references", [])]
+        for item in coverage["capabilities"]
+        if item.get("candidate_evidence_references")
+    ),
+    *(item["evidence_references"] for item in human_candidates["items"]),
 ]
 for refs in reference_groups:
     for ref in refs:
@@ -135,8 +156,8 @@ except ValueError:
 
 # CK11: excluded sources remain explicit and are never silently promoted.
 excluded = {entry["name"]: entry["eligibility"] for entry in corpus["excluded_candidates"]}
-assert excluded["LINE SHOPPING"] == "excluded_insufficient_evidence"
-assert excluded["NocNoc"] == "excluded_insufficient_evidence"
+assert excluded["LINE SHOPPING"] == "excluded_candidate_only"
+assert excluded["NocNoc"] == "excluded_candidate_only"
 assert excluded["TikTok Shop"] == "excluded_candidate_only"
 assert excluded["Agoda and Traveloka"] == "excluded_candidate_only"
 
@@ -160,6 +181,9 @@ assert ml_map["dataset_export_enabled"] is False
 assert len(ml_map["tasks"]) == 8
 assert "ready" not in {task["readiness"] for task in ml_map["tasks"]}
 assert all(task["leakage_risks"] and task["label_authority"] for task in ml_map["tasks"])
+assert all(task["feature_families"] and task["authority_requirement"] for task in ml_map["tasks"])
+assert all(task["exclusion_criteria"] for task in ml_map["tasks"])
+assert all(set(task["feature_families"]).isdisjoint(task["exclusion_criteria"]) for task in ml_map["tasks"])
 
 # CK14: gaps are ranked by pattern and start no exploration.
 assert gaps["exploration_started"] is False
@@ -181,4 +205,56 @@ assert corpus["ml_training_dataset_exists"] is False
 assert corpus["automatic_export"] is False
 assert not any("coordination/" in ref for episode in corpus["episodes"] for ref in episode["provenance"]["repository_references"])
 
-print("Core Knowledge Backfill deterministic tests passed (CK1-CK17).")
+# CK18: open Draft PR evidence is retained separately and cannot self-promote.
+assert len(candidate_registry["candidates"]) == 11
+assert all(candidate["authority"]["candidate_only"] is True for candidate in candidate_registry["candidates"])
+assert all(candidate["authority"]["reviewed_corpus_authorized"] is False for candidate in candidate_registry["candidates"])
+assert all(candidate["authority"]["promoted_to_reviewed_episode_id"] is None for candidate in candidate_registry["candidates"])
+assert all(candidate["provenance"]["artifact_state"] == "open-unmerged-draft-pr" for candidate in candidate_registry["candidates"])
+assert {candidate["provenance"]["pr_number"] for candidate in candidate_registry["candidates"]} == {36, 37, 38, 39, 40, 41}
+
+# CK19: candidate feature/label projections remain separate and training-disabled.
+for candidate in candidate_registry["candidates"]:
+    projection = candidate["ml_projection"]
+    assert projection["training_eligible"] is False
+    assert set(projection["candidate_feature_families"]).isdisjoint(projection["excluded_leakage_fields"])
+
+# CK20: candidate promotion or Ground Truth claims fail closed.
+promoted = deepcopy(candidate_registry)
+promoted["candidates"][0]["authority"]["reviewed_corpus_authorized"] = True
+try:
+    validate_candidate_registry(promoted)
+    raise AssertionError("candidate self-promotion validated")
+except ValueError:
+    pass
+
+# CK21: sensitive candidate material remains rejected.
+sensitive_candidate = deepcopy(candidate_registry)
+sensitive_candidate["candidates"][0]["provenance"]["cookies"] = "prohibited"
+try:
+    validate_candidate_registry(sensitive_candidate)
+    raise AssertionError("sensitive candidate evidence validated")
+except ValueError:
+    pass
+
+# CK22: Human Confirmation packet is only an awaiting-authority request list.
+assert len(human_candidates["items"]) == 5
+assert human_candidates["human_confirmation_created"] is False
+assert all(item["review_status"] == "awaiting_explicit_human_authority" for item in human_candidates["items"])
+assert all(item["human_confirmation_record_id"] is None and item["final_decision"] is None for item in human_candidates["items"])
+
+# CK23: a fabricated final Human Confirmation decision fails closed.
+fabricated_confirmation = deepcopy(human_candidates)
+fabricated_confirmation["items"][0]["final_decision"] = "unknown-until-explicit-label"
+try:
+    validate_human_candidate_packet(fabricated_confirmation)
+    raise AssertionError("fabricated Human Confirmation decision validated")
+except ValueError:
+    pass
+
+# CK24: candidate evidence is evidence-weighted and never upgrades reviewed coverage.
+assert coverage["evidence_weighting"]["open_unmerged_candidate"].endswith("cannot upgrade coverage state")
+assert any(item.get("candidate_evidence_references") for item in coverage["capabilities"])
+assert next(item for item in coverage["capabilities"] if item["capability"] == "Browser acquisition")["state"] == "partial"
+
+print("Core Knowledge deterministic tests passed (CK1-CK24).")

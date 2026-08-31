@@ -400,3 +400,5 @@ Gourmet Market is now evaluated with source-specific supermarket patterns learne
 ## Core Knowledge Backfill v1
 
 `docs/CORE_KNOWLEDGE_BACKFILL.md` defines the storage-neutral Reviewed Learning Corpus, reusable capability coverage matrix, ranked knowledge gaps, and non-executing ML Knowledge Map. These reviewed artifacts preserve positive and negative historical evidence without starting acquisition, exporting a training dataset, training a model, authorizing production, or writing runtime state.
+
+Open/unmerged historical evidence is retained separately in the Candidate Learning Evidence Registry with exact PR/commit/file provenance. A small Human Confirmation candidate packet requests explicit authority for contradiction-rich semantics; neither artifact can promote itself into the Reviewed Learning Corpus, Ground Truth, approval, scheduling, or ML training.

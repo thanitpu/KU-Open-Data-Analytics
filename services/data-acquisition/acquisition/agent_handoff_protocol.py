@@ -37,6 +37,7 @@ _ID_PATTERNS = {
     "review_id": re.compile(r"^KU2D-V-\d{6}$"),
     "human_decision_id": re.compile(r"^KU2D-H-\d{6}$"),
 }
+_BRANCH_RE = re.compile(r"^(?!/)(?!.*(?:\.\.|//))[A-Za-z0-9][A-Za-z0-9._/-]*[A-Za-z0-9]$")
 _TRANSITIONS = {
     "draft": {"ready_for_codex", "superseded"},
     "ready_for_codex": {"in_progress", "result_submitted", "superseded"},
@@ -87,6 +88,18 @@ def _optional_id(value: Any, key: str) -> str | None:
     return text
 
 
+def validate_branch_name(value: Any) -> str:
+    """Validate a repository branch name without consulting or changing git state."""
+    branch = _nonempty(value, "authoritative_branch")
+    if (
+        not _BRANCH_RE.fullmatch(branch) or branch.startswith("refs/")
+        or branch.endswith((".", "/")) or "@{" in branch
+        or any(marker in branch for marker in ("~", "^", ":", "?", "*", "[", "\\"))
+    ):
+        raise ValueError("authoritative_branch is not a safe branch name")
+    return branch
+
+
 def _validate_boundaries(record: dict[str, Any]) -> dict[str, Any]:
     boundaries = _mapping(record, "boundaries")
     required = {
@@ -115,7 +128,9 @@ def validate_prompt_record(record: dict[str, Any]) -> dict[str, Any]:
     _nonempty(record.get("objective"), "objective")
     _string_list(record.get("instructions"), "instructions", allow_empty=False)
     _mapping(record, "expected_result")
-    _mapping(record, "provenance")
+    provenance = _mapping(record, "provenance")
+    if provenance.get("authoritative_branch") is not None:
+        validate_branch_name(provenance["authoritative_branch"])
     _validate_boundaries(record)
     return validate_safe_json_payload(record)
 
@@ -216,6 +231,8 @@ def validate_queue_state(record: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(record, dict) or record.get("schema") != QUEUE_SCHEMA:
         raise ValueError(f"queue schema must be {QUEUE_SCHEMA}")
     _nonempty(record.get("updated_at"), "updated_at")
+    if record.get("authoritative_branch") is not None:
+        validate_branch_name(record["authoritative_branch"])
     latest_prompt = _optional_id(record.get("latest_prompt"), "prompt_id")
     latest_result = _optional_id(record.get("latest_result"), "result_id")
     latest_review = _optional_id(record.get("latest_review"), "review_id")
@@ -340,6 +357,11 @@ def validate_agent_handoff_bundle(
     latest_review = queue.get("latest_review")
     latest_human = queue.get("latest_human_decision")
     actor = queue["next_action"]["actor"]
+    if latest_prompt:
+        prompt_branch = prompts[latest_prompt].get("provenance", {}).get("authoritative_branch")
+        queue_branch = queue.get("authoritative_branch")
+        if prompt_branch is not None and queue_branch != prompt_branch:
+            raise ValueError("queue authoritative_branch must match the latest Prompt")
     prompt_results = [record for record in results.values() if record["prompt_id"] == latest_prompt]
     prompt_reviews = [record for record in reviews.values() if record["prompt_id"] == latest_prompt]
     prompt_humans = [record for record in humans.values() if record["prompt_id"] == latest_prompt]
@@ -407,6 +429,34 @@ def validate_agent_handoff_bundle(
         "human_decision_records": humans,
         "queue_state": queue,
     }
+
+
+def validate_authoritative_branch(
+    prompt_record: dict[str, Any], queue_state: dict[str, Any], checked_out_branch: str,
+) -> str | None:
+    """Fail closed when an actionable handoff names a different checked-out branch.
+
+    Older v1 Prompt/Queue records may omit branch metadata. Once a Prompt names an
+    authoritative branch, its Queue must repeat it and Codex must supply the exact
+    locally checked-out branch before acting.
+    """
+    validate_prompt_record(prompt_record)
+    validate_queue_state(queue_state)
+    expected = prompt_record.get("provenance", {}).get("authoritative_branch")
+    queued = queue_state.get("authoritative_branch")
+    if expected is None:
+        if queued is not None:
+            raise ValueError("queue cannot invent authoritative_branch absent from Prompt")
+        return None
+    expected = validate_branch_name(expected)
+    if queued != expected:
+        raise ValueError("queue authoritative_branch does not match Prompt")
+    actual = validate_branch_name(checked_out_branch)
+    if actual != expected:
+        raise ValueError(
+            f"stale-branch handoff: expected {expected!r}, checked out {actual!r}"
+        )
+    return expected
 
 
 def serialize_coordination_record(record: dict[str, Any], validator) -> dict[str, Any]:

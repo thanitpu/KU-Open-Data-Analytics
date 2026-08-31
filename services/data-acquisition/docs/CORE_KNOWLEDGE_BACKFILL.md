@@ -25,6 +25,8 @@ An ML Training Dataset does not exist in v1. Corpus eligibility means only that 
 
 - `config/core_knowledge_taxonomy.json` defines separate dimensions for source characteristics, techniques, execution environments, evidence, interpretation, outcomes, boundaries, transferability, strength, authority, drift, quality/yield, request cost/latency, privacy/authorization, and provenance.
 - `config/reviewed_learning_corpus.json` contains only sanitized high-confidence episodes and explicit exclusions.
+- `config/candidate_learning_evidence_registry.json` records bounded evidence recovered from open unmerged Draft PRs with exact PR, commit, and file provenance. Candidates cannot self-promote.
+- `config/human_confirmation_candidate_packet.json` is a five-item review request list. Every item awaits explicit human authority and contains no Human Confirmation or final decision.
 - `config/core_coverage_matrix.json` assesses reusable capabilities and patterns rather than counting sites.
 - `config/knowledge_gap_register.json` ranks future work by the missing pattern it would test. It starts no exploration.
 - `config/ml_knowledge_map.json` records possible future supervised tasks, label authority, leakage risks, and honest readiness. It enables no training, export, embeddings, or inference.
@@ -46,7 +48,9 @@ All contracts are JSON/JSONL-compatible, versioned, deterministically serializab
 
 The corpus includes reviewed or deterministic evidence for Lotus's, Big C, Makro, Tops, Gourmet Market, JIB, Shopee, Lazada, Q-Diving/YouTube, and the PunThai parser contract. Both positive and negative episodes are first-class.
 
-LINE SHOPPING and NocNoc have no completed reviewed artifact sufficient for a source-outcome claim. TikTok Shop and Agoda/Traveloka are registry seeds or candidates without a completed durable boundary/acquisition episode. Other Coffee sources are playbook candidates. They are explicitly excluded rather than assigned invented outcomes. The PunThai item is labelled as a deterministic parser contract, not live validation.
+The historical audit found additional bounded evidence in still-open Draft PRs #36–#41: TikTok, Agoda, and Traveloka access boundaries; LINE SHOPPING seller-collection observations; a NocNoc cessation observation; specialty Coffee evidence; Q-Diving content/service/equipment candidates; and an Akha Ama catalog observation. These are represented only in the Candidate Learning Evidence Registry because their source branches remain unmerged and the evidence lacks independent Reviewed Learning Corpus authority.
+
+Candidate recovery changes “no evidence found” into “unmerged candidate evidence found” where supported, but it does not change the 16-episode reviewed corpus count or any coverage state. The exact PR head commit and source file are retained so a future independent review can merge, correct, or reject evidence without repeating a live request.
 
 No exact observation time, request count, cost, latency, quality score, yield, or Human Review is introduced unless the referenced repository evidence already supports it.
 
@@ -55,6 +59,12 @@ No exact observation time, request count, cost, latency, quality score, yield, o
 Coverage states are qualitative: `validated_multi_source`, `validated_single_source`, `partial`, `boundary_validated`, `contract_only`, or `gap`. Every state carries references and a residual gap. The Knowledge Gap Register recommends only a future pattern-shaped target; starting that work requires a new reviewed prompt.
 
 The ML Knowledge Map currently marks tasks as small candidates, review-required, insufficient, or blocked by label authority. These are planning labels, never model-readiness or production claims.
+
+Each reviewed and candidate episode separates candidate feature families from the target label/decision and explicitly lists fields that must be excluded to prevent leakage. Task specifications independently define feature families, label family, authority requirement, exclusion criteria, leakage risks, and readiness. No projection has `training_eligible=true`.
+
+## Human Confirmation candidate packet
+
+The packet requests explicit human decisions for five high-value semantic boundaries: unlabelled marketplace counters, ambiguous displayed price roles, product-versus-variant identity, displayed-order-versus-demand, and environment-boundary-versus-technique-failure. The system suggestion is non-authoritative. Until a human explicitly responds and a separate validated Human Confirmation record is created, every item remains `awaiting_explicit_human_authority` with `final_decision=null`.
 
 ## Safety and authority
 
