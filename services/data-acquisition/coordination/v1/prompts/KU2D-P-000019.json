@@ -1,0 +1,46 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000019",
+  "created_at": "2026-08-31T14:48:00+07:00",
+  "created_by": {"actor":"assistant","actor_id":"assistant_review"},
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-parked-disposition-planning-v1",
+  "objective": "Create a bounded Parked Evidence Disposition & Closure Plan for the eight reviewed parked PRs #36-#43 without closing, merging, deleting, mutating, or promoting anything.",
+  "instructions": [
+    "Switch/stay on codex/ku2d-parked-disposition-planning-v1 and pull the latest remote state before work.",
+    "Use the integrated Branch/PR Governance v1, Parked Synthesis Review v1, and Parked Candidate Review v1 as the primary evidence base; refresh current PR/branch states only to detect drift.",
+    "Cover parked PRs #36 through #43 individually and preserve exact branch/head/provenance links.",
+    "Assign a planning disposition to each parked PR from a bounded vocabulary such as RETAIN_AS_EVIDENCE, SUPERSEDED_BY_REVIEWED_ARTIFACTS, NEEDS_TARGETED_EVIDENCE_RERUN, ELIGIBLE_FOR_LATER_CLOSURE, or NEEDS_HUMAN_ADJUDICATION. Do not execute the disposition.",
+    "For each PR, explain the reason, what unique knowledge is already durably preserved, what is not losslessly preserved, candidate/claim dependencies, and the concrete prerequisite before any future closure or cleanup.",
+    "Do not treat Candidate Learning Evidence, synthesis review, or candidate review as promotion or Ground Truth. Preserve all authority boundaries.",
+    "Produce a storage-neutral machine-readable disposition plan, a concise human-readable report, a pure fail-closed validator, and deterministic tests.",
+    "The validator must reject executable close/delete/merge/mutation fields, stale branch/PR provenance, unsupported closure eligibility, lossless-preservation claims without proof, and any authority promotion drift.",
+    "Refresh the Branch/PR Governance projection if needed, but do not delete branches, close parked PRs, merge parked PRs, or mutate their refs.",
+    "Do not perform live acquisition, source expansion, candidate promotion, Learning Memory/Reviewed Corpus/Core Knowledge/Human Confirmation/Ground Truth writes, production authorization/storage/scheduling, ML training/inference/export, Survey/DoE/SEM, or broader recommendation/ranking work.",
+    "Open a Draft PR against integration/data-acquisition-platform for this bounded planning artifact only.",
+    "Run deterministic/regression checks and exact-head CI. Write KU2D-R-000019 and return control to assistant."
+  ],
+  "expected_result": {"result_id":"KU2D-R-000019","next_actor":"assistant"},
+  "provenance": {
+    "repository":"thanitpu/KU-Open-Data-Analytics",
+    "depends_on_result":"KU2D-R-000018",
+    "depends_on_review":"KU2D-V-000018",
+    "depends_on_human_decision":"KU2D-H-000007",
+    "depends_on_merge":"c722aacfb49d618e6f67c24923e4c89e3909fac0",
+    "authoritative_branch":"codex/ku2d-parked-disposition-planning-v1",
+    "historical_prs":[36,37,38,39,40,41,42,43]
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "close_parked_prs": false,
+    "merge_parked_prs": false,
+    "branch_deletion": false,
+    "parked_branch_mutation": false,
+    "candidate_promotion": false,
+    "live_requests": 0,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null,
+    "ml_training_or_inference": false
+  }
+}

@@ -1,0 +1,654 @@
+{
+  "schema": "ku2d.parked-evidence-disposition-plan.v1",
+  "version": "1.0",
+  "planned_at": "2026-08-31T15:31:03+07:00",
+  "repository": "thanitpu/KU-Open-Data-Analytics",
+  "authoritative_branch": "codex/ku2d-parked-disposition-planning-v1",
+  "base_branch": "integration/data-acquisition-platform",
+  "base_sha": "c722aacfb49d618e6f67c24923e4c89e3909fac0",
+  "evidence_nodes": [
+    {
+      "evidence_id": "KU2D-EV-GOVERNANCE",
+      "authority": "integrated-governance-snapshot",
+      "references": [
+        "config/branch_pr_disposition_registry.json",
+        "docs/BRANCH_PR_GOVERNANCE.md"
+      ],
+      "authorizes_execution": false
+    },
+    {
+      "evidence_id": "KU2D-EV-CANDIDATE-REVIEW",
+      "authority": "reviewed-non-authorizing-projection",
+      "references": [
+        "config/parked_candidate_review.json",
+        "docs/PARKED_CANDIDATE_REVIEW.md"
+      ],
+      "authorizes_execution": false
+    },
+    {
+      "evidence_id": "KU2D-EV-SYNTHESIS-REVIEW",
+      "authority": "reviewed-non-authorizing-projection",
+      "references": [
+        "config/parked_synthesis_review.json",
+        "docs/PARKED_SYNTHESIS_REVIEW.md"
+      ],
+      "authorizes_execution": false
+    },
+    {
+      "evidence_id": "KU2D-EV-CANDIDATE-REGISTRY",
+      "authority": "candidate-only",
+      "references": [
+        "config/candidate_learning_evidence_registry.json"
+      ],
+      "authorizes_execution": false
+    },
+    {
+      "evidence_id": "KU2D-EV-CORE-CURRENT",
+      "authority": "current-reviewed-contract",
+      "references": [
+        "config/reviewed_learning_corpus.json",
+        "config/core_knowledge_taxonomy.json",
+        "config/core_knowledge_codebook.json"
+      ],
+      "authorizes_execution": false
+    }
+  ],
+  "pr_plans": [
+    {
+      "pr_number": 36,
+      "branch": "codex/overnight-tiktok-shop-commerce-pulse-explore",
+      "head_sha": "9f62c33f933989bb12581fdb3b2a6fb21a1ca6b5",
+      "base_branch": "integration/data-acquisition-platform",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "observed_pr_state": {
+        "open": true,
+        "draft": true,
+        "merged": false,
+        "head_unchanged": true
+      },
+      "planning_disposition": "RETAIN_AS_EVIDENCE",
+      "reason": "The one-request access boundary is reviewed as candidate evidence, but unique parser, CLI, fixtures, API-scope notes, and exact response ledger remain only on the parked branch.",
+      "durably_preserved_knowledge": [
+        "CLE-000001 preserves the bounded challenge/required-login observation.",
+        "Parked Candidate Review preserves 10 claim-level classifications and future evidence gaps."
+      ],
+      "not_losslessly_preserved": [
+        "Four public-surface candidates, normalizer/CLI behavior, fixtures, and exact response metrics are not losslessly projected.",
+        "The branch is currently non-mergeable against the advanced integration base and no tree-equivalence proof exists."
+      ],
+      "evidence_dependencies": [
+        "KU2D-EV-GOVERNANCE",
+        "KU2D-EV-CANDIDATE-REVIEW",
+        "KU2D-EV-CANDIDATE-REGISTRY"
+      ],
+      "candidate_dependencies": [
+        "KU2D-CLE-000001"
+      ],
+      "claim_dependencies": [
+        "KU2D-PCR-000001",
+        "KU2D-PCR-000002",
+        "KU2D-PCR-000003",
+        "KU2D-PCR-000004",
+        "KU2D-PCR-000005",
+        "KU2D-PCR-000006",
+        "KU2D-PCR-000007",
+        "KU2D-PCR-000008",
+        "KU2D-PCR-000009",
+        "KU2D-PCR-000010"
+      ],
+      "prerequisites_before_closure": [
+        "Choose by explicit human decision whether the unique deterministic contracts should be separately integrated or archived as historical evidence.",
+        "Produce a file-level archival/tree-equivalence proof or retain the branch/ref before any closure.",
+        "Do not infer extraction-technique failure from the recorded access boundary."
+      ],
+      "execute_disposition": false,
+      "closure_eligible_now": false,
+      "lossless_preservation_claimed": false,
+      "lossless_preservation_proof": [],
+      "future_action_authority": "explicit-human-decision-required",
+      "live_rerun_authorized": false,
+      "targeted_evidence_requirements": [],
+      "human_adjudication_questions": [],
+      "authority": {
+        "planning_only": true,
+        "candidate_promoted": false,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "pr_number": 37,
+      "branch": "codex/overnight-marketplace-source-inventory",
+      "head_sha": "0e99926c72cec7e83e259408c153fd6c99fd1492",
+      "base_branch": "integration/data-acquisition-platform",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "observed_pr_state": {
+        "open": true,
+        "draft": true,
+        "merged": false,
+        "head_unchanged": true
+      },
+      "planning_disposition": "NEEDS_TARGETED_EVIDENCE_RERUN",
+      "reason": "LINE and NocNoc candidate outcomes are useful, but exact records/notices, repeatability, and source-role decisions are not durably lossless.",
+      "durably_preserved_knowledge": [
+        "CLE-000002 and CLE-000003 preserve bounded LINE and NocNoc outcomes.",
+        "Parked Candidate Review preserves 11 classifications including display-order and lifecycle boundaries."
+      ],
+      "not_losslessly_preserved": [
+        "Exact LINE sample/request ledger, static-versus-rendered behavior, detail correlation, and NocNoc notice are not losslessly retained.",
+        "Kaidee, Central, Temu, AliExpress, and JD Central source-role research remains historical branch context."
+      ],
+      "evidence_dependencies": [
+        "KU2D-EV-GOVERNANCE",
+        "KU2D-EV-CANDIDATE-REVIEW",
+        "KU2D-EV-CANDIDATE-REGISTRY"
+      ],
+      "candidate_dependencies": [
+        "KU2D-CLE-000002",
+        "KU2D-CLE-000003"
+      ],
+      "claim_dependencies": [
+        "KU2D-PCR-000011",
+        "KU2D-PCR-000012",
+        "KU2D-PCR-000013",
+        "KU2D-PCR-000014",
+        "KU2D-PCR-000015",
+        "KU2D-PCR-000016",
+        "KU2D-PCR-000017",
+        "KU2D-PCR-000018",
+        "KU2D-PCR-000019",
+        "KU2D-PCR-000020",
+        "KU2D-PCR-000021"
+      ],
+      "prerequisites_before_closure": [
+        "Complete separately authorized LINE identity/detail repeatability evidence and retain sanitized records.",
+        "Retain and independently review the official NocNoc cessation evidence if its lifecycle claim is needed.",
+        "Humanly decide whether heterogeneous inventory research needs archival preservation before closure."
+      ],
+      "execute_disposition": false,
+      "closure_eligible_now": false,
+      "lossless_preservation_claimed": false,
+      "lossless_preservation_proof": [],
+      "future_action_authority": "explicit-human-decision-required",
+      "live_rerun_authorized": false,
+      "targeted_evidence_requirements": [
+        "LINE static/rendered identity comparison, canonical detail correlation, price-role/availability, and replay semantics.",
+        "Durable sanitized NocNoc official cessation notice and lifecycle review."
+      ],
+      "human_adjudication_questions": [],
+      "authority": {
+        "planning_only": true,
+        "candidate_promoted": false,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "pr_number": 38,
+      "branch": "codex/overnight-ota-source-expansion",
+      "head_sha": "8c8ac59c5ef852bf2bbd33be6c8ff44e55e00c73",
+      "base_branch": "integration/data-acquisition-platform",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "observed_pr_state": {
+        "open": true,
+        "draft": true,
+        "merged": false,
+        "head_unchanged": true
+      },
+      "planning_disposition": "NEEDS_HUMAN_ADJUDICATION",
+      "reason": "Agoda and Traveloka stopped at access boundaries; any rerun requires a separately reviewed compliant technique rather than automatic environment escalation.",
+      "durably_preserved_knowledge": [
+        "CLE-000004 and CLE-000005 preserve the two bounded negative access outcomes.",
+        "Parked Candidate Review preserves seven findings including fixed-context and discovery/rate boundaries."
+      ],
+      "not_losslessly_preserved": [
+        "Exact query/byte/status ledgers and the Booking transfer hypothesis are not losslessly projected.",
+        "No compliant usable property/rate acquisition evidence exists."
+      ],
+      "evidence_dependencies": [
+        "KU2D-EV-GOVERNANCE",
+        "KU2D-EV-CANDIDATE-REVIEW",
+        "KU2D-EV-CANDIDATE-REGISTRY"
+      ],
+      "candidate_dependencies": [
+        "KU2D-CLE-000004",
+        "KU2D-CLE-000005"
+      ],
+      "claim_dependencies": [
+        "KU2D-PCR-000022",
+        "KU2D-PCR-000023",
+        "KU2D-PCR-000024",
+        "KU2D-PCR-000025",
+        "KU2D-PCR-000026",
+        "KU2D-PCR-000027",
+        "KU2D-PCR-000028"
+      ],
+      "prerequisites_before_closure": [
+        "Humanly decide whether negative access evidence alone should remain archived or a new compliant technique should be authorized.",
+        "If a future attempt is authorized, capture sanitized diagnostics and exact contextual property/rate provenance.",
+        "Preserve technique versus execution-environment separation."
+      ],
+      "execute_disposition": false,
+      "closure_eligible_now": false,
+      "lossless_preservation_claimed": false,
+      "lossless_preservation_proof": [],
+      "future_action_authority": "explicit-human-decision-required",
+      "live_rerun_authorized": false,
+      "targeted_evidence_requirements": [],
+      "human_adjudication_questions": [
+        "Should the two access-boundary records be retained as sufficient historical evidence without another request?",
+        "Is there a separately reviewed public technique that can be attempted without login, challenge handling, session reuse, or bypass?"
+      ],
+      "authority": {
+        "planning_only": true,
+        "candidate_promoted": false,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "pr_number": 39,
+      "branch": "codex/overnight-coffee-source-expansion",
+      "head_sha": "441c71d678a30cc62b742ea58f23f629a9d1e2d6",
+      "base_branch": "integration/data-acquisition-platform",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "observed_pr_state": {
+        "open": true,
+        "draft": true,
+        "merged": false,
+        "head_unchanged": true
+      },
+      "planning_disposition": "NEEDS_TARGETED_EVIDENCE_RERUN",
+      "reason": "Roots and Nana requests did not write durable evidence, so the deterministic parser and indexed research cannot establish live acquisition success.",
+      "durably_preserved_knowledge": [
+        "CLE-000006 and CLE-000007 preserve the evidence-retention failure and candidate technique status.",
+        "Parked Candidate Review preserves nine coffee findings and the roasted-product/menu boundary."
+      ],
+      "not_losslessly_preserved": [
+        "Raw live responses and normalized records were not retained.",
+        "Parser/fixtures, indexed attributes, request failure ledger, temporal price/availability, and field provenance remain non-lossless."
+      ],
+      "evidence_dependencies": [
+        "KU2D-EV-GOVERNANCE",
+        "KU2D-EV-CANDIDATE-REVIEW",
+        "KU2D-EV-CANDIDATE-REGISTRY"
+      ],
+      "candidate_dependencies": [
+        "KU2D-CLE-000006",
+        "KU2D-CLE-000007"
+      ],
+      "claim_dependencies": [
+        "KU2D-PCR-000029",
+        "KU2D-PCR-000030",
+        "KU2D-PCR-000031",
+        "KU2D-PCR-000032",
+        "KU2D-PCR-000033",
+        "KU2D-PCR-000034",
+        "KU2D-PCR-000035",
+        "KU2D-PCR-000036",
+        "KU2D-PCR-000037"
+      ],
+      "prerequisites_before_closure": [
+        "Run only a separately authorized bounded evidence-before-exit validation for Roots and Nana.",
+        "Review field-level provenance, time-specific price/availability, identity, and repeatability.",
+        "Decide whether the unique parser/fixtures should be separately integrated before closure."
+      ],
+      "execute_disposition": false,
+      "closure_eligible_now": false,
+      "lossless_preservation_claimed": false,
+      "lossless_preservation_proof": [],
+      "future_action_authority": "explicit-human-decision-required",
+      "live_rerun_authorized": false,
+      "targeted_evidence_requirements": [
+        "One evidence-before-exit official detail rerun per source with captured sanitized response and normalized record.",
+        "Repeated identity, price-role, availability, origin/process/package provenance, and Deep Audit evidence."
+      ],
+      "human_adjudication_questions": [],
+      "authority": {
+        "planning_only": true,
+        "candidate_promoted": false,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "pr_number": 40,
+      "branch": "codex/overnight-qdiving-source-expansion",
+      "head_sha": "5f972d456415dbd0d8ae695f02c056e4a7c76e56",
+      "base_branch": "integration/data-acquisition-platform",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "observed_pr_state": {
+        "open": true,
+        "draft": true,
+        "merged": false,
+        "head_unchanged": true
+      },
+      "planning_disposition": "NEEDS_TARGETED_EVIDENCE_RERUN",
+      "reason": "The three Q-Diving candidates have useful source-role contracts, but live records, parser/registry changes, repeatability, and Human Review are not losslessly durable.",
+      "durably_preserved_knowledge": [
+        "CLE-000008 through CLE-000010 preserve bounded SSI, Scubadoo, and Aquamaster outcomes.",
+        "Parked Candidate Review preserves 11 role-separated findings and exact future evidence gaps."
+      ],
+      "not_losslessly_preserved": [
+        "Three parsers, fixtures, registry edits, raw record evidence, date/plugin diagnostics, and transfer reasoning remain only on the parked branch.",
+        "Content relevance, service identity stability, and product/variant price roles lack complete Deep Audit evidence."
+      ],
+      "evidence_dependencies": [
+        "KU2D-EV-GOVERNANCE",
+        "KU2D-EV-CANDIDATE-REVIEW",
+        "KU2D-EV-CANDIDATE-REGISTRY"
+      ],
+      "candidate_dependencies": [
+        "KU2D-CLE-000008",
+        "KU2D-CLE-000009",
+        "KU2D-CLE-000010"
+      ],
+      "claim_dependencies": [
+        "KU2D-PCR-000038",
+        "KU2D-PCR-000039",
+        "KU2D-PCR-000040",
+        "KU2D-PCR-000041",
+        "KU2D-PCR-000042",
+        "KU2D-PCR-000043",
+        "KU2D-PCR-000044",
+        "KU2D-PCR-000045",
+        "KU2D-PCR-000046",
+        "KU2D-PCR-000047",
+        "KU2D-PCR-000048"
+      ],
+      "prerequisites_before_closure": [
+        "Retain sanitized per-record evidence and repeat observations for all three source roles.",
+        "Complete SSI Human Review, Scubadoo service/package audit, and Aquamaster product/variant/detail price audit.",
+        "Decide whether the unique parsers, fixtures, and source registry entries should be separately integrated."
+      ],
+      "execute_disposition": false,
+      "closure_eligible_now": false,
+      "lossless_preservation_claimed": false,
+      "lossless_preservation_proof": [],
+      "future_action_authority": "explicit-human-decision-required",
+      "live_rerun_authorized": false,
+      "targeted_evidence_requirements": [
+        "SSI canonical identity/publication semantics/relevance review and repeatability.",
+        "Scubadoo service identity, package-change, price provenance, and repeatability.",
+        "Aquamaster product-versus-variant identity, detail correlation, price-role provenance, and repeatability."
+      ],
+      "human_adjudication_questions": [],
+      "authority": {
+        "planning_only": true,
+        "candidate_promoted": false,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "pr_number": 41,
+      "branch": "codex/overnight-cross-domain-source-gap-scan",
+      "head_sha": "408e4a3889a70b89b71cbd076b0b980d1aaae2d3",
+      "base_branch": "integration/data-acquisition-platform",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "observed_pr_state": {
+        "open": true,
+        "draft": true,
+        "merged": false,
+        "head_unchanged": true
+      },
+      "planning_disposition": "NEEDS_HUMAN_ADJUDICATION",
+      "reason": "The scan mixes a useful Akha candidate with stale cross-domain status and an unreviewed priority order, so the branch cannot be closed or reused wholesale.",
+      "durably_preserved_knowledge": [
+        "CLE-000011 preserves the bounded Akha catalog observation.",
+        "Parked Candidate Review preserves 11 findings, marks stale Lazada/ranking content, and records Akha evidence gaps."
+      ],
+      "not_losslessly_preserved": [
+        "Exact Akha records/request ledger, catalog/detail questions, and point-in-time inventory are not losslessly preserved.",
+        "The old P0/P1/P2 ordering cannot become current ranking authority."
+      ],
+      "evidence_dependencies": [
+        "KU2D-EV-GOVERNANCE",
+        "KU2D-EV-CANDIDATE-REVIEW",
+        "KU2D-EV-CANDIDATE-REGISTRY"
+      ],
+      "candidate_dependencies": [
+        "KU2D-CLE-000011"
+      ],
+      "claim_dependencies": [
+        "KU2D-PCR-000049",
+        "KU2D-PCR-000050",
+        "KU2D-PCR-000051",
+        "KU2D-PCR-000052",
+        "KU2D-PCR-000053",
+        "KU2D-PCR-000054",
+        "KU2D-PCR-000055",
+        "KU2D-PCR-000056",
+        "KU2D-PCR-000057",
+        "KU2D-PCR-000058",
+        "KU2D-PCR-000059"
+      ],
+      "prerequisites_before_closure": [
+        "Humanly separate the Akha evidence candidate from stale inventory/ranking statements.",
+        "Retain sanitized Akha catalog/detail, variant, price/availability, provenance, and repeatability evidence if future reuse is intended.",
+        "Explicitly retire or archive the old ranking without turning this plan into a new ranking."
+      ],
+      "execute_disposition": false,
+      "closure_eligible_now": false,
+      "lossless_preservation_claimed": false,
+      "lossless_preservation_proof": [],
+      "future_action_authority": "explicit-human-decision-required",
+      "live_rerun_authorized": false,
+      "targeted_evidence_requirements": [],
+      "human_adjudication_questions": [
+        "Should the Akha source candidate receive a separately authorized Deep Audit before branch closure?",
+        "Is the historical cross-domain inventory worth archiving after stale status and ranking statements are clearly marked?"
+      ],
+      "authority": {
+        "planning_only": true,
+        "candidate_promoted": false,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "pr_number": 42,
+      "branch": "codex/overnight-acquisition-technique-transfer-matrix",
+      "head_sha": "4c024a480dafda27b0064b3059e34eebaadf353d",
+      "base_branch": "integration/data-acquisition-platform",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "observed_pr_state": {
+        "open": true,
+        "draft": true,
+        "merged": false,
+        "head_unchanged": true
+      },
+      "planning_disposition": "SUPERSEDED_BY_REVIEWED_ARTIFACTS",
+      "reason": "Parked Synthesis Review classifies every transfer-matrix claim, but the exact historical document and dependency closure are not proven lossless.",
+      "durably_preserved_knowledge": [
+        "Parked Synthesis Review preserves 27 PR #42 claims and one historical assertion with evidence dependencies and dispositions.",
+        "Current reviewed/core/candidate evidence replaces or bounds each classified synthesis statement."
+      ],
+      "not_losslessly_preserved": [
+        "Exact prose/layout and historical dependency context remain on the parked branch.",
+        "PRs #36-#41 do not yet have executed final dispositions and no tree/archive equivalence proof exists."
+      ],
+      "evidence_dependencies": [
+        "KU2D-EV-GOVERNANCE",
+        "KU2D-EV-SYNTHESIS-REVIEW"
+      ],
+      "candidate_dependencies": [],
+      "claim_dependencies": [
+        "KU2D-SYN-000001",
+        "KU2D-SYN-000002",
+        "KU2D-SYN-000003",
+        "KU2D-SYN-000004",
+        "KU2D-SYN-000005",
+        "KU2D-SYN-000006",
+        "KU2D-SYN-000007",
+        "KU2D-SYN-000008",
+        "KU2D-SYN-000009",
+        "KU2D-SYN-000010",
+        "KU2D-SYN-000011",
+        "KU2D-SYN-000012",
+        "KU2D-SYN-000013",
+        "KU2D-SYN-000014",
+        "KU2D-SYN-000015",
+        "KU2D-SYN-000016",
+        "KU2D-SYN-000017",
+        "KU2D-SYN-000018",
+        "KU2D-SYN-000019",
+        "KU2D-SYN-000020",
+        "KU2D-SYN-000021",
+        "KU2D-SYN-000022",
+        "KU2D-SYN-000023",
+        "KU2D-SYN-000024",
+        "KU2D-SYN-000025",
+        "KU2D-SYN-000026",
+        "KU2D-SYN-000027"
+      ],
+      "prerequisites_before_closure": [
+        "Verify all 27 claims plus KU2D-HA-000001 remain traceable after any future source-PR disposition.",
+        "Create explicit archive/tree-equivalence proof for the unique markdown if exact historical preservation is required.",
+        "Obtain an explicit human closure decision; superseded does not mean automatically closable."
+      ],
+      "execute_disposition": false,
+      "closure_eligible_now": false,
+      "lossless_preservation_claimed": false,
+      "lossless_preservation_proof": [],
+      "future_action_authority": "explicit-human-decision-required",
+      "live_rerun_authorized": false,
+      "targeted_evidence_requirements": [],
+      "human_adjudication_questions": [],
+      "authority": {
+        "planning_only": true,
+        "candidate_promoted": false,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "pr_number": 43,
+      "branch": "codex/overnight-exploration-summary",
+      "head_sha": "87b700db3e9c2b507530f0427a6a1a2bea9ab3e9",
+      "base_branch": "integration/data-acquisition-platform",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "observed_pr_state": {
+        "open": true,
+        "draft": true,
+        "merged": false,
+        "head_unchanged": true
+      },
+      "planning_disposition": "SUPERSEDED_BY_REVIEWED_ARTIFACTS",
+      "reason": "Parked Synthesis Review classifies the overnight summary, but exact campaign ledgers and the historical report are not independently lossless.",
+      "durably_preserved_knowledge": [
+        "Parked Synthesis Review preserves 12 PR #43 claims and eight historical assertions with explicit dispositions.",
+        "Current reviewed/candidate evidence replaces mixed-authority source conclusions and retires the old ranking."
+      ],
+      "not_losslessly_preserved": [
+        "Exact request/record counts remain historical assertions without independently recomputable ledgers.",
+        "Exact report prose and sequencing context remain on the parked branch; PR #42/source dependencies are not finally adjudicated."
+      ],
+      "evidence_dependencies": [
+        "KU2D-EV-GOVERNANCE",
+        "KU2D-EV-SYNTHESIS-REVIEW"
+      ],
+      "candidate_dependencies": [],
+      "claim_dependencies": [
+        "KU2D-SYN-000028",
+        "KU2D-SYN-000029",
+        "KU2D-SYN-000030",
+        "KU2D-SYN-000031",
+        "KU2D-SYN-000032",
+        "KU2D-SYN-000033",
+        "KU2D-SYN-000034",
+        "KU2D-SYN-000035",
+        "KU2D-SYN-000036",
+        "KU2D-SYN-000037",
+        "KU2D-SYN-000038",
+        "KU2D-SYN-000039"
+      ],
+      "prerequisites_before_closure": [
+        "Resolve or explicitly retain the nine historical assertions, especially request and Q-Diving count ledgers.",
+        "Confirm PR #42 and PRs #36-#41 have reviewed final dispositions before closure.",
+        "Create explicit archive/tree-equivalence proof if exact report preservation matters, then obtain human closure authority."
+      ],
+      "execute_disposition": false,
+      "closure_eligible_now": false,
+      "lossless_preservation_claimed": false,
+      "lossless_preservation_proof": [],
+      "future_action_authority": "explicit-human-decision-required",
+      "live_rerun_authorized": false,
+      "targeted_evidence_requirements": [],
+      "human_adjudication_questions": [],
+      "authority": {
+        "planning_only": true,
+        "candidate_promoted": false,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    }
+  ],
+  "summary": {
+    "parked_pr_count": 8,
+    "planning_disposition_counts": {
+      "RETAIN_AS_EVIDENCE": 1,
+      "SUPERSEDED_BY_REVIEWED_ARTIFACTS": 2,
+      "NEEDS_TARGETED_EVIDENCE_RERUN": 3,
+      "ELIGIBLE_FOR_LATER_CLOSURE": 0,
+      "NEEDS_HUMAN_ADJUDICATION": 2
+    },
+    "closure_eligible_now_count": 0,
+    "lossless_preservation_claim_count": 0,
+    "candidate_dependency_count": 11,
+    "claim_dependency_count": 98,
+    "candidate_promotion_count": 0,
+    "parked_pr_close_count": 0,
+    "parked_pr_merge_count": 0,
+    "parked_branch_mutation_count": 0,
+    "branch_deletion_count": 0
+  },
+  "boundaries": {
+    "storage_neutral": true,
+    "planning_only": true,
+    "execute_dispositions": false,
+    "parked_pr_close_count": 0,
+    "parked_pr_merge_count": 0,
+    "parked_branch_mutation_count": 0,
+    "branch_deletion_count": 0,
+    "candidate_promotion_count": 0,
+    "learning_memory_write": false,
+    "reviewed_corpus_write": false,
+    "core_knowledge_write": false,
+    "human_confirmation_write": false,
+    "ground_truth_write": false,
+    "live_request_count": 0,
+    "runtime_auto_write": false,
+    "production_authorized": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "ml_training_or_inference": false,
+    "ml_dataset_export": false,
+    "survey_doe_sem_work": false,
+    "broader_recommendation_or_ranking": false
+  }
+}
