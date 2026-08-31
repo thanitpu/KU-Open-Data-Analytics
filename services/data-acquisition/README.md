@@ -402,3 +402,9 @@ Gourmet Market is now evaluated with source-specific supermarket patterns learne
 `docs/CORE_KNOWLEDGE_BACKFILL.md` defines the storage-neutral Reviewed Learning Corpus, reusable capability coverage matrix, ranked knowledge gaps, and non-executing ML Knowledge Map. These reviewed artifacts preserve positive and negative historical evidence without starting acquisition, exporting a training dataset, training a model, authorizing production, or writing runtime state.
 
 Open/unmerged historical evidence is retained separately in the Candidate Learning Evidence Registry with exact PR/commit/file provenance. The five-item Human Confirmation packet now records the explicit `KU2D-H-000001` disposition, and `config/human_confirmed_core_semantic_policies.json` projects only those semantic decisions through Learning Memory/Human Confirmation/Ground Truth contracts. All 11 source candidates remain unpromoted; no policy record authorizes source approval, scheduling, production, or ML training.
+
+## Core Intelligence Quality Foundation v1
+
+`docs/CORE_INTELLIGENCE_QUALITY_FOUNDATION.md` adds a deterministic quality layer before broader recommendation work: immutable evidence-stage provenance, a backward-compatible codebook adapter, first/second-cycle coding, ontology-open no-fit/novel outcomes, analytical memos, negative cases, Finding Verification, blinded independent-coding contracts, task-level reliability helpers, and provenance-linked analysis projections.
+
+The quality layer is explicitly invoked and non-authorizing. It does not perform acquisition, promote Candidate Learning Evidence, write runtime state, create an ML dataset, run ML, schedule work, or approve production.

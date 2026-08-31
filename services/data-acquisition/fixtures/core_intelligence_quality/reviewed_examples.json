@@ -1,0 +1,175 @@
+{
+  "schema": "ku2d.core-intelligence-quality-fixtures.v1",
+  "version": "1.0",
+  "historical_examples_only": true,
+  "candidate_source_promotion_count": 0,
+  "live_request_count": 0,
+  "evidence_chains": [
+    {
+      "schema": "ku2d.evidence-interpretation-chain.v1",
+      "chain_id": "KU2D-QE-COUNTER-001",
+      "raw_evidence": {"stage": "raw_observed_evidence", "evidence_id": "RAW-COUNTER-001", "immutable": true, "value": {"raw_text": "1.2k", "role_label": null}, "provenance_references": ["fixtures/acquisition_learning_memory/sanitized_historical_episodes.json"]},
+      "prepared_evidence": {"stage": "prepared_evidence", "prepared_evidence_id": "PREP-COUNTER-001", "raw_evidence_id": "RAW-COUNTER-001", "preparation_steps": ["Unicode text normalized without assigning a counter role."]},
+      "descriptors": [{"descriptor_id": "DESC-BARE-COUNTER", "kind": "descriptor", "description": "A numeric counter-like display is present without an explicit role label.", "evidence_references": ["RAW-COUNTER-001"]}],
+      "codes": [{"code_id": "SI-UNKNOWN-COUNTER", "kind": "semantic_code", "descriptor_references": ["DESC-BARE-COUNTER"]}],
+      "interpretations": [{"interpretation_id": "INT-COUNTER-UNKNOWN", "kind": "interpretation", "code_references": ["SI-UNKNOWN-COUNTER"], "statement": "The counter role remains unknown rather than sold, orders, or reviews."}],
+      "decisions": [{"decision_id": "DEC-RETAIN-UNKNOWN", "kind": "decision", "interpretation_references": ["INT-COUNTER-UNKNOWN"], "authority_source": "KU2D-HC-000001", "production_authorized": false}],
+      "boundaries": {"ground_truth_asserted": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "ml_training_or_inference": false, "ml_dataset_export": false, "automatic_runtime_write": false}
+    },
+    {
+      "schema": "ku2d.evidence-interpretation-chain.v1",
+      "chain_id": "KU2D-QE-PRICE-001",
+      "raw_evidence": {"stage": "raw_observed_evidence", "evidence_id": "RAW-PRICE-001", "immutable": true, "value": {"display_role": "promotional_price", "active_official_page": true, "contrary_historical_evidence": false}, "provenance_references": ["config/human_confirmed_core_semantic_policies.json#KU2D-HC-000002"]},
+      "prepared_evidence": {"stage": "prepared_evidence", "prepared_evidence_id": "PREP-PRICE-001", "raw_evidence_id": "RAW-PRICE-001", "preparation_steps": ["Price role and source temporal evidence retained as separate fields."]},
+      "descriptors": [{"descriptor_id": "DESC-PRICE-ROLE-TIME", "kind": "descriptor", "description": "The page exposes a promotional role and separately supports current advertised temporal status.", "evidence_references": ["RAW-PRICE-001"]}],
+      "codes": [
+        {"code_id": "SI-PRICE-ROLE-PRESERVED", "kind": "semantic_code", "descriptor_references": ["DESC-PRICE-ROLE-TIME"]},
+        {"code_id": "SI-PRICE-TEMPORAL-STATUS-PRESERVED", "kind": "semantic_code", "descriptor_references": ["DESC-PRICE-ROLE-TIME"]}
+      ],
+      "interpretations": [{"interpretation_id": "INT-PRICE-SEPARATE", "kind": "interpretation", "code_references": ["SI-PRICE-ROLE-PRESERVED", "SI-PRICE-TEMPORAL-STATUS-PRESERVED"], "statement": "Promotional role and current-advertised temporal status are separate conclusions."}],
+      "decisions": [{"decision_id": "DEC-PRICE-SEPARATE", "kind": "decision", "interpretation_references": ["INT-PRICE-SEPARATE"], "authority_source": "KU2D-HC-000002", "production_authorized": false}],
+      "boundaries": {"ground_truth_asserted": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "ml_training_or_inference": false, "ml_dataset_export": false, "automatic_runtime_write": false}
+    }
+  ],
+  "coding_chains": [
+    {
+      "schema": "ku2d.iterative-coding-chain.v1", "coding_chain_id": "KU2D-QC-COUNTER-001", "sample_or_episode_id": "KU2D-CKE-000017", "first_cycle_retained": true,
+      "first_cycle": {"cycle": "first_cycle", "coding_id": "CODE-COUNTER-FIRST", "classification": "novel_pattern_candidate", "code_ids": [], "novel_pattern_candidate": true, "evidence_references": ["fixtures/acquisition_learning_memory/sanitized_historical_episodes.json"], "coder_actor_type": "codex"},
+      "second_cycle": {"cycle": "second_cycle", "coding_id": "CODE-COUNTER-SECOND", "refines_coding_id": "CODE-COUNTER-FIRST", "classification": "coded", "code_ids": ["SI-UNKNOWN-COUNTER"], "novel_pattern_candidate": false, "evidence_references": ["config/human_confirmed_core_semantic_policies.json#KU2D-HC-000001"], "coder_actor_type": "codex"},
+      "provenance_references": ["config/reviewed_learning_corpus.json#KU2D-CKE-000017"],
+      "boundaries": {"ground_truth_asserted": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "ml_training_or_inference": false, "ml_dataset_export": false, "automatic_runtime_write": false}
+    },
+    {
+      "schema": "ku2d.iterative-coding-chain.v1", "coding_chain_id": "KU2D-QC-PRICE-001", "sample_or_episode_id": "KU2D-CKE-000018", "first_cycle_retained": true,
+      "first_cycle": {"cycle": "first_cycle", "coding_id": "CODE-PRICE-FIRST", "classification": "coded", "code_ids": ["SI-PRICE-ROLE-PRESERVED"], "novel_pattern_candidate": false, "evidence_references": ["config/reviewed_learning_corpus.json#KU2D-CKE-000018"], "coder_actor_type": "codex"},
+      "second_cycle": {"cycle": "second_cycle", "coding_id": "CODE-PRICE-SECOND", "refines_coding_id": "CODE-PRICE-FIRST", "classification": "coded", "code_ids": ["SI-PRICE-ROLE-PRESERVED", "SI-PRICE-TEMPORAL-STATUS-PRESERVED"], "novel_pattern_candidate": false, "evidence_references": ["config/human_confirmed_core_semantic_policies.json#KU2D-HC-000002"], "coder_actor_type": "codex"},
+      "provenance_references": ["config/reviewed_learning_corpus.json#KU2D-CKE-000018"],
+      "boundaries": {"ground_truth_asserted": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "ml_training_or_inference": false, "ml_dataset_export": false, "automatic_runtime_write": false}
+    },
+    {
+      "schema": "ku2d.iterative-coding-chain.v1", "coding_chain_id": "KU2D-QC-VARIANT-001", "sample_or_episode_id": "KU2D-CKE-000019", "first_cycle_retained": true,
+      "first_cycle": {"cycle": "first_cycle", "coding_id": "CODE-VARIANT-FIRST", "classification": "coded", "code_ids": ["SI-VARIANT-UNRESOLVED"], "novel_pattern_candidate": false, "evidence_references": ["config/reviewed_learning_corpus.json#KU2D-CKE-000019"], "coder_actor_type": "codex"},
+      "second_cycle": null, "provenance_references": ["config/human_confirmed_core_semantic_policies.json#KU2D-HC-000003"],
+      "boundaries": {"ground_truth_asserted": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "ml_training_or_inference": false, "ml_dataset_export": false, "automatic_runtime_write": false}
+    },
+    {
+      "schema": "ku2d.iterative-coding-chain.v1", "coding_chain_id": "KU2D-QC-ORDER-001", "sample_or_episode_id": "KU2D-CKE-000020", "first_cycle_retained": true,
+      "first_cycle": {"cycle": "first_cycle", "coding_id": "CODE-ORDER-FIRST", "classification": "coded", "code_ids": ["SI-DISPLAY-ORDER-ONLY"], "novel_pattern_candidate": false, "evidence_references": ["config/reviewed_learning_corpus.json#KU2D-CKE-000020"], "coder_actor_type": "codex"},
+      "second_cycle": null, "provenance_references": ["config/human_confirmed_core_semantic_policies.json#KU2D-HC-000004"],
+      "boundaries": {"ground_truth_asserted": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "ml_training_or_inference": false, "ml_dataset_export": false, "automatic_runtime_write": false}
+    },
+    {
+      "schema": "ku2d.iterative-coding-chain.v1", "coding_chain_id": "KU2D-QC-ENV-001", "sample_or_episode_id": "KU2D-CKE-000021", "first_cycle_retained": true,
+      "first_cycle": {"cycle": "first_cycle", "coding_id": "CODE-ENV-FIRST", "classification": "coded", "code_ids": ["SI-ENVIRONMENT-BOUNDARY-NOT-TECHNIQUE-FAILURE"], "novel_pattern_candidate": false, "evidence_references": ["config/reviewed_learning_corpus.json#KU2D-CKE-000021"], "coder_actor_type": "codex"},
+      "second_cycle": null, "provenance_references": ["config/human_confirmed_core_semantic_policies.json#KU2D-HC-000005"],
+      "boundaries": {"ground_truth_asserted": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "ml_training_or_inference": false, "ml_dataset_export": false, "automatic_runtime_write": false}
+    },
+    {
+      "schema": "ku2d.iterative-coding-chain.v1", "coding_chain_id": "KU2D-QC-SHELL-001", "sample_or_episode_id": "KU2D-CKE-000011", "first_cycle_retained": true,
+      "first_cycle": {"cycle": "first_cycle", "coding_id": "CODE-SHELL-FIRST", "classification": "coded", "code_ids": ["FB-APPLICATION-SHELL"], "novel_pattern_candidate": false, "evidence_references": ["config/reviewed_learning_corpus.json#KU2D-CKE-000011"], "coder_actor_type": "codex"},
+      "second_cycle": null, "provenance_references": ["config/reviewed_learning_corpus.json#KU2D-CKE-000011"],
+      "boundaries": {"ground_truth_asserted": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "ml_training_or_inference": false, "ml_dataset_export": false, "automatic_runtime_write": false}
+    },
+    {
+      "schema": "ku2d.iterative-coding-chain.v1", "coding_chain_id": "KU2D-QC-SITEMAP-001", "sample_or_episode_id": "KU2D-CKE-000004", "first_cycle_retained": true,
+      "first_cycle": {"cycle": "first_cycle", "coding_id": "CODE-SITEMAP-FIRST", "classification": "coded", "code_ids": ["AT-SITEMAP-CANONICAL-DETAIL"], "novel_pattern_candidate": false, "evidence_references": ["config/reviewed_learning_corpus.json#KU2D-CKE-000004"], "coder_actor_type": "codex"},
+      "second_cycle": null, "provenance_references": ["config/reviewed_learning_corpus.json#KU2D-CKE-000002", "config/reviewed_learning_corpus.json#KU2D-CKE-000004"],
+      "boundaries": {"ground_truth_asserted": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "ml_training_or_inference": false, "ml_dataset_export": false, "automatic_runtime_write": false}
+    }
+  ],
+  "analytical_memos": [
+    {
+      "schema": "ku2d.analytical-memo.v1", "memo_id": "KU2D-AM-000001",
+      "observed_episode_or_evidence_references": ["KU2D-CKE-000002", "KU2D-CKE-000004", "KU2D-CKE-000009"],
+      "emerging_concept_or_working_hypothesis": "Discovery evidence and extraction ownership should remain separate even when both participate in one acquisition plan.",
+      "supporting_evidence": ["Big C and Tops reuse sitemap-to-detail discovery.", "JIB app-bundle evidence supports Discovery but not Product and Price."],
+      "counter_evidence_or_negative_cases": ["A sitemap can expose only categories and therefore may not yield canonical product details."],
+      "unresolved_questions": ["Which minimum cross-domain evidence should be required before treating the distinction as a reviewed generic pattern?"],
+      "author": {"actor_id": "codex-quality-foundation", "actor_type": "codex"}, "status": "working_hypothesis",
+      "provenance_references": ["config/reviewed_learning_corpus.json"], "append_only_in_meaning": true, "supersedes_memo_id": null,
+      "boundaries": {"ground_truth_asserted": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "ml_training_or_inference": false, "ml_dataset_export": false, "automatic_runtime_write": false}
+    }
+  ],
+  "negative_cases": [
+    {
+      "schema": "ku2d.negative-deviant-case.v1", "negative_case_id": "KU2D-NC-000001",
+      "expected_pattern": "A technically reachable HTTP page yields usable business evidence.",
+      "contradictory_observation": "The Lazada static response was only an application shell with no stable product evidence.",
+      "alternative_explanations": ["The intended evidence may require normal browser rendering.", "The public surface may expose only a bootstrap shell in this environment."],
+      "policy_or_taxonomy_impact": "Retain FB-APPLICATION-SHELL separately from traffic verification and technical failure.",
+      "learning_value": "Technical reachability must not be equated with usable evidence.",
+      "evidence_references": ["config/reviewed_learning_corpus.json#KU2D-CKE-000011"], "discarded_as_failure": false,
+      "boundaries": {"ground_truth_asserted": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "ml_training_or_inference": false, "ml_dataset_export": false, "automatic_runtime_write": false}
+    },
+    {
+      "schema": "ku2d.negative-deviant-case.v1", "negative_case_id": "KU2D-NC-000002",
+      "expected_pattern": "Cloud blocking means the rendered-card acquisition technique failed.",
+      "contradictory_observation": "The same rendered-card technique succeeded in a separately approved Thailand Edge environment.",
+      "alternative_explanations": ["The boundary is environment-specific rather than technique-specific.", "Access policy can vary by network environment."],
+      "policy_or_taxonomy_impact": "Keep execution environment and acquisition technique as distinct taxonomy dimensions.",
+      "learning_value": "Avoid rejecting a valid technique because one execution environment is blocked.",
+      "evidence_references": ["config/reviewed_learning_corpus.json#KU2D-CKE-000007", "config/reviewed_learning_corpus.json#KU2D-CKE-000021"], "discarded_as_failure": false,
+      "boundaries": {"ground_truth_asserted": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "ml_training_or_inference": false, "ml_dataset_export": false, "automatic_runtime_write": false}
+    }
+  ],
+  "finding_verifications": [
+    {
+      "schema": "ku2d.finding-verification.v1", "verification_id": "KU2D-FV-000001", "finding_id": "display-order-not-demand",
+      "policy_authority_required": true,
+      "checks": [
+        {"check": "raw_evidence_return", "required": true, "result": "passed", "justification": null, "evidence_references": ["fixtures/acquisition_learning_memory/sanitized_historical_episodes.json"]},
+        {"check": "provenance_completeness", "required": true, "result": "passed", "justification": null, "evidence_references": ["config/reviewed_learning_corpus.json#KU2D-CKE-000020"]},
+        {"check": "alternative_explanation_review", "required": true, "result": "passed", "justification": null, "evidence_references": ["config/human_confirmed_core_semantic_policies.json#KU2D-HC-000004"]},
+        {"check": "negative_deviant_case_search", "required": true, "result": "passed", "justification": null, "evidence_references": ["config/candidate_learning_evidence_registry.json#KU2D-CLE-000002"]},
+        {"check": "cross_episode_or_cross_source_support", "required": false, "result": "skipped", "justification": "The finding is a semantic policy; cross-source support is useful but not required after explicit Human Confirmation.", "evidence_references": []},
+        {"check": "limitation_statement", "required": true, "result": "passed", "justification": null, "evidence_references": ["docs/CORE_KNOWLEDGE_BACKFILL.md"]},
+        {"check": "human_confirmation", "required": true, "result": "passed", "justification": null, "evidence_references": ["coordination/v1/human-decisions/KU2D-H-000001.json"]}
+      ],
+      "eligible_for_reviewed_core_knowledge": true, "promoted_to_reviewed_core_knowledge": false,
+      "limitation_statement": "The policy constrains interpretation but does not validate a source outcome or national ranking claim.",
+      "boundaries": {"ground_truth_asserted": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "ml_training_or_inference": false, "ml_dataset_export": false, "automatic_runtime_write": false}
+    }
+  ],
+  "independent_coding_records": [
+    {
+      "schema": "ku2d.independent-coding-record.v1", "independent_coding_id": "KU2D-IC-FIXTURE-A", "sample_or_episode_id": "SYNTHETIC-RELIABILITY-001", "task": "counter_semantics", "codebook_version": "1.0",
+      "coder": {"coder_id": "deterministic-fixture-a", "coder_type": "deterministic_fixture"}, "independent": true, "blinded_to_other_labels": true, "labels": ["SI-UNKNOWN-COUNTER"], "agreement_status": "not_compared", "adjudication_needed": false,
+      "provenance_references": ["fixtures/core_intelligence_quality/reviewed_examples.json"],
+      "boundaries": {"ground_truth_asserted": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "ml_training_or_inference": false, "ml_dataset_export": false, "automatic_runtime_write": false}
+    },
+    {
+      "schema": "ku2d.independent-coding-record.v1", "independent_coding_id": "KU2D-IC-FIXTURE-B", "sample_or_episode_id": "SYNTHETIC-RELIABILITY-001", "task": "counter_semantics", "codebook_version": "1.0",
+      "coder": {"coder_id": "deterministic-fixture-b", "coder_type": "deterministic_fixture"}, "independent": true, "blinded_to_other_labels": true, "labels": ["SI-UNKNOWN-COUNTER"], "agreement_status": "not_compared", "adjudication_needed": false,
+      "provenance_references": ["fixtures/core_intelligence_quality/reviewed_examples.json"],
+      "boundaries": {"ground_truth_asserted": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "ml_training_or_inference": false, "ml_dataset_export": false, "automatic_runtime_write": false}
+    }
+  ],
+  "analysis_projections": [
+    {
+      "schema": "ku2d.quality-analysis-projection.v1", "projection_id": "KU2D-QP-000001", "projection_type": "source_x_technique",
+      "cells": [
+        {"cell_id": "CELL-SITEMAP-DETAIL", "row_key": "reviewed-retail-pattern", "column_key": "AT-SITEMAP-CANONICAL-DETAIL", "evidence_references": ["KU2D-CKE-000002", "KU2D-CKE-000004"], "display_confers_authority": false},
+        {"cell_id": "CELL-APP-BUNDLE", "row_key": "reviewed-it-retail-pattern", "column_key": "AT-APP-BUNDLE-DISCOVERY", "evidence_references": ["KU2D-CKE-000009"], "display_confers_authority": false}
+      ],
+      "boundaries": {"ground_truth_asserted": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "ml_training_or_inference": false, "ml_dataset_export": false, "automatic_runtime_write": false}
+    }
+  ],
+  "quality_loops": [
+    {
+      "schema": "ku2d.quality-loop-state.v1", "quality_loop_id": "KU2D-QL-000001",
+      "stages": [
+        {"stage": "observed_evidence", "status": "completed", "reason": "Sanitized historical evidence is retained.", "record_references": ["RAW-COUNTER-001"]},
+        {"stage": "first_cycle_code", "status": "completed", "reason": "Initial novel-pattern classification remains visible.", "record_references": ["CODE-COUNTER-FIRST"]},
+        {"stage": "codebook_check", "status": "completed", "reason": "The explicit counter-role code guidance was checked.", "record_references": ["SI-UNKNOWN-COUNTER"]},
+        {"stage": "second_cycle_code", "status": "completed", "reason": "Refined code references the first cycle.", "record_references": ["CODE-COUNTER-SECOND"]},
+        {"stage": "negative_case_check", "status": "completed", "reason": "Explicitly typed counters remain counter-examples.", "record_references": ["SI-TYPED-SOLD-COUNTER"]},
+        {"stage": "analytical_memo", "status": "not_required", "reason": "The explicit semantic policy already has a reviewed authority chain.", "record_references": []},
+        {"stage": "finding_verification", "status": "completed", "reason": "Human-confirmed policy provenance is retained in Core Knowledge.", "record_references": ["KU2D-CKE-000017"]},
+        {"stage": "reviewed_pattern_core_knowledge", "status": "completed", "reason": "Existing reviewed episode remains the authority; this fixture creates no promotion.", "record_references": ["KU2D-CKE-000017"]}
+      ],
+      "every_episode_must_complete_all_stages": false,
+      "boundaries": {"ground_truth_asserted": false, "production_authorized": false, "production_store": false, "scheduler_action": null, "ml_training_or_inference": false, "ml_dataset_export": false, "automatic_runtime_write": false}
+    }
+  ],
+  "boundaries": {"production_authorized": false, "scheduler_action": null, "ml_execution_or_export": false, "automatic_runtime_write": false}
+}
