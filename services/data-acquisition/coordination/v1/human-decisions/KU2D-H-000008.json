@@ -1,0 +1,36 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000008",
+  "prompt_id": "KU2D-P-000020",
+  "result_id": "KU2D-R-000020",
+  "review_id": "KU2D-V-000020",
+  "decided_at": "2026-08-31T15:58:00+07:00",
+  "decided_by": {"actor":"human","actor_id":"project_owner"},
+  "decision": "confirmed",
+  "reason_note": "Human authority marked PR #50 Ready for review and authorized continuation after its successful squash merge at 01d6ad74626ea0e768f7f5f7acf5ddbe71bb7972. Continue with a bounded Evidence Recovery Prioritization step only.",
+  "scope": "PR #50 Parked Evidence Disposition & Closure Plan v1 is accepted as squash-merged. Prioritize the three targeted evidence rerun candidates from the merged plan: PR #37 Marketplace, PR #39 Coffee, and PR #40 Q-Diving. Produce a transparent priority matrix and recommend exactly one first rerun based on cross-source reuse value, evidence-gap leverage, expected learning gain, feasibility/compliance, and dependency reduction. Do not execute live acquisition yet.",
+  "authorizations": {
+    "prioritize_evidence_recovery": true,
+    "create_review_artifacts": true,
+    "create_draft_pr": true,
+    "live_acquisition": false,
+    "rerun_execution": false,
+    "candidate_promotion": false,
+    "knowledge_mutation": false,
+    "close_parked_prs": false,
+    "merge_parked_prs": false,
+    "delete_branches": false,
+    "production_authorization": false,
+    "ml_training_or_inference": false
+  },
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_context": "Project owner said continue after PR #50 was marked Ready and subsequently squash-merged",
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "base_branch": "integration/data-acquisition-platform",
+    "depends_on_merge": "01d6ad74626ea0e768f7f5f7acf5ddbe71bb7972",
+    "target_branch": "codex/ku2d-evidence-recovery-prioritization-v1",
+    "authoritative_branch": "codex/ku2d-evidence-recovery-prioritization-v1"
+  },
+  "boundaries": {"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
