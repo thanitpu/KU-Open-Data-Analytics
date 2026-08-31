@@ -1,0 +1,30 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000030",
+  "created_at": "2026-08-31T19:08:00+07:00",
+  "created_by": {"actor":"assistant","actor_id":"assistant_review"},
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-roots-semantics-diagnosis-v1",
+  "objective": "Use Branch Handoff Protocol v1, then implement the accepted offline-only Roots semantic-witness correction and withheld-diagnostic-retention hardening without any live request.",
+  "instructions": [
+    "Use branch_handoff mechanically: close this source queue before switching, then create/switch to codex/ku2d-roots-semantic-witness-fix-v1 from integration/data-acquisition-platform at merge commit 274454208045036efc0d12404d7d9cbd6b60d544 and initialize the target queue as sole authority.",
+    "Implement only the narrow correction accepted in KU2D-R-000028/KU2D-V-000028: an official same-host /products/ canonical route with an explicit coffee token in the product slug may satisfy the coffee-product semantic witness only when product name and attributable displayed price already pass.",
+    "Do not make a generic product route sufficient, do not use target configuration alone as semantic proof, and do not weaken the existing product-name, attributable-price, same-host canonical, non-menu, field-level provenance, repeatability, or Deep Audit gates.",
+    "Implement withheld-diagnostic-retention hardening so future withheld rows retain only sanitized candidate values, extraction paths, semantic witnesses, and the menu/non-menu decision needed for diagnosis. Do not retain raw HTML, headers, cookies, credentials, session state, or private material.",
+    "Add and pass the six offline fixture families RSD-F01 through RSD-F06, including positive Roots-style product-route/coffee-slug evidence and negative controls for generic product routes, coffee tokens outside the product slug, missing name, missing attributable price, menu ambiguity, and wrong-host/noncanonical cases.",
+    "Run Agent Handoff Protocol validation and the complete deterministic/regression corpus. Preserve the historical Roots exit-2 result exactly; no retrospective success, no candidate promotion, and no knowledge-authority mutation.",
+    "Make zero live/external source requests. Do not perform browser/Edge escalation, authentication, bypass, retries, production/storage/scheduler actions, parked-ref actions, cleanup, ML, Survey/DoE/SEM, or unrelated source work.",
+    "Open/update a PR against integration/data-acquisition-platform, perform safe mechanical PR operations including Ready transition where possible, and do not merge.",
+    "Return completed_queue_summary with only important items: work completed; key findings/results; repo/knowledge state changes; important out-of-scope actions not performed; remaining blockers/risks; recommended next logical step."
+  ],
+  "expected_result": {"result_id":"KU2D-R-000030","next_actor":"assistant"},
+  "provenance": {
+    "repository":"thanitpu/KU-Open-Data-Analytics",
+    "source_branch":"codex/ku2d-roots-semantics-diagnosis-v1",
+    "target_branch":"codex/ku2d-roots-semantic-witness-fix-v1",
+    "depends_on_result":"KU2D-R-000028",
+    "depends_on_review":"KU2D-V-000028",
+    "depends_on_merge":"274454208045036efc0d12404d7d9cbd6b60d544"
+  },
+  "boundaries": {"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
