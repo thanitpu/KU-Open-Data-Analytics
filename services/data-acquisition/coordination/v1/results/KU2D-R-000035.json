@@ -1,0 +1,115 @@
+{
+  "schema":"ku2d.agent-handoff-result.v1",
+  "result_id":"KU2D-R-000035",
+  "prompt_id":"KU2D-P-000035",
+  "submitted_at":"2026-08-31T23:36:07+07:00",
+  "submitted_by":{"actor":"codex","actor_id":"codex/data-acquisition-agent"},
+  "status":"succeeded",
+  "summary":"Repaired the deterministic Agent Handoff repository-history regression caused by adding the valid KU2D-H-000011 record. The repository-history self-test now includes H11 in its exact expected decision set and explicitly confirms decision=confirmed. No validator, linkage rule, YouTube v2 contract, source logic, pilot scope, production boundary, or authority semantics changed. Agent Handoff AH1-AH31, YouTube YT2-1-YT2-132, JSON/YAML parsing, Python compilation, and the complete 51/51 deterministic corpus pass. PR #61 is Ready, green, open, mergeable, and unmerged. No live or external source request occurred.",
+  "evidence_references":[
+    "KU2D-P-000035","KU2D-R-000034","KU2D-V-000034","KU2D-H-000011",
+    "tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py",
+    "commit:bb19291f8fe5b4437355d5c29d6544f22ac41c66",
+    "PR:#61",
+    "workflow:Data Acquisition Platform CI#341",
+    "workflow:Frontend CI#1280",
+    "workflow:Frontend CI#1281",
+    "workflow:PR Browser Preview Link#245"
+  ],
+  "repository_state":{
+    "repository":"thanitpu/KU-Open-Data-Analytics",
+    "branch":"codex/ku2d-youtube-content-acquisition-v2",
+    "authoritative_branch":"codex/ku2d-youtube-content-acquisition-v2",
+    "base_branch":"integration/data-acquisition-platform",
+    "prompt_start_sha":"7b4bb4de4ebf60c07748119afc7ead5e63c8635a",
+    "implementation_commit_sha":"bb19291f8fe5b4437355d5c29d6544f22ac41c66",
+    "pull_request_number":61,
+    "pull_request_url":"https://github.com/thanitpu/KU-Open-Data-Analytics/pull/61",
+    "pull_request_open":true,
+    "pull_request_draft":false,
+    "pull_request_ready_for_review":true,
+    "pull_request_mergeable":true,
+    "pull_request_merged":false
+  },
+  "root_cause_and_change":{
+    "failing_ci":{"workflow":"Data Acquisition Platform CI","run_number":340,"run_id":33412068161,"job":"contract-and-foundation","conclusion":"failure"},
+    "local_reproduction":"SELF_TEST_AGENT_HANDOFF_PROTOCOL.py exited 1 at the exact repository human_decision_records set assertion",
+    "root_cause":"KU2D-H-000011 was valid and accepted by the fail-closed bundle validator, but the deterministic repository-history expected set still ended at KU2D-H-000010.",
+    "exact_runtime_or_contract_files_changed":[],
+    "exact_test_files_changed":["tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py"],
+    "change":"Added KU2D-H-000011 to the exact expected repository decision set and added an explicit assertion that its decision is confirmed.",
+    "validator_weakened":false,
+    "human_decision_review_linkage_changed":false,
+    "youtube_v2_semantics_changed":false,
+    "active_youtube_v1_policy_changed":false,
+    "source_acquisition_logic_changed":false
+  },
+  "coordination_integrity":{
+    "review_id":"KU2D-V-000034",
+    "review_result":"human_decision_required",
+    "review_requires_human_decision":true,
+    "human_decision_id":"KU2D-H-000011",
+    "human_decision":"confirmed",
+    "human_decision_prompt_id":"KU2D-P-000034",
+    "human_decision_result_id":"KU2D-R-000034",
+    "human_decision_review_id":"KU2D-V-000034",
+    "linkage_consistent":true,
+    "authorization_boundaries_preserved_exactly":true,
+    "pilot_executed_in_this_prompt":false
+  },
+  "verification":{
+    "deterministic_tests_passed":true,
+    "live_request_count":0,
+    "external_source_request_count":0,
+    "git_diff_check":"passed",
+    "json_parse":"185 JSON files passed",
+    "yaml_parse":"16 workflow files passed",
+    "python_compilation":"acquisition, api, repository, control_plane, service, tools passed under Python 3.12",
+    "agent_handoff_tests":"AH1-AH31 passed",
+    "youtube_v2_tests":"YT2-1-YT2-132 passed",
+    "complete_deterministic_corpus":"51/51 scripts passed",
+    "supermarket_retail_jib_regressions":"passed",
+    "youtube_marketplace_coffee_knowledge_governance_regressions":"passed"
+  },
+  "exact_implementation_head_ci":{
+    "head_sha":"bb19291f8fe5b4437355d5c29d6544f22ac41c66",
+    "data_acquisition_platform_ci":{"run_number":341,"run_id":33414880938,"status":"completed","conclusion":"success"},
+    "frontend_ci":[
+      {"run_number":1280,"run_id":33414876554,"status":"completed","conclusion":"success"},
+      {"run_number":1281,"run_id":33414880934,"status":"completed","conclusion":"success"}
+    ],
+    "pr_browser_preview_link":{"run_number":245,"run_id":33414880982,"status":"completed","conclusion":"success"}
+  },
+  "pr_operations":{
+    "description_update_needed":false,
+    "description_update_reason":"The correction changes only deterministic repository-history maintenance; the YouTube v2 PR scope and semantics remain unchanged, and the corrective commit is explicit.",
+    "ready_for_review":true,
+    "exact_implementation_head_checks_successful":true,
+    "merge_attempted":false,
+    "merged":false
+  },
+  "security_and_boundaries":{
+    "live_youtube_api_or_content_request_count":0,
+    "caption_download_count":0,
+    "comment_live_acquisition_count":0,
+    "oauth_flow_count":0,
+    "browser_or_edge_request_count":0,
+    "authority_mutation_count":0,
+    "pilot_scope_mutation_count":0,
+    "production_authorized":false,
+    "production_store":false,
+    "scheduler_action":null,
+    "main_or_integration_mutation_count":0,
+    "pr_merge_count":0
+  },
+  "completed_queue_summary":{
+    "work_completed":"Reproduced CI #340 locally, identified the stale repository-history allowlist, added H11 plus an explicit confirmed-decision assertion, ran all required verification, pushed corrective commit bb19291f8fe5b4437355d5c29d6544f22ac41c66, and restored PR #61 exact-head CI to green.",
+    "key_findings_results":"H11 was already structurally valid and correctly linked to P34/R34/V34; only the static expected history was stale. AH1-AH31, YT2-1-YT2-132, and all 51 deterministic scripts now pass without weakening validation.",
+    "repo_knowledge_state_changes":"Changed one deterministic self-test before this Result/queue handoff. No acquisition contract, YouTube semantics, human authority record, review record, pilot scope, knowledge state, production state, or scheduler state changed.",
+    "important_out_of_scope_actions_not_performed":"No live/external source request, Q-Diving pilot execution, YouTube API/content request, caption download, live comment acquisition, OAuth, browser/Edge action, production/store/scheduler action, integration/main mutation, PR merge, or unrelated work.",
+    "remaining_blockers_risks":"No blocking code regression remains. PR #61 still requires controlled integration review. H11 authorizes only the bounded future pilot it describes; authorization does not execute the pilot and must not be broadened or conflated with production approval.",
+    "recommended_next_logical_step":"Assistant independently reviews KU2D-R-000035 and the green Ready PR #61, then performs controlled integration if accepted. Only after integration may the already human-authorized bounded Q-Diving pilot be queued separately under H11's exact limits."
+  },
+  "provenance":{"repository":"thanitpu/KU-Open-Data-Analytics","branch":"codex/ku2d-youtube-content-acquisition-v2","authoritative_branch":"codex/ku2d-youtube-content-acquisition-v2","source_prompt":"coordination/v1/prompts/KU2D-P-000035.json","depends_on_result":"KU2D-R-000034","depends_on_review":"KU2D-V-000034","depends_on_human_decision":"KU2D-H-000011","target_pr":61,"learning_memory_record_id":null},
+  "boundaries":{"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
