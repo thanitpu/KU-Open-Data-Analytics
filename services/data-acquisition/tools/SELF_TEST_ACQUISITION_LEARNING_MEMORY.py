@@ -1,6 +1,7 @@
 """Deterministic tests for KU2D Learning Memory v1."""
 from __future__ import annotations
 
+import json
 import sys
 from copy import deepcopy
 from pathlib import Path
@@ -27,6 +28,7 @@ from acquisition_learning_memory import (
     validate_review_feedback_record,
 )
 from acquisition_learning_record import build_learning_record
+from learning_memory_backfill import build_sanitized_historical_bundle
 
 
 LEARNING_ID = "lazada-l10-unknown-counter"
@@ -268,4 +270,54 @@ assert assess_ml_dataset_eligibility(
     ground_truth_records=[contradictory_a, contradictory_b],
 )["state"] == "ineligible"
 
-print("Acquisition Learning Memory deterministic tests passed (LM1-LM19).")
+# LM20: the small historical backfill is referentially valid and preserves the
+# intended Lazada, YouTube, and negative-acquisition labels.
+source_fixture = ROOT / "fixtures" / "acquisition_learning_memory" / "sanitized_historical_episodes.json"
+source = json.loads(source_fixture.read_text(encoding="utf-8"))
+historical = build_sanitized_historical_bundle(source)
+validated_historical = validate_learning_memory_bundle(
+    historical["learning_records"], historical["review_records"],
+    historical["confirmation_records"], historical["ground_truth_records"],
+)
+historical_labels = {
+    record["decision"]["final_decision"]
+    for record in validated_historical["learning_records"].values()
+}
+assert {
+    "unknown_display_price", "current", "from_price", "promotional",
+    "promotional_discount", "different_unresolved", "unknown", "sold",
+    "core", "adjacent", "irrelevant", "challenge-boundary",
+}.issubset(historical_labels)
+
+# LM21: deterministic historical replay does not fabricate Human Review.
+assert historical["confirmation_records"] == []
+assert all(record["review_actor"]["actor_type"] != "human_review" for record in historical["review_records"])
+youtube_records = [
+    record for record in historical["learning_records"] if record["identity"]["platform"] == "youtube"
+]
+assert youtube_records
+assert all(record["provenance"]["reviewer_provenance"] is None for record in youtube_records)
+assert all(
+    record["provenance"]["reviewed_status"] == "deterministic-synthetic-not-human-review"
+    for record in youtube_records
+)
+
+# LM22: normal API/control/repository/service runtime has no Learning Memory
+# integration and therefore cannot write these opt-in records automatically.
+for runtime_folder in ("api", "control_plane", "repository", "service"):
+    for runtime_file in (ROOT / runtime_folder).rglob("*.py"):
+        runtime_text = runtime_file.read_text(encoding="utf-8")
+        assert "acquisition_learning_memory" not in runtime_text, runtime_file
+        assert "learning_memory_backfill" not in runtime_text, runtime_file
+
+# LM23: every backfilled outcome remains explicitly non-production.
+assert historical["production_approved"] is False
+assert historical["production_store"] is False
+assert all(record["acquisition_outcome"]["production_approved"] is False for record in historical["learning_records"])
+assert all(record["acquisition_outcome"]["production_store"] is False for record in historical["learning_records"])
+
+# LM24: neither bundle nor record may create a scheduler action.
+assert historical["scheduler_action"] is None
+assert all(record["acquisition_outcome"]["scheduler_action"] is None for record in historical["learning_records"])
+
+print("Acquisition Learning Memory deterministic tests passed (LM1-LM24).")

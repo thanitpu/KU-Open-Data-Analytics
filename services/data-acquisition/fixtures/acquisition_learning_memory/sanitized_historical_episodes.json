@@ -1,0 +1,94 @@
+{
+  "schema": "ku2d.learning-memory-backfill-source.v1",
+  "generated_at": "2026-08-31T05:00:00+00:00",
+  "lazada_price_cases": [
+    {
+      "case_id": "visible-unknown-25",
+      "surface_type": "keyword-search",
+      "input": {"visible_price_text": "฿25"},
+      "expected_label": "unknown_display_price"
+    },
+    {
+      "case_id": "current-25",
+      "surface_type": "keyword-search",
+      "input": {"current_price_text": "฿25"},
+      "expected_label": "current"
+    },
+    {
+      "case_id": "from-25",
+      "surface_type": "keyword-search",
+      "input": {"current_price_text": "เริ่มต้น ฿25"},
+      "expected_label": "from_price"
+    },
+    {
+      "case_id": "promotional-selling-49",
+      "surface_type": "product-detail",
+      "input": {"promotional_price_text": "ราคาพิเศษ ฿49"},
+      "expected_label": "promotional"
+    },
+    {
+      "case_id": "promotional-discount-10",
+      "surface_type": "product-detail",
+      "input": {"promotional_price_text": "ลด ฿10"},
+      "expected_label": "promotional_discount"
+    }
+  ],
+  "lazada_price_correlation": {
+    "case_id": "search-25-detail-49",
+    "search_price_text": "฿25",
+    "detail_price_text": "฿49",
+    "expected_label": "different_unresolved"
+  },
+  "lazada_counter_cases": [
+    {
+      "case_id": "bare-items-unknown",
+      "counter_text": "5.5K ชิ้น",
+      "expected_label": "unknown"
+    },
+    {
+      "case_id": "explicit-sold-88",
+      "counter_text": "ขายแล้ว 88 ชิ้น",
+      "expected_label": "sold"
+    }
+  ],
+  "youtube_cases": [
+    {
+      "case_id": "youtube-core-synthetic",
+      "video_id": "SAN-TH-BEGINNER",
+      "title": "เรียนดำน้ำ Open Water เกาะเต่า สำหรับมือใหม่",
+      "description": "อธิบายโครงสร้างคอร์สเรียนดำน้ำและทักษะความปลอดภัยสำหรับมือใหม่",
+      "video_url": "https://www.youtube.com/watch?v=SAN-TH-BEGINNER",
+      "observed_at": "2026-08-29T09:00:00+00:00",
+      "expected_label": "core",
+      "review_provenance": "deterministic-synthetic-not-human-review"
+    },
+    {
+      "case_id": "youtube-adjacent-synthetic",
+      "video_id": "SAN-FREEDIVING",
+      "title": "Freediving Beginner Course Koh Tao",
+      "description": "A first freedive lesson and island travel diary.",
+      "video_url": "https://www.youtube.com/watch?v=SAN-FREEDIVING",
+      "observed_at": "2026-08-29T09:00:00+00:00",
+      "expected_label": "adjacent",
+      "review_provenance": "deterministic-synthetic-not-human-review"
+    },
+    {
+      "case_id": "youtube-irrelevant-synthetic",
+      "video_id": "SAN-NONDIVING",
+      "title": "Koh Tao Night Market Food Guide",
+      "description": "A lifestyle guide to local meals and evening markets.",
+      "video_url": "https://www.youtube.com/watch?v=SAN-NONDIVING",
+      "observed_at": "2026-08-29T09:00:00+00:00",
+      "expected_label": "irrelevant",
+      "review_provenance": "deterministic-synthetic-not-human-review"
+    }
+  ],
+  "negative_case": {
+    "case_id": "lazada-traffic-verification",
+    "source_surface": "https://www.lazada.co.th/captcha/verify",
+    "observed_at": "2026-08-31T01:00:00+00:00",
+    "public_display_text": "Verify you are human",
+    "expected_label": "challenge-boundary",
+    "source_fixture": "fixtures/lazada_browser_access/traffic_verification.json"
+  }
+}
