@@ -1,0 +1,15 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000006",
+  "prompt_id": "KU2D-P-000016",
+  "result_id": "KU2D-R-000016",
+  "review_id": "KU2D-V-000016",
+  "decided_at": "2026-08-31T14:48:00+07:00",
+  "decided_by": {"actor":"human","actor_id":"project_owner"},
+  "decision": "confirmed",
+  "reason_note": "Human authority accepted PR #48 as squash-merged at 6bc49deb7602d8e8499308bbb0390ab718830f8b and explicitly authorized the next bounded review of the six parked branches already represented only in Candidate Learning Evidence. This does not authorize merging or mutating parked PRs, candidate promotion, branch deletion, live acquisition, production, scheduling, or ML execution.",
+  "scope": "PR #48 Parked Synthesis Review v1 is accepted as merged. Continue with a bounded review of parked candidate-bearing PRs #36 through #41 to determine reusable unique knowledge, stale/duplicate content, evidence gaps, and safe future disposition without promotion or mutation.",
+  "authorizations": {"review_parked_candidate_branches":true,"create_review_artifacts":true,"create_draft_pr":true,"merge_parked_prs":false,"promote_candidate_evidence":false,"delete_branches":false,"mutate_parked_branches":false,"live_acquisition":false,"production_authorization":false,"ml_training_or_inference":false},
+  "provenance": {"decision_source":"explicit_human_input","source_context":"Explicit project-owner instruction to continue after the reviewed PR #48 merge","repository":"thanitpu/KU-Open-Data-Analytics","base_branch":"integration/data-acquisition-platform","depends_on_merge":"6bc49deb7602d8e8499308bbb0390ab718830f8b","target_branch":"codex/ku2d-parked-candidate-review-v1","authoritative_branch":"codex/ku2d-parked-candidate-review-v1"},
+  "boundaries": {"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
