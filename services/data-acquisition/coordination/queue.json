@@ -1,11 +1,11 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T11:27:00+07:00",
-  "authoritative_branch": "codex/ku2d-core-knowledge-backfill-v1",
-  "latest_prompt": "KU2D-P-000007",
+  "updated_at": "2026-08-31T11:29:00+07:00",
+  "authoritative_branch": "codex/ku2d-core-intelligence-v1",
+  "latest_prompt": "KU2D-P-000008",
   "latest_result": "KU2D-R-000007",
   "latest_review": "KU2D-V-000007",
-  "latest_human_decision": "KU2D-H-000001",
+  "latest_human_decision": "KU2D-H-000002",
   "prompt_states": {
     "KU2D-P-000001": "completed",
     "KU2D-P-000002": "completed",
@@ -13,7 +13,8 @@
     "KU2D-P-000004": "completed",
     "KU2D-P-000005": "completed",
     "KU2D-P-000006": "completed",
-    "KU2D-P-000007": "human_decision_required"
+    "KU2D-P-000007": "completed",
+    "KU2D-P-000008": "ready_for_codex"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -21,15 +22,16 @@
     "KU2D-P-000003",
     "KU2D-P-000004",
     "KU2D-P-000005",
-    "KU2D-P-000006"
+    "KU2D-P-000006",
+    "KU2D-P-000007"
   ],
   "next_action": {
-    "actor": "human",
-    "prompt_id": "KU2D-P-000007",
-    "result_id": "KU2D-R-000007",
-    "review_id": "KU2D-V-000007",
+    "actor": "codex",
+    "prompt_id": "KU2D-P-000008",
+    "result_id": null,
+    "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "PR #45 is technically accepted and current-head CI passes. Human action is required only to mark PR #45 Ready for review because the available connector cannot perform the Draft-to-Ready transition due to its GraphQL Repository.fullDatabaseId schema error. No merge is authorized until the Ready transition is independently confirmed."
+  "notes": "PR #45 was manually marked Ready, independently rechecked, and squash-merged as 7f0e7d72517754dcd0e90e5243cabf56120cc224. Work now continues on the new authoritative branch codex/ku2d-core-intelligence-v1. KU2D-P-000008 builds a deterministic knowledge-guided Core Intelligence layer only; no source-scope expansion, live acquisition, ML execution/export, Survey/DoE/SEM, production authorization, or scheduling is authorized. Codex must switch to the authoritative branch before continuing from the queue."
 }
