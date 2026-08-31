@@ -1,0 +1,36 @@
+{
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
+  "review_id": "KU2D-V-000016",
+  "prompt_id": "KU2D-P-000016",
+  "result_id": "KU2D-R-000016",
+  "reviewed_at": "2026-08-31T14:20:00+07:00",
+  "reviewed_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review",
+    "human_authority_claimed": false
+  },
+  "review_result": "human_decision_required",
+  "requires_human_decision": true,
+  "reason_code": "TECHNICALLY_ACCEPTED_READY_TRANSITION_REQUIRES_HUMAN",
+  "explanation": "Parked Synthesis Review v1 is technically accepted. PR #48 remains mergeable; current-head CI passes; PR #42 and PR #43 remain unchanged and unmerged; all 39 claim classifications and evidence dependencies remain intact; twelve retained syntheses remain candidate-only; no knowledge promotion or broader ranking was added. The only remaining pre-merge action is an independent human Ready-for-review transition because the available connector cannot safely complete that GraphQL mutation.",
+  "evidence_references": [
+    "KU2D-R-000016",
+    "PR:#48",
+    "commit:80c7ea30e9bc801c3998aacc15cdbc5c8f4b6193",
+    "workflow:Data Acquisition Platform CI#251",
+    "workflow:Frontend CI#1054",
+    "workflow:PR Browser Preview Link#168"
+  ],
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-parked-synthesis-review-v1",
+    "authoritative_branch": "codex/ku2d-parked-synthesis-review-v1",
+    "target_pr": 48
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
