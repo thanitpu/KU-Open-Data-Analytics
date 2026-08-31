@@ -6,6 +6,8 @@ Canonical lifecycle: **Discover → Explore → Deep Audit → Human Approve →
 
 Explore/Audit observations are preserved as evidence; approved scheduled acquisition produces trusted observations. Secrets and runtime SQLite files are never committed.
 
+GitHub-mediated Codex/assistant/human coordination uses the storage-neutral [Agent Handoff Protocol v1](docs/AGENT_HANDOFF_PROTOCOL.md). Coordination records are separate from Learning Memory, production authorization, and scheduler state; normal acquisition does not emit them automatically.
+
 Shopee Commerce Pulse is a separate, non-production marketplace-observation domain. Its public-signal semantics and now-paused public unauthenticated access checkpoint are documented in [docs/SHOPEE_COMMERCE_PULSE.md](docs/SHOPEE_COMMERCE_PULSE.md). Lazada reuses the generic observation contracts while keeping platform-specific access and interpretation explicit in [docs/LAZADA_COMMERCE_PULSE.md](docs/LAZADA_COMMERCE_PULSE.md).
 
 ## Live validation status semantics
