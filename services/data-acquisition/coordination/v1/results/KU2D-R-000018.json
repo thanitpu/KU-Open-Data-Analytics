@@ -1,0 +1,216 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000018",
+  "prompt_id": "KU2D-P-000018",
+  "submitted_at": "2026-08-31T15:17:32+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "partial",
+  "summary": "Completed final technical and merge-readiness validation of Draft PR #49 at exact audited head f0f700ecbab12a071e33ef787af51a3ea518b381. All 42 deterministic scripts, JSON/YAML parsing, Python compilation, diff checks, and exact-head workflows pass. Parked PRs #36-#41 remain open, Draft, unmerged, unchanged, and at their reviewed heads. All 59 findings and CLE-000001 through CLE-000011 remain candidate-only, non-lossless, and non-authorizing with explicit future evidence requirements. The PR description now reflects exact current validation. The authorized Ready-for-review transition was attempted once but the GitHub connector failed on unavailable Repository.fullDatabaseId; no workaround or retry was attempted, so PR #49 remains Draft and unmerged.",
+  "evidence_references": [
+    "PR:#49",
+    "commit:f0f700ecbab12a071e33ef787af51a3ea518b381",
+    "base:6bc49deb7602d8e8499308bbb0390ab718830f8b",
+    "KU2D-R-000017",
+    "KU2D-V-000017",
+    "workflow:Data Acquisition Platform CI#259",
+    "workflow:Frontend CI#1073",
+    "workflow:PR Browser Preview Link#175"
+  ],
+  "repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-parked-candidate-review-v1",
+    "authoritative_branch": "codex/ku2d-parked-candidate-review-v1",
+    "base_branch": "integration/data-acquisition-platform",
+    "base_sha": "6bc49deb7602d8e8499308bbb0390ab718830f8b",
+    "validated_head_sha": "f0f700ecbab12a071e33ef787af51a3ea518b381",
+    "pull_request_number": 49,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/49",
+    "pull_request_title": "KU2D: Review parked candidate evidence v1",
+    "pull_request_open": true,
+    "pull_request_draft": true,
+    "pull_request_mergeable": true,
+    "pull_request_merged": false,
+    "changed_file_count": 13
+  },
+  "parked_pr_recheck": [
+    {
+      "pr_number": 36,
+      "branch": "codex/overnight-tiktok-shop-commerce-pulse-explore",
+      "head_sha": "9f62c33f933989bb12581fdb3b2a6fb21a1ca6b5",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false,
+      "github_mergeable_snapshot": false
+    },
+    {
+      "pr_number": 37,
+      "branch": "codex/overnight-marketplace-source-inventory",
+      "head_sha": "0e99926c72cec7e83e259408c153fd6c99fd1492",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false,
+      "github_mergeable_snapshot": true
+    },
+    {
+      "pr_number": 38,
+      "branch": "codex/overnight-ota-source-expansion",
+      "head_sha": "8c8ac59c5ef852bf2bbd33be6c8ff44e55e00c73",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false,
+      "github_mergeable_snapshot": true
+    },
+    {
+      "pr_number": 39,
+      "branch": "codex/overnight-coffee-source-expansion",
+      "head_sha": "441c71d678a30cc62b742ea58f23f629a9d1e2d6",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false,
+      "github_mergeable_snapshot": true
+    },
+    {
+      "pr_number": 40,
+      "branch": "codex/overnight-qdiving-source-expansion",
+      "head_sha": "5f972d456415dbd0d8ae695f02c056e4a7c76e56",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false,
+      "github_mergeable_snapshot": true
+    },
+    {
+      "pr_number": 41,
+      "branch": "codex/overnight-cross-domain-source-gap-scan",
+      "head_sha": "408e4a3889a70b89b71cbd076b0b980d1aaae2d3",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false,
+      "github_mergeable_snapshot": true
+    }
+  ],
+  "review_integrity": {
+    "claim_count": 59,
+    "candidate_coverage_count": 11,
+    "lossless_candidate_projection_count": 0,
+    "candidate_supported_count": 17,
+    "candidate_partially_supported_count": 10,
+    "candidate_promotion_count": 0,
+    "future_evidence_requirements_explicit": true,
+    "learning_memory_mutation_count": 0,
+    "reviewed_learning_corpus_mutation_count": 0,
+    "core_knowledge_mutation_count": 0,
+    "human_confirmation_mutation_count": 0,
+    "ground_truth_mutation_count": 0,
+    "broader_recommendation_or_ranking_added": false
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "git_diff_check": "passed",
+    "json_parse": "122 files passed",
+    "yaml_parse": "16 workflows passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service, tools passed",
+    "parked_candidate_review_tests": "PCR1-PCR30 passed",
+    "agent_handoff_tests": "AH1-AH23 passed",
+    "complete_deterministic_corpus": "42/42 scripts passed",
+    "supermarket_regressions": "passed",
+    "retail_transfer_regressions": "passed",
+    "youtube_regressions": "passed",
+    "shopee_regressions": "passed",
+    "lazada_regressions": "passed",
+    "jib_and_lifecycle_regressions": "passed",
+    "live_request_count": 0
+  },
+  "ci": {
+    "head_sha": "f0f700ecbab12a071e33ef787af51a3ea518b381",
+    "data_acquisition_platform_ci": {
+      "run_number": 259,
+      "run_id": 33371834276,
+      "conclusion": "success"
+    },
+    "frontend_ci": {
+      "run_number": 1073,
+      "run_id": 33371834304,
+      "conclusion": "success"
+    },
+    "pr_browser_preview_link": {
+      "run_number": 175,
+      "run_id": 33371834320,
+      "conclusion": "success"
+    }
+  },
+  "pull_request_finalization": {
+    "description_updated": true,
+    "description_head_sha": "f0f700ecbab12a071e33ef787af51a3ea518b381",
+    "description_claim_test_ci_and_boundaries_exact": true,
+    "ready_transition_requested_once": true,
+    "ready_transition_completed": false,
+    "connector_error": "GitHub GraphQL response requested Repository.fullDatabaseId, which is unavailable in the repository schema",
+    "unsafe_workaround_attempted": false,
+    "retry_attempted": false,
+    "draft_remains": true,
+    "merged": false
+  },
+  "files_changed_by_this_result": [
+    "services/data-acquisition/coordination/queue.json",
+    "services/data-acquisition/coordination/v1/results/KU2D-R-000018.json"
+  ],
+  "remaining_blockers": [
+    "PR #49 cannot be marked Ready through the available connector until its GraphQL Repository.fullDatabaseId response selection is corrected or an independently authorized reviewer performs the transition."
+  ],
+  "security_and_boundaries": {
+    "credentials_or_private_material_added": false,
+    "new_source_count": 0,
+    "live_request_count": 0,
+    "candidate_source_promotion_count": 0,
+    "branch_deletion_count": 0,
+    "parked_branch_mutation_count": 0,
+    "parked_pr_merge_count": 0,
+    "production_authorized": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "runtime_auto_write": false,
+    "ml_training_or_inference": false,
+    "ml_dataset_export": false,
+    "survey_doe_sem_work": false,
+    "broader_recommendation_or_ranking": false
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-parked-candidate-review-v1",
+    "authoritative_branch": "codex/ku2d-parked-candidate-review-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000018.json",
+    "depends_on_result": "KU2D-R-000017",
+    "depends_on_review": "KU2D-V-000017",
+    "target_pr": 49,
+    "historical_prs": [
+      36,
+      37,
+      38,
+      39,
+      40,
+      41
+    ],
+    "learning_memory_record_id": null
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
