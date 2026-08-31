@@ -1,0 +1,27 @@
+{
+  "schema":"ku2d.agent-handoff-prompt.v1",
+  "prompt_id":"KU2D-P-000033",
+  "created_at":"2026-08-31T21:09:00+07:00",
+  "created_by":{"actor":"assistant","actor_id":"assistant_review"},
+  "status":"ready_for_codex",
+  "authoritative_branch":"codex/ku2d-acquisition-consolidation-readiness-v1",
+  "objective":"Use Branch Handoff Protocol v1 to prepare a deterministic, non-executable Tier-A Locked-Source Batch Manifest v1 for Lotus's, Big C, Makro, and Tops from merged acquisition evidence only, so a separately authorized long-running live campaign can later execute locked methods without exploration or technique switching.",
+  "instructions":[
+    "Use branch_handoff mechanically: close this source queue before switching, then create/switch to codex/ku2d-tier-a-locked-source-batch-manifest-v1 from integration/data-acquisition-platform at exact merge commit f97ab206cf0c92563d20519b292a0eb7e949d604 and initialize the target queue as sole authority.",
+    "Scope exactly Tier A from KU2D-R-000032: Lotus's, Big C, Makro, and Tops. Exclude Gourmet Market, JIB, and every Tier C source. Do not reinterpret readiness tiers in this Prompt.",
+    "Use only merged durable evidence, approved source profiles, existing acquisition patterns, validation artifacts, fixtures, and runtime/tool contracts. Do not make any live or external request and do not browse source websites.",
+    "For each source, create an exact locked-method manifest entry containing source id/name, approved acquisition technique(s), exact discovery/detail surface types, current known official URL or URL-pattern provenance from merged artifacts, execution environment, allowed transport mode, allowed pagination behavior, request budget, page/item budget, concurrency cap, timeout/retry policy, expected minimum/target/maximum record range when supported by evidence, normalization contract, required product identity/price/provenance fields, price-role handling, repeatability policy, Deep Audit criteria, drift checks, stop conditions, exit 0/2/1 meanings, and evidence references.",
+    "Do not invent numeric budgets or expected record ranges from intuition. If merged evidence does not support a numeric value, derive a conservative bounded preflight proposal and label it explicitly proposal_not_observed with rationale. Observed and proposed values must be distinguishable in the manifest.",
+    "Batch methods must be locked. The future executor must never change source technique, environment, browser mode, endpoint family, auth state, or extraction strategy automatically. Any locked-method failure must stop or withhold that source and record a boundary rather than explore an alternative.",
+    "Design a campaign-level budget envelope across all four Tier-A sources: global maximum requests, per-source maximum requests, total wall-clock target/ceiling, bounded concurrency, evidence-write-before-next-request rule, failure isolation, checkpoint/resume semantics, and a deterministic source order or scheduling policy. Keep this planning-only and non-executable.",
+    "Add a preflight validator that fail-closes on Tier B/C inclusion, missing provenance, absent method lock, unbounded pagination/request budget, automatic technique/environment switching, missing source stop conditions, weak exit classification, absent evidence-before-next-request semantics, or unsupported observed/proposed value conflation.",
+    "Add deterministic tests covering positive Tier-A manifests and negative cases for source leakage, method switching, budget overflow, missing provenance, missing audit, missing drift/stop rules, unsupported exact URL claims, and proposal-vs-observed labeling. Preserve all existing regressions.",
+    "Produce a human-readable Tier-A Batch Preflight Report summarizing each source's locked method, confidence, known caveats, proposed workload, expected duration class, request budget, failure isolation behavior, and whether each source is ready_for_separately_authorized_live_batch or still blocked before execution.",
+    "Do not execute the batch, do not make live/browser/Edge requests, do not authorize Tier B inclusion, do not promote Candidate Learning Evidence or mutate Reviewed Corpus/Core Knowledge/Human Confirmation/Ground Truth, and do not touch parked refs, production, scheduler, ML, Survey/DoE/SEM, or cleanup.",
+    "Open/update a PR against integration/data-acquisition-platform, perform safe mechanical PR operations including Ready transition where possible, and do not merge.",
+    "Return completed_queue_summary with only important items: work completed; key findings/results; repo/knowledge state changes; important out-of-scope actions not performed; remaining blockers/risks; recommended next logical step. Also report the exact proposed campaign envelope and which Tier-A sources are live-batch-ready after preflight."
+  ],
+  "expected_result":{"result_id":"KU2D-R-000033","next_actor":"assistant"},
+  "provenance":{"repository":"thanitpu/KU-Open-Data-Analytics","source_branch":"codex/ku2d-acquisition-consolidation-readiness-v1","target_branch":"codex/ku2d-tier-a-locked-source-batch-manifest-v1","depends_on_result":"KU2D-R-000032","depends_on_review":"KU2D-V-000032","depends_on_merge":"f97ab206cf0c92563d20519b292a0eb7e949d604"},
+  "boundaries":{"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
