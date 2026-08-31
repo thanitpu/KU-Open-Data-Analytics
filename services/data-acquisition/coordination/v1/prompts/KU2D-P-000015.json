@@ -6,6 +6,7 @@
     "actor": "assistant",
     "actor_id": "assistant_review"
   },
+  "status": "ready_for_codex",
   "title": "Parked Synthesis Review v1",
   "objective": "Recover, inspect, and independently review the unique unmerged synthesis in PR #42 / codex/overnight-acquisition-technique-transfer-matrix and PR #43 / codex/overnight-exploration-summary without merging those parked PRs, promoting candidate evidence, or altering source/runtime behavior.",
   "repository": "thanitpu/KU-Open-Data-Analytics",
@@ -36,12 +37,28 @@
     "Deterministic tests and current-head CI pass with zero live requests.",
     "A Draft PR and KU2D-R-000015 are produced, then control returns to assistant."
   ],
+  "expected_result": {
+    "result_id": "KU2D-R-000015",
+    "next_actor": "assistant"
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "depends_on_result": "KU2D-R-000014",
+    "depends_on_review": "KU2D-V-000014",
+    "depends_on_human_decision": "KU2D-H-000005",
+    "depends_on_merge": "f2c94299776b969948ee85883328806244a42d0e",
+    "target_prs": [42, 43],
+    "authoritative_branch": "codex/ku2d-parked-synthesis-review-v1"
+  },
   "boundaries": {
+    "coordination_only": true,
     "merge_parked_prs": false,
     "promote_candidate_evidence": false,
     "branch_deletion": false,
     "branch_mutation": false,
     "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null,
     "live_acquisition": false,
     "ml_training_or_inference": false,
     "broader_core_intelligence_recommendation_or_ranking": false

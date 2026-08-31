@@ -1,0 +1,821 @@
+{
+  "schema": "ku2d.parked-synthesis-review.v1",
+  "version": "1.0",
+  "reviewed_at": "2026-08-31T14:05:00+07:00",
+  "repository": "thanitpu/KU-Open-Data-Analytics",
+  "authoritative_branch": "codex/ku2d-parked-synthesis-review-v1",
+  "base_branch": "integration/data-acquisition-platform",
+  "base_sha": "f2c94299776b969948ee85883328806244a42d0e",
+  "description": "Claim-level independent review of the two parked synthesis-only Draft PRs. This artifact records review status and dependencies; it does not promote historical synthesis or candidate evidence.",
+  "historical_surfaces": [
+    {
+      "surface_id": "KU2D-HS-PR42",
+      "branch": "codex/overnight-acquisition-technique-transfer-matrix",
+      "pr_number": 42,
+      "head_sha": "4c024a480dafda27b0064b3059e34eebaadf353d",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "file": "services/data-acquisition/docs/ACQUISITION_TECHNIQUE_TRANSFER_MATRIX_2026_08_31.md",
+      "open_draft_at_review": true,
+      "mutated_or_merged_by_review": false
+    },
+    {
+      "surface_id": "KU2D-HS-PR43",
+      "branch": "codex/overnight-exploration-summary",
+      "pr_number": 43,
+      "head_sha": "87b700db3e9c2b507530f0427a6a1a2bea9ab3e9",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "file": "services/data-acquisition/docs/OVERNIGHT_EXPLORATION_REPORT_2026-08-31.md",
+      "open_draft_at_review": true,
+      "mutated_or_merged_by_review": false
+    }
+  ],
+  "evidence_nodes": [
+    {
+      "evidence_id": "KU2D-EV-REVIEWED-SUPERMARKET",
+      "authority": "reviewed_current",
+      "description": "Reviewed durable supermarket acquisition patterns, including structured API, sitemap/detail, SSR/rendered cards, network discovery, and the Gourmet environment boundary.",
+      "references": [
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000001",
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000002",
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000003",
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000004",
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000005",
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000006",
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000007"
+      ],
+      "promotion_authorized": false,
+      "ground_truth_asserted": false
+    },
+    {
+      "evidence_id": "KU2D-EV-REVIEWED-JIB",
+      "authority": "reviewed_current",
+      "description": "Reviewed durable JIB canonical-detail Product and Price plus app-bundle Discovery evidence.",
+      "references": [
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000008",
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000009"
+      ],
+      "promotion_authorized": false,
+      "ground_truth_asserted": false
+    },
+    {
+      "evidence_id": "KU2D-EV-REVIEWED-SHOPEE",
+      "authority": "reviewed_current",
+      "description": "Reviewed durable Shopee application-shell and traffic-verification boundary evidence.",
+      "references": ["config/reviewed_learning_corpus.json#KU2D-CKE-000010"],
+      "promotion_authorized": false,
+      "ground_truth_asserted": false
+    },
+    {
+      "evidence_id": "KU2D-EV-REVIEWED-LAZADA",
+      "authority": "reviewed_current",
+      "description": "Reviewed durable Lazada static-HTTP boundary, rendered-browser product/price evidence, and conservative price/counter semantics.",
+      "references": [
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000011",
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000012",
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000013"
+      ],
+      "promotion_authorized": false,
+      "ground_truth_asserted": false
+    },
+    {
+      "evidence_id": "KU2D-EV-REVIEWED-YOUTUBE",
+      "authority": "reviewed_current",
+      "description": "Reviewed official YouTube metadata and uploads-playlist Human Review/dry-monitoring contracts.",
+      "references": [
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000014",
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000015"
+      ],
+      "promotion_authorized": false,
+      "ground_truth_asserted": false
+    },
+    {
+      "evidence_id": "KU2D-EV-REVIEWED-PUNTHAI",
+      "authority": "deterministic_contract_only",
+      "description": "Reviewed deterministic PunThai official-menu detail contract; it is not live validation of other coffee sources.",
+      "references": ["config/reviewed_learning_corpus.json#KU2D-CKE-000016"],
+      "promotion_authorized": false,
+      "ground_truth_asserted": false
+    },
+    {
+      "evidence_id": "KU2D-EV-HUMAN-POLICIES",
+      "authority": "human_confirmed_policy",
+      "description": "Human-confirmed semantic policies for counter role, price temporality, product/variant identity, display order, and environment boundaries.",
+      "references": [
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000017",
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000018",
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000019",
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000020",
+        "config/reviewed_learning_corpus.json#KU2D-CKE-000021"
+      ],
+      "promotion_authorized": false,
+      "ground_truth_asserted": false
+    },
+    {
+      "evidence_id": "KU2D-EV-CANDIDATE-TIKTOK",
+      "authority": "candidate_only",
+      "description": "Unmerged candidate TikTok Shop access-boundary observation.",
+      "references": ["config/candidate_learning_evidence_registry.json#KU2D-CLE-000001"],
+      "promotion_authorized": false,
+      "ground_truth_asserted": false
+    },
+    {
+      "evidence_id": "KU2D-EV-CANDIDATE-MARKETPLACE",
+      "authority": "candidate_only",
+      "description": "Unmerged candidate LINE SHOPPING and NocNoc observations.",
+      "references": [
+        "config/candidate_learning_evidence_registry.json#KU2D-CLE-000002",
+        "config/candidate_learning_evidence_registry.json#KU2D-CLE-000003"
+      ],
+      "promotion_authorized": false,
+      "ground_truth_asserted": false
+    },
+    {
+      "evidence_id": "KU2D-EV-CANDIDATE-OTA",
+      "authority": "candidate_only",
+      "description": "Unmerged candidate Agoda and Traveloka access-boundary observations.",
+      "references": [
+        "config/candidate_learning_evidence_registry.json#KU2D-CLE-000004",
+        "config/candidate_learning_evidence_registry.json#KU2D-CLE-000005"
+      ],
+      "promotion_authorized": false,
+      "ground_truth_asserted": false
+    },
+    {
+      "evidence_id": "KU2D-EV-CANDIDATE-COFFEE",
+      "authority": "candidate_only",
+      "description": "Unmerged candidate Roots, Nana, and Akha Ama observations with explicit evidence limitations.",
+      "references": [
+        "config/candidate_learning_evidence_registry.json#KU2D-CLE-000006",
+        "config/candidate_learning_evidence_registry.json#KU2D-CLE-000007",
+        "config/candidate_learning_evidence_registry.json#KU2D-CLE-000011"
+      ],
+      "promotion_authorized": false,
+      "ground_truth_asserted": false
+    },
+    {
+      "evidence_id": "KU2D-EV-CANDIDATE-QDIVING",
+      "authority": "candidate_only",
+      "description": "Unmerged candidate SSI content, Scubadoo service-price, and Aquamaster retail-product observations.",
+      "references": [
+        "config/candidate_learning_evidence_registry.json#KU2D-CLE-000008",
+        "config/candidate_learning_evidence_registry.json#KU2D-CLE-000009",
+        "config/candidate_learning_evidence_registry.json#KU2D-CLE-000010"
+      ],
+      "promotion_authorized": false,
+      "ground_truth_asserted": false
+    },
+    {
+      "evidence_id": "KU2D-EV-GOVERNANCE",
+      "authority": "governance_only",
+      "description": "Branch governance preserves PR #42 and #43 as unreviewed, unique, unmerged, and not durably projected.",
+      "references": [
+        "config/branch_pr_disposition_registry.json#codex/overnight-acquisition-technique-transfer-matrix",
+        "config/branch_pr_disposition_registry.json#codex/overnight-exploration-summary"
+      ],
+      "promotion_authorized": false,
+      "ground_truth_asserted": false
+    },
+    {
+      "evidence_id": "KU2D-EV-QUALITY-CONTRACT",
+      "authority": "governance_only",
+      "description": "Current Quality Foundation and taxonomy separate evidence, interpretation, technique, environment, identity, demand semantics, and authority.",
+      "references": [
+        "config/core_knowledge_taxonomy.json",
+        "config/core_knowledge_codebook.json",
+        "docs/CORE_INTELLIGENCE_QUALITY_FOUNDATION.md"
+      ],
+      "promotion_authorized": false,
+      "ground_truth_asserted": false
+    }
+  ],
+  "historical_assertions": [
+    {
+      "assertion_id": "KU2D-HA-000001",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Interpretation",
+      "statement": "PR #42 defined PROVEN, PROMISING, FAILED, and UNTESTED as its historical matrix vocabulary.",
+      "authority": "historical_unreviewed_ledger_only",
+      "promotion_authorized": false
+    },
+    {
+      "assertion_id": "KU2D-HA-000002",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Executive summary and Request accounting",
+      "statement": "PR #43 reported 16 public requests or page loads across 12 sources during the overnight campaign.",
+      "authority": "historical_unreviewed_ledger_only",
+      "promotion_authorized": false
+    },
+    {
+      "assertion_id": "KU2D-HA-000003",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Repository and publication ledger",
+      "statement": "PR #43 recorded the historical branch, commit, Draft PR, and CI ledger for PRs #35 through #42.",
+      "authority": "historical_unreviewed_ledger_only",
+      "promotion_authorized": false
+    },
+    {
+      "assertion_id": "KU2D-HA-000004",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Task/source evidence table: Lazada",
+      "statement": "PR #43 reported eight bounded Lazada records across four correlated public surfaces and a cross-surface price mismatch.",
+      "authority": "historical_unreviewed_ledger_only",
+      "promotion_authorized": false
+    },
+    {
+      "assertion_id": "KU2D-HA-000005",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Task/source evidence table: LINE, Akha Ama, SSI, Scubadoo, Aquamaster",
+      "statement": "PR #43 reported bounded candidate yields for the five unmerged public surfaces later represented only as Candidate Learning Evidence.",
+      "authority": "historical_unreviewed_ledger_only",
+      "promotion_authorized": false
+    },
+    {
+      "assertion_id": "KU2D-HA-000006",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Access failures and pauses",
+      "statement": "PR #43 recorded challenge, required-login, cessation, and missing-durable-evidence stop outcomes without escalation.",
+      "authority": "historical_unreviewed_ledger_only",
+      "promotion_authorized": false
+    },
+    {
+      "assertion_id": "KU2D-HA-000007",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Regression and security status",
+      "statement": "PR #43 retained historical test and CI run numbers for the overnight branches.",
+      "authority": "historical_unreviewed_ledger_only",
+      "promotion_authorized": false
+    },
+    {
+      "assertion_id": "KU2D-HA-000008",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Regression and security status",
+      "statement": "PR #43 reported no committed credentials, cookies, authorization material, session identifiers, proxy configuration, raw browser state, or personal profile.",
+      "authority": "historical_unreviewed_ledger_only",
+      "promotion_authorized": false
+    },
+    {
+      "assertion_id": "KU2D-HA-000009",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Executive summary and final boundaries",
+      "statement": "PR #43 stated that the overnight campaign made no production approval, storage, or scheduling decision.",
+      "authority": "historical_unreviewed_ledger_only",
+      "promotion_authorized": false
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "KU2D-SYN-000001",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: Official structured product API",
+      "statement": "Official structured product APIs are a proven Product and Price technique for validated first-party catalogs.",
+      "review_status": "already_integrated_equivalent",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-SUPERMARKET"],
+      "rationale": "Current reviewed Lotus evidence and taxonomy already represent this bounded pattern; the parked wording adds no authority.",
+      "disposition": "use_current_equivalent",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000002",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: Sitemap to canonical product detail",
+      "statement": "Sitemap discovery followed by canonical detail extraction is a proven identity-and-price pattern for validated sources.",
+      "review_status": "already_integrated_equivalent",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-SUPERMARKET","KU2D-EV-REVIEWED-JIB"],
+      "rationale": "Big C, Tops, and JIB current reviewed episodes already preserve the pattern and its source-specific validation boundary.",
+      "disposition": "use_current_equivalent",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000003",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix and Recommended reviews: Watsons",
+      "statement": "Watsons should use a canonical-detail Product and Price architecture as the next priority.",
+      "review_status": "insufficient_evidence",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-JIB","KU2D-EV-QUALITY-CONTRACT"],
+      "rationale": "A transferable pattern and a required-track gap do not establish that Watsons exposes a usable canonical-detail surface or justify a priority rank.",
+      "disposition": "rewrite_before_reuse",
+      "missing_evidence_requirements": ["Bounded current Watsons public-surface evidence with attributable sellable identity and price","Source-specific Deep Audit evidence before any priority or readiness claim"],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000004",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: Rendered or SSR product cards",
+      "statement": "Rendered or SSR product cards are proven for validated supermarket Product and Price acquisition.",
+      "review_status": "already_integrated_equivalent",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-SUPERMARKET"],
+      "rationale": "Current Makro and Gourmet reviewed episodes already contain the bounded technique evidence.",
+      "disposition": "use_current_equivalent",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000005",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: Rendered cards and shop/catalog surfaces for LINE SHOPPING",
+      "statement": "LINE SHOPPING seller collections are a useful rendered-card Deep Audit candidate when shop, collection, product, position, and price context remain attributable.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": ["KU2D-EV-CANDIDATE-MARKETPLACE","KU2D-EV-HUMAN-POLICIES"],
+      "rationale": "Candidate evidence supports bounded identity and price observations, while review and demand semantics remain unresolved.",
+      "disposition": "retain_candidate_synthesis",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000006",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: Rendered-DOM product/detail correlation",
+      "statement": "Lazada rendered-DOM correlation is only a promising Draft technique awaiting first review.",
+      "review_status": "contradicted_or_stale",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-LAZADA"],
+      "rationale": "PR #35 was subsequently reviewed and integrated; current durable Lazada episodes replace the old Draft-only readiness label while retaining unresolved semantics.",
+      "disposition": "rewrite_before_reuse",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000007",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: Static HTML catalog cards",
+      "statement": "Akha Ama and Aquamaster static catalog cards are bounded canonical identity-and-price Deep Audit candidates.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": ["KU2D-EV-CANDIDATE-COFFEE","KU2D-EV-CANDIDATE-QDIVING"],
+      "rationale": "Candidate records support the bounded observations but not repeatability, detail correlation, or source approval.",
+      "disposition": "retain_candidate_synthesis",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000008",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: Static HTML service/course cards",
+      "statement": "Scubadoo public course cards are a service-price Deep Audit candidate distinct from retail Product and Price.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": ["KU2D-EV-CANDIDATE-QDIVING","KU2D-EV-QUALITY-CONTRACT"],
+      "rationale": "Candidate evidence preserves explicit service prices and identity context without converting them into retail or booking evidence.",
+      "disposition": "retain_candidate_synthesis",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000009",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: RSS/Atom and static article indexes",
+      "statement": "SSI article indexes and PADI feed contracts may transfer as metadata-staging techniques under Human Review.",
+      "review_status": "candidate_partially_supported",
+      "evidence_dependencies": ["KU2D-EV-CANDIDATE-QDIVING","KU2D-EV-REVIEWED-YOUTUBE"],
+      "rationale": "SSI is candidate-only and the current reviewed Human Review contract supports governance, not live validation of the SSI/PADI transfer.",
+      "disposition": "retain_candidate_synthesis",
+      "missing_evidence_requirements": ["Reviewed repeatability and provenance evidence for each non-YouTube content index","Explicit Human Review handoff validation for the new source class"],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000010",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: JSON or JSON-LD embedded in HTML",
+      "statement": "Coffee product JSON-LD/detail normalization is a promising transfer for Roots or Nana.",
+      "review_status": "candidate_partially_supported",
+      "evidence_dependencies": ["KU2D-EV-CANDIDATE-COFFEE","KU2D-EV-REVIEWED-PUNTHAI"],
+      "rationale": "Current coffee candidate evidence explicitly lacks retained live detail evidence, and the PunThai menu contract is a different price context.",
+      "disposition": "retain_candidate_synthesis",
+      "missing_evidence_requirements": ["Durably retained bounded live detail or JSON-LD evidence","Product/package identity and price-role validation distinct from menu items"],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000011",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: Public structured endpoint discovered through browser network",
+      "statement": "First-party browser-network evidence is a proven Discovery technique for Gourmet Market.",
+      "review_status": "already_integrated_equivalent",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-SUPERMARKET"],
+      "rationale": "The current Gourmet Discovery episode already represents the source-specific validated technique.",
+      "disposition": "use_current_equivalent",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000012",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: Network discovery limitations",
+      "statement": "Endpoint names or public bundle clues alone are insufficient to validate a structured acquisition response.",
+      "review_status": "duplicate_of_current_knowledge",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-SHOPEE","KU2D-EV-REVIEWED-LAZADA","KU2D-EV-QUALITY-CONTRACT"],
+      "rationale": "Current reviewed boundary evidence and Quality Foundation semantics already require usable response evidence rather than interpretation of names.",
+      "disposition": "no_new_knowledge",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000013",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: Search/category/shop surfaces",
+      "statement": "Displayed order and bare counters remain contextual observations rather than demand or national rank without explicit semantics.",
+      "review_status": "duplicate_of_current_knowledge",
+      "evidence_dependencies": ["KU2D-EV-HUMAN-POLICIES"],
+      "rationale": "Human-confirmed current policy already preserves displayed order, typed counter, and demand distinctions.",
+      "disposition": "no_new_knowledge",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000014",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: Contextual OTA result/card acquisition",
+      "statement": "Fixed-context OTA cards may transfer to future public Expedia or Trip.com exploration.",
+      "review_status": "candidate_partially_supported",
+      "evidence_dependencies": ["KU2D-EV-CANDIDATE-OTA","KU2D-EV-QUALITY-CONTRACT"],
+      "rationale": "Current candidate evidence establishes only Agoda/Traveloka stop boundaries, not a positive technique on the proposed sources.",
+      "disposition": "retain_candidate_synthesis",
+      "missing_evidence_requirements": ["Separately authorized bounded public-surface experiment","Exact destination, dates, occupancy, currency, property identity, and rate context"],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000015",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: Official documented metadata API",
+      "statement": "The official YouTube Data API metadata workflow and uploads-playlist monitoring contract are reviewed bounded patterns.",
+      "review_status": "already_integrated_equivalent",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-YOUTUBE"],
+      "rationale": "Current reviewed YouTube episodes already state the metadata, Human Review, and dry-monitoring boundaries.",
+      "disposition": "use_current_equivalent",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000016",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: Seller-authorized or affiliate API",
+      "statement": "Seller-authorized APIs cannot establish any public national-marketplace observation objective.",
+      "review_status": "insufficient_evidence",
+      "evidence_dependencies": ["KU2D-EV-QUALITY-CONTRACT"],
+      "rationale": "The campaign lacked authorization and correctly did not use such APIs, but the parked universal capability claim lacks reviewed provider-scope evidence.",
+      "disposition": "rewrite_before_reuse",
+      "missing_evidence_requirements": ["Provider documentation and explicit scope review","A narrower statement separating campaign authorization from technical capability and representativeness"],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000017",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: Human-reviewed content evidence",
+      "statement": "Automated content suggestions remain non-authoritative until the applicable Human Review contract decides inclusion or monitoring.",
+      "review_status": "duplicate_of_current_knowledge",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-YOUTUBE","KU2D-EV-QUALITY-CONTRACT"],
+      "rationale": "Current reviewed YouTube and Quality Foundation contracts already preserve this authority boundary.",
+      "disposition": "no_new_knowledge",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000018",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: Temporal Commerce Market Observation",
+      "statement": "Marketplace observations require stable product-and-surface identity, conservative counter semantics, and separation of raw from normalized velocity.",
+      "review_status": "already_integrated_equivalent",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-SHOPEE","KU2D-EV-REVIEWED-LAZADA","KU2D-EV-HUMAN-POLICIES"],
+      "rationale": "Current Shopee/Lazada reviewed episodes and semantic policy already preserve the bounded observation contract.",
+      "disposition": "use_current_equivalent",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000019",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Matrix: Windows Edge execution environment",
+      "statement": "Edge is an execution-environment decision, not an extraction technique or a bypass mechanism.",
+      "review_status": "duplicate_of_current_knowledge",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-SUPERMARKET","KU2D-EV-HUMAN-POLICIES"],
+      "rationale": "Current Gourmet evidence and explicit human policy already state the environment-versus-technique distinction.",
+      "disposition": "no_new_knowledge",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000020",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Cross-domain conclusion 1 and 2",
+      "statement": "Canonical identity and attributable price patterns can transfer, but neither product identity nor card order creates variant or demand evidence.",
+      "review_status": "duplicate_of_current_knowledge",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-SUPERMARKET","KU2D-EV-REVIEWED-JIB","KU2D-EV-HUMAN-POLICIES"],
+      "rationale": "The current taxonomy and human-confirmed policies already contain these separations.",
+      "disposition": "no_new_knowledge",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000021",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Cross-domain conclusion 3",
+      "statement": "OTA query-context discipline transfers to dive-course service offers.",
+      "review_status": "insufficient_evidence",
+      "evidence_dependencies": ["KU2D-EV-CANDIDATE-OTA","KU2D-EV-CANDIDATE-QDIVING"],
+      "rationale": "Both sides are candidate-only and represent materially different rate and service contexts; analogy alone is not transfer evidence.",
+      "disposition": "retain_historical_only",
+      "missing_evidence_requirements": ["Reviewed field-level mapping between fixed-context OTA rates and course/package offers","Evidence that the mapping improves provenance without conflating source roles"],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000022",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Cross-domain conclusion 4",
+      "statement": "Content indexes may stage metadata while Human Review remains the authority for relevance and knowledge use.",
+      "review_status": "duplicate_of_current_knowledge",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-YOUTUBE","KU2D-EV-QUALITY-CONTRACT"],
+      "rationale": "Current Human Review and Quality Foundation boundaries already contain the authority rule; new source validation remains separate.",
+      "disposition": "no_new_knowledge",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000023",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Recommended next technique reviews: priority ordering",
+      "statement": "Watsons should be P0 ahead of LINE, Akha Ama, Lazada reconciliation, and Q-Diving repeatability work.",
+      "review_status": "insufficient_evidence",
+      "evidence_dependencies": ["KU2D-EV-GOVERNANCE","KU2D-EV-QUALITY-CONTRACT"],
+      "rationale": "The parked priority ranking was never reviewed, and this checkpoint is not authorized to create broader recommendation or ranking state.",
+      "disposition": "rewrite_before_reuse",
+      "missing_evidence_requirements": ["Separately authorized prioritization criteria and current gap evidence","Independent review of each candidate source before cross-source ranking"],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000024",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Recommended review: LINE SHOPPING",
+      "statement": "LINE SHOPPING surface-aware repeatability and identity review remains a useful candidate synthesis.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": ["KU2D-EV-CANDIDATE-MARKETPLACE"],
+      "rationale": "Candidate evidence supports retaining the review question without preserving its old priority rank.",
+      "disposition": "retain_candidate_synthesis",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000025",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Recommended review: Akha Ama",
+      "statement": "Akha Ama catalog-to-detail correlation remains a useful candidate synthesis.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": ["KU2D-EV-CANDIDATE-COFFEE"],
+      "rationale": "Candidate evidence supports a bounded review question but not technique validation or priority.",
+      "disposition": "retain_candidate_synthesis",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000026",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Recommended review: Lazada",
+      "statement": "Lazada cross-surface price and counter reconciliation requires conservative reviewed semantics.",
+      "review_status": "already_integrated_equivalent",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-LAZADA","KU2D-EV-HUMAN-POLICIES"],
+      "rationale": "Current Lazada reviewed episodes already retain the mismatch, price-role, counter, and identity limits.",
+      "disposition": "use_current_equivalent",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000027",
+      "source_surface_id": "KU2D-HS-PR42",
+      "location": "Recommended review: SSI, Scubadoo, Aquamaster",
+      "statement": "SSI, Scubadoo, and Aquamaster repeatability or detail-correlation remain useful candidate review questions.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": ["KU2D-EV-CANDIDATE-QDIVING"],
+      "rationale": "Candidate evidence supports preserving bounded next-review questions without source promotion.",
+      "disposition": "retain_candidate_synthesis",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000028",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Executive summary: strongest new evidence",
+      "statement": "Lazada, LINE SHOPPING, Akha Ama, and three Q-Diving surfaces form one strongest-evidence tier.",
+      "review_status": "contradicted_or_stale",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-LAZADA","KU2D-EV-CANDIDATE-MARKETPLACE","KU2D-EV-CANDIDATE-COFFEE","KU2D-EV-CANDIDATE-QDIVING"],
+      "rationale": "The grouping now mixes reviewed Lazada evidence with unreviewed candidate-only evidence and cannot retain a single authority tier.",
+      "disposition": "rewrite_before_reuse",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000029",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Executive summary and Request accounting",
+      "statement": "The overnight campaign made exactly 16 requests or page loads across 12 sources.",
+      "review_status": "insufficient_evidence",
+      "evidence_dependencies": ["KU2D-EV-GOVERNANCE"],
+      "rationale": "The count remains a historical PR #43 ledger statement; current durable knowledge does not contain a lossless request log for independent recomputation.",
+      "disposition": "retain_historical_only",
+      "missing_evidence_requirements": ["Per-request durable evidence with source, timestamp, method, and deduplication rule","Independent reconciliation against every contributing parked branch"],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000030",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Executive summary and final boundaries",
+      "statement": "Exploration evidence and synthesis do not authorize production approval, storage, or scheduling.",
+      "review_status": "duplicate_of_current_knowledge",
+      "evidence_dependencies": ["KU2D-EV-QUALITY-CONTRACT","KU2D-EV-GOVERNANCE"],
+      "rationale": "Current quality, governance, and every evidence layer already preserve the non-production boundary.",
+      "disposition": "no_new_knowledge",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000031",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Executive summary and Technique-transfer findings",
+      "statement": "Price mismatch, bare-counter meaning, display order, product identity, and demand remain separate unresolved semantics.",
+      "review_status": "duplicate_of_current_knowledge",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-LAZADA","KU2D-EV-HUMAN-POLICIES"],
+      "rationale": "Current reviewed Lazada evidence and human-confirmed policies already encode these distinctions.",
+      "disposition": "no_new_knowledge",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000032",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Access failures and pauses: TikTok, Agoda, Traveloka",
+      "statement": "TikTok Shop, Agoda, and Traveloka public attempts should remain paused at their observed access boundaries without automatic escalation.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": ["KU2D-EV-CANDIDATE-TIKTOK","KU2D-EV-CANDIDATE-OTA","KU2D-EV-HUMAN-POLICIES"],
+      "rationale": "Candidate negative evidence supports the conservative pause, but it is not reviewed source failure or technique invalidation.",
+      "disposition": "retain_candidate_synthesis",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000033",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Access failures and pauses: NocNoc",
+      "statement": "NocNoc should remain a ceased-source candidate and should not be retried automatically.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": ["KU2D-EV-CANDIDATE-MARKETPLACE"],
+      "rationale": "The cessation observation is candidate-only; preserving a no-automatic-retry synthesis avoids pretending the source lifecycle was independently reviewed.",
+      "disposition": "retain_candidate_synthesis",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000034",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Access failures and pauses: Roots and Nana",
+      "statement": "Roots and Nana live-success claims must remain withheld until bounded evidence is durably retained and reviewed.",
+      "review_status": "candidate_supported",
+      "evidence_dependencies": ["KU2D-EV-CANDIDATE-COFFEE","KU2D-EV-QUALITY-CONTRACT"],
+      "rationale": "Current candidate records explicitly preserve the missing-evidence limitation and false-green refusal.",
+      "disposition": "retain_candidate_synthesis",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000035",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Access failures and pauses: Shopee",
+      "statement": "Shopee public acquisition remains paused after application-shell and traffic-verification evidence produced no usable result.",
+      "review_status": "already_integrated_equivalent",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-SHOPEE"],
+      "rationale": "Current reviewed Shopee evidence already records the bounded negative outcome and pause.",
+      "disposition": "use_current_equivalent",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000036",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Biggest successes and Readiness decisions: Lazada",
+      "statement": "Lazada rendered-browser evidence supports bounded stable identity and price observations while price/counter semantics remain conservative.",
+      "review_status": "already_integrated_equivalent",
+      "evidence_dependencies": ["KU2D-EV-REVIEWED-LAZADA"],
+      "rationale": "Current reviewed Lazada episodes replace the parked synthesis and preserve its limits.",
+      "disposition": "use_current_equivalent",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000037",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Biggest successes: Q-Diving record count",
+      "statement": "SSI, Scubadoo, and Aquamaster produced exactly 30 validated records across three source classes.",
+      "review_status": "insufficient_evidence",
+      "evidence_dependencies": ["KU2D-EV-CANDIDATE-QDIVING"],
+      "rationale": "The current registry preserves bounded candidate observations and role separation but does not independently authorize the word validated or retain a lossless exact-count audit.",
+      "disposition": "retain_historical_only",
+      "missing_evidence_requirements": ["Lossless per-record evidence and count reconciliation","Independent source review and repeatability evidence before using validated"],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000038",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Edge and official API decisions",
+      "statement": "No newly explored source required Edge based on the overnight successful evidence.",
+      "review_status": "insufficient_evidence",
+      "evidence_dependencies": ["KU2D-EV-CANDIDATE-MARKETPLACE","KU2D-EV-CANDIDATE-COFFEE","KU2D-EV-CANDIDATE-QDIVING","KU2D-EV-HUMAN-POLICIES"],
+      "rationale": "This is a historical campaign inference from candidate-only and incomplete observations, not a durable source/environment decision.",
+      "disposition": "retain_historical_only",
+      "missing_evidence_requirements": ["Source-specific reviewed environment evidence","Proof that the same validated technique was compared across environments where relevant"],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    },
+    {
+      "claim_id": "KU2D-SYN-000039",
+      "source_surface_id": "KU2D-HS-PR43",
+      "location": "Morning review priorities P0-P3",
+      "statement": "The historical P0-P3 cross-source priority ranking should govern subsequent KU2D work.",
+      "review_status": "contradicted_or_stale",
+      "evidence_dependencies": ["KU2D-EV-GOVERNANCE","KU2D-EV-QUALITY-CONTRACT"],
+      "rationale": "The ranking was never reviewed, current authority states have diverged, and this checkpoint explicitly prohibits broader recommendation/ranking behavior.",
+      "disposition": "retire_historical_claim",
+      "missing_evidence_requirements": [],
+      "authority": {"reviewed_corpus_authorized":false,"core_knowledge_authorized":false,"ground_truth_authorized":false,"production_authorized":false}
+    }
+  ],
+  "evidence_dependency_graph": {
+    "KU2D-SYN-000001": ["KU2D-EV-REVIEWED-SUPERMARKET"],
+    "KU2D-SYN-000002": ["KU2D-EV-REVIEWED-SUPERMARKET","KU2D-EV-REVIEWED-JIB"],
+    "KU2D-SYN-000003": ["KU2D-EV-REVIEWED-JIB","KU2D-EV-QUALITY-CONTRACT"],
+    "KU2D-SYN-000004": ["KU2D-EV-REVIEWED-SUPERMARKET"],
+    "KU2D-SYN-000005": ["KU2D-EV-CANDIDATE-MARKETPLACE","KU2D-EV-HUMAN-POLICIES"],
+    "KU2D-SYN-000006": ["KU2D-EV-REVIEWED-LAZADA"],
+    "KU2D-SYN-000007": ["KU2D-EV-CANDIDATE-COFFEE","KU2D-EV-CANDIDATE-QDIVING"],
+    "KU2D-SYN-000008": ["KU2D-EV-CANDIDATE-QDIVING","KU2D-EV-QUALITY-CONTRACT"],
+    "KU2D-SYN-000009": ["KU2D-EV-CANDIDATE-QDIVING","KU2D-EV-REVIEWED-YOUTUBE"],
+    "KU2D-SYN-000010": ["KU2D-EV-CANDIDATE-COFFEE","KU2D-EV-REVIEWED-PUNTHAI"],
+    "KU2D-SYN-000011": ["KU2D-EV-REVIEWED-SUPERMARKET"],
+    "KU2D-SYN-000012": ["KU2D-EV-REVIEWED-SHOPEE","KU2D-EV-REVIEWED-LAZADA","KU2D-EV-QUALITY-CONTRACT"],
+    "KU2D-SYN-000013": ["KU2D-EV-HUMAN-POLICIES"],
+    "KU2D-SYN-000014": ["KU2D-EV-CANDIDATE-OTA","KU2D-EV-QUALITY-CONTRACT"],
+    "KU2D-SYN-000015": ["KU2D-EV-REVIEWED-YOUTUBE"],
+    "KU2D-SYN-000016": ["KU2D-EV-QUALITY-CONTRACT"],
+    "KU2D-SYN-000017": ["KU2D-EV-REVIEWED-YOUTUBE","KU2D-EV-QUALITY-CONTRACT"],
+    "KU2D-SYN-000018": ["KU2D-EV-REVIEWED-SHOPEE","KU2D-EV-REVIEWED-LAZADA","KU2D-EV-HUMAN-POLICIES"],
+    "KU2D-SYN-000019": ["KU2D-EV-REVIEWED-SUPERMARKET","KU2D-EV-HUMAN-POLICIES"],
+    "KU2D-SYN-000020": ["KU2D-EV-REVIEWED-SUPERMARKET","KU2D-EV-REVIEWED-JIB","KU2D-EV-HUMAN-POLICIES"],
+    "KU2D-SYN-000021": ["KU2D-EV-CANDIDATE-OTA","KU2D-EV-CANDIDATE-QDIVING"],
+    "KU2D-SYN-000022": ["KU2D-EV-REVIEWED-YOUTUBE","KU2D-EV-QUALITY-CONTRACT"],
+    "KU2D-SYN-000023": ["KU2D-EV-GOVERNANCE","KU2D-EV-QUALITY-CONTRACT"],
+    "KU2D-SYN-000024": ["KU2D-EV-CANDIDATE-MARKETPLACE"],
+    "KU2D-SYN-000025": ["KU2D-EV-CANDIDATE-COFFEE"],
+    "KU2D-SYN-000026": ["KU2D-EV-REVIEWED-LAZADA","KU2D-EV-HUMAN-POLICIES"],
+    "KU2D-SYN-000027": ["KU2D-EV-CANDIDATE-QDIVING"],
+    "KU2D-SYN-000028": ["KU2D-EV-REVIEWED-LAZADA","KU2D-EV-CANDIDATE-MARKETPLACE","KU2D-EV-CANDIDATE-COFFEE","KU2D-EV-CANDIDATE-QDIVING"],
+    "KU2D-SYN-000029": ["KU2D-EV-GOVERNANCE"],
+    "KU2D-SYN-000030": ["KU2D-EV-QUALITY-CONTRACT","KU2D-EV-GOVERNANCE"],
+    "KU2D-SYN-000031": ["KU2D-EV-REVIEWED-LAZADA","KU2D-EV-HUMAN-POLICIES"],
+    "KU2D-SYN-000032": ["KU2D-EV-CANDIDATE-TIKTOK","KU2D-EV-CANDIDATE-OTA","KU2D-EV-HUMAN-POLICIES"],
+    "KU2D-SYN-000033": ["KU2D-EV-CANDIDATE-MARKETPLACE"],
+    "KU2D-SYN-000034": ["KU2D-EV-CANDIDATE-COFFEE","KU2D-EV-QUALITY-CONTRACT"],
+    "KU2D-SYN-000035": ["KU2D-EV-REVIEWED-SHOPEE"],
+    "KU2D-SYN-000036": ["KU2D-EV-REVIEWED-LAZADA"],
+    "KU2D-SYN-000037": ["KU2D-EV-CANDIDATE-QDIVING"],
+    "KU2D-SYN-000038": ["KU2D-EV-CANDIDATE-MARKETPLACE","KU2D-EV-CANDIDATE-COFFEE","KU2D-EV-CANDIDATE-QDIVING","KU2D-EV-HUMAN-POLICIES"],
+    "KU2D-SYN-000039": ["KU2D-EV-GOVERNANCE","KU2D-EV-QUALITY-CONTRACT"]
+  },
+  "summary": {
+    "historical_surface_count": 2,
+    "historical_assertion_count": 9,
+    "claim_count": 39,
+    "review_status_counts": {
+      "already_integrated_equivalent": 9,
+      "candidate_partially_supported": 3,
+      "candidate_supported": 9,
+      "contradicted_or_stale": 3,
+      "duplicate_of_current_knowledge": 8,
+      "insufficient_evidence": 7
+    },
+    "disposition_counts": {
+      "no_new_knowledge": 8,
+      "retain_candidate_synthesis": 12,
+      "retain_historical_only": 4,
+      "retire_historical_claim": 1,
+      "rewrite_before_reuse": 5,
+      "use_current_equivalent": 9
+    },
+    "candidate_promotion_count": 0,
+    "parked_branch_mutation_count": 0,
+    "parked_branch_merge_count": 0
+  },
+  "boundaries": {
+    "storage_neutral": true,
+    "historical_synthesis_is_authoritative": false,
+    "review_equals_promotion": false,
+    "candidate_promotion_count": 0,
+    "reviewed_corpus_write": false,
+    "core_knowledge_write": false,
+    "ground_truth_write": false,
+    "branch_deletion_count": 0,
+    "parked_branch_mutation_count": 0,
+    "live_request_count": 0,
+    "runtime_auto_write": false,
+    "production_authorized": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "ml_training_or_inference": false,
+    "embedding_or_vector_storage": false,
+    "ml_dataset_export": false,
+    "survey_doe_sem_work": false,
+    "broader_recommendation_or_ranking": false
+  }
+}

@@ -39,7 +39,7 @@
     "prompt_id": "KU2D-P-000015",
     "result_id": null,
     "review_id": null,
-    "human_decision_id": "KU2D-H-000005",
+    "human_decision_id": null,
     "replay_requested": false
   },
   "notes": "PR #47 Branch/PR Governance v1 was squash-merged at f2c94299776b969948ee85883328806244a42d0e. A new authoritative branch now performs a bounded review of the two parked synthesis branches not durably projected into Candidate Learning Evidence: PR #42 transfer matrix and PR #43 exploration summary. Codex must preserve exact provenance, distinguish evidence from synthesis, avoid all silent promotion, keep both parked branches unmodified/unmerged, create a durable review packet/report with deterministic validation, open a Draft PR, write KU2D-R-000015, and return control to assistant. No branch deletion, live acquisition, production, ML, Survey/DoE/SEM, or broader recommendation/ranking work is authorized."
