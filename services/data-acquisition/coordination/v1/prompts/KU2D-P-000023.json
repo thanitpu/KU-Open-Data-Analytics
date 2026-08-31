@@ -1,0 +1,33 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000023",
+  "created_at": "2026-08-31T16:32:00+07:00",
+  "created_by": {"actor":"assistant","actor_id":"assistant_review"},
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-coffee-evidence-recovery-v1",
+  "objective": "Execute a bounded targeted evidence recovery for Roots Coffee and Nana Coffee Roasters official product-detail sources, repairing the known evidence-retention gaps identified in PR #39 without promoting candidate knowledge.",
+  "instructions": [
+    "Stay on codex/ku2d-coffee-evidence-recovery-v1 and read KU2D-H-000009 plus the merged Evidence Recovery Prioritization and Parked Evidence Disposition artifacts.",
+    "Before any live request, define and record an explicit evidence package: target URLs/surfaces, request budget, fields to capture, raw-to-normalized provenance requirements, repeatability criteria, Deep Audit criteria, and stop conditions.",
+    "Use only bounded public read-only acquisition. Do not authenticate, bypass controls, evade anti-bot measures, use private APIs, or expand to unrelated sources.",
+    "Apply evidence-before-exit discipline: persist/sanitize the allowed evidence needed for review before leaving the acquisition step so the historical retention failure cannot recur.",
+    "For each source, capture product identity, canonical URL, attributable displayed price and temporal status where present, variant/availability evidence where explicit, source/surface metadata, observed_at timestamp, and raw-to-normalized field provenance. Do not infer variant equivalence, demand/popularity, transaction price, or cross-branch validity without explicit evidence.",
+    "Run repeatability checks within the bounded request budget and record negative/deviant cases and any access/environment boundary separately from extraction technique failure.",
+    "Run the applicable Deep Audit and deterministic/regression checks. Preserve current authority levels: candidate evidence remains candidate unless separately reviewed and authorized later.",
+    "Do not mutate or merge parked PR #39 or any other parked branch. Work only on this recovery branch and create a new Draft PR against integration/data-acquisition-platform.",
+    "If a mechanical GitHub step such as updating the PR description or marking Draft to Ready can be completed safely with available tooling and does not change semantic scope/authority, perform it without human interruption. If the known Repository.fullDatabaseId connector failure occurs, record it once and continue the handoff without retrying or asking the human solely for that mechanical action.",
+    "At the end of the Result include a concise `completed_queue_summary` containing only the important items: (1) work completed, (2) key findings/results, (3) repo/knowledge-state changes, (4) important out-of-scope actions not performed, (5) remaining blockers/risks, and (6) recommended next logical step.",
+    "Write KU2D-R-000023 and return control to assistant for independent review."
+  ],
+  "expected_result": {"result_id":"KU2D-R-000023","next_actor":"assistant"},
+  "provenance": {
+    "repository":"thanitpu/KU-Open-Data-Analytics",
+    "depends_on_result":"KU2D-R-000022",
+    "depends_on_review":"KU2D-V-000022",
+    "depends_on_human_decision":"KU2D-H-000009",
+    "depends_on_merge":"2f06a082f53e9fa8781f7ecab4bbccd29c950c09",
+    "authoritative_branch":"codex/ku2d-coffee-evidence-recovery-v1",
+    "historical_pr":39
+  },
+  "boundaries": {"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
