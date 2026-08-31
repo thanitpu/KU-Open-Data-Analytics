@@ -1,0 +1,25 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000004",
+  "prompt_id": "KU2D-P-000012",
+  "result_id": "KU2D-R-000012",
+  "review_id": "KU2D-V-000012",
+  "decided_at": "2026-08-31T12:52:00+07:00",
+  "decided_by": {
+    "actor": "human",
+    "actor_id": "project-human-authority"
+  },
+  "decision": "confirmed",
+  "reason_note": "Human authority independently completed the required Ready-for-review transition for PR #46 after technical acceptance. The assistant then rechecked the exact current PR head and current-head CI and squash-merged PR #46 as d497f1b8311e2f7ec410dd1b52735c31befa3d5d. This decision records completion of KU2D-P-000012 only and does not authorize production, scheduling, source expansion, branch deletion, or ML execution/export.",
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_context": "manual GitHub Ready-for-review transition shown by the project human authority",
+    "authoritative_branch": "codex/ku2d-branch-governance-v1"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
