@@ -1,0 +1,36 @@
+{
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
+  "review_id": "KU2D-V-000022",
+  "prompt_id": "KU2D-P-000022",
+  "result_id": "KU2D-R-000022",
+  "reviewed_at": "2026-08-31T16:26:00+07:00",
+  "reviewed_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review",
+    "human_authority_claimed": false
+  },
+  "review_result": "human_decision_required",
+  "requires_human_decision": true,
+  "reason_code": "manual_ready_transition_required",
+  "explanation": "Final merge-readiness validation is accepted. Codex repaired only the newly introduced coordination metadata to restore Agent Handoff v1 compliance without changing prompt scope, review meaning, authorization, or validator strength. Ranking remains Coffee PR #39 first at 4.50, Q-Diving PR #40 second at 4.30, and Marketplace PR #37 third at 3.70. All 44 deterministic scripts and exact-head workflows pass; no rerun or live request was executed. Human action is required only to mark PR #51 Ready for review because the connector Ready transition still fails on Repository.fullDatabaseId.",
+  "evidence_references": [
+    "KU2D-R-000022",
+    "commit:ec82687210875e541c819b2fcdf814a43b9f28e5",
+    "PR:#51",
+    "workflow:Data Acquisition Platform CI#278",
+    "workflow:Frontend CI#1117",
+    "workflow:PR Browser Preview Link#192"
+  ],
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-evidence-recovery-prioritization-v1",
+    "target_pr": 51,
+    "reviewed_result": "KU2D-R-000022"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
