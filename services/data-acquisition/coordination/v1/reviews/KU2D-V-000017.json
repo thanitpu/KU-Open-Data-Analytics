@@ -1,0 +1,15 @@
+{
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
+  "review_id": "KU2D-V-000017",
+  "prompt_id": "KU2D-P-000017",
+  "result_id": "KU2D-R-000017",
+  "reviewed_at": "2026-08-31T15:12:00+07:00",
+  "reviewed_by": {"actor":"assistant","actor_id":"assistant_review","human_authority_claimed":false},
+  "review_result": "accepted",
+  "requires_human_decision": false,
+  "reason_code": "PARKED_CANDIDATE_REVIEW_ACCEPTED",
+  "explanation": "Parked Candidate Review v1 is accepted. PRs #36-#41 remain untouched; all 11 Candidate Learning Evidence records remain candidate-only and explicitly non-lossless; 59 findings have current evidence dependencies and future evidence requirements; current-head CI passes; no knowledge promotion, live acquisition, runtime, production, ML, ranking, or cleanup scope was added.",
+  "evidence_references": ["KU2D-R-000017","PR:#49","commit:cfaf507696e56d4a22e67f607eaaa936c21b82f1","workflow:Data Acquisition Platform CI#256","workflow:Frontend CI#1067","workflow:PR Browser Preview Link#172"],
+  "provenance": {"repository":"thanitpu/KU-Open-Data-Analytics","branch":"codex/ku2d-parked-candidate-review-v1","authoritative_branch":"codex/ku2d-parked-candidate-review-v1","target_pr":49},
+  "boundaries": {"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
