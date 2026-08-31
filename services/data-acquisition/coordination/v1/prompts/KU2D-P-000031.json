@@ -1,0 +1,24 @@
+{
+  "schema":"ku2d.agent-handoff-prompt.v1",
+  "prompt_id":"KU2D-P-000031",
+  "created_at":"2026-08-31T19:10:00+07:00",
+  "created_by":{"actor":"assistant","actor_id":"assistant_review"},
+  "status":"ready_for_codex",
+  "authoritative_branch":"codex/ku2d-roots-semantic-witness-fix-v1",
+  "objective":"Use Branch Handoff Protocol v1 to consolidate the Coffee evidence-recovery phase and determine source-level dispositions for Nana and Roots without any new live request.",
+  "instructions":[
+    "Use branch_handoff mechanically: close this source queue before switching, then create/switch to codex/ku2d-coffee-evidence-consolidation-v1 from integration/data-acquisition-platform at merge commit 6840bb7b90074567657843ba842850b7a1856d7b and initialize the target queue as sole authority.",
+    "Review only merged/durable Coffee artifacts from the recovery chain, including KU2D-R-000023 through KU2D-R-000030, accepted assistant reviews, Coffee validation artifacts, Nana retained records, Roots diagnosis/correction artifacts, and the relevant candidate-learning-evidence references from the earlier parked Coffee work.",
+    "Produce a source-level disposition for Nana Coffee Roasters and Roots Coffee separately. Distinguish at minimum: observed durable evidence, candidate evidence quality, unresolved gaps, parser/tooling readiness, whether further live evidence is currently necessary, and whether the source is ready to be considered evidence-recovery-complete for this phase.",
+    "For Nana, assess the two repeatable 470 THB House Blend records exactly as retained. Do not automatically promote them to Reviewed Corpus/Core Knowledge/Human Confirmation/Ground Truth.",
+    "For Roots, account for the historical exit-2 result, the accepted matcher diagnosis, and the merged offline semantic-witness/diagnostic-retention correction. Do not retroactively reinterpret the historical live result as success and do not infer evidence that was not retained.",
+    "Define an explicit Coffee domain phase disposition: complete, complete-with-open-gap, or incomplete, with deterministic reasons and exact evidence dependencies. If any future live validation is recommended, specify only the minimum evidence objective and why it is necessary; do not authorize or execute it.",
+    "Map the outcome back to the prior parked Coffee PR #39 evidence gaps and state which gaps are closed, partially closed, or still open without mutating the parked branch.",
+    "Do not make any live/external request. Do not promote knowledge authority, touch parked refs, perform cleanup, production, scheduler, ML, Survey/DoE/SEM, or broaden source scope.",
+    "Open/update a PR against integration/data-acquisition-platform, perform safe mechanical PR operations including Ready transition where possible, and do not merge.",
+    "Return completed_queue_summary with only important items: work completed; key findings/results; repo/knowledge state changes; important out-of-scope actions not performed; remaining blockers/risks; recommended next logical step."
+  ],
+  "expected_result":{"result_id":"KU2D-R-000031","next_actor":"assistant"},
+  "provenance":{"repository":"thanitpu/KU-Open-Data-Analytics","source_branch":"codex/ku2d-roots-semantic-witness-fix-v1","target_branch":"codex/ku2d-coffee-evidence-consolidation-v1","depends_on_result":"KU2D-R-000030","depends_on_review":"KU2D-V-000030","depends_on_merge":"6840bb7b90074567657843ba842850b7a1856d7b"},
+  "boundaries":{"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
