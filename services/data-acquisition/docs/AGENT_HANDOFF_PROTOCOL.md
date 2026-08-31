@@ -61,7 +61,7 @@ The bundle validator rejects duplicate/orphan IDs, inconsistent chains, self-ref
 
 ## Authoritative branch safeguard
 
-New Prompt records may declare `provenance.authoritative_branch`. When present, the current Queue must repeat the exact value as `authoritative_branch`. Before reading or executing `next_action`, Codex must fetch the remote branch, verify the checked-out branch, and call the equivalent of `validate_authoritative_branch(prompt, queue, checked_out_branch)`. A mismatch is a stale-branch handoff and fails closed before task work begins.
+New Prompt records may declare top-level `authoritative_branch`; existing v1 records that use `provenance.authoritative_branch` remain valid. If both locations are present they must match exactly. When either is present, the current Queue must repeat the exact value as `authoritative_branch`. Before reading or executing `next_action`, Codex must fetch the remote branch, verify the checked-out branch, and call the equivalent of `validate_authoritative_branch(prompt, queue, checked_out_branch)`. A contradiction or mismatch is a stale-branch handoff and fails closed before task work begins.
 
 The field is optional for backward compatibility: existing v1 records are not rewritten and continue to validate when both Prompt and Queue omit it. A Queue cannot invent branch authority that its Prompt did not declare, and branch metadata coordinates repository state only; it does not authorize production, acquisition, scheduling, or replay.
 

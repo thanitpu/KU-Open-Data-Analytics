@@ -1,13 +1,15 @@
 {
   "schema": "ku2d.human-confirmation-candidate-packet.v1",
   "version": "1.0",
-  "purpose": "Small contradiction-rich review request list. It does not create Human Confirmation or Ground Truth.",
+  "purpose": "Audit trail for five contradiction-rich semantic review requests and their explicit Human Confirmation disposition.",
   "explicit_human_authority_required": true,
-  "human_confirmation_created": false,
+  "human_confirmation_created": true,
+  "source_human_decision_id": "KU2D-H-000001",
   "production_authorized": false,
   "items": [
     {
-      "candidate_id": "KU2D-HC-000001", "review_status": "awaiting_explicit_human_authority", "human_confirmation_record_id": null, "final_decision": null,
+      "candidate_id": "KU2D-HC-000001", "review_status": "confirmed_by_explicit_human_authority", "human_confirmation_record_id": "confirmation-core-counter-role-policy",
+      "final_decision": {"canonical_label": "unknown-until-explicit-role-label", "counter_role": "unknown", "required_evidence_for_typed_role": "explicit sold, order, review, or item-role label", "numeric_magnitude_alone_is_role_evidence": false},
       "question": "When a marketplace counter has a number and unit but no explicit sold, order, review, or item-role label, should KU2D retain its semantic type as unknown?",
       "candidate_options": ["unknown-until-explicit-label", "infer-sold-from-context", "exclude-entire-observation"],
       "system_suggestion": "unknown-until-explicit-label",
@@ -15,15 +17,17 @@
       "why_high_value": "Prevents numeric magnitude or marketplace conventions from fabricating sales labels."
     },
     {
-      "candidate_id": "KU2D-HC-000002", "review_status": "awaiting_explicit_human_authority", "human_confirmation_record_id": null, "final_decision": null,
-      "question": "Should a visible currency amount without a current, from, range, promotional, or discount role remain unknown_display_price rather than canonical current price?",
-      "candidate_options": ["unknown-display-price", "current-price", "exclude-price"],
+      "candidate_id": "KU2D-HC-000002", "review_status": "confirmed_by_explicit_human_authority", "human_confirmation_record_id": "confirmation-core-price-temporal-policy",
+      "final_decision": {"canonical_label": "source-temporal-evidence-governs-price-temporal-status", "current_active_official_business_page_without_contrary_history": "current_advertised_price", "current_advertised_price_temporal_reference": "observed_at", "known_historical_evidence": "historical_observed_price", "unresolved_temporality": "temporal_status_unknown", "acquisition_method_alone_determines_temporality": false, "acquisition_methods_that_do_not_determine_temporality_alone": ["official_api", "rendered_dom", "structured_response", "export", "snapshot", "archive", "cache", "other_acquisition_method"], "temporal_status_separate_from_price_role": true, "does_not_imply": ["transaction_price", "all_branch_price", "variant_equivalence"]},
+      "question": "How should KU2D classify price temporal status separately from price role?",
+      "candidate_options": ["source-temporal-evidence-policy", "acquisition-method-implies-current", "always-temporal-status-unknown"],
       "system_suggestion": "unknown-display-price",
       "evidence_references": ["fixtures/acquisition_learning_memory/sanitized_historical_episodes.json", "config/lazada_commerce_pulse_sources.json"],
       "why_high_value": "Avoids contaminating price labels when the display role or selected variant is unresolved."
     },
     {
-      "candidate_id": "KU2D-HC-000003", "review_status": "awaiting_explicit_human_authority", "human_confirmation_record_id": null, "final_decision": null,
+      "candidate_id": "KU2D-HC-000003", "review_status": "confirmed_by_explicit_human_authority", "human_confirmation_record_id": "confirmation-core-product-variant-policy",
+      "final_decision": {"canonical_label": "product-match-variant-unresolved", "product_identity_match_implies_variant_match": false, "variant_status_without_explicit_equivalence_evidence": "unresolved"},
       "question": "Does matching a canonical product or item identity across surfaces leave selected variant identity unresolved unless explicit variant-equivalence evidence is present?",
       "candidate_options": ["product-match-variant-unresolved", "product-match-implies-variant-match", "do-not-correlate"],
       "system_suggestion": "product-match-variant-unresolved",
@@ -31,7 +35,8 @@
       "why_high_value": "Protects price correlation from false equivalence across sizes, colors, bundles, or configurations."
     },
     {
-      "candidate_id": "KU2D-HC-000004", "review_status": "awaiting_explicit_human_authority", "human_confirmation_record_id": null, "final_decision": null,
+      "candidate_id": "KU2D-HC-000004", "review_status": "confirmed_by_explicit_human_authority", "human_confirmation_record_id": "confirmation-core-display-order-policy",
+      "final_decision": {"canonical_label": "display-order-only-without-explicit-sort-contract", "default_or_recommended_order": "display_order_only", "explicit_sort_contract_required_for": ["demand", "popularity", "national_rank"]},
       "question": "Should default or recommended marketplace collection order remain display-order context and never be labelled demand or national rank without an explicit sort contract?",
       "candidate_options": ["display-order-only", "demand-rank", "exclude-position"],
       "system_suggestion": "display-order-only",
@@ -39,7 +44,8 @@
       "why_high_value": "Prevents contextual merchandising or personalization from becoming unsupported demand Ground Truth."
     },
     {
-      "candidate_id": "KU2D-HC-000005", "review_status": "awaiting_explicit_human_authority", "human_confirmation_record_id": null, "final_decision": null,
+      "candidate_id": "KU2D-HC-000005", "review_status": "confirmed_by_explicit_human_authority", "human_confirmation_record_id": "confirmation-core-environment-boundary-policy",
+      "final_decision": {"canonical_label": "environment-boundary-not-technique-failure", "classification": "environment_boundary", "technique_failure": false, "conditions": ["cloud access is blocked", "the same technique succeeds in a separately approved normal-network environment"]},
       "question": "When cloud access is blocked but the same technique works in a separately approved normal-network environment, should the label remain environment-boundary rather than technique failure?",
       "candidate_options": ["environment-boundary-not-technique-failure", "technique-failure", "source-unavailable"],
       "system_suggestion": "environment-boundary-not-technique-failure",

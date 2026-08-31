@@ -100,6 +100,19 @@ def validate_branch_name(value: Any) -> str:
     return branch
 
 
+def _prompt_authoritative_branch(record: dict[str, Any]) -> str | None:
+    top_level = record.get("authoritative_branch")
+    provenance = record.get("provenance")
+    provenance_branch = provenance.get("authoritative_branch") if isinstance(provenance, dict) else None
+    if top_level is not None:
+        top_level = validate_branch_name(top_level)
+    if provenance_branch is not None:
+        provenance_branch = validate_branch_name(provenance_branch)
+    if top_level is not None and provenance_branch is not None and top_level != provenance_branch:
+        raise ValueError("Prompt authoritative_branch locations contradict")
+    return top_level if top_level is not None else provenance_branch
+
+
 def _validate_boundaries(record: dict[str, Any]) -> dict[str, Any]:
     boundaries = _mapping(record, "boundaries")
     required = {
@@ -129,8 +142,7 @@ def validate_prompt_record(record: dict[str, Any]) -> dict[str, Any]:
     _string_list(record.get("instructions"), "instructions", allow_empty=False)
     _mapping(record, "expected_result")
     provenance = _mapping(record, "provenance")
-    if provenance.get("authoritative_branch") is not None:
-        validate_branch_name(provenance["authoritative_branch"])
+    _prompt_authoritative_branch(record)
     _validate_boundaries(record)
     return validate_safe_json_payload(record)
 
@@ -358,7 +370,7 @@ def validate_agent_handoff_bundle(
     latest_human = queue.get("latest_human_decision")
     actor = queue["next_action"]["actor"]
     if latest_prompt:
-        prompt_branch = prompts[latest_prompt].get("provenance", {}).get("authoritative_branch")
+        prompt_branch = _prompt_authoritative_branch(prompts[latest_prompt])
         queue_branch = queue.get("authoritative_branch")
         if prompt_branch is not None and queue_branch != prompt_branch:
             raise ValueError("queue authoritative_branch must match the latest Prompt")
@@ -442,7 +454,7 @@ def validate_authoritative_branch(
     """
     validate_prompt_record(prompt_record)
     validate_queue_state(queue_state)
-    expected = prompt_record.get("provenance", {}).get("authoritative_branch")
+    expected = _prompt_authoritative_branch(prompt_record)
     queued = queue_state.get("authoritative_branch")
     if expected is None:
         if queued is not None:

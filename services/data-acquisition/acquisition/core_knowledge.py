@@ -7,8 +7,15 @@ training, embedding, or inference.
 from __future__ import annotations
 
 import re
+from copy import deepcopy
 from typing import Any
 
+from acquisition_learning_memory import (
+    build_ground_truth_record,
+    build_human_confirmation_record,
+    validate_learning_memory_bundle,
+)
+from acquisition_learning_record import build_learning_record
 from acquisition_learning_record import serialize_json_object, validate_safe_json_payload
 
 
@@ -20,6 +27,7 @@ ML_MAP_SCHEMA = "ku2d.ml-knowledge-map.v1"
 GAP_REGISTER_SCHEMA = "ku2d.knowledge-gap-register.v1"
 CANDIDATE_REGISTRY_SCHEMA = "ku2d.candidate-learning-evidence-registry.v1"
 HUMAN_CANDIDATE_PACKET_SCHEMA = "ku2d.human-confirmation-candidate-packet.v1"
+HUMAN_CONFIRMED_POLICY_SCHEMA = "ku2d.human-confirmed-core-semantic-policies.v1"
 
 REQUIRED_DIMENSIONS = {
     "source_characteristic", "acquisition_technique", "execution_environment",
@@ -27,6 +35,7 @@ REQUIRED_DIMENSIONS = {
     "failure_boundary_type", "transferability", "evidence_strength",
     "review_authority", "change_drift", "data_quality_yield",
     "request_cost_latency", "privacy_authorization", "provenance_class",
+    "price_temporal_status",
 }
 CORPUS_ELIGIBILITY = {
     "eligible_reviewed_corpus", "excluded_insufficient_evidence",
@@ -160,6 +169,13 @@ def validate_episode(record: dict[str, Any], taxonomy: dict[str, Any]) -> dict[s
         values = _nonempty_list(parents[parent].get(field), f"{episode_id}.{field}")
         if len(values) != len(set(values)) or any(value not in index[dimension] for value in values):
             raise ValueError(f"{episode_id}.{field} contains invalid or duplicate taxonomy ids")
+    temporal_status_ids = knowledge.get("price_temporal_status_ids")
+    if temporal_status_ids is not None:
+        values = _nonempty_list(temporal_status_ids, f"{episode_id}.price_temporal_status_ids")
+        if len(values) != len(set(values)) or any(
+            value not in index["price_temporal_status"] for value in values
+        ):
+            raise ValueError(f"{episode_id}.price_temporal_status_ids contains invalid taxonomy ids")
 
     if authority.get("evidence_strength_id") not in index["evidence_strength"]:
         raise ValueError("episode evidence strength is invalid")
@@ -171,6 +187,14 @@ def validate_episode(record: dict[str, Any], taxonomy: dict[str, Any]) -> dict[s
         raise ValueError("human review cannot be inferred from non-human authority")
     if authority.get("human_reviewed") is False and authority.get("review_authority_id") == "RA-HUMAN-CONFIRMED":
         raise ValueError("human-confirmed authority requires explicit human review")
+    if authority.get("review_authority_id") == "RA-HUMAN-CONFIRMED":
+        for field in (
+            "human_decision_record_id", "human_confirmation_record_id", "ground_truth_record_id",
+        ):
+            _nonempty(authority.get(field), f"authority.{field}")
+        policy = _mapping(record, "human_confirmed_policy")
+        if policy.get("canonical_label") != knowledge.get("semantic_label"):
+            raise ValueError("human-confirmed policy label must match the episode semantic label")
     references = _nonempty_list(provenance.get("repository_references"), "repository_references")
     if any(not isinstance(ref, str) or not ref.strip() or ref.startswith(("http://", "https://")) for ref in references):
         raise ValueError("episode provenance must use repository-relative references")
@@ -345,25 +369,166 @@ def validate_human_candidate_packet(record: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(record, dict) or record.get("schema") != HUMAN_CANDIDATE_PACKET_SCHEMA:
         raise ValueError(f"schema must be {HUMAN_CANDIDATE_PACKET_SCHEMA}")
     if (record.get("explicit_human_authority_required") is not True
-            or record.get("production_authorized") is not False
-            or record.get("human_confirmation_created") is not False):
-        raise ValueError("Human candidate packet must remain an unconfirmed review request")
+            or record.get("production_authorized") is not False):
+        raise ValueError("Human candidate packet must preserve explicit authority and production boundaries")
+    confirmation_created = record.get("human_confirmation_created")
+    if not isinstance(confirmation_created, bool):
+        raise ValueError("human_confirmation_created must be boolean")
+    source_human_decision_id = record.get("source_human_decision_id")
+    confirmed_count = 0
     ids: set[str] = set()
     for item in _nonempty_list(record.get("items"), "items"):
         item_id = _nonempty(item.get("candidate_id"), "human candidate id")
         if item_id in ids or not _ID_RE.fullmatch(item_id):
             raise ValueError("human candidate IDs must be unique typed IDs")
         ids.add(item_id)
-        if item.get("review_status") != "awaiting_explicit_human_authority":
-            raise ValueError("human candidate must await explicit human authority")
-        if item.get("human_confirmation_record_id") is not None or item.get("final_decision") is not None:
-            raise ValueError("candidate packet cannot fabricate Human Confirmation or a final decision")
+        status = item.get("review_status")
+        if status == "awaiting_explicit_human_authority":
+            if item.get("human_confirmation_record_id") is not None or item.get("final_decision") is not None:
+                raise ValueError("awaiting candidate cannot claim Human Confirmation or a final decision")
+        elif status == "confirmed_by_explicit_human_authority":
+            confirmed_count += 1
+            _nonempty(source_human_decision_id, "source_human_decision_id")
+            _nonempty(item.get("human_confirmation_record_id"), "human_confirmation_record_id")
+            if item.get("final_decision") is None:
+                raise ValueError("confirmed candidate requires its explicit final decision")
+        else:
+            raise ValueError("human candidate review status is invalid")
         _nonempty(item.get("question"), "human candidate question")
         _nonempty_list(item.get("candidate_options"), "candidate_options")
         _nonempty(item.get("system_suggestion"), "system_suggestion")
         _nonempty_list(item.get("evidence_references"), "evidence_references")
         _nonempty(item.get("why_high_value"), "why_high_value")
+    if confirmation_created != bool(confirmed_count):
+        raise ValueError("human_confirmation_created must agree with confirmed candidate records")
     return validate_safe_json_payload(record)
+
+
+def validate_human_confirmed_policy_registry(record: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(record, dict) or record.get("schema") != HUMAN_CONFIRMED_POLICY_SCHEMA:
+        raise ValueError(f"schema must be {HUMAN_CONFIRMED_POLICY_SCHEMA}")
+    _nonempty(record.get("source_human_decision_id"), "source_human_decision_id")
+    _nonempty(record.get("source_human_decision_reference"), "source_human_decision_reference")
+    _nonempty(record.get("confirmed_by"), "confirmed_by")
+    _nonempty(record.get("confirmed_at"), "confirmed_at")
+    if record.get("production_authorized") is not False or record.get("ml_dataset_export_enabled") is not False:
+        raise ValueError("human-confirmed policy registry must remain non-production and non-exporting")
+    policy_ids: set[str] = set()
+    record_ids: set[str] = set()
+    for policy in _nonempty_list(record.get("policies"), "policies"):
+        policy_id = _nonempty(policy.get("policy_id"), "policy_id")
+        if policy_id in policy_ids or not _ID_RE.fullmatch(policy_id):
+            raise ValueError("human-confirmed policy IDs must be unique typed IDs")
+        policy_ids.add(policy_id)
+        if policy.get("status") != "human_confirmed":
+            raise ValueError("semantic policy must retain human-confirmed status")
+        label = _nonempty(policy.get("semantic_label"), "semantic_label")
+        decision = _mapping(policy, "final_decision")
+        if decision.get("canonical_label") != label:
+            raise ValueError("final decision canonical label must match semantic label")
+        _nonempty(policy.get("decision_type"), "decision_type")
+        _nonempty(policy.get("system_suggestion"), "system_suggestion")
+        _nonempty_list(policy.get("evidence_references"), "evidence_references")
+        for key in ("learning_record_id", "human_confirmation_record_id", "ground_truth_record_id"):
+            record_id = _nonempty(policy.get(key), key)
+            if record_id in record_ids:
+                raise ValueError("Learning Memory policy record IDs must be globally unique")
+            record_ids.add(record_id)
+    return validate_safe_json_payload(record)
+
+
+def materialize_human_confirmed_policy_bundle(record: dict[str, Any]) -> dict[str, Any]:
+    """Project explicit semantic decisions through existing Learning Memory contracts."""
+    validate_human_confirmed_policy_registry(record)
+    learning_records = []
+    confirmation_records = []
+    ground_truth_records = []
+    for policy in record["policies"]:
+        final_decision = deepcopy(policy["final_decision"])
+        learning = build_learning_record(
+            learning_record_id=policy["learning_record_id"],
+            generated_at=record["confirmed_at"],
+            identity={
+                "domain": "Core Knowledge semantic policy",
+                "source_id": record["source_human_decision_id"],
+                "platform": "ku2d-coordination",
+                "source_type": "explicit-human-semantic-policy",
+            },
+            observation_context={
+                "policy_candidate_id": policy["policy_id"],
+                "human_decision_id": record["source_human_decision_id"],
+                "observed_at": record["confirmed_at"],
+            },
+            technique={
+                "technique_id": "human_semantic_policy_confirmation",
+                "acquisition_mode": "coordination_record",
+            },
+            observed_evidence={
+                "evidence_type": "explicit_human_semantic_policy",
+                "candidate_question": policy["question"],
+                "prior_system_suggestion": policy["system_suggestion"],
+            },
+            semantic_labels={"semantic_policy": deepcopy(final_decision)},
+            acquisition_outcome={
+                "technical_completion": True,
+                "usable_evidence": True,
+                "production_approved": False,
+                "production_store": False,
+                "scheduler_action": None,
+            },
+            decision={
+                "decision_type": policy["decision_type"],
+                "system_suggestion": policy["system_suggestion"],
+                "final_decision": deepcopy(final_decision),
+                "reason_code": "explicit_human_semantic_policy_confirmation",
+                "explanation": policy["explanation"],
+                "evidence_references": list(policy["evidence_references"]),
+                "decision_source": "human_review",
+            },
+            provenance={
+                "source_schema": "ku2d.agent-handoff-human-decision.v1",
+                "evidence_origin": "explicit-human-input-coordination-record",
+                "reviewed_status": "human-reviewed",
+                "reviewer_provenance": record["source_human_decision_id"],
+            },
+        )
+        confirmation = build_human_confirmation_record(
+            confirmation_record_id=policy["human_confirmation_record_id"],
+            learning_record_id=policy["learning_record_id"],
+            confirmation_status="confirmed",
+            confirmed_decision=deepcopy(final_decision),
+            reason_note=policy["explanation"],
+            confirmed_by=record["confirmed_by"],
+            confirmed_at=record["confirmed_at"],
+            source_reference=record["source_human_decision_reference"],
+        )
+        ground_truth = build_ground_truth_record(
+            ground_truth_record_id=policy["ground_truth_record_id"],
+            learning_record_id=policy["learning_record_id"],
+            final_label=deepcopy(final_decision),
+            status="human_confirmed",
+            confidence="explicit-human-confirmation",
+            authority_basis=record["source_human_decision_id"],
+            supporting_review_record_ids=[],
+            supporting_human_confirmation_record_ids=[policy["human_confirmation_record_id"]],
+            effective_at=record["confirmed_at"],
+            source_reference=record["source_human_decision_reference"],
+        )
+        learning_records.append(learning)
+        confirmation_records.append(confirmation)
+        ground_truth_records.append(ground_truth)
+    validate_learning_memory_bundle(
+        learning_records, [], confirmation_records, ground_truth_records,
+    )
+    return {
+        "learning_records": learning_records,
+        "review_records": [],
+        "confirmation_records": confirmation_records,
+        "ground_truth_records": ground_truth_records,
+        "production_authorized": False,
+        "ml_dataset_export_enabled": False,
+        "scheduler_action": None,
+    }
 
 
 def validate_gap_register(record: dict[str, Any]) -> dict[str, Any]:

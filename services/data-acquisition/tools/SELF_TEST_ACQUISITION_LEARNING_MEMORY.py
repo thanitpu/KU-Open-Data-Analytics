@@ -28,6 +28,7 @@ from acquisition_learning_memory import (
     validate_review_feedback_record,
 )
 from acquisition_learning_record import build_learning_record
+from core_knowledge import materialize_human_confirmed_policy_bundle
 from learning_memory_backfill import build_sanitized_historical_bundle
 
 
@@ -320,4 +321,83 @@ assert all(record["acquisition_outcome"]["production_store"] is False for record
 assert historical["scheduler_action"] is None
 assert all(record["acquisition_outcome"]["scheduler_action"] is None for record in historical["learning_records"])
 
-print("Acquisition Learning Memory deterministic tests passed (LM1-LM24).")
+# LM25: the explicit KU2D-H-000001 policy registry materializes exactly five
+# complete Learning -> Human Confirmation -> Ground Truth chains.
+policy_source = json.loads(
+    (ROOT / "config" / "human_confirmed_core_semantic_policies.json").read_text(encoding="utf-8")
+)
+policies = materialize_human_confirmed_policy_bundle(policy_source)
+validated_policies = validate_learning_memory_bundle(
+    policies["learning_records"], policies["review_records"],
+    policies["confirmation_records"], policies["ground_truth_records"],
+)
+assert len(validated_policies["learning_records"]) == 5
+assert len(validated_policies["confirmation_records"]) == 5
+assert len(validated_policies["ground_truth_records"]) == 5
+
+# LM26: each active Ground Truth label has a matching genuine explicit Human
+# Confirmation and retains the coordination Human Decision provenance.
+assert all(record["status"] == "human_confirmed" for record in policies["ground_truth_records"])
+assert all(
+    record["provenance"]["confirmation_source"] == "explicit_human_input"
+    for record in policies["confirmation_records"]
+)
+assert all(
+    record["provenance"]["reviewer_provenance"] == "KU2D-H-000001"
+    for record in policies["learning_records"]
+)
+
+# LM27: decision traces expose the human-confirmed policy without mutating its
+# initial system suggestion or confusing the confirmation with source evidence.
+for learning in policies["learning_records"]:
+    trace = build_decision_trace(
+        learning["learning_record_id"], learning_records=policies["learning_records"],
+        review_records=[], confirmation_records=policies["confirmation_records"],
+        ground_truth_records=policies["ground_truth_records"],
+    )
+    assert trace["human_involved"] is True
+    assert trace["current_authority_status"] == "human_confirmed"
+    assert trace["current_authoritative_label"] == learning["decision"]["final_decision"]
+
+# LM28: the revised price policy preserves temporal status separately and
+# refuses acquisition-method-only temporal inference or broader price claims.
+price_learning = next(
+    record for record in policies["learning_records"]
+    if record["learning_record_id"] == "learning-core-price-temporal-policy"
+)
+price_policy = price_learning["decision"]["final_decision"]
+assert price_policy["current_active_official_business_page_without_contrary_history"] == "current_advertised_price"
+assert price_policy["current_advertised_price_temporal_reference"] == "observed_at"
+assert price_policy["known_historical_evidence"] == "historical_observed_price"
+assert price_policy["unresolved_temporality"] == "temporal_status_unknown"
+assert price_policy["acquisition_method_alone_determines_temporality"] is False
+assert set(price_policy["acquisition_methods_that_do_not_determine_temporality_alone"]) == {
+    "official_api", "rendered_dom", "structured_response", "export",
+    "snapshot", "archive", "cache", "other_acquisition_method",
+}
+assert price_policy["temporal_status_separate_from_price_role"] is True
+assert set(price_policy["does_not_imply"]) == {"transaction_price", "all_branch_price", "variant_equivalence"}
+
+# LM29: human-confirmed eligibility is an authority signal only; the registry
+# still creates no training dataset, export, production write, or schedule.
+for learning in policies["learning_records"]:
+    assert assess_ml_dataset_eligibility(
+        learning["learning_record_id"], learning_records=policies["learning_records"],
+        review_records=[], confirmation_records=policies["confirmation_records"],
+        ground_truth_records=policies["ground_truth_records"],
+    )["state"] == "human_confirmed"
+assert policies["ml_dataset_export_enabled"] is False
+assert policies["production_authorized"] is False
+assert policies["scheduler_action"] is None
+
+# LM30: all five semantic-policy Learning Records remain storage-neutral and
+# cannot alter production approval or source acquisition state.
+assert all(record["acquisition_outcome"] == {
+    "technical_completion": True,
+    "usable_evidence": True,
+    "production_approved": False,
+    "production_store": False,
+    "scheduler_action": None,
+} for record in policies["learning_records"])
+
+print("Acquisition Learning Memory deterministic tests passed (LM1-LM30).")

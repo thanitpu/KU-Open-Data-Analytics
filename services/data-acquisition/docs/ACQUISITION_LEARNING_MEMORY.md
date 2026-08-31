@@ -131,6 +131,22 @@ Eligibility assessment is classification for possible future export, not a train
 
 No V1 process trains, exports, auto-labels, or automatically promotes an example.
 
+## Human-confirmed Core semantic policies
+
+`config/human_confirmed_core_semantic_policies.json` records five semantic decisions explicitly confirmed in `KU2D-H-000001`. The compact registry is deterministically materialized through the existing Acquisition Learning Record, Human Confirmation, and Ground Truth contracts. Each active Ground Truth label has a matching `explicit_human_input` confirmation; no assistant or deterministic rule is relabelled as human authority.
+
+The confirmed policies are:
+
+- a bare counter remains semantically unknown until an explicit sold, order, review, or item-role label exists;
+- price temporal status is determined by source temporal evidence and remains separate from price role;
+- product identity match does not establish variant equivalence;
+- default or recommended displayed order is not demand, popularity, or national rank without an explicit sort contract;
+- alternative approved-environment success classifies cloud blocking as an environment boundary rather than technique failure.
+
+For prices, a current active official business webpage used to advertise product prices supports `current_advertised_price` at `observed_at` absent contrary historical evidence. Known historical evidence is `historical_observed_price`; unresolved temporality is `temporal_status_unknown`. Acquisition method alone never determines this status, and the status does not imply transaction price, all-branch price, or variant equivalence.
+
+These are semantic Ground Truth decisions only. They do not validate any source candidate, authorize production, schedule acquisition, create storage, or make an ML dataset exist.
+
 ## Reviewed Learning Corpus and Core Knowledge
 
 Learning Memory is the broad evidence layer; it is not itself a training set. The narrower Reviewed Learning Corpus is a deterministic, sanitized projection whose episodes have verified repository provenance, explicit authority, contradiction checks, and non-production boundaries. See `docs/CORE_KNOWLEDGE_BACKFILL.md`.

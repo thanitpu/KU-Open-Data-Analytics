@@ -294,7 +294,11 @@ repository_bundle = validate_agent_handoff_bundle(
 assert repository_bundle["queue_state"]["next_action"]["actor"] in {"codex", "assistant", "human", "none"}
 if repository_bundle["queue_state"]["next_action"]["actor"] == "assistant":
     assert repository_bundle["queue_state"]["latest_result"] == repository_bundle["queue_state"]["next_action"]["result_id"]
-assert repository_bundle["human_decision_records"] == {}
+assert set(repository_bundle["human_decision_records"]) == {"KU2D-H-000001"}
+assert repository_bundle["human_decision_records"]["KU2D-H-000001"]["decision"] == "confirmed"
+assert validate_authoritative_branch(
+    repository_prompts[-1], repository_queue, repository_queue["authoritative_branch"],
+) == repository_queue["authoritative_branch"]
 
 # AH19: new branch-authority metadata accepts only the exact checked-out branch.
 branch_prompt = prompt()
@@ -337,4 +341,19 @@ for unsafe_branch in ("refs/heads/main", "codex/../main", "codex/bad branch", "c
     except ValueError:
         pass
 
-print("Agent Handoff Protocol deterministic tests passed (AH1-AH22).")
+# AH23: top-level Prompt branch metadata is accepted for the current format,
+# while contradictory top-level/provenance declarations fail closed.
+top_level_prompt = prompt()
+top_level_prompt["authoritative_branch"] = "codex/ku2d-core-knowledge-backfill-v1"
+assert validate_authoritative_branch(
+    top_level_prompt, branch_queue, "codex/ku2d-core-knowledge-backfill-v1",
+) == "codex/ku2d-core-knowledge-backfill-v1"
+contradictory_prompt = deepcopy(top_level_prompt)
+contradictory_prompt["provenance"]["authoritative_branch"] = "codex/other-branch"
+try:
+    validate_prompt_record(contradictory_prompt)
+    raise AssertionError("contradictory Prompt branch declarations validated")
+except ValueError:
+    pass
+
+print("Agent Handoff Protocol deterministic tests passed (AH1-AH23).")
