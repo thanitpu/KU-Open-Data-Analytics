@@ -1,0 +1,36 @@
+{
+  "schema":"ku2d.agent-handoff-branch-handoff.v1",
+  "handoff_id":"KU2D-BH-000010",
+  "created_at":"2026-09-01T00:19:43+07:00",
+  "from_branch":"codex/ku2d-youtube-content-acquisition-v2",
+  "to_branch":"codex/ku2d-youtube-qdiving-live-pilot-v1",
+  "base_sha":"b93dfbfa26260bb7613a7fbb56f76d62242c5b1b",
+  "close_source_queue_before_switch":true,
+  "initialize_target_queue":true,
+  "target_prompt_id":"KU2D-P-000036",
+  "human_authority_required":false,
+  "source_close_commit_sha":"5b6ba64f21c56f8e577a6db42d2efd6f1f1eb763",
+  "target_initial_head_sha":"b93dfbfa26260bb7613a7fbb56f76d62242c5b1b",
+  "target_initialization_succeeded":true,
+  "source_queue_snapshot":{
+    "updated_at":"2026-08-31T23:31:00+07:00",
+    "authoritative_branch":"codex/ku2d-youtube-content-acquisition-v2",
+    "latest_prompt":"KU2D-P-000036",
+    "prompt_state":"in_progress",
+    "completed_prompt_ids":["KU2D-P-000001","KU2D-P-000002","KU2D-P-000003","KU2D-P-000004","KU2D-P-000005","KU2D-P-000006","KU2D-P-000007","KU2D-P-000012","KU2D-P-000014","KU2D-P-000016","KU2D-P-000018","KU2D-P-000020","KU2D-P-000022","KU2D-P-000024","KU2D-P-000025","KU2D-P-000026","KU2D-P-000027","KU2D-P-000028","KU2D-P-000030","KU2D-P-000031","KU2D-P-000032","KU2D-P-000033","KU2D-P-000034","KU2D-P-000035"],
+    "next_action":{"actor":"none","prompt_id":null,"result_id":null,"review_id":null,"human_decision_id":null,"replay_requested":false},
+    "branch_handoff":{"phase":"source_closed","handoff_id":"KU2D-BH-000010","from_branch":"codex/ku2d-youtube-content-acquisition-v2","to_branch":"codex/ku2d-youtube-qdiving-live-pilot-v1","base_sha":"b93dfbfa26260bb7613a7fbb56f76d62242c5b1b","target_prompt_id":"KU2D-P-000036","close_source_queue_before_switch":true,"initialize_target_queue":true,"human_authority_required":false}
+  },
+  "target_queue_snapshot":{
+    "updated_at":"2026-09-01T00:19:43+07:00",
+    "authoritative_branch":"codex/ku2d-youtube-qdiving-live-pilot-v1",
+    "latest_prompt":"KU2D-P-000036",
+    "prompt_state":"in_progress",
+    "completed_prompt_ids":["KU2D-P-000001","KU2D-P-000002","KU2D-P-000003","KU2D-P-000004","KU2D-P-000005","KU2D-P-000006","KU2D-P-000007","KU2D-P-000012","KU2D-P-000014","KU2D-P-000016","KU2D-P-000018","KU2D-P-000020","KU2D-P-000022","KU2D-P-000024","KU2D-P-000025","KU2D-P-000026","KU2D-P-000027","KU2D-P-000028","KU2D-P-000030","KU2D-P-000031","KU2D-P-000032","KU2D-P-000033","KU2D-P-000034","KU2D-P-000035"],
+    "next_action":{"actor":"codex","prompt_id":"KU2D-P-000036","result_id":null,"review_id":null,"human_decision_id":null,"replay_requested":false},
+    "branch_handoff":{"phase":"target_initialized","handoff_id":"KU2D-BH-000010","from_branch":"codex/ku2d-youtube-content-acquisition-v2","to_branch":"codex/ku2d-youtube-qdiving-live-pilot-v1","base_sha":"b93dfbfa26260bb7613a7fbb56f76d62242c5b1b","target_initial_head_sha":"b93dfbfa26260bb7613a7fbb56f76d62242c5b1b","source_close_commit_sha":"5b6ba64f21c56f8e577a6db42d2efd6f1f1eb763","target_prompt_id":"KU2D-P-000036","close_source_queue_before_switch":true,"initialize_target_queue":true,"target_initialization_succeeded":true,"human_authority_required":false}
+  },
+  "source_queue_fingerprint":"c4f770583d5298540909ad41fd52a36373ad15ec1c0220e726fb677a5bd3a26d",
+  "target_queue_fingerprint":"b31395d204a1b59440117bd2bb037bdd80086538afd8b21c5f3367784414f652",
+  "boundaries":{"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
