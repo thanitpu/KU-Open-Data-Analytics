@@ -1,9 +1,9 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T12:42:00+07:00",
+  "updated_at": "2026-08-31T12:46:06+07:00",
   "authoritative_branch": "codex/ku2d-core-intelligence-v1",
   "latest_prompt": "KU2D-P-000012",
-  "latest_result": "KU2D-R-000011",
+  "latest_result": "KU2D-R-000012",
   "latest_review": "KU2D-V-000011",
   "latest_human_decision": "KU2D-H-000002",
   "prompt_states": {
@@ -18,7 +18,7 @@
     "KU2D-P-000009": "reviewed",
     "KU2D-P-000010": "reviewed",
     "KU2D-P-000011": "reviewed",
-    "KU2D-P-000012": "ready_for_codex"
+    "KU2D-P-000012": "result_submitted"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -30,12 +30,12 @@
     "KU2D-P-000007"
   ],
   "next_action": {
-    "actor": "codex",
+    "actor": "assistant",
     "prompt_id": "KU2D-P-000012",
-    "result_id": null,
+    "result_id": "KU2D-R-000012",
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "KU2D-R-000011 branch/PR inventory is accepted. It found 1 active branch, 8 parked-unreviewed branches with unique unmerged work, and 15 advisory safe-to-delete candidates, with no branch deletion or evidence promotion. Durable branch governance is deferred to a dedicated branch after PR #46 merge. KU2D-P-000012 now finalizes PR #46 Quality Foundation for merge review only; broader Core Intelligence and branch-governance implementation remain out of scope."
+  "notes": "KU2D-R-000012 confirms PR #46 is technically clean and mergeable at audited head fea52c54be7dfd8c6029d4156f7bb739ee06654e: 39/39 deterministic scripts and all exact-head CI pass, taxonomy-family and partial-coverage corrections remain exact, and no governance, broader recommendation, source, production, or ML scope was added. The PR description is current. The Ready transition was attempted but the GitHub connector still requests unavailable Repository.fullDatabaseId; no workaround was used, so PR #46 remains Draft and unmerged. Control returns to assistant."
 }
