@@ -13,15 +13,19 @@ if str(ROOT / "acquisition") not in sys.path:
 
 from agent_handoff_protocol import (
     ASSISTANT_REVIEW_SCHEMA,
+    BRANCH_HANDOFF_SCHEMA,
     HUMAN_DECISION_SCHEMA,
     PROMPT_SCHEMA,
     QUEUE_SCHEMA,
     RESULT_SCHEMA,
+    branch_handoff,
+    branch_handoff_queue_fingerprint,
     serialize_coordination_record_json,
     validate_authoritative_branch,
     validate_agent_handoff_bundle,
     validate_branch_name,
     validate_assistant_review_record,
+    validate_branch_handoff_record,
     validate_human_decision_record,
     validate_prompt_record,
     validate_prompt_state_transition,
@@ -32,6 +36,10 @@ from agent_handoff_protocol import (
 
 NOW = "2026-08-31T02:00:00+00:00"
 P1, R1, V1, H1 = "KU2D-P-000101", "KU2D-R-000101", "KU2D-V-000101", "KU2D-H-000101"
+SOURCE_BRANCH = "codex/ku2d-coffee-evidence-recovery-v1"
+TARGET_BRANCH = "codex/ku2d-branch-handoff-protocol-v1"
+BASE_SHA = "1" * 40
+SOURCE_CLOSE_SHA = "2" * 40
 
 
 def boundaries():
@@ -109,6 +117,40 @@ def queue(state="result_submitted", actor="assistant", *, replay=False):
         "completed_prompt_ids": [P1] if state == "completed" else [],
         "next_action": action,
     }
+
+
+def handoff_queues():
+    common = {
+        "handoff_id": "KU2D-BH-000101", "from_branch": SOURCE_BRANCH,
+        "to_branch": TARGET_BRANCH, "base_sha": BASE_SHA, "target_prompt_id": P1,
+        "close_source_queue_before_switch": True, "initialize_target_queue": True,
+        "human_authority_required": False,
+    }
+    source = queue("in_progress", "none")
+    source["authoritative_branch"] = SOURCE_BRANCH
+    source["branch_handoff"] = {"phase": "source_closed", **common}
+    target = queue("in_progress", "codex")
+    target["authoritative_branch"] = TARGET_BRANCH
+    target["branch_handoff"] = {
+        "phase": "target_initialized", **common,
+        "target_initial_head_sha": BASE_SHA,
+        "source_close_commit_sha": SOURCE_CLOSE_SHA,
+        "target_initialization_succeeded": True,
+    }
+    return source, target
+
+
+def valid_handoff():
+    source, target = handoff_queues()
+    return branch_handoff(
+        from_branch=SOURCE_BRANCH, to_branch=TARGET_BRANCH, base_sha=BASE_SHA,
+        close_source_queue_before_switch=True, initialize_target_queue=True,
+        target_prompt_id=P1, human_authority_required=False,
+        source_queue=source, target_queue=target,
+        source_close_commit_sha=SOURCE_CLOSE_SHA, target_initial_head_sha=BASE_SHA,
+        target_initialization_succeeded=True, created_at=NOW,
+        handoff_id="KU2D-BH-000101",
+    )
 
 
 # AH1: a submitted Result has a valid Prompt chain and hands control to assistant.
@@ -287,9 +329,11 @@ repository_results = records_in(ROOT / "coordination" / "v1" / "results")
 repository_reviews = records_in(ROOT / "coordination" / "v1" / "reviews")
 human_folder = ROOT / "coordination" / "v1" / "human-decisions"
 repository_humans = records_in(human_folder) if human_folder.is_dir() else []
+handoff_folder = ROOT / "coordination" / "v1" / "branch-handoffs"
+repository_handoffs = records_in(handoff_folder) if handoff_folder.is_dir() else []
 repository_bundle = validate_agent_handoff_bundle(
     repository_prompts, repository_results, repository_reviews, repository_humans,
-    repository_queue,
+    repository_queue, branch_handoff_records=repository_handoffs,
 )
 assert repository_bundle["queue_state"]["next_action"]["actor"] in {"codex", "assistant", "human", "none"}
 if repository_bundle["queue_state"]["next_action"]["actor"] == "assistant":
@@ -308,6 +352,7 @@ assert repository_bundle["human_decision_records"]["KU2D-H-000008"]["decision"] 
 assert repository_bundle["human_decision_records"]["KU2D-H-000009"]["decision"] == "confirmed"
 assert validate_authoritative_branch(
     repository_prompts[-1], repository_queue, repository_queue["authoritative_branch"],
+    repository_handoffs[-1] if repository_handoffs else None,
 ) == repository_queue["authoritative_branch"]
 
 # AH19: new branch-authority metadata accepts only the exact checked-out branch.
@@ -366,4 +411,112 @@ try:
 except ValueError:
     pass
 
-print("Agent Handoff Protocol deterministic tests passed (AH1-AH23).")
+# AH24: one valid handoff closes source authority before initializing target authority.
+handoff = valid_handoff()
+assert handoff["schema"] == BRANCH_HANDOFF_SCHEMA
+assert validate_branch_handoff_record(handoff)["to_branch"] == TARGET_BRANCH
+
+# AH25: source and target cannot both retain an active codex action.
+dual_source, dual_target = handoff_queues()
+dual_source["next_action"] = deepcopy(dual_target["next_action"])
+try:
+    branch_handoff(
+        from_branch=SOURCE_BRANCH, to_branch=TARGET_BRANCH, base_sha=BASE_SHA,
+        close_source_queue_before_switch=True, initialize_target_queue=True,
+        target_prompt_id=P1, human_authority_required=False,
+        source_queue=dual_source, target_queue=dual_target,
+        source_close_commit_sha=SOURCE_CLOSE_SHA, target_initial_head_sha=BASE_SHA,
+        target_initialization_succeeded=True, created_at=NOW,
+        handoff_id="KU2D-BH-000101",
+    )
+    raise AssertionError("dual-authority branch handoff validated")
+except ValueError:
+    pass
+
+# AH26: switching before the source-close phase fails closed.
+early_source, early_target = handoff_queues()
+early_source["branch_handoff"]["phase"] = "target_initialized"
+try:
+    branch_handoff(
+        from_branch=SOURCE_BRANCH, to_branch=TARGET_BRANCH, base_sha=BASE_SHA,
+        close_source_queue_before_switch=True, initialize_target_queue=True,
+        target_prompt_id=P1, human_authority_required=False,
+        source_queue=early_source, target_queue=early_target,
+        source_close_commit_sha=SOURCE_CLOSE_SHA, target_initial_head_sha=BASE_SHA,
+        target_initialization_succeeded=True, created_at=NOW,
+        handoff_id="KU2D-BH-000101",
+    )
+    raise AssertionError("switch-before-close branch handoff validated")
+except ValueError:
+    pass
+
+# AH27: a source snapshot changed after signing is stale evidence.
+stale_handoff = valid_handoff()
+stale_handoff["source_queue_snapshot"]["updated_at"] = "2026-08-31T02:00:01+00:00"
+try:
+    validate_branch_handoff_record(stale_handoff)
+    raise AssertionError("stale source queue snapshot validated")
+except ValueError:
+    pass
+
+# AH28: target initialization must begin from the exact declared base commit.
+mismatched_head = valid_handoff()
+mismatched_head["target_initial_head_sha"] = "3" * 40
+try:
+    validate_branch_handoff_record(mismatched_head)
+    raise AssertionError("mismatched branch base/head validated")
+except ValueError:
+    pass
+
+# AH29: a target codex action cannot carry a downstream Result pointer.
+bad_pointer = valid_handoff()
+bad_pointer["target_queue_snapshot"]["next_action"]["result_id"] = R1
+bad_pointer["target_queue_fingerprint"] = branch_handoff_queue_fingerprint(
+    bad_pointer["target_queue_snapshot"]
+)
+try:
+    validate_branch_handoff_record(bad_pointer)
+    raise AssertionError("inappropriate target downstream pointer validated")
+except ValueError:
+    pass
+
+# AH30: failed target initialization and human-authority substitution both fail closed.
+failed_initialization = valid_handoff()
+failed_initialization["target_initialization_succeeded"] = False
+try:
+    validate_branch_handoff_record(failed_initialization)
+    raise AssertionError("failed target initialization validated")
+except ValueError:
+    pass
+human_substitution = valid_handoff()
+human_substitution["human_authority_required"] = True
+try:
+    validate_branch_handoff_record(human_substitution)
+    raise AssertionError("mechanical handoff claimed human authority")
+except ValueError:
+    pass
+
+# AH31: an immutable source Prompt can authorize work on the target only through
+# the exact handoff record; the same bundle fails without that proof.
+migrated_prompt = prompt()
+migrated_prompt["authoritative_branch"] = SOURCE_BRANCH
+_, migrated_queue = handoff_queues()
+assert validate_authoritative_branch(
+    migrated_prompt, migrated_queue, TARGET_BRANCH, handoff,
+) == TARGET_BRANCH
+try:
+    validate_authoritative_branch(migrated_prompt, migrated_queue, TARGET_BRANCH)
+    raise AssertionError("migrated Prompt validated without branch handoff proof")
+except ValueError:
+    pass
+assert validate_agent_handoff_bundle(
+    [migrated_prompt], [], [], [], migrated_queue,
+    branch_handoff_records=[handoff],
+)["branch_handoff_records"]["KU2D-BH-000101"]["to_branch"] == TARGET_BRANCH
+try:
+    validate_agent_handoff_bundle([migrated_prompt], [], [], [], migrated_queue)
+    raise AssertionError("migrated queue bundle validated without handoff record")
+except ValueError:
+    pass
+
+print("Agent Handoff Protocol deterministic tests passed (AH1-AH31).")

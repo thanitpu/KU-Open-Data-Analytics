@@ -25,6 +25,7 @@ Every artifact carries these boundaries:
 | Result | `ku2d.agent-handoff-result.v1` | `KU2D-R-xxxxxx` | Codex reports the exact Prompt outcome and verification evidence. |
 | Assistant Review | `ku2d.agent-handoff-assistant-review.v1` | `KU2D-V-xxxxxx` | Assistant reviews a consistent Prompt/Result chain without claiming human authority. |
 | Human Decision | `ku2d.agent-handoff-human-decision.v1` | `KU2D-H-xxxxxx` | A genuine human answers an Assistant Review that explicitly requested human authority. |
+| Branch Handoff | `ku2d.agent-handoff-branch-handoff.v1` | `KU2D-BH-xxxxxx` | Proves one source Queue closed before one target Queue became authoritative. |
 | Queue | `ku2d.agent-handoff-queue.v1` | one current state | Points to the latest chain and names exactly who acts next. |
 
 Records are append-only in meaning. A Result references its Prompt. An Assistant Review references its Result and the same Prompt. A Human Decision references the review, result, and prompt it answers. Corrections create new artifacts; they do not rewrite prior coordination evidence.
@@ -65,11 +66,19 @@ New Prompt records may declare top-level `authoritative_branch`; existing v1 rec
 
 The field is optional for backward compatibility: existing v1 records are not rewritten and continue to validate when both Prompt and Queue omit it. A Queue cannot invent branch authority that its Prompt did not declare, and branch metadata coordinates repository state only; it does not authorize production, acquisition, scheduling, or replay.
 
+## Mechanical branch handoff
+
+`branch_handoff(...)` transfers an active Prompt without rewriting that immutable Prompt. The transition requires explicit `from_branch`, `to_branch`, `base_sha`, `target_prompt_id`, `close_source_queue_before_switch=true`, `initialize_target_queue=true`, and `human_authority_required=false`. The source and target must differ, and every commit reference is a full lowercase SHA.
+
+The source Queue snapshot must retain completed history, keep the Prompt `in_progress`, declare the source branch, set its handoff phase to `source_closed`, and expose `next_action.actor=none` with no pointers. Only then may the target Queue be initialized from a head exactly equal to `base_sha`. The target snapshot keeps the same Prompt and completed history, declares the target branch, sets phase `target_initialized`, and assigns only that Prompt to Codex with no downstream pointers. Initialization failure, replay, a human-authority claim, mismatched provenance, or dual active authority fails closed.
+
+Both detached Queue snapshots are stored in the append-only Branch Handoff record with canonical SHA-256 fingerprints and exact source-close/target-initial-head provenance. The bundle validator accepts Prompt/Queue branch divergence only when exactly one valid record maps that Prompt from its immutable source branch to the current target branch. Later Queue progress does not rewrite the initialization evidence.
+
 ## Operating workflow
 
 1. **ChatGPT/assistant reads GitHub state.** It reads the queue, referenced records, commits, checks, and review evidence.
 2. **Assistant writes a Prompt or Assistant Review artifact.** Chat text alone is not authoritative repository state.
-3. **Codex verifies branch authority, then reads a `ready_for_codex` Prompt.** It fetches the named branch, fails closed on a mismatch, executes only the bounded request, creates a Result, and updates the queue to `result_submitted` with `next_action.actor=assistant`.
+3. **Codex verifies branch authority, then reads a `ready_for_codex` Prompt.** It fetches the named branch, fails closed on a mismatch, or validates the exact Branch Handoff record for a mechanical transition. It executes only the bounded request, creates a Result, and updates the queue to `result_submitted` with `next_action.actor=assistant`.
 4. **Assistant reviews the Result.** It either records a non-human Assistant Review or requests explicit human authority.
 5. **Human acts only when queued.** A person is asked only when `next_action.actor=human`; explicit input is serialized as a Human Decision.
 6. **Queue completes or advances.** GitHub remains the shared source of truth throughout.
