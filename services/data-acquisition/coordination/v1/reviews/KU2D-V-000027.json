@@ -1,0 +1,15 @@
+{
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
+  "review_id": "KU2D-V-000027",
+  "prompt_id": "KU2D-P-000027",
+  "result_id": "KU2D-R-000027",
+  "reviewed_at": "2026-08-31T18:40:00+07:00",
+  "reviewed_by": {"actor":"assistant","actor_id":"assistant_review","human_authority_claimed":false},
+  "review_result": "accepted",
+  "requires_human_decision": false,
+  "reason_code": "bounded_live_result_accepted_no_authority_promotion",
+  "explanation": "Accepted the single separately authorized hardened-detector Coffee rerun exactly as an evidence_withheld result. Nana produced two attributable House Blend records at 470 THB with complete retained provenance, stable identity/canonical URL, 100% repeatability, and a passed source Deep Audit. Roots produced no strict retained product record, so aggregate Deep Audit remains failed. No access boundary was observed, and no candidate or higher-authority promotion is approved by this review. The result and PR are safe for controlled integration as durable evidence and tooling only.",
+  "evidence_references": ["KU2D-R-000027","PR:#55","commit:4ca3513e255a57756d10b9af9d83fe2513d41f48","workflow:Data Acquisition Platform CI#302","workflow:Frontend CI#1181","workflow:PR Browser Preview Link#212"],
+  "provenance": {"repository":"thanitpu/KU-Open-Data-Analytics","branch":"codex/ku2d-coffee-hardened-rerun-v1","target_pr":55,"reviewed_result":"KU2D-R-000027"},
+  "boundaries": {"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
