@@ -81,6 +81,7 @@ jobs:
           python tools/SELF_TEST_COFFEE_EVIDENCE_RECOVERY.py
           python tools/SELF_TEST_COFFEE_RECOVERY_NEXT_STEP.py
           python tools/SELF_TEST_ROOTS_SEMANTICS_DIAGNOSIS.py
+          python tools/SELF_TEST_COFFEE_EVIDENCE_CONSOLIDATION.py
           python tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
           python tools/SELF_TEST_LIFECYCLE_ACCEPTANCE.py
