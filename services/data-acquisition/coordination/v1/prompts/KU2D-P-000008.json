@@ -1,0 +1,50 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000008",
+  "created_at": "2026-08-31T11:29:00+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-core-intelligence-v1",
+  "objective": "Build KU2D Core Intelligence v1 as a deterministic, knowledge-guided recommendation and explanation layer over the merged Core Knowledge foundation, without ML execution or acquisition-scope expansion.",
+  "instructions": [
+    "BRANCH HANDOFF IS MANDATORY: if the current checkout is not codex/ku2d-core-intelligence-v1, switch to codex/ku2d-core-intelligence-v1 first, fetch/pull the latest remote state, then read queue.json from that branch. Do not continue from codex/ku2d-core-knowledge-backfill-v1 or any stale branch.",
+    "Confirm the branch starts from merged Core Knowledge commit 7f0e7d72517754dcd0e90e5243cabf56120cc224 and includes KU2D-H-000002 plus this prompt before implementation.",
+    "Inspect the merged Core Knowledge taxonomy, Reviewed Learning Corpus, Candidate Learning Evidence Registry, Core Coverage Matrix, Knowledge Gap Register, ML Knowledge Map, Acquisition Learning Memory, Human-confirmed semantic policies, source registries, domain playbooks, execution-environment profiles, purposes, targets, and existing orchestration contracts before editing.",
+    "Create a generic storage-neutral KU2D Core Intelligence contract/module. It must consume structured source/context facts and reviewed knowledge; it must not perform live acquisition itself.",
+    "At minimum support deterministic assessments for: source characteristic classification, candidate acquisition-technique ranking, execution-environment suitability, evidence-strength assessment, uncertainty/review requirement, relevant knowledge gaps, and explanation/provenance references.",
+    "Recommendation output must distinguish: observed fact, reviewed rule/policy, deterministic inference, candidate-only clue, unresolved uncertainty, and human-confirmed semantic policy. Never collapse these into one confidence number without provenance.",
+    "Use only Reviewed Learning Corpus and human-confirmed policy chains as authority for validated recommendations. Candidate Learning Evidence may be shown as a clue or pending evidence but must never upgrade validation state, Ground Truth, production approval, or ML eligibility.",
+    "Implement an explainable Recommendation Trace so every recommendation can answer: which inputs were observed, which reviewed episodes/policies were used, which rule fired, what alternatives were considered, what uncertainty remains, and whether Human Review is required.",
+    "Add a deterministic Core Intelligence Scenario/fixture suite using already reviewed historical patterns only. Include at least: sitemap-to-canonical-detail, rendered DOM/browser, app-bundle discovery, cloud-vs-Edge environment boundary, application-shell/traffic-verification negative boundary, explicit official API/metadata, and an unresolved case where the system must return review_required rather than force a recommendation.",
+    "Add a coverage-aware next-exploration advisory that ranks missing capability/pattern gaps from the Knowledge Gap Register and explains why a future exploration would be valuable. It must recommend a pattern/capability to test, not launch a brand/source exploration and not make live requests.",
+    "Preserve the separation Learning Memory -> Reviewed Learning Corpus -> future task-specific ML Training Dataset. Do not create/export a training dataset, train a model, run inference, add embeddings/vector storage, or auto-label new source outcomes.",
+    "Do not add Survey/Google Forms/DoE/Bias/SEM, connected-system connectors, new domains, new marketplaces, production scheduling, or UI redesign in this PR.",
+    "No runtime auto-write from normal acquisition flows. Core Intelligence may be invoked explicitly in deterministic tests or future review tooling only unless separately approved.",
+    "Add fail-closed validation for contradictory input facts, unsupported taxonomy IDs, missing provenance, candidate-only evidence masquerading as reviewed authority, fabricated human authority, and production/scheduler side effects.",
+    "Add deterministic self-tests covering at least: reviewed-pattern recommendation, candidate-only non-promotion, environment-vs-technique distinction, evidence-vs-interpretation distinction, product-vs-variant distinction, display-order-vs-demand policy, price temporal-status-vs-role policy, negative boundary handling, unresolved review_required behavior, recommendation trace completeness, gap advisory pattern-not-brand behavior, sensitive-material rejection, no live requests, no production authorization, no ML execution/export, and no automatic runtime write.",
+    "Run git diff --check, JSON/YAML parsing, Python compilation, Core Knowledge tests, Learning Memory tests, Agent Handoff tests, the complete deterministic Data Acquisition corpus, and relevant supermarket/retail/YouTube/Shopee/Lazada/JIB/lifecycle regressions.",
+    "Open a new Draft PR targeting integration/data-acquisition-platform titled 'KU2D: Add Core Intelligence v1'. Keep the PR bounded to the deterministic intelligence layer and tests/docs.",
+    "Write KU2D-R-000008 with branch, exact commit SHAs, Draft PR number, files changed, intelligence contracts, recommendation behavior, trace behavior, scenario coverage, gap advisory behavior, tests/CI/security/live-request count, production state, and remaining blockers. Then hand control to assistant.",
+    "Do not merge."
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000008",
+    "next_actor": "assistant"
+  },
+  "provenance": {
+    "depends_on_result": "KU2D-R-000007",
+    "depends_on_review": "KU2D-V-000007",
+    "depends_on_human_decision": "KU2D-H-000002",
+    "depends_on_merge": "7f0e7d72517754dcd0e90e5243cabf56120cc224",
+    "authoritative_branch": "codex/ku2d-core-intelligence-v1"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
