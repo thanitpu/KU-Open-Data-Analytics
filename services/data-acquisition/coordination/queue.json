@@ -1,11 +1,11 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T13:33:00+07:00",
-  "authoritative_branch": "codex/ku2d-branch-governance-v1",
-  "latest_prompt": "KU2D-P-000014",
+  "updated_at": "2026-08-31T13:46:00+07:00",
+  "authoritative_branch": "codex/ku2d-parked-synthesis-review-v1",
+  "latest_prompt": "KU2D-P-000015",
   "latest_result": "KU2D-R-000014",
   "latest_review": "KU2D-V-000014",
-  "latest_human_decision": "KU2D-H-000004",
+  "latest_human_decision": "KU2D-H-000005",
   "prompt_states": {
     "KU2D-P-000001": "completed",
     "KU2D-P-000002": "completed",
@@ -20,7 +20,8 @@
     "KU2D-P-000011": "reviewed",
     "KU2D-P-000012": "completed",
     "KU2D-P-000013": "reviewed",
-    "KU2D-P-000014": "human_decision_required"
+    "KU2D-P-000014": "completed",
+    "KU2D-P-000015": "ready_for_codex"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -30,15 +31,16 @@
     "KU2D-P-000005",
     "KU2D-P-000006",
     "KU2D-P-000007",
-    "KU2D-P-000012"
+    "KU2D-P-000012",
+    "KU2D-P-000014"
   ],
   "next_action": {
-    "actor": "human",
-    "prompt_id": "KU2D-P-000014",
-    "result_id": "KU2D-R-000014",
-    "review_id": "KU2D-V-000014",
-    "human_decision_id": null,
+    "actor": "codex",
+    "prompt_id": "KU2D-P-000015",
+    "result_id": null,
+    "review_id": null,
+    "human_decision_id": "KU2D-H-000005",
     "replay_requested": false
   },
-  "notes": "PR #47 Branch/PR Governance v1 is technically accepted. Fresh evidence preserves eight parked-unreviewed unique-work branches and keeps sixteen safe-delete candidates advisory/non-executable; all current-head CI passes. Human action is required only to mark PR #47 Ready for review because the available connector cannot safely complete the known Repository.fullDatabaseId GraphQL transition. No merge or branch cleanup is authorized until Ready status is independently confirmed and exact head/CI are rechecked."
+  "notes": "PR #47 Branch/PR Governance v1 was squash-merged at f2c94299776b969948ee85883328806244a42d0e. A new authoritative branch now performs a bounded review of the two parked synthesis branches not durably projected into Candidate Learning Evidence: PR #42 transfer matrix and PR #43 exploration summary. Codex must preserve exact provenance, distinguish evidence from synthesis, avoid all silent promotion, keep both parked branches unmodified/unmerged, create a durable review packet/report with deterministic validation, open a Draft PR, write KU2D-R-000015, and return control to assistant. No branch deletion, live acquisition, production, ML, Survey/DoE/SEM, or broader recommendation/ranking work is authorized."
 }
