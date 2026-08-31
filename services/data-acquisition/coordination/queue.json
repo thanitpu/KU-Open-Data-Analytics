@@ -1,9 +1,9 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T12:30:00+07:00",
+  "updated_at": "2026-08-31T12:35:13+07:00",
   "authoritative_branch": "codex/ku2d-core-intelligence-v1",
   "latest_prompt": "KU2D-P-000011",
-  "latest_result": "KU2D-R-000010",
+  "latest_result": "KU2D-R-000011",
   "latest_review": "KU2D-V-000010",
   "latest_human_decision": "KU2D-H-000002",
   "prompt_states": {
@@ -17,7 +17,7 @@
     "KU2D-P-000008": "superseded",
     "KU2D-P-000009": "reviewed",
     "KU2D-P-000010": "reviewed",
-    "KU2D-P-000011": "ready_for_codex"
+    "KU2D-P-000011": "result_submitted"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -29,12 +29,12 @@
     "KU2D-P-000007"
   ],
   "next_action": {
-    "actor": "codex",
+    "actor": "assistant",
     "prompt_id": "KU2D-P-000011",
-    "result_id": null,
+    "result_id": "KU2D-R-000011",
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "KU2D-R-000010 is accepted: taxonomy-family-aware codebook, explicit Theme layer, dimension-aware coding/reliability, and exact partial coverage resolve the prior blocker. Before broader Core Intelligence or source expansion, KU2D-P-000011 inventories all codex branches/PRs and assigns evidence-backed dispositions without deleting, merging, promoting, or live-acquiring anything."
+  "notes": "KU2D-R-000011 inventories all 24 remote codex branches and associated PRs: 1 active, 8 parked-unreviewed with unique unmerged work, and 15 advisory safe-to-delete candidates proven tree-equivalent to their squash commits. The durable registry, report, and validator are deferred because adding branch governance to PR #46 would materially widen its reviewed Quality Foundation scope. No branch was deleted, merged, promoted, or live-executed. Control returns to assistant for review and a possible dedicated-branch Prompt."
 }
