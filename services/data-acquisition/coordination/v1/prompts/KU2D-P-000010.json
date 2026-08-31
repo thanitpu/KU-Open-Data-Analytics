@@ -1,0 +1,50 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000010",
+  "created_at": "2026-08-31T12:16:00+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-core-intelligence-v1",
+  "objective": "Correct PR #46 so the quality codebook preserves taxonomy dimensions and Code != Theme != Descriptor without collapsing acquisition techniques or failure boundaries into semantic interpretation.",
+  "instructions": [
+    "BRANCH HANDOFF: remain on codex/ku2d-core-intelligence-v1. Fetch/pull the latest remote state and read queue.json from this branch before editing. Do not switch back to an older branch.",
+    "Read KU2D-V-000009 first and treat it as the controlling correction review for KU2D-R-000009 and Draft PR #46.",
+    "Keep PR #46 bounded to the Core Intelligence Quality Foundation. Do not implement the broader recommendation/ranking work from superseded KU2D-P-000008 and do not add sources, live acquisition, Survey/DoE/SEM, production behavior, ML execution/export, embeddings, vector storage, or runtime auto-writes.",
+    "Correct the current codebook model so codebook entries preserve their original core_knowledge_taxonomy dimension/family. Do NOT require every codebook entry to be code_kind=semantic_code.",
+    "Introduce a clear machine-readable distinction such as code_kind or code_family derived from the taxonomy dimension. At minimum preserve semantic_interpretation for SI-* codes, acquisition_technique for AT-* codes, and failure_boundary_type for FB-* codes. If other dimensions are codebooked later, the model must support them without pretending they are semantic interpretations.",
+    "Make codebook validation fail closed when a codebook entry claims a family/dimension inconsistent with its taxonomy ID. The validator should derive or cross-check the authoritative taxonomy dimension rather than trusting an arbitrary label.",
+    "Change the evidence-quality chain concept from Raw Evidence -> Prepared Evidence -> Descriptor -> Semantic Code -> Interpretation -> Decision to Raw Evidence -> Prepared Evidence -> Descriptor -> Code -> Interpretation -> Decision. Each Code record must carry its taxonomy dimension/family explicitly. Only codes from semantic_interpretation may be called semantic-interpretation codes.",
+    "Preserve Code != Theme != Descriptor. Add a minimal explicit Theme representation/layer or contract, preferably optional and downstream of coding, so a Theme is a broader analytical grouping and is not silently represented as an Interpretation. Theme must not masquerade as a code and must not confer Ground Truth or production authority.",
+    "Preserve Interpretation as a distinct contextual analytical statement referencing one or more codes/themes/evidence as appropriate. Do not redefine Theme as Interpretation merely to satisfy the distinction.",
+    "Update first-cycle/second-cycle coding validation so task-appropriate code families are allowed and retained. An acquisition-technique coding task may use AT-* codes; a failure-boundary task may use FB-* codes; a semantic-interpretation task may use SI-* codes. Add optional task/expected_dimension validation so reliability comparisons do not silently compare incompatible code families.",
+    "Update Independent Coding and Semantic Reliability contracts/helpers to preserve task and codebook version plus expected taxonomy dimension/code family where applicable. Fail closed or mark not_applicable for incompatible label families instead of calculating misleading agreement.",
+    "Add codebook coverage metadata that makes the adapter's current scope explicit: number of taxonomy IDs with full codebook guidance, dimensions covered, and IDs/dimensions not yet codebooked. Partial codebook coverage is acceptable; false completeness is not.",
+    "Keep include_when, exclude_when, positive_examples, counter_examples, commonly_confused_with, evidence_required, ontology openness, no_existing_code_fits, novel_pattern_candidate, raw-evidence immutability, Analytical Memo, Negative/Deviant Case, Finding Verification, and Quality Loop behavior intact.",
+    "Update documentation to explain that qualitative coding can include multiple code types/families; semantic interpretation is only one family. Explain Code vs Theme vs Descriptor vs Interpretation with one KU2D example for each.",
+    "Add deterministic regression tests at minimum for: SI code validates only as semantic_interpretation; AT code validates as acquisition_technique and fails if labelled semantic_interpretation; FB code validates as failure_boundary_type and fails if labelled semantic_interpretation; descriptor cannot be code; theme cannot be code; theme remains broader/non-authoritative; interpretation remains distinct from theme; coding task rejects wrong taxonomy dimension; reliability rejects/not_applicable incompatible dimensions; codebook coverage metadata is accurate; old reviewed fixtures still validate after deterministic migration/adapter; QF1-QF35 behavior remains preserved unless intentionally superseded by stronger corrected assertions.",
+    "Run git diff --check, JSON/YAML parsing, Python compilation, all Core Intelligence Quality tests, Core Knowledge tests, Learning Memory tests, Agent Handoff tests, complete deterministic Data Acquisition corpus, and relevant regressions. No live requests.",
+    "Update Draft PR #46 description with the corrected dimension-aware codebook model and exact current-head verification. Keep Draft and do not merge.",
+    "Write KU2D-R-000010 with exact branch/head, correction summary, taxonomy/codebook family model, Theme behavior, reliability dimension checks, coverage metadata, files changed, tests/CI/security/live-request count, production/ML boundaries, and blockers. Then hand control to assistant.",
+    "STOP after reporting. Do not proceed to broader Core Intelligence recommendation/ranking work."
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000010",
+    "next_actor": "assistant"
+  },
+  "provenance": {
+    "depends_on_result": "KU2D-R-000009",
+    "depends_on_review": "KU2D-V-000009",
+    "target_pr": 46,
+    "depends_on_merge": "7f0e7d72517754dcd0e90e5243cabf56120cc224",
+    "authoritative_branch": "codex/ku2d-core-intelligence-v1"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
