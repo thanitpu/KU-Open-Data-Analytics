@@ -1,0 +1,200 @@
+{
+  "schema": "ku2d.coffee-evidence-consolidation.v1",
+  "consolidated_at": "2026-08-31T20:00:00+07:00",
+  "authoritative_branch": "codex/ku2d-coffee-evidence-consolidation-v1",
+  "objective": "Consolidate merged durable Coffee recovery evidence into source-level and phase-level dispositions without a new request or authority promotion.",
+  "evidence_basis": {
+    "repository_evidence_only": true,
+    "external_request_count": 0,
+    "result_ids": ["KU2D-R-000023", "KU2D-R-000024", "KU2D-R-000025", "KU2D-R-000026", "KU2D-R-000027", "KU2D-R-000028", "KU2D-R-000030"],
+    "accepted_review_ids": ["KU2D-V-000023", "KU2D-V-000025", "KU2D-V-000027", "KU2D-V-000028", "KU2D-V-000030"],
+    "conditional_review_id": "KU2D-V-000026",
+    "human_authorization_id": "KU2D-H-000010",
+    "durable_artifacts": [
+      "docs/validation/coffee-evidence-recovery-2026-08-31.json",
+      "docs/validation/coffee-hardened-rerun-2026-08-31.json",
+      "config/roots_semantics_diagnosis.json",
+      "acquisition/coffee_evidence_recovery.py"
+    ],
+    "parked_pr39_references": [
+      "config/candidate_learning_evidence_registry.json#KU2D-CLE-000006",
+      "config/candidate_learning_evidence_registry.json#KU2D-CLE-000007",
+      "config/parked_candidate_review.json#KU2D-PC-PR39",
+      "config/parked_evidence_disposition_plan.json#PR39",
+      "config/evidence_recovery_prioritization.json#KU2D-ERP-PR39"
+    ],
+    "historical_result_reinterpreted_as_success": false,
+    "parked_branch_read_or_mutated": false
+  },
+  "source_dispositions": [
+    {
+      "source_id": "nana_coffee_roasters",
+      "source": "Nana Coffee Roasters",
+      "candidate_evidence_id": "KU2D-CLE-000007",
+      "observed_durable_evidence": {
+        "artifact": "docs/validation/coffee-hardened-rerun-2026-08-31.json",
+        "http_status": 200,
+        "attempt_count": 2,
+        "retained_record_count": 2,
+        "coffee_product_id": "nanacoffeeroasters.com:house-blend",
+        "product_name": "House Blend Coffee Beans (Medium Roast) - 200g / 500g / 1kg",
+        "displayed_price_values": [470.0, 470.0],
+        "currency": "THB",
+        "availability_values": ["InStock", "InStock"],
+        "canonical_url": "https://nanacoffeeroasters.com/products/house-blend",
+        "field_level_provenance_passed": true,
+        "identity_repeatability_pct": 100.0,
+        "canonical_repeatability_pct": 100.0,
+        "source_deep_audit_passed": true,
+        "access_boundary": null
+      },
+      "candidate_evidence_quality": {
+        "classification": "strong-durable-candidate-acquisition-evidence",
+        "basis": "Two attributable official-detail records have stable identity/canonical URL, the same displayed price, complete retained field provenance, and a passed source Deep Audit.",
+        "record_count_alone_used_as_quality_proof": false
+      },
+      "unresolved_gaps": [],
+      "parser_tooling_readiness": "ready-for-reviewed-nana-product-shape",
+      "further_live_evidence_currently_necessary": false,
+      "evidence_recovery_complete_for_phase": true,
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    },
+    {
+      "source_id": "roots_coffee",
+      "source": "Roots Coffee",
+      "candidate_evidence_id": "KU2D-CLE-000006",
+      "observed_durable_evidence": {
+        "artifact": "docs/validation/coffee-hardened-rerun-2026-08-31.json",
+        "historical_classification": "evidence_withheld",
+        "historical_exit_classification": 2,
+        "http_status": 200,
+        "attempt_count": 1,
+        "retained_record_count": 0,
+        "final_url": "https://shop.rootsbkk.com/collections/frontpage/products/house-blend-coffee",
+        "canonical_url_evidence": "https://shop.rootsbkk.com/products/house-blend-coffee",
+        "normalization_failure_reason": "normalized product withheld: coffee_product_semantics",
+        "retained_field_provenance_count": 0,
+        "source_deep_audit_passed": false,
+        "identity_repeatability_pct": 0.0,
+        "canonical_repeatability_pct": 0.0,
+        "access_boundary": null,
+        "historical_record_reconstructable": false
+      },
+      "candidate_evidence_quality": {
+        "classification": "durable-withheld-diagnostic-evidence",
+        "basis": "The response and canonical route were durably diagnosed, but no strict product record or field provenance was retained and aggregate recovery remained exit 2.",
+        "offline_fixture_or_tooling_treated_as_live_evidence": false
+      },
+      "unresolved_gaps": [
+        "No strict live Roots product record exists after the accepted semantic-witness correction.",
+        "Attributable name, displayed price, availability, and field-level provenance were not retained historically.",
+        "Identity/canonical repeatability and a source Deep Audit pass remain unobserved."
+      ],
+      "parser_tooling_readiness": "offline-correction-merged-live-validation-pending",
+      "further_live_evidence_currently_necessary": true,
+      "minimum_future_evidence_objective": {
+        "objective": "Under a separate explicit authorization, run only the same reviewed official Roots detail URL with the merged normalizer; retain one strict sanitized product record with name, attributable displayed price, canonical identity, availability, semantic witness, and field provenance, then make a second same-URL observation only after the first strict record passes to establish repeatability and source Deep Audit.",
+        "same_reviewed_url_only": true,
+        "staged_stop_after_first_failure": true,
+        "new_live_validation_authorized": false,
+        "automatic_rerun_authorized": false,
+        "production_or_scheduling_authorized": false
+      },
+      "evidence_recovery_complete_for_phase": false,
+      "authority": {
+        "candidate_only": true,
+        "reviewed_corpus_authorized": false,
+        "core_knowledge_authorized": false,
+        "human_confirmed": false,
+        "ground_truth_asserted": false,
+        "production_authorized": false
+      }
+    }
+  ],
+  "coffee_domain_phase_disposition": {
+    "value": "complete-with-open-gap",
+    "deterministic_reasons": [
+      "Nana is evidence-recovery-complete for this phase from two repeatable attributable 470 THB records with complete provenance and a passed source Deep Audit.",
+      "Roots tooling and diagnostics are corrected offline, but its only durable live result remains exit-2 evidence_withheld with no retained product record or repeatability.",
+      "The phase has completed the authorized recovery and tooling work while preserving one explicit source evidence gap that requires separate authority to revisit."
+    ],
+    "exact_evidence_dependencies": [
+      "KU2D-R-000027",
+      "KU2D-V-000027",
+      "KU2D-R-000028",
+      "KU2D-V-000028",
+      "KU2D-R-000030",
+      "KU2D-V-000030",
+      "docs/validation/coffee-hardened-rerun-2026-08-31.json",
+      "config/roots_semantics_diagnosis.json"
+    ],
+    "complete_source_ids": ["nana_coffee_roasters"],
+    "open_gap_source_ids": ["roots_coffee"],
+    "new_live_validation_authorized": false,
+    "automatic_follow_on": false
+  },
+  "parked_pr39_gap_map": [
+    {
+      "gap_id": "KU2D-ERP-GAP-39-01",
+      "source_ids": ["roots_coffee"],
+      "status": "partially-closed",
+      "closed_evidence": ["HTTP 200 sanitized response metadata", "official canonical product-route evidence", "accepted offline semantic-witness and diagnostic-retention correction"],
+      "open_evidence": ["strict live normalized record", "attributable retained price and field provenance", "repeatability and source Deep Audit pass"]
+    },
+    {
+      "gap_id": "KU2D-ERP-GAP-39-02",
+      "source_ids": ["nana_coffee_roasters"],
+      "status": "closed-for-evidence-recovery-phase",
+      "closed_evidence": ["two sanitized official-detail records", "canonical identity and 470 THB displayed price", "availability and field provenance", "100% identity/canonical repeatability", "passed source Deep Audit"],
+      "open_evidence": []
+    },
+    {
+      "gap_id": "KU2D-ERP-GAP-39-03",
+      "source_ids": ["roots_coffee", "nana_coffee_roasters"],
+      "status": "partially-closed",
+      "closed_evidence": ["Nana repeated identity, price role, availability, provenance, and source Deep Audit", "merged retail-product/menu semantic guard"],
+      "open_evidence": ["Roots strict record, repeatability, provenance, and source Deep Audit"]
+    }
+  ],
+  "parked_pr39_disposition": {
+    "parked_ref_mutated": false,
+    "parked_pr_merge_or_close_authorized": false,
+    "candidate_registry_mutated": false,
+    "candidate_ids": ["KU2D-CLE-000006", "KU2D-CLE-000007"],
+    "later_durable_evidence_changes_assessment_without_rewriting_history": true,
+    "nana_candidate_gap_assessment": "later durable recovery evidence closes the acquisition-evidence gap for this phase, but does not promote authority",
+    "roots_candidate_gap_assessment": "later durable diagnostics and tooling partially close the gap; successful strict live evidence remains absent",
+    "unique_parked_code_claimed_losslessly_integrated": false
+  },
+  "next_step": {
+    "recommendation": "Independently review this consolidation. Treat Nana recovery as phase-complete and Roots as the sole open evidence gap; consider a separately authorized minimum Roots validation only if closing that gap is still valuable.",
+    "separate_prompt_required": true,
+    "separate_live_authorization_required": true,
+    "candidate_promotion_authorized": false,
+    "knowledge_authority_mutation_authorized": false
+  },
+  "boundaries": {
+    "consolidation_only": true,
+    "live_request_count": 0,
+    "historical_result_reinterpreted": false,
+    "candidate_promotion_count": 0,
+    "learning_memory_write": false,
+    "reviewed_corpus_write": false,
+    "core_knowledge_write": false,
+    "human_confirmation_write": false,
+    "ground_truth_write": false,
+    "parked_ref_action_count": 0,
+    "production_authorized": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "ml_training_or_inference": false,
+    "survey_doe_sem_work": false
+  }
+}
