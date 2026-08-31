@@ -1,0 +1,61 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000003",
+  "prompt_id": "KU2D-P-000003",
+  "submitted_at": "2026-08-31T09:15:00+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "partial",
+  "summary": "Validated Learning Memory v1 and Agent Handoff Protocol v1, updated PR #44 description, and confirmed merge-readiness checks. The GitHub connector could not mark the PR Ready because its GraphQL response requested an unavailable Repository field; no workaround was attempted and the PR remains Draft and unmerged.",
+  "evidence_references": [
+    "PR:#44",
+    "KU2D-P-000003",
+    "KU2D-R-000002",
+    "KU2D-V-000002",
+    "workflow:Data Acquisition Platform CI#193",
+    "workflow:Frontend CI#921",
+    "workflow:PR Browser Preview Link#114"
+  ],
+  "verification": {
+    "deterministic_tests_passed": true,
+    "git_diff_check": "passed",
+    "json_parse": "51 files passed before Result submission",
+    "yaml_parse": "16 files passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service, tools passed",
+    "agent_handoff_tests": "AH1-AH18 passed",
+    "learning_memory_tests": "LM1-LM24 passed",
+    "acquisition_learning_record_tests": "L1-L12 and LG1-LG12 passed",
+    "complete_corpus": "37/37 passed",
+    "runtime_learning_memory_or_coordination_imports": 0,
+    "coordination_production_boundary": "7/7 v1 records passed before Result submission",
+    "live_request_count": 0
+  },
+  "pull_request_finalization": {
+    "pr_number": 44,
+    "description_updated": true,
+    "current_head_checks_successful": true,
+    "ready_transition_requested": true,
+    "ready_transition_completed": false,
+    "limitation": "GitHub ready-for-review connector failed because its GraphQL response selected Repository.fullDatabaseId, which is unavailable in the repository schema.",
+    "workaround_attempted": false,
+    "draft_remains": true,
+    "merged": false
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-learning-memory-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000003.json",
+    "depends_on_result": "KU2D-R-000002",
+    "depends_on_review": "KU2D-V-000002",
+    "target_pr": 44,
+    "learning_memory_record_id": null
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
