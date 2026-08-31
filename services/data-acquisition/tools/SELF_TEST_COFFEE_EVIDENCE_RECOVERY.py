@@ -1,6 +1,7 @@
 """Deterministic tests for the bounded Coffee evidence-recovery package."""
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import sys
@@ -272,4 +273,94 @@ assert rerun["authority"]["candidate_promoted"] is False
 assert rerun["boundaries"]["production_approved"] is rerun["boundaries"]["production_store"] is False
 assert rerun["boundaries"]["scheduler_action"] is None and rerun["boundaries"]["knowledge_mutation"] is False
 
-print("Coffee evidence recovery deterministic tests passed (CER1-CER69).")
+# CER70-CER96 / RSD-F01-RSD-F06: the accepted route witness is narrow,
+# diagnostic retention is sanitized, and historical evidence stays immutable.
+def rsd_fixture(name):
+    return (FIXTURES / name).read_text(encoding="utf-8")
+
+
+# RSD-F01: the coffee-bearing official product slug is sufficient only after
+# the independently extracted name and attributable price have passed.
+positive_route = normalize_product_detail(
+    rsd_fixture("rsd_f01_positive_route.html"), roots_target,
+    final_url="https://shop.rootsbkk.com/collections/frontpage/products/house-blend-coffee",
+    observed_at=observed,
+)
+assert positive_route["record"]["product_name"] == "House Blend"
+assert positive_route["record"]["price"] == 450.0
+assert positive_route["sanitized_response"]["semantic_witnesses"] == {
+    "jsonld_product_type": False,
+    "explicit_coffee_bean_or_roasted_coffee_text": False,
+    "coffee_name_plus_labeled_attributes": False,
+    "official_product_route_plus_coffee_slug": True,
+}
+assert positive_route["field_provenance"]["product_name"]["extraction_path"] == "dom.h1"
+
+# RSD-F02: a generic route is not proof, and a coffee token outside the
+# product slug is not allowed to become proof.
+for fixture, final_url in (
+    ("rsd_f02_generic_route.html", "https://shop.rootsbkk.com/products/house-blend"),
+    ("rsd_f02_coffee_outside_slug.html", "https://shop.rootsbkk.com/collections/coffee/products/house-blend"),
+):
+    generic = normalize_product_detail(rsd_fixture(fixture), roots_target, final_url=final_url, observed_at=observed)
+    assert generic["record"] is None
+    assert generic["sanitized_response"]["semantic_witnesses"]["official_product_route_plus_coffee_slug"] is False
+    assert generic["normalization_failure_reason"] == "normalized product withheld: coffee_product_semantics"
+
+# RSD-F03 and RSD-F04: the route cannot compensate for missing identity or
+# attributable price.
+missing_name = normalize_product_detail(
+    rsd_fixture("rsd_f03_missing_name.html"), roots_target,
+    final_url="https://shop.rootsbkk.com/products/house-blend-coffee", observed_at=observed,
+)
+assert missing_name["record"] is None
+assert missing_name["sanitized_response"]["candidate_fields"]["product_name"]["value"] is None
+assert "product_name" in missing_name["normalization_failure_reason"]
+assert missing_name["sanitized_response"]["semantic_witnesses"]["official_product_route_plus_coffee_slug"] is False
+
+missing_price = normalize_product_detail(
+    rsd_fixture("rsd_f04_missing_price.html"), roots_target,
+    final_url="https://shop.rootsbkk.com/products/house-blend-coffee", observed_at=observed,
+)
+assert missing_price["record"] is None
+assert missing_price["sanitized_response"]["candidate_fields"]["displayed_price"]["value"] is None
+assert "attributable_displayed_price" in missing_price["normalization_failure_reason"]
+assert missing_price["sanitized_response"]["semantic_witnesses"]["official_product_route_plus_coffee_slug"] is False
+
+# RSD-F05: an ambiguous cafe-menu name still fails the existing menu gate,
+# while the withheld row keeps only bounded normalized diagnostic fields.
+menu_ambiguity = normalize_product_detail(
+    rsd_fixture("rsd_f05_menu_ambiguity.html"), roots_target,
+    final_url="https://shop.rootsbkk.com/products/hot-latte-coffee", observed_at=observed,
+)
+assert menu_ambiguity["record"] is None
+assert menu_ambiguity["sanitized_response"]["semantic_witnesses"]["official_product_route_plus_coffee_slug"] is True
+assert menu_ambiguity["sanitized_response"]["menu_only_result"] == {
+    "value": True, "route_match": False, "name_match": True,
+}
+assert "retail_product_not_cafe_menu" in menu_ambiguity["normalization_failure_reason"]
+candidate_fields = menu_ambiguity["sanitized_response"]["candidate_fields"]
+assert set(candidate_fields) == {"product_name", "displayed_price", "currency", "canonical_url"}
+assert all(set(item) == {"value", "extraction_path"} for item in candidate_fields.values())
+assert menu_ambiguity["sanitized_response"]["raw_html_retained"] is False
+assert menu_ambiguity["sanitized_response"]["headers_retained"] is False
+diagnostic_text = json.dumps(menu_ambiguity["sanitized_response"], sort_keys=True).casefold()
+assert all(token not in diagnostic_text for token in ("cookie", "credential", "session_state", "authorization_header", "raw_value"))
+
+# RSD-F06: a wrong-host canonical cannot become the route witness; the durable
+# historical exit-2 artifact is neither edited nor reinterpreted.
+wrong_host = normalize_product_detail(
+    rsd_fixture("rsd_f06_wrong_host_canonical.html"), roots_target,
+    final_url="https://shop.rootsbkk.com/catalog/house-blend", observed_at=observed,
+)
+assert wrong_host["record"] is None
+assert wrong_host["sanitized_response"]["candidate_fields"]["canonical_url"] == {
+    "value": "https://shop.rootsbkk.com/catalog/house-blend",
+    "extraction_path": "response.final_url",
+}
+assert wrong_host["sanitized_response"]["semantic_witnesses"]["official_product_route_plus_coffee_slug"] is False
+assert wrong_host["normalization_failure_reason"] == "normalized product withheld: coffee_product_semantics"
+assert rerun["classification"] == "evidence_withheld" and rerun["usable_candidate_evidence"] is False
+assert hashlib.sha256(rerun_path.read_bytes()).hexdigest() == "904e9ab187543ff5877888b6a32616153d908507b18481de1a9a7029cd7b3d05"
+
+print("Coffee evidence recovery deterministic tests passed (CER1-CER96; RSD-F01-RSD-F06).")

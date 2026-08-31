@@ -13,7 +13,7 @@ import re
 from collections import defaultdict
 from copy import deepcopy
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import unquote, urlparse
 
 from bs4 import BeautifulSoup
 
@@ -48,6 +48,20 @@ def _allowed_hosts(target: dict[str, Any]) -> set[str]:
 def _is_allowed_url(value: Any, target: dict[str, Any]) -> bool:
     safe = _safe_url(value)
     return bool(safe and (urlparse(safe).hostname or "").casefold() in _allowed_hosts(target))
+
+
+def _official_product_route_coffee_slug(value: Any, target: dict[str, Any]) -> str | None:
+    """Return the coffee-bearing product slug for the narrow reviewed witness."""
+    safe = _safe_url(value)
+    if not safe or not _is_allowed_url(safe, target):
+        return None
+    path = unquote(urlparse(safe).path)
+    route = re.fullmatch(r"/(?:collections/[^/]+/)?products/([^/]+)/?", path, re.I)
+    if not route:
+        return None
+    slug = route.group(1)
+    coffee_token = re.search(r"(?:^|[-_])(?:coffee|beans?|roasted?)(?:[-_]|$)", slug, re.I)
+    return slug if coffee_token else None
 
 
 def validate_package(package: dict[str, Any]) -> dict[str, Any]:
@@ -262,12 +276,27 @@ def normalize_product_detail(
             availability, availability_raw, availability_path = "InStock", "in-stock/add-to-cart text", "visible-availability-text"
 
     semantic_attributes = any((origin, process, tasting, roast, package_size))
-    coffee_product = bool(products) or bool(
+    explicit_coffee_text = bool(
         re.search(r"coffee beans?|roasted coffee|เมล็ดกาแฟ", f"{name} {text[:3000]}", re.I)
-    ) or (bool(re.search(r"\bcoffee\b", name, re.I)) and semantic_attributes)
-    menu_only = bool(re.search(r"/(?:menu|drink)(?:/|$)", urlparse(canonical or final_url).path, re.I)) or (
-        bool(re.search(r"\b(?:iced|hot)\s+(?:latte|americano|espresso|cappuccino)\b", name, re.I)) and not semantic_attributes
     )
+    coffee_name_with_attributes = bool(re.search(r"\bcoffee\b", name, re.I)) and semantic_attributes
+    route_coffee_slug = _official_product_route_coffee_slug(canonical, target)
+    route_witness = bool(name and price is not None and route_coffee_slug)
+    semantic_witnesses = {
+        "jsonld_product_type": bool(products),
+        "explicit_coffee_bean_or_roasted_coffee_text": explicit_coffee_text,
+        "coffee_name_plus_labeled_attributes": coffee_name_with_attributes,
+        "official_product_route_plus_coffee_slug": route_witness,
+    }
+    coffee_product = any(semantic_witnesses.values())
+    menu_route_match = any(
+        bool(re.search(r"/(?:menu|drink)(?:/|$)", urlparse(value).path, re.I))
+        for value in {canonical, _safe_url(final_url)} if value
+    )
+    menu_name_match = bool(
+        re.search(r"\b(?:iced|hot)\s+(?:latte|americano|espresso|cappuccino)\b", name, re.I)
+    ) and not semantic_attributes
+    menu_only = menu_route_match or menu_name_match
     slug = urlparse(canonical or "").path.rstrip("/").split("/")[-1]
     record = None
     if name and price is not None and canonical and slug and coffee_product and not menu_only:
@@ -320,6 +349,18 @@ def normalize_product_detail(
                 "origin": origin, "process": process, "tasting_notes": tasting,
                 "roast_level": roast, "package_size": package_size,
             }.items() if value is not None
+        },
+        "candidate_fields": {
+            "product_name": {"value": name or None, "extraction_path": name_path},
+            "displayed_price": {"value": price, "extraction_path": price_path},
+            "currency": {"value": currency, "extraction_path": currency_path},
+            "canonical_url": {"value": canonical, "extraction_path": canonical_path},
+        },
+        "semantic_witnesses": semantic_witnesses,
+        "menu_only_result": {
+            "value": menu_only,
+            "route_match": menu_route_match,
+            "name_match": menu_name_match,
         },
         "raw_html_retained": False,
         "headers_retained": False,
