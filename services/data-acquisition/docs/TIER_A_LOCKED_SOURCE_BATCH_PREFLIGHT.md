@@ -87,4 +87,3 @@ separately authorized live batch. None is authorized now. The manifest performs
 zero requests, stores nothing in production, schedules nothing, changes no
 knowledge authority, touches no parked reference, and enables no browser, Edge,
 login, cookie, session, private API, proxy, CAPTCHA, or challenge behavior.
-

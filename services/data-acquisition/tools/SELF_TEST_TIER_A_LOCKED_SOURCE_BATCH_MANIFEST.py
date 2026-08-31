@@ -138,4 +138,3 @@ rejects(lambda row: row["campaign_envelope"].update(evidence_write_before_next_r
 rejects(lambda row: row["boundaries"].update(executable=True), "executable manifest validated")
 
 print("Tier-A Locked-Source Batch Manifest deterministic tests passed (TABM1-TABM76).")
-

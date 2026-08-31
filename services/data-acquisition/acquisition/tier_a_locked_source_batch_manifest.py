@@ -279,4 +279,3 @@ def validate_tier_a_locked_source_batch_manifest(record: dict[str, Any]) -> dict
         raise ValueError("manifest boundaries drifted")
     validate_safe_json_payload(record)
     return deepcopy(record)
-
