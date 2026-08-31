@@ -1,0 +1,218 @@
+{
+  "schema": "ku2d.coffee-recovery-next-step.v1",
+  "evaluated_at": "2026-08-31T17:50:00+07:00",
+  "authoritative_branch": "codex/ku2d-coffee-recovery-next-step-v1",
+  "objective": "Choose one evidence-recovery next step after the completed Coffee exit-2 observation without making another request.",
+  "evidence_basis": {
+    "references": [
+      "KU2D-R-000023",
+      "KU2D-R-000024",
+      "docs/validation/coffee-evidence-recovery-2026-08-31.json",
+      "docs/COFFEE_EVIDENCE_RECOVERY.md",
+      "config/coffee_evidence_recovery_package.json",
+      "config/evidence_recovery_prioritization.json",
+      "config/candidate_learning_evidence_registry.json",
+      "config/parked_evidence_disposition_plan.json"
+    ],
+    "completed_observation_reinterpreted_as_success": false,
+    "authority": "reviewed planning evidence and durable candidate-only diagnostics"
+  },
+  "completed_observation": {
+    "classification": "evidence_withheld",
+    "technical_completion": true,
+    "http_200_source_count": 2,
+    "acquisition_attempts": 2,
+    "transport_requests": 2,
+    "retained_product_records": 0,
+    "repeatability_available": false,
+    "deep_audit_passed": false,
+    "confirmed_visible_challenge": false
+  },
+  "risk_classification": {
+    "detector_false_positive_risk": {
+      "status": "material-unresolved",
+      "explanation": "The first detector stopped on a document-wide captcha substring. Script-only captcha text is now a deterministic negative fixture, but raw HTML was intentionally not retained, so the two historical matches cannot be reclassified conclusively."
+    },
+    "environment_access_risk": {
+      "status": "unresolved-not-confirmed",
+      "explanation": "Both exact official URLs returned HTTP 200 with no redirect, yet the retained evidence lacks visible title, widget, challenge-markup, route, or access-denial proof. Normal cloud access may be usable, but that remains unverified."
+    },
+    "live_technique_failure": {
+      "status": "not-evaluated",
+      "explanation": "The stop condition fired before normalization, so the live product-detail parser never had an opportunity to prove or fail identity, attributable price, coffee semantics, or provenance gates."
+    },
+    "evidence_retention_failure": {
+      "status": "mechanism-repaired-product-gap-open",
+      "explanation": "Evidence-before-exit durably retained the request ledger and sanitized diagnostics, repairing the original no-evidence failure mode. It retained no product record, so both Coffee candidate evidence gaps and repeatability remain open."
+    }
+  },
+  "scoring_model": {
+    "scale": {"minimum":0,"maximum":5,"direction":"higher-is-better","integer_scores_only":true},
+    "formula": "weighted_points = sum(score * weight_percent); normalized_score = weighted_points / 100",
+    "criteria": [
+      {"criterion":"expected_evidence_gain","weight_percent":25,"rationale":"Rewards the option most likely to reduce an evidence uncertainty with attributable retained output."},
+      {"criterion":"cross_source_reuse_value","weight_percent":20,"rationale":"Rewards reusable learning across sources or source roles without treating breadth as quality."},
+      {"criterion":"incremental_request_risk_efficiency","weight_percent":20,"rationale":"A higher score means fewer bounded requests, less compliance uncertainty, and less coordination cost."},
+      {"criterion":"coffee_gap_resolution","weight_percent":25,"rationale":"Rewards direct resolution of Roots/Nana identity, price, provenance, and repeatability gaps."},
+      {"criterion":"dependency_reduction","weight_percent":10,"rationale":"Rewards closure of explicit Candidate Learning Evidence and reviewed-claim dependencies."}
+    ],
+    "tie_breakers": ["higher coffee_gap_resolution", "higher incremental_request_risk_efficiency", "lower option_id"]
+  },
+  "options": [
+    {
+      "option_id": "A",
+      "description": "Queue one separately authorized bounded rerun with the hardened detector on the same Roots and Nana official product-detail URLs.",
+      "scores": {
+        "expected_evidence_gain": 5,
+        "cross_source_reuse_value": 4,
+        "incremental_request_risk_efficiency": 4,
+        "coffee_gap_resolution": 5,
+        "dependency_reduction": 4
+      },
+      "score_rationale": {
+        "expected_evidence_gain": "The only prior stop may be detector-induced, and the hardened detector allows the live parser to be evaluated while preserving evidence before exit.",
+        "cross_source_reuse_value": "Two specialty-roaster details test reusable canonical identity, displayed-price, semantic, provenance, and repeatability behavior.",
+        "incremental_request_risk_efficiency": "The same two public official URLs fit a four-attempt maximum with no retry, pagination, browser, session, or scope expansion.",
+        "coffee_gap_resolution": "It is the only option that can directly produce the missing Roots/Nana product, price, provenance, and repeat observations.",
+        "dependency_reduction": "A valid outcome can advance CLE-000006 and CLE-000007 and clarify the related Coffee claim chain, though independent review remains necessary."
+      },
+      "weighted_points": 450,
+      "normalized_score": 4.5,
+      "rank": 1,
+      "execution_authorized": false
+    },
+    {
+      "option_id": "B",
+      "description": "Move next to Q-Diving evidence recovery across SSI Blog, Scubadoo Koh Tao, and Aquamaster Thailand.",
+      "scores": {
+        "expected_evidence_gain": 5,
+        "cross_source_reuse_value": 5,
+        "incremental_request_risk_efficiency": 2,
+        "coffee_gap_resolution": 0,
+        "dependency_reduction": 5
+      },
+      "score_rationale": {
+        "expected_evidence_gain": "Three distinct content, course-service, and retail-product roles offer broad uncertainty reduction.",
+        "cross_source_reuse_value": "The three-role package has the greatest transfer breadth.",
+        "incremental_request_risk_efficiency": "It requires three current surfaces, three repeat paths, separate parsers, Deep Audit, Human Review, and registry decisions.",
+        "coffee_gap_resolution": "It cannot resolve the open Roots/Nana evidence gap.",
+        "dependency_reduction": "It can advance three candidate records and eleven reviewed claims after a substantially larger package."
+      },
+      "weighted_points": 315,
+      "normalized_score": 3.15,
+      "rank": 2,
+      "execution_authorized": false
+    },
+    {
+      "option_id": "C",
+      "description": "Stop Coffee recovery for now and retain the completed exit-2 observation as candidate-only negative evidence.",
+      "scores": {
+        "expected_evidence_gain": 1,
+        "cross_source_reuse_value": 1,
+        "incremental_request_risk_efficiency": 5,
+        "coffee_gap_resolution": 1,
+        "dependency_reduction": 1
+      },
+      "score_rationale": {
+        "expected_evidence_gain": "It preserves the existing negative diagnostic but generates no new evidence.",
+        "cross_source_reuse_value": "The retained detector lesson is reusable, while live extraction remains unevaluated.",
+        "incremental_request_risk_efficiency": "It incurs no further request or access risk.",
+        "coffee_gap_resolution": "It records a stop decision but leaves both product-evidence and repeatability gaps open.",
+        "dependency_reduction": "Candidate evidence remains unresolved and no reviewed claim gains new support."
+      },
+      "weighted_points": 180,
+      "normalized_score": 1.8,
+      "rank": 3,
+      "execution_authorized": false
+    }
+  ],
+  "recommendation": {
+    "recommended_option_id": "A",
+    "recommendation_count": 1,
+    "reason": "A is the smallest bounded action that can distinguish the unresolved detector/access question from live technique performance and directly close the Roots/Nana product-evidence gap. B has higher breadth but does not resolve Coffee and costs substantially more; C preserves safety but leaves the specific gap untouched.",
+    "execution_authorized": false,
+    "separate_prompt_required": true,
+    "automatic_follow_on": false
+  },
+  "option_a_safe_envelope": {
+    "same_reviewed_urls_only": true,
+    "target_urls": [
+      "https://shop.rootsbkk.com/collections/frontpage/products/house-blend-coffee",
+      "https://nanacoffeeroasters.com/products/house-blend"
+    ],
+    "hardened_detector_required": true,
+    "cloud_default": true,
+    "browser_or_edge_escalation": false,
+    "stop_after_first_unusable_observation_per_source": true,
+    "limits": {
+      "target_count": 2,
+      "observations_per_source": 2,
+      "maximum_acquisition_attempts": 4,
+      "maximum_transport_requests": 12,
+      "maximum_redirects_per_attempt": 2,
+      "retries": 0,
+      "pagination": 0,
+      "maximum_response_bytes": 1000000,
+      "timeout_seconds": 15
+    },
+    "sequence": [
+      "Write a fresh prepared evidence artifact and pending ledger before any request.",
+      "Make one observation per source with the hardened detector and retain sanitized response/normalization evidence before continuing.",
+      "Stop that source if the first observation has confirmed access-boundary evidence or cannot yield attributable identity plus price; a second observation could no longer satisfy two-of-two Deep Audit.",
+      "Make the second observation only for a source whose first strict product record passed, then evaluate repeatability and Deep Audit.",
+      "Never auto-rerun, escalate environment, or promote candidate evidence."
+    ],
+    "outcome_contract": {
+      "success": {
+        "exit_classification": 0,
+        "technical_completion": true,
+        "retained_product_records": 4,
+        "required_per_source_records": 2,
+        "identity_and_canonical_repeatability_pct": 100.0,
+        "attributable_displayed_price_required": true,
+        "field_level_provenance_required": true,
+        "retail_product_not_cafe_menu_required": true,
+        "deep_audit_passed": true,
+        "authority_after_success": "candidate-only-pending-independent-review"
+      },
+      "withheld_evidence": {
+        "exit_classification": 2,
+        "technical_completion": true,
+        "condition": "No confirmed access boundary occurred, but any strict identity, price, semantic, provenance, two-of-two repeatability, or Deep Audit gate failed.",
+        "authority_after_exit": "candidate-only-negative-or-incomplete-evidence"
+      },
+      "new_access_boundary": {
+        "exit_classification": 2,
+        "technical_completion": true,
+        "confirmed_by_hardened_evidence": true,
+        "accepted_evidence": ["explicit access-denial HTTP status", "visible or title challenge", "challenge widget or markup", "challenge route", "authentication requirement", "off-host redirect"],
+        "action": "Stop the affected source without browser, Edge, session, proxy, authentication, challenge handling, or automatic rerun."
+      },
+      "technical_failure": {
+        "exit_classification": 1,
+        "technical_completion": false,
+        "condition": "Transport, runtime, request-budget, or evidence-writing failure.",
+        "action": "Write available technical evidence, stop, and require separate review before any retry."
+      }
+    }
+  },
+  "boundaries": {
+    "planning_only": true,
+    "live_request_count": 0,
+    "rerun_execution_authorized": false,
+    "automatic_follow_on": false,
+    "candidate_promotion_count": 0,
+    "learning_memory_write": false,
+    "reviewed_corpus_write": false,
+    "core_knowledge_write": false,
+    "human_confirmation_write": false,
+    "ground_truth_write": false,
+    "parked_ref_mutation_count": 0,
+    "cleanup_execution": false,
+    "production_authorized": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "ml_training_or_inference": false,
+    "survey_doe_sem_work": false
+  }
+}
