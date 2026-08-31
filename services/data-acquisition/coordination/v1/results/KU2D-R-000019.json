@@ -1,0 +1,262 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000019",
+  "prompt_id": "KU2D-P-000019",
+  "submitted_at": "2026-08-31T15:38:29+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "Created a storage-neutral Parked Evidence Disposition & Closure Plan for exact parked Draft PRs #36-#43. All eight remain open, Draft, unmerged, unchanged, and at reviewed heads. The plan assigns one retain-as-evidence, three targeted-evidence-rerun, two human-adjudication, and two superseded-by-reviewed-artifact dispositions; no PR is closure-eligible and no disposition is executed. It resolves all 11 Candidate Learning Evidence records, 59 Parked Candidate Review findings, and 39 Parked Synthesis Review claims while preserving non-lossless gaps and concrete human prerequisites. Draft PR #50 is open at exact head f4630dd9a681dde96092c1755873a157d6c6846a; all 43 deterministic scripts and exact-head workflows pass. No parked ref, knowledge authority, live source, cleanup, runtime, production, scheduler, ML, Survey/DoE/SEM, or ranking state changed.",
+  "evidence_references": [
+    "PR:#50",
+    "commit:f4630dd9a681dde96092c1755873a157d6c6846a",
+    "base:c722aacfb49d618e6f67c24923e4c89e3909fac0",
+    "config/parked_evidence_disposition_plan.json",
+    "docs/PARKED_EVIDENCE_DISPOSITION_PLAN.md",
+    "config/branch_pr_disposition_registry.json",
+    "config/parked_candidate_review.json",
+    "config/parked_synthesis_review.json",
+    "workflow:Data Acquisition Platform CI#264",
+    "workflow:Frontend CI#1086",
+    "workflow:PR Browser Preview Link#179"
+  ],
+  "repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-parked-disposition-planning-v1",
+    "authoritative_branch": "codex/ku2d-parked-disposition-planning-v1",
+    "base_branch": "integration/data-acquisition-platform",
+    "base_sha": "c722aacfb49d618e6f67c24923e4c89e3909fac0",
+    "implementation_commit_sha": "f4630dd9a681dde96092c1755873a157d6c6846a",
+    "pull_request_number": 50,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/50",
+    "pull_request_title": "KU2D: Plan parked evidence dispositions v1",
+    "pull_request_open": true,
+    "pull_request_draft": true,
+    "pull_request_merged": false,
+    "changed_file_count": 10
+  },
+  "parked_pr_plans": [
+    {
+      "pr_number": 36,
+      "branch": "codex/overnight-tiktok-shop-commerce-pulse-explore",
+      "head_sha": "9f62c33f933989bb12581fdb3b2a6fb21a1ca6b5",
+      "planning_disposition": "RETAIN_AS_EVIDENCE",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false,
+      "closure_eligible_now": false,
+      "disposition_executed": false
+    },
+    {
+      "pr_number": 37,
+      "branch": "codex/overnight-marketplace-source-inventory",
+      "head_sha": "0e99926c72cec7e83e259408c153fd6c99fd1492",
+      "planning_disposition": "NEEDS_TARGETED_EVIDENCE_RERUN",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false,
+      "closure_eligible_now": false,
+      "disposition_executed": false
+    },
+    {
+      "pr_number": 38,
+      "branch": "codex/overnight-ota-source-expansion",
+      "head_sha": "8c8ac59c5ef852bf2bbd33be6c8ff44e55e00c73",
+      "planning_disposition": "NEEDS_HUMAN_ADJUDICATION",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false,
+      "closure_eligible_now": false,
+      "disposition_executed": false
+    },
+    {
+      "pr_number": 39,
+      "branch": "codex/overnight-coffee-source-expansion",
+      "head_sha": "441c71d678a30cc62b742ea58f23f629a9d1e2d6",
+      "planning_disposition": "NEEDS_TARGETED_EVIDENCE_RERUN",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false,
+      "closure_eligible_now": false,
+      "disposition_executed": false
+    },
+    {
+      "pr_number": 40,
+      "branch": "codex/overnight-qdiving-source-expansion",
+      "head_sha": "5f972d456415dbd0d8ae695f02c056e4a7c76e56",
+      "planning_disposition": "NEEDS_TARGETED_EVIDENCE_RERUN",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false,
+      "closure_eligible_now": false,
+      "disposition_executed": false
+    },
+    {
+      "pr_number": 41,
+      "branch": "codex/overnight-cross-domain-source-gap-scan",
+      "head_sha": "408e4a3889a70b89b71cbd076b0b980d1aaae2d3",
+      "planning_disposition": "NEEDS_HUMAN_ADJUDICATION",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false,
+      "closure_eligible_now": false,
+      "disposition_executed": false
+    },
+    {
+      "pr_number": 42,
+      "branch": "codex/overnight-acquisition-technique-transfer-matrix",
+      "head_sha": "4c024a480dafda27b0064b3059e34eebaadf353d",
+      "planning_disposition": "SUPERSEDED_BY_REVIEWED_ARTIFACTS",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false,
+      "closure_eligible_now": false,
+      "disposition_executed": false
+    },
+    {
+      "pr_number": 43,
+      "branch": "codex/overnight-exploration-summary",
+      "head_sha": "87b700db3e9c2b507530f0427a6a1a2bea9ab3e9",
+      "planning_disposition": "SUPERSEDED_BY_REVIEWED_ARTIFACTS",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false,
+      "closure_eligible_now": false,
+      "disposition_executed": false
+    }
+  ],
+  "plan_integrity": {
+    "parked_pr_count": 8,
+    "candidate_dependency_count": 11,
+    "candidate_review_claim_dependency_count": 59,
+    "synthesis_review_claim_dependency_count": 39,
+    "total_claim_dependency_count": 98,
+    "retain_as_evidence_count": 1,
+    "needs_targeted_evidence_rerun_count": 3,
+    "needs_human_adjudication_count": 2,
+    "superseded_by_reviewed_artifacts_count": 2,
+    "eligible_for_later_closure_count": 0,
+    "closure_eligible_now_count": 0,
+    "lossless_preservation_claim_count": 0,
+    "candidate_promotion_count": 0,
+    "future_human_prerequisites_explicit": true
+  },
+  "branch_governance_refresh": {
+    "exact_branch_head_drift_detected": false,
+    "existing_snapshot_modified": false,
+    "rationale": "The integrated governance snapshot remains valid as historical observation and exact refs did not drift. The new plan is the current non-executing planning projection without rewriting the earlier snapshot."
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "git_diff_check": "passed",
+    "json_parse": "127 files passed before Result submission",
+    "yaml_parse": "16 workflows passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service, tools passed",
+    "parked_evidence_disposition_plan_tests": "PED1-PED30 passed",
+    "agent_handoff_tests": "AH1-AH23 passed",
+    "complete_deterministic_corpus": "43/43 scripts passed",
+    "supermarket_regressions": "passed",
+    "retail_transfer_regressions": "passed",
+    "youtube_regressions": "passed",
+    "shopee_regressions": "passed",
+    "lazada_regressions": "passed",
+    "jib_and_lifecycle_regressions": "passed",
+    "live_request_count": 0
+  },
+  "ci": {
+    "head_sha": "f4630dd9a681dde96092c1755873a157d6c6846a",
+    "data_acquisition_platform_ci": {
+      "run_number": 264,
+      "run_id": 33373744275,
+      "conclusion": "success"
+    },
+    "frontend_ci": {
+      "run_number": 1086,
+      "run_id": 33373744232,
+      "conclusion": "success"
+    },
+    "pr_browser_preview_link": {
+      "run_number": 179,
+      "run_id": 33373744237,
+      "conclusion": "success"
+    }
+  },
+  "files_changed_by_implementation": [
+    ".github/workflows/data-acquisition-platform-ci.yml",
+    "services/data-acquisition/README.md",
+    "services/data-acquisition/acquisition/parked_evidence_disposition_plan.py",
+    "services/data-acquisition/config/parked_evidence_disposition_plan.json",
+    "services/data-acquisition/docs/PARKED_EVIDENCE_DISPOSITION_PLAN.md",
+    "services/data-acquisition/tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py",
+    "services/data-acquisition/tools/SELF_TEST_PARKED_EVIDENCE_DISPOSITION_PLAN.py"
+  ],
+  "security_and_boundaries": {
+    "credentials_or_private_material_added": false,
+    "new_source_count": 0,
+    "live_request_count": 0,
+    "candidate_source_promotion_count": 0,
+    "learning_memory_mutation_count": 0,
+    "reviewed_learning_corpus_mutation_count": 0,
+    "core_knowledge_mutation_count": 0,
+    "human_confirmation_mutation_count": 0,
+    "ground_truth_mutation_count": 0,
+    "parked_pr_close_count": 0,
+    "parked_pr_merge_count": 0,
+    "parked_branch_mutation_count": 0,
+    "branch_deletion_count": 0,
+    "production_authorized": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "runtime_auto_write": false,
+    "ml_training_or_inference": false,
+    "ml_dataset_export": false,
+    "survey_doe_sem_work": false,
+    "broader_recommendation_or_ranking": false
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-parked-disposition-planning-v1",
+    "authoritative_branch": "codex/ku2d-parked-disposition-planning-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000019.json",
+    "depends_on_result": "KU2D-R-000018",
+    "depends_on_review": "KU2D-V-000018",
+    "depends_on_human_decision": "KU2D-H-000007",
+    "depends_on_merge": "c722aacfb49d618e6f67c24923e4c89e3909fac0",
+    "target_pr": 50,
+    "historical_prs": [
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43
+    ],
+    "learning_memory_record_id": null
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
