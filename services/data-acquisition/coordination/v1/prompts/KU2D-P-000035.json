@@ -1,0 +1,22 @@
+{
+  "schema":"ku2d.agent-handoff-prompt.v1",
+  "prompt_id":"KU2D-P-000035",
+  "created_at":"2026-08-31T23:02:00+07:00",
+  "created_by":{"actor":"assistant","actor_id":"assistant_orchestrator"},
+  "status":"ready_for_codex",
+  "authoritative_branch":"codex/ku2d-youtube-content-acquisition-v2",
+  "objective":"Repair the deterministic Agent Handoff repository-history regression introduced by the newly valid KU2D-H-000011 record, without changing YouTube v2 semantics or performing any live acquisition, so PR #61 can return to green and be safely integrated before the already human-authorized Q-Diving live pilot is queued separately.",
+  "instructions":[
+    "Work only on the current authoritative branch codex/ku2d-youtube-content-acquisition-v2. Do not perform a branch handoff in this Prompt.",
+    "Inspect the failing Data Acquisition Platform CI run and reproduce the Agent Handoff Protocol failure locally. The known failure is the repository-history assertion in SELF_TEST_AGENT_HANDOFF_PROTOCOL.py whose expected human-decision set ends at KU2D-H-000010 while the valid repository now includes KU2D-H-000011.",
+    "Make the smallest deterministic regression-maintenance change needed so the repository-history test accepts the new valid KU2D-H-000011 record and explicitly confirms its decision is confirmed. Do not weaken fail-closed validators, human-decision review linkage, or any other Agent Handoff rule.",
+    "Verify KU2D-V-000034 uses review_result=human_decision_required with requires_human_decision=true and KU2D-H-000011 references P34/R34/V34 consistently. Preserve the user's authorization boundaries exactly.",
+    "Do not alter YouTube v2 capability contracts, metadata/transcript/comments semantics, Thai/English-only language restriction, Q-Diving pilot scope, active v1 YouTube policy, or any source acquisition logic except if an unavoidable deterministic test correction is required and fully justified.",
+    "Run Agent Handoff tests, YouTube v2 tests, the complete deterministic Data Acquisition corpus, JSON/YAML parse, Python compilation, and relevant regressions. Keep live/external request count at zero.",
+    "Update PR #61 description only if necessary to reflect the coordination regression fix; keep it Ready when exact-head CI is green. Do not merge PR #61.",
+    "Return KU2D-R-000035 and completed_queue_summary including: exact root cause, exact files changed, verification results, PR/current head state, and confirmation that the next logical step remains controlled integration followed by the separately human-authorized Q-Diving live pilot."
+  ],
+  "expected_result":{"result_id":"KU2D-R-000035","next_actor":"assistant"},
+  "provenance":{"repository":"thanitpu/KU-Open-Data-Analytics","source_branch":"codex/ku2d-youtube-content-acquisition-v2","depends_on_result":"KU2D-R-000034","depends_on_review":"KU2D-V-000034","depends_on_human_decision":"KU2D-H-000011","target_pr":61},
+  "boundaries":{"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}

@@ -1,0 +1,125 @@
+{
+  "schema":"ku2d.youtube-content-acquisition.v2",
+  "contract_id":"KU2D-YT-V2-000001",
+  "prepared_at":"2026-08-31T22:30:00+07:00",
+  "authoritative_branch":"codex/ku2d-youtube-content-acquisition-v2",
+  "status":"offline-contract-ready-not-live-validated-not-authorized",
+  "evidence_classes":["merged_repository_observation","official_documentation_capability","derived_contract","proposal_not_observed","unavailable"],
+  "existing_foundation":{
+    "provider":"youtube-data-api-v3",
+    "policy_schema":"ku2d.youtube-api-policy.v1",
+    "supported_public_methods":["search.list","channels.list","playlists.list","playlistItems.list","videos.list"],
+    "human_review_required":true,
+    "comments_enabled":false,
+    "arbitrary_transcript_enabled":false,
+    "production_scheduling_enabled":false,
+    "evidence_class":"merged_repository_observation",
+    "evidence":["config/youtube_api_policy.json","acquisition/providers/youtube_data_api.py","acquisition/youtube_source_foundation.py","acquisition/youtube_human_review.py","docs/YOUTUBE_SOURCE_FOUNDATION.md","docs/YOUTUBE_HUMAN_REVIEW.md"]
+  },
+  "metadata_capability_map":[
+    {"capability":"channel_identity_metadata_statistics_and_uploads_playlist","endpoint":"channels.list","access_class":"public_api_key_read","resource_parts":["snippet","contentDetails","statistics"],"normalized_fields":["channel_id","title","description","custom_url","country","published_at","thumbnails","uploads_playlist_id","view_count_snapshot","subscriber_count_snapshot","video_count_snapshot"],"unavailable_or_not_inferred":["generic_updated_at","subscriber_demographics","causal_growth_explanation"],"estimated_quota_cost":1,"evidence_class":"official_documentation_capability","evidence":["https://developers.google.com/youtube/v3/docs/channels/list","https://developers.google.com/youtube/v3/docs/channels"]},
+    {"capability":"playlist_metadata","endpoint":"playlists.list","access_class":"public_api_key_read","resource_parts":["snippet","contentDetails","status"],"normalized_fields":["playlist_id","channel_id","title","description","published_at","thumbnails","item_count","privacy_status"],"unavailable_or_not_inferred":["generic_updated_at","complete_history_without_pagination"],"estimated_quota_cost":1,"evidence_class":"official_documentation_capability","evidence":["https://developers.google.com/youtube/v3/docs/playlists/list"]},
+    {"capability":"playlist_video_enumeration","endpoint":"playlistItems.list","access_class":"public_api_key_read","resource_parts":["snippet","contentDetails","status"],"normalized_fields":["playlist_item_id","playlist_id","video_id","channel_id","position","published_at","video_published_at","privacy_status"],"unavailable_or_not_inferred":["all_items_without_complete_pagination","displayed_position_as_importance"],"estimated_quota_cost":1,"evidence_class":"official_documentation_capability","evidence":["https://developers.google.com/youtube/v3/docs/playlistItems/list"]},
+    {"capability":"video_metadata_content_status_statistics_topics_and_live_state","endpoint":"videos.list","access_class":"public_api_key_read","resource_parts":["snippet","contentDetails","status","statistics","topicDetails","liveStreamingDetails","paidProductPlacementDetails"],"normalized_fields":["video_id","channel_id","title","description","published_at","tags","category_id","default_language","default_audio_language","live_broadcast_content","duration","caption_available","definition","dimension","region_restriction","privacy_status","upload_status","embeddable","made_for_kids","statistics_snapshot","topic_categories","scheduled_start_at","actual_start_at","actual_end_at","concurrent_viewers_snapshot","paid_product_placement"],"unavailable_or_not_inferred":["generic_updated_at","dislike_count_for_public_non-owner_reads","statistics_as_causal_explanation","caption_track_identity_or_text"],"estimated_quota_cost":1,"evidence_class":"official_documentation_capability","evidence":["https://developers.google.com/youtube/v3/docs/videos/list","https://developers.google.com/youtube/v3/docs/videos"]},
+    {"capability":"video_category_lookup","endpoint":"videoCategories.list","access_class":"public_api_key_read","resource_parts":["snippet"],"normalized_fields":["category_id","title","assignable","channel_id"],"unavailable_or_not_inferred":["category_as_semantic_ground_truth"],"estimated_quota_cost":1,"evidence_class":"official_documentation_capability","evidence":["https://developers.google.com/youtube/v3/docs/videoCategories/list"]},
+    {"capability":"owner_only_video_details","endpoint":"videos.list","access_class":"owner_authorized_only","resource_parts":["fileDetails","processingDetails","suggestions"],"normalized_fields":[],"unavailable_or_not_inferred":["not_part_of_public_read_contract","not_requested_without_separate_owner_authorization"],"estimated_quota_cost":1,"evidence_class":"official_documentation_capability","evidence":["https://developers.google.com/youtube/v3/docs/videos/list"]}
+  ],
+  "transcript_caption_contract":{
+    "allowed_languages":["th","en"],
+    "retain_other_language_text":false,
+    "retain_other_language_availability_metadata":true,
+    "automatic_language_substitution":false,
+    "selected_track_output_language_order":["th","en"],
+    "same_language_track_precedence":["manual_original","manual_translated","auto_generated_original","auto_generated_translated"],
+    "translation_requires_explicit_provenance":true,
+    "caption_kinds":["manual_original","manual_translated","auto_generated_original","auto_generated_translated"],
+    "capability_classes":[
+      {"method":"videos.list contentDetails.caption","access_class":"public_api_key_read","content_available":false,"meaning":"availability flag only; it proves neither track identity nor transcript authorization","estimated_quota_cost":1,"evidence_class":"official_documentation_capability","evidence":["https://developers.google.com/youtube/v3/docs/videos"]},
+      {"method":"captions.list","access_class":"owner_authorized_only","content_available":false,"meaning":"track metadata only; OAuth youtube.force-ssl or youtubepartner scope required","estimated_quota_cost":50,"evidence_class":"official_documentation_capability","evidence":["https://developers.google.com/youtube/v3/docs/captions/list"]},
+      {"method":"captions.download","access_class":"owner_authorized_only","content_available":true,"meaning":"requires permission to edit the video; translation via tlang is machine-generated and must remain explicit","estimated_quota_cost":200,"evidence_class":"official_documentation_capability","evidence":["https://developers.google.com/youtube/v3/docs/captions/download"]},
+      {"method":"creator_or_user_provided_text","access_class":"separately_reviewed_input","content_available":true,"meaning":"not a YouTube API acquisition and requires its own source/authorization provenance","estimated_quota_cost":0,"evidence_class":"derived_contract","evidence":["docs/YOUTUBE_SOURCE_FOUNDATION.md#captions-and-transcripts"]},
+      {"method":"public_transcript_surface","access_class":"not_approved_unresolved","content_available":false,"meaning":"no durable official public transcript-text API method is approved by this contract","estimated_quota_cost":0,"evidence_class":"unavailable","evidence":["config/youtube_api_policy.json"]}
+    ],
+    "module_statuses":["required","optional","public_accessible","owner_authorized_only","unavailable","evidence_withheld","unsupported_language_only","no_captions","captions_disabled","partial"],
+    "normalized_entity":{
+      "name":"transcript_segment",
+      "identity_key":["video_id","track_id","segment_order"],
+      "required_fields":["video_id","track_id","segment_order","start_seconds","end_seconds","duration_seconds","text","language","caption_kind","is_original_language","is_translated","is_auto_generated","source_surface","acquired_at","provenance","completeness"]
+    },
+    "absence_rules":["no_captions is not extraction_failure","unsupported_language_only is not extraction_failure","owner_authorization_required is not public extraction_failure","private_deleted_or_unavailable_video remains a distinct video availability state","partial transcript and timestamp gaps must remain explicit"]
+  },
+  "comments_replies_contract":{
+    "methods":[
+      {"endpoint":"commentThreads.list","access_class":"public_api_key_read_for_published_threads","estimated_quota_cost":1,"max_results_documented":100,"evidence_class":"official_documentation_capability","evidence":["https://developers.google.com/youtube/v3/docs/commentThreads/list"]},
+      {"endpoint":"comments.list","access_class":"public_api_key_read_for_replies","estimated_quota_cost":1,"max_results_documented":100,"evidence_class":"official_documentation_capability","evidence":["https://developers.google.com/youtube/v3/docs/comments/list"]}
+    ],
+    "current_v1_policy_enabled":false,
+    "future_pilot_default_max_pages":{"value":2,"value_origin":"proposal_not_observed","rationale":"A separately reviewed bounded pilot should stop after two pages per method; this is not an observed coverage guarantee."},
+    "future_pilot_default_order":"time",
+    "ordering_semantics":"requested order is acquisition context only and never population representativeness, sentiment, popularity, or demand",
+    "reply_completeness_rule":"commentThreads embedded replies may be partial; compare totalReplyCount with returned replies and use bounded comments.list only when the module contract requires reply coverage",
+    "normalized_entities":{
+      "comment":{"identity_key":["video_id","comment_id"],"required_fields":["comment_id","thread_id","video_id","parent_comment_id","text","author_channel_id","author_display_name","like_count_snapshot","published_at","updated_at","moderation_or_availability_state","source_order","source_surface","acquired_at","provenance","completeness"]},
+      "comment_reply":{"identity_key":["video_id","parent_comment_id","comment_id"],"required_fields":["comment_id","thread_id","video_id","parent_comment_id","text","author_channel_id","author_display_name","like_count_snapshot","published_at","updated_at","moderation_or_availability_state","source_order","source_surface","acquired_at","provenance","completeness"]}
+    },
+    "module_statuses":["required","optional","public_accessible","unavailable","evidence_withheld","comments_disabled","no_comments","partial","quota_boundary"],
+    "stop_conditions":["configured page or request budget reached","quota boundary","commentsDisabled response","video unavailable","provenance or evidence write failure","unexpected relationship identity","authorization would be required"],
+    "absence_rules":["comments_disabled is not extraction_failure","no_comments is not extraction_failure","replies absent with totalReplyCount zero is complete empty evidence","moderation or deletion can make sampling incomplete","edited comments preserve updated_at separately from published_at"]
+  },
+  "cross_content_semantic_boundaries":[
+    "transcript text is not video description",
+    "creator speech is not viewer opinion",
+    "comment count is not sentiment",
+    "API or displayed ordering is not representativeness",
+    "moderated or deleted comments imply potentially incomplete sampling",
+    "transcript absence is not content irrelevance",
+    "metadata statistics are timestamped observation snapshots, not causal explanations",
+    "provenance and authority are separate from interpretation"
+  ],
+  "youtube_acquisition_pattern_v2":{
+    "pattern_id":"APL-YOUTUBE-002",
+    "name":"YouTube Content and Audience Acquisition v2",
+    "steps":["Channel Discovery","Playlist/Video Enumeration","Metadata","Thai/English Transcript/Caption","Comments/Replies","Normalize","Provenance","Quality/Deep Audit","Dataset Intake"],
+    "module_requirements":{"metadata":"required","transcript":"optional","comments":"optional"},
+    "module_requirement_values":["required","optional","disabled"],
+    "approved_method_classes":["official_public_data_api","owner_authorized_official_caption_api","separately_reviewed_creator_or_user_provided_text"],
+    "non_approved_methods":["YouTube HTML scraping","undocumented endpoint","third-party arbitrary transcript scraper","audio or video download","auth or challenge bypass","browser or Edge fallback"],
+    "exit_classification":{
+      "0":"technical completion, evidence written, every required module resolved and required Deep Audit gate passed; optional absence retained by explicit status",
+      "2":"technical completion and evidence written, but a required module, provenance, coverage, or audit gate is withheld",
+      "1":"technical/runtime, quota-accounting, relationship-integrity, contract-integrity, or evidence-writing failure"
+    }
+  },
+  "ku2d_to_ku2a_dataset_intake":{
+    "schema":"ku2d.youtube-content-dataset.v2",
+    "storage_neutral":true,
+    "entity_order":["channel","playlist","video","transcript_segment","comment","comment_reply"],
+    "entities":{
+      "channel":{"identity_key":["channel_id"],"required_fields":["channel_id","title","published_at","acquired_at","provenance","module_status","quality"]},
+      "playlist":{"identity_key":["playlist_id"],"required_fields":["playlist_id","channel_id","title","published_at","acquired_at","provenance","module_status","quality"]},
+      "video":{"identity_key":["video_id"],"required_fields":["video_id","channel_id","title","published_at","default_language","default_audio_language","duration_iso8601","live_broadcast_content","statistics_snapshot","acquired_at","provenance","module_status","quality"]},
+      "transcript_segment":{"identity_key":["video_id","track_id","segment_order"],"relationship_keys":["video_id"],"required_fields":["video_id","track_id","segment_order","start_seconds","end_seconds","text","language","caption_kind","acquired_at","provenance","completeness","module_status","quality"]},
+      "comment":{"identity_key":["video_id","comment_id"],"relationship_keys":["video_id","thread_id"],"required_fields":["comment_id","thread_id","video_id","text","published_at","updated_at","acquired_at","provenance","completeness","module_status","quality"]},
+      "comment_reply":{"identity_key":["video_id","parent_comment_id","comment_id"],"relationship_keys":["video_id","thread_id","parent_comment_id"],"required_fields":["comment_id","thread_id","video_id","parent_comment_id","text","published_at","updated_at","acquired_at","provenance","completeness","module_status","quality"]}
+    },
+    "analytics_ready_for":["text analytics","sentiment subject to sampling caveats","topic analysis","semantic search","temporal analysis"],
+    "youtube_acquisition_logic_required_by_consumer":false,
+    "production_approved":false
+  },
+  "deep_audit":{
+    "metadata":{"required_identity_completeness_pct":100,"required_provenance_completeness_pct":100,"required_timestamp_snapshot_typing_pct":100,"duplicate_identity_max_pct":0},
+    "transcript":{"allowed_language_text_pct":100,"track_provenance_completeness_pct":100,"segment_relationship_integrity_pct":100,"timestamp_gap_disclosure_pct":100,"unsupported_language_text_count":0},
+    "comments":{"identity_and_relationship_integrity_pct":100,"provenance_completeness_pct":100,"pagination_coverage_disclosure_pct":100,"published_updated_timestamp_typing_pct":100,"representativeness_claim_count":0},
+    "dataset":{"required_module_resolution_pct":100,"entity_identity_uniqueness_pct":100,"cross_entity_relationship_integrity_pct":100,"production_approved":false}
+  },
+  "readiness":{
+    "metadata":"contract_validated_existing_public_provider_not_live_revalidated_in_this_queue",
+    "thai_transcript":"offline_normalization_ready_owner_authorized_acquisition_unvalidated",
+    "english_transcript":"offline_normalization_ready_owner_authorized_acquisition_unvalidated",
+    "comments":"offline_normalization_ready_public_api_live_behavior_unvalidated_and_v1_policy_disabled",
+    "owner_authorization_dependencies":["captions.list","captions.download","permission to edit each video","OAuth scope youtube.force-ssl or youtubepartner"],
+    "smallest_future_live_pilot":{"source":"Q-Diving reviewed YouTube candidates","metadata_videos":2,"transcript_languages":["th","en"],"comments_max_pages_per_video":2,"caption_execution":"only with separate explicit owner authorization; otherwise record owner_authorized_only/evidence_withheld","production_store":false,"scheduler_action":null,"value_origin":"proposal_not_observed","rationale":"Two reviewed public candidates can exercise Thai/English metadata and comment status while keeping caption authorization separable; this recommendation does not authorize execution."},
+    "pilot_execution_authorized":false
+  },
+  "boundaries":{"contract_only":true,"executable":false,"live_youtube_request_count":0,"caption_download_count":0,"comment_live_acquisition_count":0,"oauth_flow_count":0,"browser_or_edge_request_count":0,"other_language_transcript_text_count":0,"authority_promotion_count":0,"knowledge_mutation_count":0,"parked_ref_mutation_count":0,"production_authorized":false,"production_store":false,"scheduler_action":null,"analytics_or_ml_implemented":false}
+}
