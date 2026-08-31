@@ -1,0 +1,15 @@
+{
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
+  "review_id": "KU2D-V-000020",
+  "prompt_id": "KU2D-P-000020",
+  "result_id": "KU2D-R-000020",
+  "reviewed_at": "2026-08-31T15:50:00+07:00",
+  "reviewed_by": {"actor":"assistant","actor_id":"assistant_review","human_authority_claimed":false},
+  "review_result": "human_decision_required",
+  "requires_human_decision": true,
+  "reason_code": "TECHNICALLY_ACCEPTED_READY_TRANSITION_REQUIRES_HUMAN",
+  "explanation": "Parked Evidence Disposition & Closure Plan v1 is technically accepted. The eight parked PR dispositions remain non-executing; all parked refs are unchanged; no PR is closure-eligible now; no candidate or knowledge state is promoted; and current-head CI passes. The only remaining action before merge is the human Ready-for-review transition because the connector cannot complete it safely.",
+  "evidence_references": ["KU2D-R-000020","PR:#50","commit:56d70e4f043e849aee7604caa2cb4bf29e2741ec","workflow:Data Acquisition Platform CI#269","workflow:Frontend CI#1096","workflow:PR Browser Preview Link#184"],
+  "provenance": {"repository":"thanitpu/KU-Open-Data-Analytics","branch":"codex/ku2d-parked-disposition-planning-v1","authoritative_branch":"codex/ku2d-parked-disposition-planning-v1","target_pr":50},
+  "boundaries": {"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
