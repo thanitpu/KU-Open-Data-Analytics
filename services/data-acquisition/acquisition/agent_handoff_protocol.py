@@ -5,6 +5,7 @@ schedule acquisition, write files automatically, or create Learning Memory.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from copy import deepcopy
@@ -18,6 +19,7 @@ RESULT_SCHEMA = "ku2d.agent-handoff-result.v1"
 ASSISTANT_REVIEW_SCHEMA = "ku2d.agent-handoff-assistant-review.v1"
 HUMAN_DECISION_SCHEMA = "ku2d.agent-handoff-human-decision.v1"
 QUEUE_SCHEMA = "ku2d.agent-handoff-queue.v1"
+BRANCH_HANDOFF_SCHEMA = "ku2d.agent-handoff-branch-handoff.v1"
 
 ACTORS = {"codex", "assistant", "human", "none"}
 PROMPT_STATES = {
@@ -36,7 +38,9 @@ _ID_PATTERNS = {
     "result_id": re.compile(r"^KU2D-R-\d{6}$"),
     "review_id": re.compile(r"^KU2D-V-\d{6}$"),
     "human_decision_id": re.compile(r"^KU2D-H-\d{6}$"),
+    "handoff_id": re.compile(r"^KU2D-BH-\d{6}$"),
 }
+_COMMIT_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 _BRANCH_RE = re.compile(r"^(?!/)(?!.*(?:\.\.|//))[A-Za-z0-9][A-Za-z0-9._/-]*[A-Za-z0-9]$")
 _TRANSITIONS = {
     "draft": {"ready_for_codex", "superseded"},
@@ -98,6 +102,13 @@ def validate_branch_name(value: Any) -> str:
     ):
         raise ValueError("authoritative_branch is not a safe branch name")
     return branch
+
+
+def validate_commit_sha(value: Any, field: str) -> str:
+    commit = _nonempty(value, field)
+    if not _COMMIT_SHA_RE.fullmatch(commit):
+        raise ValueError(f"{field} must be a full lowercase commit SHA")
+    return commit
 
 
 def _prompt_authoritative_branch(record: dict[str, Any]) -> str | None:
@@ -304,6 +315,178 @@ def validate_queue_state(record: dict[str, Any]) -> dict[str, Any]:
     return validate_safe_json_payload(record)
 
 
+def branch_handoff_queue_snapshot(queue_state: dict[str, Any]) -> dict[str, Any]:
+    """Return the immutable queue facts needed to prove a branch transition."""
+    queue = validate_queue_state(queue_state)
+    latest_prompt = queue.get("latest_prompt")
+    return {
+        "updated_at": queue["updated_at"],
+        "authoritative_branch": queue.get("authoritative_branch"),
+        "latest_prompt": latest_prompt,
+        "prompt_state": (queue.get("prompt_states") or {}).get(latest_prompt),
+        "completed_prompt_ids": deepcopy(queue["completed_prompt_ids"]),
+        "next_action": deepcopy(queue["next_action"]),
+        "branch_handoff": deepcopy(queue.get("branch_handoff")),
+    }
+
+
+def branch_handoff_queue_fingerprint(snapshot: dict[str, Any]) -> str:
+    """Fingerprint a detached queue snapshot with canonical JSON."""
+    validate_safe_json_payload(snapshot)
+    payload = json.dumps(
+        snapshot, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False,
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _validate_handoff_snapshot(snapshot: Any, field: str) -> dict[str, Any]:
+    if not isinstance(snapshot, dict):
+        raise ValueError(f"{field} must be a JSON object")
+    _nonempty(snapshot.get("updated_at"), f"{field}.updated_at")
+    validate_branch_name(snapshot.get("authoritative_branch"))
+    _optional_id(snapshot.get("latest_prompt"), "prompt_id")
+    if snapshot.get("prompt_state") not in PROMPT_STATES:
+        raise ValueError(f"{field}.prompt_state is invalid")
+    completed = _string_list(snapshot.get("completed_prompt_ids"), f"{field}.completed_prompt_ids")
+    if len(completed) != len(set(completed)):
+        raise ValueError(f"{field}.completed_prompt_ids contains duplicates")
+    action = _mapping(snapshot, "next_action")
+    if action.get("actor") not in ACTORS or not isinstance(action.get("replay_requested"), bool):
+        raise ValueError(f"{field}.next_action is invalid")
+    for key, id_key in (
+        ("prompt_id", "prompt_id"), ("result_id", "result_id"),
+        ("review_id", "review_id"), ("human_decision_id", "human_decision_id"),
+    ):
+        _optional_id(action.get(key), id_key)
+    _mapping(snapshot, "branch_handoff")
+    return validate_safe_json_payload(snapshot)
+
+
+def validate_branch_handoff_record(record: dict[str, Any]) -> dict[str, Any]:
+    """Fail closed unless one source queue is closed before one target is initialized."""
+    if not isinstance(record, dict) or record.get("schema") != BRANCH_HANDOFF_SCHEMA:
+        raise ValueError(f"branch handoff schema must be {BRANCH_HANDOFF_SCHEMA}")
+    _record_id(record, "handoff_id")
+    _nonempty(record.get("created_at"), "created_at")
+    from_branch = validate_branch_name(record.get("from_branch"))
+    to_branch = validate_branch_name(record.get("to_branch"))
+    if from_branch == to_branch:
+        raise ValueError("branch handoff source and target must differ")
+    base_sha = validate_commit_sha(record.get("base_sha"), "base_sha")
+    target_head = validate_commit_sha(record.get("target_initial_head_sha"), "target_initial_head_sha")
+    validate_commit_sha(record.get("source_close_commit_sha"), "source_close_commit_sha")
+    if target_head != base_sha:
+        raise ValueError("target initial head must exactly match branch handoff base_sha")
+    target_prompt = _record_id({"prompt_id": record.get("target_prompt_id")}, "prompt_id")
+    required = {
+        "close_source_queue_before_switch": True,
+        "initialize_target_queue": True,
+        "target_initialization_succeeded": True,
+        "human_authority_required": False,
+    }
+    for field, expected in required.items():
+        if record.get(field) is not expected:
+            raise ValueError(f"branch handoff {field} must be {expected!r}")
+
+    source = _validate_handoff_snapshot(record.get("source_queue_snapshot"), "source_queue_snapshot")
+    target = _validate_handoff_snapshot(record.get("target_queue_snapshot"), "target_queue_snapshot")
+    if source["authoritative_branch"] != from_branch or target["authoritative_branch"] != to_branch:
+        raise ValueError("branch handoff queue authority does not match from/to branches")
+    if source["latest_prompt"] != target_prompt or target["latest_prompt"] != target_prompt:
+        raise ValueError("branch handoff target_prompt_id does not match queue snapshots")
+    if source["prompt_state"] != "in_progress" or target["prompt_state"] != "in_progress":
+        raise ValueError("branch handoff Prompt must remain in progress across initialization")
+    source_action = source["next_action"]
+    target_action = target["next_action"]
+    if source_action.get("actor") != "none" or any(
+        source_action.get(field) is not None
+        for field in ("prompt_id", "result_id", "review_id", "human_decision_id")
+    ):
+        raise ValueError("source queue must close before branch switch")
+    if target_action.get("actor") != "codex" or target_action.get("prompt_id") != target_prompt:
+        raise ValueError("initialized target queue must assign the target Prompt to codex")
+    if any(target_action.get(field) is not None for field in ("result_id", "review_id", "human_decision_id")):
+        raise ValueError("target codex action cannot carry downstream pointers")
+    if source_action.get("replay_requested") or target_action.get("replay_requested"):
+        raise ValueError("mechanical branch handoff cannot replay a completed Prompt")
+    if set(source["completed_prompt_ids"]) - set(target["completed_prompt_ids"]):
+        raise ValueError("target initialization removed completed Prompt history")
+
+    source_marker = source["branch_handoff"]
+    target_marker = target["branch_handoff"]
+    common = {
+        "handoff_id": record["handoff_id"], "from_branch": from_branch,
+        "to_branch": to_branch, "base_sha": base_sha, "target_prompt_id": target_prompt,
+        "close_source_queue_before_switch": True, "initialize_target_queue": True,
+        "human_authority_required": False,
+    }
+    if source_marker.get("phase") != "source_closed" or any(source_marker.get(key) != value for key, value in common.items()):
+        raise ValueError("source queue branch-handoff marker is stale or incomplete")
+    if target_marker.get("phase") != "target_initialized" or any(target_marker.get(key) != value for key, value in common.items()):
+        raise ValueError("target queue branch-handoff marker is stale or incomplete")
+    if target_marker.get("target_initialization_succeeded") is not True:
+        raise ValueError("target queue initialization did not succeed")
+    if target_marker.get("target_initial_head_sha") != target_head:
+        raise ValueError("target queue initial-head provenance is inconsistent")
+    if target_marker.get("source_close_commit_sha") != record.get("source_close_commit_sha"):
+        raise ValueError("target queue source-close provenance is inconsistent")
+
+    if record.get("source_queue_fingerprint") != branch_handoff_queue_fingerprint(source):
+        raise ValueError("source queue snapshot is stale or modified")
+    if record.get("target_queue_fingerprint") != branch_handoff_queue_fingerprint(target):
+        raise ValueError("target queue snapshot is stale or modified")
+    _validate_boundaries(record)
+    return validate_safe_json_payload(record)
+
+
+def branch_handoff(
+    *,
+    from_branch: str,
+    to_branch: str,
+    base_sha: str,
+    close_source_queue_before_switch: bool,
+    initialize_target_queue: bool,
+    target_prompt_id: str,
+    human_authority_required: bool,
+    source_queue: dict[str, Any],
+    target_queue: dict[str, Any],
+    source_close_commit_sha: str,
+    target_initial_head_sha: str,
+    target_initialization_succeeded: bool,
+    created_at: str,
+    handoff_id: str = "KU2D-BH-000001",
+) -> dict[str, Any]:
+    """Build a deterministic, storage-neutral mechanical branch-handoff proof."""
+    source_snapshot = branch_handoff_queue_snapshot(source_queue)
+    target_snapshot = branch_handoff_queue_snapshot(target_queue)
+    record = {
+        "schema": BRANCH_HANDOFF_SCHEMA,
+        "handoff_id": handoff_id,
+        "created_at": created_at,
+        "from_branch": from_branch,
+        "to_branch": to_branch,
+        "base_sha": base_sha,
+        "close_source_queue_before_switch": close_source_queue_before_switch,
+        "initialize_target_queue": initialize_target_queue,
+        "target_prompt_id": target_prompt_id,
+        "human_authority_required": human_authority_required,
+        "source_close_commit_sha": source_close_commit_sha,
+        "target_initial_head_sha": target_initial_head_sha,
+        "target_initialization_succeeded": target_initialization_succeeded,
+        "source_queue_snapshot": source_snapshot,
+        "target_queue_snapshot": target_snapshot,
+        "source_queue_fingerprint": branch_handoff_queue_fingerprint(source_snapshot),
+        "target_queue_fingerprint": branch_handoff_queue_fingerprint(target_snapshot),
+        "boundaries": {
+            "coordination_only": True,
+            "production_authorized": False,
+            "automatic_learning_memory_export": False,
+            "scheduler_action": None,
+        },
+    }
+    return validate_branch_handoff_record(record)
+
+
 def _index(records: list[dict[str, Any]], id_key: str, validator) -> dict[str, dict[str, Any]]:
     indexed: dict[str, dict[str, Any]] = {}
     for record in records:
@@ -319,15 +502,19 @@ def validate_agent_handoff_bundle(
     prompt_records: list[dict[str, Any]], result_records: list[dict[str, Any]],
     assistant_review_records: list[dict[str, Any]], human_decision_records: list[dict[str, Any]],
     queue_state: dict[str, Any], *, previous_queue_state: dict[str, Any] | None = None,
+    branch_handoff_records: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Fail closed on broken chains, authority, queue state, and replay."""
     prompts = _index(prompt_records, "prompt_id", validate_prompt_record)
     results = _index(result_records, "result_id", validate_result_record)
     reviews = _index(assistant_review_records, "review_id", validate_assistant_review_record)
     humans = _index(human_decision_records, "human_decision_id", validate_human_decision_record)
+    handoffs = _index(
+        branch_handoff_records or [], "handoff_id", validate_branch_handoff_record,
+    )
     queue = validate_queue_state(queue_state)
 
-    all_ids = list(prompts) + list(results) + list(reviews) + list(humans)
+    all_ids = list(prompts) + list(results) + list(reviews) + list(humans) + list(handoffs)
     if len(all_ids) != len(set(all_ids)):
         raise ValueError("coordination record IDs must be globally unique")
     for result in results.values():
@@ -373,7 +560,16 @@ def validate_agent_handoff_bundle(
         prompt_branch = _prompt_authoritative_branch(prompts[latest_prompt])
         queue_branch = queue.get("authoritative_branch")
         if prompt_branch is not None and queue_branch != prompt_branch:
-            raise ValueError("queue authoritative_branch must match the latest Prompt")
+            matching_handoffs = [
+                handoff for handoff in handoffs.values()
+                if handoff["target_prompt_id"] == latest_prompt
+                and handoff["from_branch"] == prompt_branch
+                and handoff["to_branch"] == queue_branch
+            ]
+            if len(matching_handoffs) != 1:
+                raise ValueError(
+                    "queue authoritative_branch must match the latest Prompt or one valid branch handoff"
+                )
     prompt_results = [record for record in results.values() if record["prompt_id"] == latest_prompt]
     prompt_reviews = [record for record in reviews.values() if record["prompt_id"] == latest_prompt]
     prompt_humans = [record for record in humans.values() if record["prompt_id"] == latest_prompt]
@@ -439,12 +635,14 @@ def validate_agent_handoff_bundle(
         "result_records": results,
         "assistant_review_records": reviews,
         "human_decision_records": humans,
+        "branch_handoff_records": handoffs,
         "queue_state": queue,
     }
 
 
 def validate_authoritative_branch(
     prompt_record: dict[str, Any], queue_state: dict[str, Any], checked_out_branch: str,
+    branch_handoff_record: dict[str, Any] | None = None,
 ) -> str | None:
     """Fail closed when an actionable handoff names a different checked-out branch.
 
@@ -462,7 +660,16 @@ def validate_authoritative_branch(
         return None
     expected = validate_branch_name(expected)
     if queued != expected:
-        raise ValueError("queue authoritative_branch does not match Prompt")
+        if branch_handoff_record is None:
+            raise ValueError("queue authoritative_branch does not match Prompt")
+        handoff = validate_branch_handoff_record(branch_handoff_record)
+        if (
+            handoff["target_prompt_id"] != prompt_record["prompt_id"]
+            or handoff["from_branch"] != expected
+            or handoff["to_branch"] != queued
+        ):
+            raise ValueError("branch handoff does not authorize this Prompt/Queue transition")
+        expected = queued
     actual = validate_branch_name(checked_out_branch)
     if actual != expected:
         raise ValueError(

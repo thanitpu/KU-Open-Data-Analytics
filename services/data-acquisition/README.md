@@ -415,6 +415,12 @@ The quality layer is explicitly invoked and non-authorizing. It does not perform
 
 The register performs no git, GitHub, acquisition, runtime, production, scheduler, or ML action. `SAFE_TO_DELETE_CANDIDATE` is not deletion authority; every future deletion requires a separate human-approved checkpoint with refreshed evidence and explicit targets.
 
+## Branch Handoff Protocol v1
+
+`acquisition/agent_handoff_protocol.py` and `docs/AGENT_HANDOFF_PROTOCOL.md` now support deterministic mechanical transfer of one active coordination Prompt between branches without rewriting the Prompt. A valid handoff proves the source Queue had no pending actor before the switch, the target began at the exact declared base commit, completed history was retained, target initialization succeeded, and only the target Queue received the Codex action.
+
+Append-only `coordination/v1/branch-handoffs/KU2D-BH-xxxxxx.json` records preserve detached source/target Queue snapshots, canonical fingerprints, and exact commit provenance. Bundle and checked-out-branch validation fail closed on dual authority, switch-before-close, stale snapshots, base/head mismatch, wrong downstream pointers, replay, initialization failure, or human-authority substitution. The primitive coordinates Git state only; it performs no git operation itself and grants no acquisition, production, scheduler, knowledge, or ML authority.
+
 ## Parked Synthesis Review v1
 
 `config/parked_synthesis_review.json` and `docs/PARKED_SYNTHESIS_REVIEW.md` independently inventory the unique synthesis in parked Draft PRs #42 and #43 at exact historical heads. Every claim retains exact source provenance, an explicit current-evidence dependency graph, a bounded review status, and a non-promoting disposition.
