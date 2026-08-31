@@ -315,7 +315,11 @@ def run_recovery(
                 observations[-1] = technical_failure_observation(target, attempt_index, observed_at, exc)
                 stop_all = True
             _write_evidence(output, _prepared_result(package, observations, "response-sanitized-and-retained"))
-            if stop_all or observations[-1].get("access_boundary"):
+            if (
+                stop_all
+                or observations[-1].get("access_boundary")
+                or (attempt_index == 1 and not isinstance(observations[-1].get("record"), dict))
+            ):
                 break
         if stop_all:
             break

@@ -13,6 +13,17 @@
     "knowledge_mutation": false,
     "production_authorized": false
   },
+  "rerun_authorization": {
+    "prompt_id": "KU2D-P-000027",
+    "review_id": "KU2D-V-000026",
+    "human_decision_id": "KU2D-H-000010",
+    "authoritative_branch": "codex/ku2d-coffee-hardened-rerun-v1",
+    "same_reviewed_urls_only": true,
+    "single_run": true,
+    "candidate_promotion": false,
+    "knowledge_mutation": false,
+    "production_authorized": false
+  },
   "targets": [
     {
       "source_id": "roots_coffee",
@@ -69,6 +80,7 @@
   ],
   "stop_conditions": [
     "stop after four acquisition attempts regardless of yield",
+    "stop a source after an unusable first observation; make its second observation only after a strict first product record",
     "stop a source immediately on authentication, CAPTCHA, challenge, access-control or anti-bot evidence",
     "stop on redirect outside the configured official host",
     "stop before retaining a response larger than the configured byte limit",
