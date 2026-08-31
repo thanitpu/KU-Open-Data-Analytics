@@ -1,0 +1,251 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000017",
+  "prompt_id": "KU2D-P-000017",
+  "submitted_at": "2026-08-31T15:08:24+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "Reviewed the exact current heads and 30 per-PR delta-file entries of parked Draft PRs #36-#41. The storage-neutral review classifies 59 unique findings and cross-references CLE-000001 through CLE-000011, current Reviewed Learning Corpus, Core Knowledge, Parked Synthesis Review, and Branch/PR Governance. All 11 CLE summaries remain candidate-only and are explicitly non-lossless relative to their parked deltas, with exact future evidence requirements retained. Draft PR #49 is open at exact head 6620231160fc3a57ba0b0194719b78f92e75a175; all 42 deterministic scripts and all exact-head workflows pass. No parked branch, knowledge authority, live source, production/runtime, scheduler, ML, or ranking state was changed.",
+  "evidence_references": [
+    "PR:#49",
+    "commit:6620231160fc3a57ba0b0194719b78f92e75a175",
+    "base:6bc49deb7602d8e8499308bbb0390ab718830f8b",
+    "config/parked_candidate_review.json",
+    "docs/PARKED_CANDIDATE_REVIEW.md",
+    "KU2D-CLE-000001..KU2D-CLE-000011",
+    "workflow:Data Acquisition Platform CI#255",
+    "workflow:Frontend CI#1065",
+    "workflow:PR Browser Preview Link#171"
+  ],
+  "repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-parked-candidate-review-v1",
+    "authoritative_branch": "codex/ku2d-parked-candidate-review-v1",
+    "base_branch": "integration/data-acquisition-platform",
+    "base_sha": "6bc49deb7602d8e8499308bbb0390ab718830f8b",
+    "implementation_commit_sha": "6620231160fc3a57ba0b0194719b78f92e75a175",
+    "pull_request_number": 49,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/49",
+    "pull_request_title": "KU2D: Review parked candidate evidence v1",
+    "pull_request_open": true,
+    "pull_request_draft": true,
+    "pull_request_merged": false,
+    "changed_file_count": 10
+  },
+  "parked_pr_review": [
+    {
+      "pr_number": 36,
+      "branch": "codex/overnight-tiktok-shop-commerce-pulse-explore",
+      "head_sha": "9f62c33f933989bb12581fdb3b2a6fb21a1ca6b5",
+      "unique_delta_file_count": 8,
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false
+    },
+    {
+      "pr_number": 37,
+      "branch": "codex/overnight-marketplace-source-inventory",
+      "head_sha": "0e99926c72cec7e83e259408c153fd6c99fd1492",
+      "unique_delta_file_count": 2,
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false
+    },
+    {
+      "pr_number": 38,
+      "branch": "codex/overnight-ota-source-expansion",
+      "head_sha": "8c8ac59c5ef852bf2bbd33be6c8ff44e55e00c73",
+      "unique_delta_file_count": 2,
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false
+    },
+    {
+      "pr_number": 39,
+      "branch": "codex/overnight-coffee-source-expansion",
+      "head_sha": "441c71d678a30cc62b742ea58f23f629a9d1e2d6",
+      "unique_delta_file_count": 7,
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false
+    },
+    {
+      "pr_number": 40,
+      "branch": "codex/overnight-qdiving-source-expansion",
+      "head_sha": "5f972d456415dbd0d8ae695f02c056e4a7c76e56",
+      "unique_delta_file_count": 9,
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false
+    },
+    {
+      "pr_number": 41,
+      "branch": "codex/overnight-cross-domain-source-gap-scan",
+      "head_sha": "408e4a3889a70b89b71cbd076b0b980d1aaae2d3",
+      "unique_delta_file_count": 2,
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false
+    }
+  ],
+  "review_integrity": {
+    "unique_delta_file_count": 30,
+    "claim_count": 59,
+    "evidence_dependency_count": 59,
+    "candidate_coverage_count": 11,
+    "lossless_candidate_projection_count": 0,
+    "already_integrated_equivalent_count": 4,
+    "candidate_supported_count": 17,
+    "candidate_partially_supported_count": 10,
+    "contradicted_or_stale_count": 4,
+    "insufficient_evidence_count": 5,
+    "duplicate_of_current_knowledge_count": 8,
+    "source_specific_historical_only_count": 11,
+    "candidate_promotion_count": 0
+  },
+  "unique_knowledge_gaps": [
+    {
+      "pr_number": 36,
+      "gap": "CLE-000001 omits API scope, four surface patterns, parser/CLI/fixture contracts, typed identity/price/counter rules, and exact response ledger.",
+      "promotion_evidence": "Reviewed official scope snapshot, repeated attributable evidence, raw-to-normalized provenance, fingerprint, and Deep Audit."
+    },
+    {
+      "pr_number": 37,
+      "gap": "CLE-000002/000003 omit exact LINE/NocNoc ledgers, static/rendered uncertainty, detail correlation, and additional marketplace role analysis.",
+      "promotion_evidence": "Sanitized records/notices, repeatability, detail correlation, lifecycle review, and source-role architecture."
+    },
+    {
+      "pr_number": 38,
+      "gap": "CLE-000004/000005 omit exact context/status ledgers, transfer limits, and discovery-only versus rate-evidence semantics.",
+      "promotion_evidence": "Sanitized diagnostics, reviewed access classification, compliant technique, contextual identity/rate evidence, and repeatability."
+    },
+    {
+      "pr_number": 39,
+      "gap": "CLE-000006/000007 omit parser/fixtures, indexed attributes, request-retention failure ledger, and coffee semantic field contract.",
+      "promotion_evidence": "Evidence-before-exit reruns, captured raw/normalized evidence, temporal price/availability, field provenance, repeatability, and Deep Audit."
+    },
+    {
+      "pr_number": 40,
+      "gap": "CLE-000008..000010 omit three distinct schemas/parsers, registry changes, date/plugin diagnostics, transfer limits, and exact ledgers.",
+      "promotion_evidence": "Sanitized per-record evidence, source-role and product/variant audit, repeatability, Human Review where applicable, and Deep Audit."
+    },
+    {
+      "pr_number": 41,
+      "gap": "CLE-000011 omits exact Akha ledger, catalog/detail questions, and point-in-time cross-domain inventory; old rankings are not authority.",
+      "promotion_evidence": "Sanitized catalog/detail evidence, variant and price-role provenance, availability timestamp, repeatability, and Deep Audit."
+    }
+  ],
+  "verification": {
+    "deterministic_tests_passed": true,
+    "git_diff_check": "passed",
+    "json_parse": "119 files passed",
+    "yaml_parse": "16 workflows passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service, tools passed",
+    "parked_candidate_review_tests": "PCR1-PCR30 passed",
+    "agent_handoff_tests": "AH1-AH23 passed",
+    "complete_deterministic_corpus": "42/42 scripts passed",
+    "supermarket_regressions": "passed",
+    "retail_transfer_regressions": "passed",
+    "youtube_regressions": "passed",
+    "shopee_regressions": "passed",
+    "lazada_regressions": "passed",
+    "jib_and_lifecycle_regressions": "passed",
+    "live_request_count": 0
+  },
+  "ci": {
+    "head_sha": "6620231160fc3a57ba0b0194719b78f92e75a175",
+    "data_acquisition_platform_ci": {
+      "run_number": 255,
+      "run_id": 33371385706,
+      "conclusion": "success"
+    },
+    "frontend_ci": {
+      "run_number": 1065,
+      "run_id": 33371385649,
+      "conclusion": "success"
+    },
+    "pr_browser_preview_link": {
+      "run_number": 171,
+      "run_id": 33371385700,
+      "conclusion": "success"
+    }
+  },
+  "files_changed_by_implementation": [
+    ".github/workflows/data-acquisition-platform-ci.yml",
+    "services/data-acquisition/README.md",
+    "services/data-acquisition/acquisition/parked_candidate_review.py",
+    "services/data-acquisition/config/parked_candidate_review.json",
+    "services/data-acquisition/docs/PARKED_CANDIDATE_REVIEW.md",
+    "services/data-acquisition/tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py",
+    "services/data-acquisition/tools/SELF_TEST_PARKED_CANDIDATE_REVIEW.py"
+  ],
+  "security_and_boundaries": {
+    "credentials_or_private_material_added": false,
+    "new_source_count": 0,
+    "live_request_count": 0,
+    "candidate_source_promotion_count": 0,
+    "learning_memory_mutation_count": 0,
+    "reviewed_learning_corpus_mutation_count": 0,
+    "core_knowledge_mutation_count": 0,
+    "human_confirmation_mutation_count": 0,
+    "ground_truth_mutation_count": 0,
+    "branch_deletion_count": 0,
+    "parked_branch_mutation_count": 0,
+    "parked_pr_merge_count": 0,
+    "production_authorized": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "runtime_auto_write": false,
+    "ml_training_or_inference": false,
+    "ml_dataset_export": false,
+    "survey_doe_sem_work": false,
+    "broader_recommendation_or_ranking": false
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-parked-candidate-review-v1",
+    "authoritative_branch": "codex/ku2d-parked-candidate-review-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000017.json",
+    "depends_on_result": "KU2D-R-000016",
+    "depends_on_review": "KU2D-V-000016",
+    "depends_on_human_decision": "KU2D-H-000006",
+    "depends_on_merge": "6bc49deb7602d8e8499308bbb0390ab718830f8b",
+    "target_pr": 49,
+    "historical_prs": [
+      36,
+      37,
+      38,
+      39,
+      40,
+      41
+    ],
+    "learning_memory_record_id": null
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
