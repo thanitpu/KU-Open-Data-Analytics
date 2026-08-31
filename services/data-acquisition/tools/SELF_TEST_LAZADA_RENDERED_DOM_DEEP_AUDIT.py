@@ -312,4 +312,21 @@ assert durable_correlation["price_relation"] == "different_unresolved"
 assert durable_correlation["canonical_price_asserted"] is False
 assert durable_correlation["canonical_price"] is None
 
-print("Lazada rendered-DOM Deep Audit deterministic tests passed (A-Z).")
+# AA: an explicit promotional selling-price cue may populate compatibility current.
+special_price = price_evidence({"promotional_price_text": "ราคาพิเศษ ฿49"})
+assert special_price["price_observations"][0]["price_role"] == "promotional"
+assert special_price["current_price"] == 49.0
+
+# AB-AD: explicit discount/savings amounts remain evidence, never product price.
+for display in ("ลด ฿10", "ประหยัด ฿10", "discount ฿10 off"):
+    savings = price_evidence({"promotional_price_text": display})
+    assert savings["price_observations"][0]["price_role"] == "promotional_discount"
+    assert savings["price_observations"][0]["observed_price"] == 10.0
+    assert savings["current_price"] is None
+
+# AE: a promotional field without an explicit selling/savings cue stays unknown.
+ambiguous_promotion = price_evidence({"promotional_price_text": "โปร ฿10"})
+assert ambiguous_promotion["price_observations"][0]["price_role"] == "unknown_display_price"
+assert ambiguous_promotion["current_price"] is None
+
+print("Lazada rendered-DOM Deep Audit deterministic tests passed (A-AF).")

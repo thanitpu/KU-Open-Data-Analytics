@@ -34,13 +34,19 @@ def _price_role(raw: str, *, field: str) -> tuple[str, bool]:
     lowered = raw.casefold()
     if field == "original_price_text" or re.search(r"(?:ราคาเดิม|original|list\s+price)", lowered):
         return "original", False
-    if field == "voucher_text" or re.search(r"(?:voucher|coupon|คูปอง|ลดเพิ่ม)", lowered):
+    if field == "voucher_text" or re.search(r"(?:voucher|coupon|คูปอง)", lowered) or (
+        field == "visible_text" and "ลดเพิ่ม" in lowered
+    ):
         return "voucher_or_conditional", True
     if field == "member_price_text" or re.search(r"(?:member|สมาชิก|login|account|เข้าสู่ระบบ)", lowered):
         return "member_or_account_conditional", True
     if re.search(r"(?:เริ่มต้น|จาก|starting\s+from|\bfrom\b)", lowered):
         return "from_price", False
-    if field == "promotional_price_text" or re.search(r"(?:promotion|promo|flash\s*sale|โปรโมชั่น|ลดเหลือ)", lowered):
+    if re.search(r"(?:ราคาพิเศษ|ราคาโปรโมชั่น|promotional\s+price|sale\s+price|ลดเหลือ)", lowered):
+        return "promotional", False
+    if re.search(r"(?:ลดเพิ่ม|ลด|ประหยัด|\bdiscount\b|\bsave\b|\boff\b)", lowered):
+        return "promotional_discount", False
+    if "โปรโมชั่น" in lowered:
         return "promotional", False
     if re.search(r"(?:current\s+price|selling\s+price|sale\s+price|ราคาปัจจุบัน|ราคาขาย)", lowered):
         return "current", False
