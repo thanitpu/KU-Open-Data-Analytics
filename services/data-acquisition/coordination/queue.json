@@ -1,9 +1,9 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T13:20:00+07:00",
+  "updated_at": "2026-08-31T13:30:00+07:00",
   "authoritative_branch": "codex/ku2d-branch-governance-v1",
   "latest_prompt": "KU2D-P-000014",
-  "latest_result": "KU2D-R-000013",
+  "latest_result": "KU2D-R-000014",
   "latest_review": "KU2D-V-000013",
   "latest_human_decision": "KU2D-H-000004",
   "prompt_states": {
@@ -20,7 +20,7 @@
     "KU2D-P-000011": "reviewed",
     "KU2D-P-000012": "completed",
     "KU2D-P-000013": "reviewed",
-    "KU2D-P-000014": "ready_for_codex"
+    "KU2D-P-000014": "result_submitted"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -33,12 +33,12 @@
     "KU2D-P-000012"
   ],
   "next_action": {
-    "actor": "codex",
+    "actor": "assistant",
     "prompt_id": "KU2D-P-000014",
-    "result_id": null,
+    "result_id": "KU2D-R-000014",
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "KU2D-R-000013 is independently accepted. PR #47 Branch/PR Governance v1 remains Draft and is now queued for bounded final merge-readiness validation only. Codex must refresh branch/PR evidence, preserve all eight parked-unreviewed unique-work branches, keep safe-delete status advisory and non-executable, rerun deterministic/regression/CI checks, and attempt Ready-for-review without unsafe workaround. No branch deletion, parked-work adjudication, source expansion, candidate promotion, broader Core Intelligence, production, scheduler, ML, Survey/DoE/SEM, or live acquisition is authorized."
+  "notes": "KU2D-R-000014 completed bounded final validation at audited head 7e84f17091ea1963d672e03c0b356cd037fdd27f. Fresh inventory remains 25 remote codex branches and 25 PRs: one active, eight preserved parked-unreviewed unique-work branches, and sixteen advisory safe-delete candidates with zero-file tree proof. All 40 deterministic scripts and exact-head CI pass. The Ready transition was attempted but the known GitHub connector Repository.fullDatabaseId GraphQL error left PR #47 Draft; no workaround, branch deletion, branch mutation, parked-work adjudication, candidate promotion, source expansion, production, scheduler, ML, Survey/DoE/SEM, or live acquisition occurred. Assistant review is next."
 }
