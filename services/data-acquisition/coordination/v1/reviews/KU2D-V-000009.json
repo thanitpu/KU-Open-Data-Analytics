@@ -1,0 +1,40 @@
+{
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
+  "review_id": "KU2D-V-000009",
+  "prompt_id": "KU2D-P-000009",
+  "result_id": "KU2D-R-000009",
+  "reviewed_at": "2026-08-31T12:15:00+07:00",
+  "reviewed_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review",
+    "human_authority_claimed": false
+  },
+  "review_result": "correction_required",
+  "requires_human_decision": false,
+  "reason_code": "quality_foundation_strong_but_codebook_collapses_nonsemantic_taxonomy_dimensions_into_semantic_code",
+  "explanation": "The quality-foundation implementation is technically strong and current-head CI passes, but one ontology/codebook design issue must be corrected before acceptance. core_knowledge_taxonomy.v1 intentionally separates acquisition_technique, failure_boundary_type, semantic_interpretation, evidence_type, execution_environment, and other dimensions. core_knowledge_codebook.v1 currently requires every codebook entry to have code_kind=semantic_code while also codebooking AT-* acquisition-technique IDs and FB-* failure-boundary IDs as semantic codes. This collapses operational/category codes into semantic interpretation and weakens the Code != Theme != Descriptor discipline we are trying to establish. The evidence chain and documentation also hard-code the stage name Semantic Code. Correct the model so a code remains distinct from Descriptor and Theme, while code family/dimension is preserved explicitly. A technique code must remain an acquisition-technique code; a failure-boundary code must remain a failure-boundary code; only SI-* entries are semantic-interpretation codes. Add an optional explicit Theme object or theme layer so Theme is not silently represented as Interpretation. Preserve backward compatibility, raw-evidence immutability, iterative coding, negative/deviant cases, analytical memos, finding verification, independent coding, reliability, ontology openness, candidate boundaries, and all non-production/non-ML guarantees.",
+  "evidence_references": [
+    "KU2D-R-000009",
+    "PR:#46",
+    "config/core_knowledge_taxonomy.json",
+    "config/core_knowledge_codebook.json",
+    "acquisition/core_intelligence_quality.py",
+    "docs/CORE_INTELLIGENCE_QUALITY_FOUNDATION.md",
+    "tools/SELF_TEST_CORE_INTELLIGENCE_QUALITY.py",
+    "workflow:Data Acquisition Platform CI#216",
+    "workflow:Frontend CI#978",
+    "workflow:PR Browser Preview Link#135"
+  ],
+  "provenance": {
+    "source_result_schema": "ku2d.agent-handoff-result.v1",
+    "source_reference": "PR-46-independent-quality-review",
+    "review_scope": "chapter-11-13-inspired-codebook-and-quality-foundation",
+    "authoritative_branch": "codex/ku2d-core-intelligence-v1"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000002",
+  "prompt_id": "KU2D-P-000007",
+  "result_id": "KU2D-R-000007",
+  "review_id": "KU2D-V-000007",
+  "decided_at": "2026-08-31T11:25:00+07:00",
+  "decided_by": {
+    "actor": "human",
+    "actor_id": "project-human-authority"
+  },
+  "decision": "confirmed",
+  "reason_note": "Human authority confirmed the manual Ready-for-review transition for PR #45 after the connector could not perform it. The assistant independently rechecked draft=false, mergeability, current-head CI, and squash-merged PR #45 as 7f0e7d72517754dcd0e90e5243cabf56120cc224. This closes the PR #45 finalization gate and authorizes continuation on a new bounded branch only. It does not authorize production acquisition, source-scope expansion, ML training, or ML dataset export.",
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_reference": "PR-45-ready-transition-and-merge-finalization",
+    "merge_sha": "7f0e7d72517754dcd0e90e5243cabf56120cc224",
+    "authoritative_branch": "codex/ku2d-core-intelligence-v1"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

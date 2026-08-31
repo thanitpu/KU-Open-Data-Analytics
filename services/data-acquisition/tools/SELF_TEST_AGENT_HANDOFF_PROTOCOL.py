@@ -294,8 +294,9 @@ repository_bundle = validate_agent_handoff_bundle(
 assert repository_bundle["queue_state"]["next_action"]["actor"] in {"codex", "assistant", "human", "none"}
 if repository_bundle["queue_state"]["next_action"]["actor"] == "assistant":
     assert repository_bundle["queue_state"]["latest_result"] == repository_bundle["queue_state"]["next_action"]["result_id"]
-assert set(repository_bundle["human_decision_records"]) == {"KU2D-H-000001"}
+assert set(repository_bundle["human_decision_records"]) == {"KU2D-H-000001", "KU2D-H-000002"}
 assert repository_bundle["human_decision_records"]["KU2D-H-000001"]["decision"] == "confirmed"
+assert repository_bundle["human_decision_records"]["KU2D-H-000002"]["decision"] == "confirmed"
 assert validate_authoritative_branch(
     repository_prompts[-1], repository_queue, repository_queue["authoritative_branch"],
 ) == repository_queue["authoritative_branch"]

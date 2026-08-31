@@ -1,0 +1,193 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000009",
+  "prompt_id": "KU2D-P-000009",
+  "submitted_at": "2026-08-31T12:09:13+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "Implemented the deterministic KU2D Core Intelligence Quality Foundation v1, opened Draft PR #46, and preserved evidence, authority, ontology, candidate, runtime, production, and ML boundaries. Superseded KU2D-P-000008 was not published or executed after the authoritative queue redirect.",
+  "evidence_references": [
+    "PR:#46",
+    "commit:97b0f56c07208049d47558c53901c4bbd5472e82",
+    "base:7f0e7d72517754dcd0e90e5243cabf56120cc224",
+    "workflow:Data Acquisition Platform CI#215",
+    "workflow:Frontend CI#976",
+    "workflow:PR Browser Preview Link#134"
+  ],
+  "repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-core-intelligence-v1",
+    "authoritative_branch": "codex/ku2d-core-intelligence-v1",
+    "base_branch": "integration/data-acquisition-platform",
+    "base_sha": "7f0e7d72517754dcd0e90e5243cabf56120cc224",
+    "implementation_commit_sha": "97b0f56c07208049d47558c53901c4bbd5472e82",
+    "pull_request_number": 46,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/46",
+    "pull_request_title": "KU2D: Add Core Intelligence Quality Foundation v1",
+    "pull_request_base": "integration/data-acquisition-platform",
+    "pull_request_head": "codex/ku2d-core-intelligence-v1",
+    "pull_request_draft": true,
+    "pull_request_merged": false
+  },
+  "files_changed": [
+    ".github/workflows/data-acquisition-platform-ci.yml",
+    "services/data-acquisition/README.md",
+    "services/data-acquisition/acquisition/core_intelligence_quality.py",
+    "services/data-acquisition/config/core_knowledge_codebook.json",
+    "services/data-acquisition/docs/CORE_INTELLIGENCE_QUALITY_FOUNDATION.md",
+    "services/data-acquisition/fixtures/core_intelligence_quality/reviewed_examples.json",
+    "services/data-acquisition/tools/SELF_TEST_CORE_INTELLIGENCE_QUALITY.py",
+    "services/data-acquisition/tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py",
+    "services/data-acquisition/coordination/queue.json",
+    "services/data-acquisition/coordination/v1/results/KU2D-R-000009.json"
+  ],
+  "contracts_added": {
+    "schemas": [
+      "ku2d.core-knowledge-codebook.v1",
+      "ku2d.evidence-interpretation-chain.v1",
+      "ku2d.iterative-coding-chain.v1",
+      "ku2d.analytical-memo.v1",
+      "ku2d.negative-deviant-case.v1",
+      "ku2d.finding-verification.v1",
+      "ku2d.independent-coding-record.v1",
+      "ku2d.semantic-reliability-report.v1",
+      "ku2d.quality-analysis-projection.v1",
+      "ku2d.quality-loop-state.v1"
+    ],
+    "storage_neutral": true,
+    "pure_validation_and_evaluation_only": true,
+    "normal_runtime_import_count": 0
+  },
+  "codebook": {
+    "adapter_code_count": 11,
+    "existing_taxonomy_schema_preserved": true,
+    "existing_taxonomy_version_preserved": true,
+    "guidance_fields": [
+      "definition",
+      "include_when",
+      "exclude_when",
+      "positive_examples",
+      "counter_examples",
+      "parent_code_id",
+      "child_code_ids",
+      "commonly_confused_with",
+      "evidence_required"
+    ],
+    "descriptor_code_theme_distinction_enforced": true,
+    "unsupported_taxonomy_ids_fail_closed": true
+  },
+  "iterative_coding": {
+    "first_cycle_retained_after_refinement": true,
+    "second_cycle_references_first_cycle": true,
+    "no_existing_code_fits_supported": true,
+    "novel_pattern_candidate_supported": true,
+    "ontology_coercion_rejected": true,
+    "automatic_taxonomy_mutation": false
+  },
+  "quality_memory": {
+    "raw_evidence_immutable": true,
+    "prepared_evidence_references_raw": true,
+    "evidence_interpretation_decision_stages_separate": true,
+    "analytical_memo_append_only_in_meaning": true,
+    "analytical_memo_is_ground_truth": false,
+    "negative_cases_first_class": true,
+    "alternative_explanations_required": true,
+    "finding_verification_required_before_reviewed_pattern_completion": true,
+    "verification_auto_promotion": false
+  },
+  "reliability": {
+    "blinded_independent_coding_contract": true,
+    "fabricated_assistant_label_count": 0,
+    "fabricated_human_label_count": 0,
+    "agreement_rate_helper": true,
+    "cohens_kappa_helper": true,
+    "kappa_not_applicable_when_assumptions_fail": true,
+    "disagreement_requires_adjudication": true,
+    "task_level_sample_size_and_disagreements_preserved": true,
+    "aggregate_score_hides_task_disagreement": false,
+    "human_inter_rater_reliability_claimed": false
+  },
+  "backfilled_examples": {
+    "evidence_chain_count": 2,
+    "iterative_coding_chain_count": 7,
+    "analytical_memo_count": 1,
+    "negative_case_count": 2,
+    "finding_verification_count": 1,
+    "deterministic_independent_coder_fixture_count": 2,
+    "analysis_projection_count": 1,
+    "quality_loop_count": 1,
+    "examples": [
+      "bare marketplace counter",
+      "active-page price temporal status separate from price role",
+      "product identity separate from variant identity",
+      "display order separate from demand",
+      "cloud boundary separate from technique failure after approved Edge success",
+      "application shell negative case",
+      "sitemap-to-canonical-detail pattern"
+    ],
+    "historical_reviewed_examples_only": true,
+    "candidate_source_promotion_count": 0
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "git_diff_check": "passed",
+    "json_parse": "79 files passed before Result submission",
+    "yaml_parse": "16 workflows passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service, tools passed",
+    "quality_foundation_tests": "QF1-QF35 passed",
+    "core_knowledge_tests": "CK1-CK30 passed",
+    "learning_memory_tests": "LM1-LM30 passed",
+    "agent_handoff_tests": "AH1-AH23 passed before Result submission",
+    "complete_deterministic_corpus": "39/39 passed",
+    "supermarket_regressions": "passed",
+    "retail_transfer_regressions": "passed",
+    "youtube_regressions": "passed",
+    "shopee_regressions": "passed",
+    "lazada_regressions": "passed",
+    "jib_and_lifecycle_regressions": "passed",
+    "live_request_count": 0
+  },
+  "ci": {
+    "head_sha": "97b0f56c07208049d47558c53901c4bbd5472e82",
+    "data_acquisition_platform_ci": {"run_number": 215, "run_id": 33359405518, "conclusion": "success"},
+    "frontend_ci": {"run_number": 976, "run_id": 33359405534, "conclusion": "success"},
+    "pr_browser_preview_link": {"run_number": 134, "run_id": 33359405533, "conclusion": "success"}
+  },
+  "security_and_boundaries": {
+    "sensitive_material_rejection_tested": true,
+    "credentials_or_private_material_added": false,
+    "new_source_count": 0,
+    "live_request_count": 0,
+    "candidate_source_promotion_count": 0,
+    "production_authorized": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "automatic_runtime_write": false,
+    "ml_training_or_inference": false,
+    "embedding_or_vector_storage": false,
+    "ml_dataset_export": false,
+    "superseded_prompt_000008_implementation_published": false
+  },
+  "blockers": [],
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-core-intelligence-v1",
+    "authoritative_branch": "codex/ku2d-core-intelligence-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000009.json",
+    "supersedes_prompt": "KU2D-P-000008",
+    "depends_on_result": "KU2D-R-000007",
+    "depends_on_review": "KU2D-V-000007",
+    "depends_on_human_decision": "KU2D-H-000002",
+    "depends_on_merge": "7f0e7d72517754dcd0e90e5243cabf56120cc224",
+    "learning_memory_record_id": null
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
