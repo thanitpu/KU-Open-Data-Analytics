@@ -42,8 +42,8 @@
     "next_actor": "assistant"
   },
   "provenance": {
-    "depends_on_human_decision": "KU2D-H-000003",
     "supersedes_prompt_id": "KU2D-P-000008",
+    "direction_source": "explicit_project-human-direction-to-adopt-quality-first-workflow",
     "depends_on_merge": "7f0e7d72517754dcd0e90e5243cabf56120cc224",
     "authoritative_branch": "codex/ku2d-core-intelligence-v1"
   },
