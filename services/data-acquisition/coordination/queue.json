@@ -1,10 +1,10 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T11:18:33+07:00",
+  "updated_at": "2026-08-31T11:25:00+07:00",
   "authoritative_branch": "codex/ku2d-core-knowledge-backfill-v1",
-  "latest_prompt": "KU2D-P-000006",
+  "latest_prompt": "KU2D-P-000007",
   "latest_result": "KU2D-R-000006",
-  "latest_review": "KU2D-V-000005",
+  "latest_review": "KU2D-V-000006",
   "latest_human_decision": "KU2D-H-000001",
   "prompt_states": {
     "KU2D-P-000001": "completed",
@@ -12,22 +12,24 @@
     "KU2D-P-000003": "completed",
     "KU2D-P-000004": "completed",
     "KU2D-P-000005": "completed",
-    "KU2D-P-000006": "result_submitted"
+    "KU2D-P-000006": "completed",
+    "KU2D-P-000007": "ready_for_codex"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
     "KU2D-P-000002",
     "KU2D-P-000003",
     "KU2D-P-000004",
-    "KU2D-P-000005"
+    "KU2D-P-000005",
+    "KU2D-P-000006"
   ],
   "next_action": {
-    "actor": "assistant",
-    "prompt_id": "KU2D-P-000006",
-    "result_id": "KU2D-R-000006",
+    "actor": "codex",
+    "prompt_id": "KU2D-P-000007",
+    "result_id": null,
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "KU2D-R-000006 submitted the five KU2D-H-000001 semantic policies through Learning Memory, Human Confirmation, Ground Truth, taxonomy, and Reviewed Corpus contracts for independent assistant review. All 11 unmerged source observations remain candidate-only. No live acquisition, ML execution/export, production authorization, scheduling, or scope expansion occurred."
+  "notes": "KU2D-R-000006 passed independent assistant review as KU2D-V-000006. KU2D-P-000007 asks Codex to perform final PR #45 merge-readiness validation only. No acquisition-scope expansion, candidate-source promotion, ML execution/export, production authorization, or Survey/SEM work is authorized."
 }
