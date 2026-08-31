@@ -1,6 +1,7 @@
 {
   "schema":"ku2d.agent-handoff-prompt.v1",
   "prompt_id":"KU2D-P-000034",
+  "status":"ready_for_codex",
   "created_at":"2026-08-31T21:45:00+07:00",
   "created_by":{"actor":"assistant","actor_id":"assistant_orchestrator"},
   "title":"KU2D YouTube Metadata, Transcript, Comments & Acquisition Pattern v2",
