@@ -1,0 +1,23 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000018",
+  "created_at": "2026-08-31T15:12:00+07:00",
+  "created_by": {"actor":"assistant","actor_id":"assistant_review"},
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-parked-candidate-review-v1",
+  "objective": "Final merge-readiness validation for Draft PR #49 only.",
+  "instructions": [
+    "Stay on codex/ku2d-parked-candidate-review-v1 and read KU2D-V-000017.",
+    "Refresh PR #49 exact head and CI and rerun all deterministic/regression checks.",
+    "Confirm parked PRs #36-#41 remain open Draft, unmerged, unchanged, and all exact heads match the reviewed registry.",
+    "Confirm all 59 findings and CLE-000001 through CLE-000011 remain non-authorizing and non-lossless, with zero candidate promotion and zero knowledge-layer mutation.",
+    "Confirm the review's future evidence requirements remain explicit and no broader recommendation/ranking or cleanup work is added.",
+    "Update PR #49 description to exact current validation state if needed.",
+    "Try the normal Ready-for-review transition once. If the known connector error occurs, record it and stop without workaround.",
+    "Do not merge PR #49.",
+    "Write KU2D-R-000018 and return control to assistant."
+  ],
+  "expected_result": {"result_id":"KU2D-R-000018","next_actor":"assistant"},
+  "provenance": {"repository":"thanitpu/KU-Open-Data-Analytics","depends_on_result":"KU2D-R-000017","depends_on_review":"KU2D-V-000017","target_pr":49,"authoritative_branch":"codex/ku2d-parked-candidate-review-v1"},
+  "boundaries": {"coordination_only":true,"live_requests":0,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null,"candidate_promotion":false,"parked_branch_mutation":false,"parked_pr_merge":false,"branch_deletion":false}
+}
