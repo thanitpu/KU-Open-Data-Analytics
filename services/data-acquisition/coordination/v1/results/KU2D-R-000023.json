@@ -91,7 +91,7 @@
     "deterministic_tests_passed": true,
     "live_request_count": 2,
     "git_diff_check": "passed",
-    "json_parse": "144 files passed",
+    "json_parse": "145 files passed",
     "yaml_parse": "16 workflows passed",
     "python_compilation": "acquisition, api, repository, control_plane, service, tools passed",
     "coffee_recovery_tests": "CER1-CER48 passed",
