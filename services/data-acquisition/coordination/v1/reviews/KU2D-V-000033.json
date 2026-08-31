@@ -1,0 +1,15 @@
+{
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
+  "review_id": "KU2D-V-000033",
+  "prompt_id": "KU2D-P-000033",
+  "result_id": "KU2D-R-000033",
+  "reviewed_at": "2026-08-31T21:09:00+07:00",
+  "reviewed_by": {"actor":"assistant","actor_id":"assistant_review","human_authority_claimed":false},
+  "review_result": "accepted",
+  "requires_human_decision": false,
+  "reason_code": "tier_a_batch_manifest_preflight_accepted_non_authorizing",
+  "explanation": "Accepted the planning-only Tier-A locked-source batch manifest for Lotus's, Big C, Makro, and Tops. The exact source locks, serial fixed-order envelope, evidence-before-next-request rule, checkpoint/resume constraints, Deep Audit gates, drift handling, and exit semantics are suitable as a preflight contract. Numeric request, time, and target values remain proposal_not_observed planning bounds, not promised yield. This review does not authorize live batch execution; a separate explicit human authorization remains mandatory before any network request.",
+  "evidence_references": ["KU2D-R-000033","PR:#60","commit:b89c199b961761c8426d8285572589bfe75ded48","workflow:Data Acquisition Platform CI#328","workflow:Frontend CI#1251","workflow:PR Browser Preview Link#233"],
+  "provenance": {"repository":"thanitpu/KU-Open-Data-Analytics","branch":"codex/ku2d-tier-a-locked-source-batch-manifest-v1","target_pr":60,"reviewed_result":"KU2D-R-000033"},
+  "boundaries": {"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
