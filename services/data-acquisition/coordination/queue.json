@@ -1,10 +1,10 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T13:30:00+07:00",
+  "updated_at": "2026-08-31T13:33:00+07:00",
   "authoritative_branch": "codex/ku2d-branch-governance-v1",
   "latest_prompt": "KU2D-P-000014",
   "latest_result": "KU2D-R-000014",
-  "latest_review": "KU2D-V-000013",
+  "latest_review": "KU2D-V-000014",
   "latest_human_decision": "KU2D-H-000004",
   "prompt_states": {
     "KU2D-P-000001": "completed",
@@ -20,7 +20,7 @@
     "KU2D-P-000011": "reviewed",
     "KU2D-P-000012": "completed",
     "KU2D-P-000013": "reviewed",
-    "KU2D-P-000014": "result_submitted"
+    "KU2D-P-000014": "human_decision_required"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -33,12 +33,12 @@
     "KU2D-P-000012"
   ],
   "next_action": {
-    "actor": "assistant",
+    "actor": "human",
     "prompt_id": "KU2D-P-000014",
     "result_id": "KU2D-R-000014",
-    "review_id": null,
+    "review_id": "KU2D-V-000014",
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "KU2D-R-000014 completed bounded final validation at audited head 7e84f17091ea1963d672e03c0b356cd037fdd27f. Fresh inventory remains 25 remote codex branches and 25 PRs: one active, eight preserved parked-unreviewed unique-work branches, and sixteen advisory safe-delete candidates with zero-file tree proof. All 40 deterministic scripts and exact-head CI pass. The Ready transition was attempted but the known GitHub connector Repository.fullDatabaseId GraphQL error left PR #47 Draft; no workaround, branch deletion, branch mutation, parked-work adjudication, candidate promotion, source expansion, production, scheduler, ML, Survey/DoE/SEM, or live acquisition occurred. Assistant review is next."
+  "notes": "PR #47 Branch/PR Governance v1 is technically accepted. Fresh evidence preserves eight parked-unreviewed unique-work branches and keeps sixteen safe-delete candidates advisory/non-executable; all current-head CI passes. Human action is required only to mark PR #47 Ready for review because the available connector cannot safely complete the known Repository.fullDatabaseId GraphQL transition. No merge or branch cleanup is authorized until Ready status is independently confirmed and exact head/CI are rechecked."
 }
