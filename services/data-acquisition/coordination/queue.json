@@ -1,10 +1,10 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T12:35:13+07:00",
+  "updated_at": "2026-08-31T12:42:00+07:00",
   "authoritative_branch": "codex/ku2d-core-intelligence-v1",
-  "latest_prompt": "KU2D-P-000011",
+  "latest_prompt": "KU2D-P-000012",
   "latest_result": "KU2D-R-000011",
-  "latest_review": "KU2D-V-000010",
+  "latest_review": "KU2D-V-000011",
   "latest_human_decision": "KU2D-H-000002",
   "prompt_states": {
     "KU2D-P-000001": "completed",
@@ -17,7 +17,8 @@
     "KU2D-P-000008": "superseded",
     "KU2D-P-000009": "reviewed",
     "KU2D-P-000010": "reviewed",
-    "KU2D-P-000011": "result_submitted"
+    "KU2D-P-000011": "reviewed",
+    "KU2D-P-000012": "ready_for_codex"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -29,12 +30,12 @@
     "KU2D-P-000007"
   ],
   "next_action": {
-    "actor": "assistant",
-    "prompt_id": "KU2D-P-000011",
-    "result_id": "KU2D-R-000011",
+    "actor": "codex",
+    "prompt_id": "KU2D-P-000012",
+    "result_id": null,
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "KU2D-R-000011 inventories all 24 remote codex branches and associated PRs: 1 active, 8 parked-unreviewed with unique unmerged work, and 15 advisory safe-to-delete candidates proven tree-equivalent to their squash commits. The durable registry, report, and validator are deferred because adding branch governance to PR #46 would materially widen its reviewed Quality Foundation scope. No branch was deleted, merged, promoted, or live-executed. Control returns to assistant for review and a possible dedicated-branch Prompt."
+  "notes": "KU2D-R-000011 branch/PR inventory is accepted. It found 1 active branch, 8 parked-unreviewed branches with unique unmerged work, and 15 advisory safe-to-delete candidates, with no branch deletion or evidence promotion. Durable branch governance is deferred to a dedicated branch after PR #46 merge. KU2D-P-000012 now finalizes PR #46 Quality Foundation for merge review only; broader Core Intelligence and branch-governance implementation remain out of scope."
 }
