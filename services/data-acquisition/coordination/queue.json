@@ -1,9 +1,9 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T15:45:00+07:00",
+  "updated_at": "2026-08-31T15:48:11+07:00",
   "authoritative_branch": "codex/ku2d-parked-disposition-planning-v1",
   "latest_prompt": "KU2D-P-000020",
-  "latest_result": "KU2D-R-000019",
+  "latest_result": "KU2D-R-000020",
   "latest_review": "KU2D-V-000019",
   "latest_human_decision": "KU2D-H-000007",
   "prompt_states": {
@@ -26,9 +26,9 @@
     "KU2D-P-000017": "reviewed",
     "KU2D-P-000018": "completed",
     "KU2D-P-000019": "reviewed",
-    "KU2D-P-000020": "ready_for_codex"
+    "KU2D-P-000020": "result_submitted"
   },
   "completed_prompt_ids": ["KU2D-P-000001","KU2D-P-000002","KU2D-P-000003","KU2D-P-000004","KU2D-P-000005","KU2D-P-000006","KU2D-P-000007","KU2D-P-000012","KU2D-P-000014","KU2D-P-000016","KU2D-P-000018"],
-  "next_action": {"actor":"codex","prompt_id":"KU2D-P-000020","result_id":null,"review_id":null,"human_decision_id":null,"replay_requested":false},
-  "notes": "KU2D-R-000019 is independently accepted. PR #50 remains Draft and is queued only for final merge-readiness validation. No disposition, cleanup, parked PR mutation, branch deletion, candidate promotion, live acquisition, production, scheduler, ML, Survey/DoE/SEM, or broader ranking is authorized."
+  "next_action": {"actor":"assistant","prompt_id":"KU2D-P-000020","result_id":"KU2D-R-000020","review_id":null,"human_decision_id":null,"replay_requested":false},
+  "notes": "KU2D-R-000020 completed final merge-readiness validation for Draft PR #50 at exact audited head 1e6f28d370e60b75679caf8c1f1ac53dd9b914b3. All 43 deterministic scripts and exact-head workflows passed; parked PRs #36-#43 and all eight non-executing dispositions remain unchanged. The PR description is current. Ready-for-review was attempted once and failed on the known Repository.fullDatabaseId connector error; no workaround or retry was attempted. PR #50 remains Draft, open, mergeable, and unmerged. The next actor is assistant for independent review."
 }
