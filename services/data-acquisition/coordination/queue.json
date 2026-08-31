@@ -1,10 +1,10 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T12:46:06+07:00",
+  "updated_at": "2026-08-31T12:51:00+07:00",
   "authoritative_branch": "codex/ku2d-core-intelligence-v1",
   "latest_prompt": "KU2D-P-000012",
   "latest_result": "KU2D-R-000012",
-  "latest_review": "KU2D-V-000011",
+  "latest_review": "KU2D-V-000012",
   "latest_human_decision": "KU2D-H-000002",
   "prompt_states": {
     "KU2D-P-000001": "completed",
@@ -18,7 +18,7 @@
     "KU2D-P-000009": "reviewed",
     "KU2D-P-000010": "reviewed",
     "KU2D-P-000011": "reviewed",
-    "KU2D-P-000012": "result_submitted"
+    "KU2D-P-000012": "human_decision_required"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -30,12 +30,12 @@
     "KU2D-P-000007"
   ],
   "next_action": {
-    "actor": "assistant",
+    "actor": "human",
     "prompt_id": "KU2D-P-000012",
     "result_id": "KU2D-R-000012",
-    "review_id": null,
+    "review_id": "KU2D-V-000012",
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "KU2D-R-000012 confirms PR #46 is technically clean and mergeable at audited head fea52c54be7dfd8c6029d4156f7bb739ee06654e: 39/39 deterministic scripts and all exact-head CI pass, taxonomy-family and partial-coverage corrections remain exact, and no governance, broader recommendation, source, production, or ML scope was added. The PR description is current. The Ready transition was attempted but the GitHub connector still requests unavailable Repository.fullDatabaseId; no workaround was used, so PR #46 remains Draft and unmerged. Control returns to assistant."
+  "notes": "PR #46 Core Intelligence Quality Foundation v1 is technically accepted. Current PR head is open, mergeable, Draft, and all current-head CI workflows pass. Human action is required only to mark PR #46 Ready for review because the available connector cannot perform the Draft-to-Ready transition due to the known Repository.fullDatabaseId GraphQL schema error. No merge is authorized until Ready status is independently confirmed and exact current head/CI are rechecked."
 }
