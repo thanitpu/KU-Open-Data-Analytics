@@ -1,0 +1,20 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000016",
+  "created_at": "2026-08-31T14:11:00+07:00",
+  "created_by": {"actor":"assistant","actor_id":"assistant_review"},
+  "authoritative_branch": "codex/ku2d-parked-synthesis-review-v1",
+  "objective": "Final merge-readiness validation for Draft PR #48 only.",
+  "instructions": [
+    "Stay on codex/ku2d-parked-synthesis-review-v1 and read KU2D-V-000015.",
+    "Refresh PR #48 exact head and CI and rerun all deterministic and regression checks.",
+    "Confirm PR #42 and PR #43 remain open Draft, unmerged, and unchanged.",
+    "Confirm the 39 synthesis claims retain their reviewed statuses and evidence dependencies, with zero candidate promotion and zero knowledge-layer mutation.",
+    "Confirm the historical cross-source ranking remains retired and no broader ranking work is added.",
+    "Update PR #48 description to exact current validation state if needed.",
+    "Try the normal Ready-for-review transition once. If the known connector error occurs, record it and stop without workaround.",
+    "Do not merge PR #48.",
+    "Write KU2D-R-000016 and return control to assistant."
+  ],
+  "boundaries": {"live_requests":0,"production_authorized":false,"candidate_promotion":false,"parked_branch_mutation":false,"parked_pr_merge":false,"branch_deletion":false}
+}
