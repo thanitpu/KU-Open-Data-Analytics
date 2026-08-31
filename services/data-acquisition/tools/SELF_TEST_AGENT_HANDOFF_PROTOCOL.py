@@ -295,11 +295,12 @@ assert repository_bundle["queue_state"]["next_action"]["actor"] in {"codex", "as
 if repository_bundle["queue_state"]["next_action"]["actor"] == "assistant":
     assert repository_bundle["queue_state"]["latest_result"] == repository_bundle["queue_state"]["next_action"]["result_id"]
 assert set(repository_bundle["human_decision_records"]) == {
-    "KU2D-H-000001", "KU2D-H-000002", "KU2D-H-000004",
+    "KU2D-H-000001", "KU2D-H-000002", "KU2D-H-000004", "KU2D-H-000005",
 }
 assert repository_bundle["human_decision_records"]["KU2D-H-000001"]["decision"] == "confirmed"
 assert repository_bundle["human_decision_records"]["KU2D-H-000002"]["decision"] == "confirmed"
 assert repository_bundle["human_decision_records"]["KU2D-H-000004"]["decision"] == "confirmed"
+assert repository_bundle["human_decision_records"]["KU2D-H-000005"]["decision"] == "confirmed"
 assert validate_authoritative_branch(
     repository_prompts[-1], repository_queue, repository_queue["authoritative_branch"],
 ) == repository_queue["authoritative_branch"]

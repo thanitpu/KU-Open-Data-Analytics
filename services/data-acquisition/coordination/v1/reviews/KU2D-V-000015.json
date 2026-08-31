@@ -1,0 +1,15 @@
+{
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
+  "review_id": "KU2D-V-000015",
+  "prompt_id": "KU2D-P-000015",
+  "result_id": "KU2D-R-000015",
+  "reviewed_at": "2026-08-31T14:10:00+07:00",
+  "reviewed_by": {"actor":"assistant","actor_id":"assistant_review","human_authority_claimed":false},
+  "review_result": "accepted",
+  "requires_human_decision": false,
+  "reason_code": "PARKED_SYNTHESIS_REVIEW_ACCEPTED",
+  "explanation": "The claim-level review of parked PRs #42 and #43 is bounded, provenance-preserving, fail-closed, and non-authorizing. It distinguishes integrated/duplicate/candidate/partial/stale/insufficient claims, preserves the twelve candidate syntheses without promotion, retires the stale historical cross-source ranking, leaves both parked branches untouched, and current-head CI passes.",
+  "evidence_references": ["KU2D-R-000015","PR:#48","commit:7d6df8deb02942742a99f77b0432372dd99ed946","workflow:Data Acquisition Platform CI#246","workflow:Frontend CI#1044","workflow:PR Browser Preview Link#163"],
+  "provenance": {"repository":"thanitpu/KU-Open-Data-Analytics","branch":"codex/ku2d-parked-synthesis-review-v1","authoritative_branch":"codex/ku2d-parked-synthesis-review-v1","target_pr":48},
+  "boundaries": {"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}

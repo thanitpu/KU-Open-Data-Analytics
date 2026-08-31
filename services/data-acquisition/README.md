@@ -414,3 +414,9 @@ The quality layer is explicitly invoked and non-authorizing. It does not perform
 `config/branch_pr_disposition_registry.json` and `docs/BRANCH_PR_GOVERNANCE.md` retain a point-in-time, evidence-backed disposition for every remote `codex/*` branch. The pure validator requires internally reconciled branch/PR counts, exact proof for advisory safe-delete candidates, preservation of open Draft branches with unique work, and strict Candidate Learning Evidence non-promotion. Fresh expected head/PR maps can be supplied so later repository drift fails closed.
 
 The register performs no git, GitHub, acquisition, runtime, production, scheduler, or ML action. `SAFE_TO_DELETE_CANDIDATE` is not deletion authority; every future deletion requires a separate human-approved checkpoint with refreshed evidence and explicit targets.
+
+## Parked Synthesis Review v1
+
+`config/parked_synthesis_review.json` and `docs/PARKED_SYNTHESIS_REVIEW.md` independently inventory the unique synthesis in parked Draft PRs #42 and #43 at exact historical heads. Every claim retains exact source provenance, an explicit current-evidence dependency graph, a bounded review status, and a non-promoting disposition.
+
+The review defers to current durable evidence for integrated equivalents, preserves useful but unsupported synthesis only as candidate with missing-evidence requirements, and retires the stale cross-source priority ranking. It does not modify or merge the parked branches, promote Candidate Learning Evidence, alter Learning Memory/Reviewed Corpus/Core Knowledge/Ground Truth, add sources or live requests, write runtime state, authorize production or scheduling, run ML, or create broader recommendation/ranking behavior.

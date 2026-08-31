@@ -1,0 +1,186 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000016",
+  "prompt_id": "KU2D-P-000016",
+  "submitted_at": "2026-08-31T14:16:30+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "partial",
+  "summary": "Completed final technical and merge-readiness validation of Draft PR #48 at exact audited content head 971c7676bbf3d1dd2ae289bb7074546d53e9ccf1. All 41 deterministic scripts and exact-head CI pass after restoring required Agent Handoff metadata omitted from the newly queued P16 record. Parked PRs #42 and #43 remain open, Draft, unmerged, and unchanged; all 39 synthesis claims, evidence dependencies, non-promotion boundaries, and the retired historical ranking remain exact. The authorized Ready-for-review transition was attempted once but the GitHub connector failed because its GraphQL response requests unavailable Repository.fullDatabaseId; no workaround was attempted, so PR #48 remains Draft and unmerged.",
+  "evidence_references": [
+    "PR:#48",
+    "commit:971c7676bbf3d1dd2ae289bb7074546d53e9ccf1",
+    "base:f2c94299776b969948ee85883328806244a42d0e",
+    "parked-PR:#42@4c024a480dafda27b0064b3059e34eebaadf353d",
+    "parked-PR:#43@87b700db3e9c2b507530f0427a6a1a2bea9ab3e9",
+    "KU2D-R-000015",
+    "KU2D-V-000015",
+    "workflow:Data Acquisition Platform CI#250",
+    "workflow:Frontend CI#1052",
+    "workflow:PR Browser Preview Link#167"
+  ],
+  "repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-parked-synthesis-review-v1",
+    "authoritative_branch": "codex/ku2d-parked-synthesis-review-v1",
+    "base_branch": "integration/data-acquisition-platform",
+    "base_sha": "f2c94299776b969948ee85883328806244a42d0e",
+    "validated_content_head_sha": "971c7676bbf3d1dd2ae289bb7074546d53e9ccf1",
+    "pull_request_number": 48,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/48",
+    "pull_request_title": "KU2D: Review parked synthesis evidence v1",
+    "pull_request_open": true,
+    "pull_request_draft": true,
+    "pull_request_mergeable": true,
+    "pull_request_merged": false,
+    "changed_file_count_before_result_submission": 13,
+    "additions_before_result_submission": 1863,
+    "deletions_before_result_submission": 27
+  },
+  "parked_pr_recheck": [
+    {
+      "pr_number": 42,
+      "branch": "codex/overnight-acquisition-technique-transfer-matrix",
+      "head_sha": "4c024a480dafda27b0064b3059e34eebaadf353d",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false
+    },
+    {
+      "pr_number": 43,
+      "branch": "codex/overnight-exploration-summary",
+      "head_sha": "87b700db3e9c2b507530f0427a6a1a2bea9ab3e9",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "head_unchanged": true,
+      "mutated_by_checkpoint": false
+    }
+  ],
+  "synthesis_integrity": {
+    "claim_count": 39,
+    "dependency_graph_claim_count": 39,
+    "already_integrated_equivalent_count": 9,
+    "duplicate_of_current_knowledge_count": 8,
+    "candidate_supported_count": 9,
+    "candidate_partially_supported_count": 3,
+    "contradicted_or_stale_count": 3,
+    "insufficient_evidence_count": 7,
+    "retained_candidate_synthesis_count": 12,
+    "candidate_promotion_count": 0,
+    "reviewed_learning_corpus_mutation_count": 0,
+    "core_knowledge_mutation_count": 0,
+    "ground_truth_mutation_count": 0,
+    "learning_memory_mutation_count": 0,
+    "historical_cross_source_ranking_retired": true,
+    "broader_ranking_added": false
+  },
+  "coordination_ci_correction": {
+    "initial_failing_run_number": 249,
+    "initial_failing_run_id": 33367192553,
+    "failure": "KU2D-P-000016 omitted required immutable Prompt status, expected_result, provenance, and standard boundary metadata, causing Agent Handoff validation to fail.",
+    "correction_commit": "971c7676bbf3d1dd2ae289bb7074546d53e9ccf1",
+    "semantic_prompt_scope_changed": false,
+    "authorization_changed": false,
+    "implementation_or_claim_review_changed": false,
+    "corrected_ci_run_number": 250,
+    "corrected_ci_conclusion": "success"
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "git_diff_check": "passed",
+    "json_parse": "104 files passed before Result submission",
+    "yaml_parse": "16 workflows passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service, tools passed",
+    "parked_synthesis_review_tests": "PSR1-PSR30 passed",
+    "quality_foundation_tests": "QF1-QF42 passed",
+    "core_knowledge_tests": "CK1-CK30 passed",
+    "learning_memory_tests": "LM1-LM30 passed",
+    "branch_governance_tests": "BG1-BG25 passed",
+    "agent_handoff_tests": "AH1-AH23 passed",
+    "complete_deterministic_corpus": "41/41 scripts passed",
+    "supermarket_regressions": "passed",
+    "retail_transfer_regressions": "passed",
+    "youtube_regressions": "passed",
+    "shopee_regressions": "passed",
+    "lazada_regressions": "passed",
+    "jib_and_lifecycle_regressions": "passed",
+    "live_request_count": 0
+  },
+  "ci": {
+    "head_sha": "971c7676bbf3d1dd2ae289bb7074546d53e9ccf1",
+    "data_acquisition_platform_ci": {
+      "run_number": 250,
+      "run_id": 33367455872,
+      "conclusion": "success"
+    },
+    "frontend_ci": {
+      "run_number": 1052,
+      "run_id": 33367455846,
+      "conclusion": "success"
+    },
+    "pr_browser_preview_link": {
+      "run_number": 167,
+      "run_id": 33367455836,
+      "conclusion": "success"
+    }
+  },
+  "pull_request_finalization": {
+    "description_updated": true,
+    "description_head_sha": "971c7676bbf3d1dd2ae289bb7074546d53e9ccf1",
+    "description_claim_test_ci_and_boundaries_exact": true,
+    "ready_transition_requested_once": true,
+    "ready_transition_completed": false,
+    "connector_error": "GitHub GraphQL response requested Repository.fullDatabaseId, which is unavailable in the repository schema",
+    "unsafe_workaround_attempted": false,
+    "draft_remains": true,
+    "merged": false
+  },
+  "files_changed_by_this_result": [
+    "services/data-acquisition/coordination/queue.json",
+    "services/data-acquisition/coordination/v1/prompts/KU2D-P-000016.json",
+    "services/data-acquisition/coordination/v1/results/KU2D-R-000016.json"
+  ],
+  "remaining_blockers": [
+    "PR #48 cannot be marked Ready through the available connector until its GraphQL Repository.fullDatabaseId response selection is corrected or an independently authorized reviewer performs the transition."
+  ],
+  "security_and_boundaries": {
+    "credentials_or_private_material_added": false,
+    "new_source_count": 0,
+    "live_request_count": 0,
+    "candidate_source_promotion_count": 0,
+    "branch_deletion_count": 0,
+    "parked_branch_mutation_count": 0,
+    "parked_pr_merge_count": 0,
+    "production_authorized": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "runtime_auto_write": false,
+    "ml_training_or_inference": false,
+    "embedding_or_vector_storage": false,
+    "ml_dataset_export": false,
+    "survey_doe_sem_work": false,
+    "broader_core_intelligence_recommendation_or_ranking": false
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-parked-synthesis-review-v1",
+    "authoritative_branch": "codex/ku2d-parked-synthesis-review-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000016.json",
+    "depends_on_result": "KU2D-R-000015",
+    "depends_on_review": "KU2D-V-000015",
+    "target_pr": 48,
+    "historical_prs": [42, 43],
+    "learning_memory_record_id": null
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
