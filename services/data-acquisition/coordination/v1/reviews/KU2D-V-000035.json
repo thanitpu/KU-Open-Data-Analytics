@@ -1,0 +1,15 @@
+{
+  "schema":"ku2d.agent-handoff-assistant-review.v1",
+  "review_id":"KU2D-V-000035",
+  "prompt_id":"KU2D-P-000035",
+  "result_id":"KU2D-R-000035",
+  "reviewed_at":"2026-08-31T23:31:00+07:00",
+  "reviewed_by":{"actor":"assistant","actor_id":"assistant_review","human_authority_claimed":false},
+  "review_result":"accepted",
+  "requires_human_decision":false,
+  "reason_code":"agent_handoff_history_regression_fix_accepted",
+  "explanation":"Accepted the narrow deterministic correction. The only substantive change is maintenance of the repository-history self-test so valid KU2D-H-000011 is included in the exact expected human-decision set and explicitly asserted confirmed. No Agent Handoff validator, YouTube v2 contract, pilot scope, review/human-decision linkage, acquisition logic, production boundary, or scheduler semantics were weakened or changed. The previously authorized Q-Diving pilot under KU2D-H-000011 remains separate and must only be executed after controlled integration.",
+  "evidence_references":["KU2D-R-000035","PR:#61","commit:bb19291f8fe5b4437355d5c29d6544f22ac41c66","workflow:Data Acquisition Platform CI#341","workflow:Frontend CI#1280","workflow:Frontend CI#1281","workflow:PR Browser Preview Link#245"],
+  "provenance":{"repository":"thanitpu/KU-Open-Data-Analytics","branch":"codex/ku2d-youtube-content-acquisition-v2","target_pr":61,"reviewed_result":"KU2D-R-000035"},
+  "boundaries":{"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
