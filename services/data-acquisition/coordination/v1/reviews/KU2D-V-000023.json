@@ -1,0 +1,34 @@
+{
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
+  "review_id": "KU2D-V-000023",
+  "prompt_id": "KU2D-P-000023",
+  "result_id": "KU2D-R-000023",
+  "reviewed_at": "2026-08-31T17:03:00+07:00",
+  "reviewed_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review",
+    "human_authority_claimed": false
+  },
+  "review_result": "accepted",
+  "requires_human_decision": false,
+  "reason_code": "bounded_recovery_attempt_valid_with_withheld_evidence",
+  "explanation": "Accepted the bounded Coffee evidence-recovery attempt as a valid negative/withheld-evidence result. The package was committed before live access, used only two public read-only requests, retained sanitized diagnostics, stopped fail-closed, did not claim a confirmed visible challenge, did not rerun after detector hardening, and did not promote candidate or higher knowledge authority. The intended Roots/Nana evidence gaps remain unresolved, so this review accepts the attempt and tooling but does not treat it as successful evidence recovery or authorize another rerun.",
+  "evidence_references": [
+    "KU2D-R-000023",
+    "PR:#52",
+    "commit:bfa05ea8589a41a2e6889dd9a699e13d866211ca",
+    "docs/validation/coffee-evidence-recovery-2026-08-31.json"
+  ],
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-coffee-evidence-recovery-v1",
+    "target_pr": 52,
+    "reviewed_result": "KU2D-R-000023"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
