@@ -1,0 +1,22 @@
+{
+  "schema":"ku2d.youtube-qdiving-live-pilot-identity-cases.v1",
+  "cases":[
+    {"case_id":"exact-two-real-reviewed","expected":"resolved","records":[
+      {"video_id":"VID-REAL001","review_status":"reviewed","knowledge_use":"include","provenance":{"provider":"youtube-data-api-v3","sanitized":false,"human_reviewed":true}},
+      {"video_id":"VID-REAL002","review_status":"reviewed","knowledge_use":"include_with_context","provenance":{"provider":"youtube-data-api-v3","sanitized":false,"human_reviewed":true}}
+    ]},
+    {"case_id":"no-durable-reviewed-identities","expected":"evidence_withheld","records":[]},
+    {"case_id":"sanitized-only","expected":"evidence_withheld","records":[
+      {"video_id":"SAN-VID-001","review_status":"reviewed","knowledge_use":"include","provenance":{"provider":"youtube-data-api-v3","sanitized":true,"human_reviewed":true}}
+    ]},
+    {"case_id":"ambiguous-three","expected":"evidence_withheld","records":[
+      {"video_id":"VID-REAL001","review_status":"reviewed","knowledge_use":"include","provenance":{"provider":"youtube-data-api-v3","sanitized":false,"human_reviewed":true}},
+      {"video_id":"VID-REAL002","review_status":"reviewed","knowledge_use":"include","provenance":{"provider":"youtube-data-api-v3","sanitized":false,"human_reviewed":true}},
+      {"video_id":"VID-REAL003","review_status":"reviewed","knowledge_use":"include","provenance":{"provider":"youtube-data-api-v3","sanitized":false,"human_reviewed":true}}
+    ]},
+    {"case_id":"duplicate-identity","expected":"evidence_withheld","records":[
+      {"video_id":"VID-REAL001","review_status":"reviewed","knowledge_use":"include","provenance":{"provider":"youtube-data-api-v3","sanitized":false,"human_reviewed":true}},
+      {"video_id":"VID-REAL001","review_status":"reviewed","knowledge_use":"include_with_context","provenance":{"provider":"youtube-data-api-v3","sanitized":false,"human_reviewed":true}}
+    ]}
+  ]
+}
