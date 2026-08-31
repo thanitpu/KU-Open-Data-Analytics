@@ -1,0 +1,39 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000001",
+  "prompt_id": "KU2D-P-000001",
+  "submitted_at": "2026-08-31T09:05:00+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "Implemented storage-neutral Agent Handoff Protocol v1 contracts, authority and state validation, replay protection, canonical serialization, documentation, CI coverage, and bootstrap migration without changing acquisition runtime behavior.",
+  "evidence_references": [
+    "commit:b40f441b0cb529bf7a7ebb1ac1955878877068ca",
+    "services/data-acquisition/tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py",
+    "services/data-acquisition/docs/AGENT_HANDOFF_PROTOCOL.md"
+  ],
+  "verification": {
+    "deterministic_tests_passed": true,
+    "agent_handoff_tests": "AH1-AH18 passed",
+    "complete_corpus": "37/37 passed",
+    "json_files_parsed": 45,
+    "yaml_files_parsed": 16,
+    "python_compilation": "acquisition, api, repository, control_plane, service, tools passed",
+    "live_request_count": 0
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-learning-memory-v1",
+    "implementation_commit": "b40f441b0cb529bf7a7ebb1ac1955878877068ca",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000001.json",
+    "learning_memory_record_id": null
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

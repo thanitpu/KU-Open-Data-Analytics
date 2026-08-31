@@ -274,4 +274,16 @@ assert validate_prompt_record(v1_prompt)["provenance"]["bootstrap_record"].endsw
     "coordination/prompts/KU2D-P-000001.json"
 )
 
-print("Agent Handoff Protocol deterministic tests passed (AH1-AH17).")
+# AH18: the repository's current v1 Prompt/Result/Queue handoff validates as one bundle.
+v1_result_path = ROOT / "coordination" / "v1" / "results" / "KU2D-R-000001.json"
+queue_path = ROOT / "coordination" / "queue.json"
+v1_result = json.loads(v1_result_path.read_text(encoding="utf-8"))
+repository_queue = json.loads(queue_path.read_text(encoding="utf-8"))
+repository_bundle = validate_agent_handoff_bundle(
+    [v1_prompt], [v1_result], [], [], repository_queue,
+)
+assert repository_bundle["queue_state"]["next_action"]["actor"] == "assistant"
+assert repository_bundle["queue_state"]["latest_result"] == "KU2D-R-000001"
+assert repository_bundle["human_decision_records"] == {}
+
+print("Agent Handoff Protocol deterministic tests passed (AH1-AH18).")
