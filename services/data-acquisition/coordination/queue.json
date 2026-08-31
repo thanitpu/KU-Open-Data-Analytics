@@ -1,16 +1,16 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T18:32:26+07:00",
+  "updated_at": "2026-08-31T18:41:00+07:00",
   "authoritative_branch": "codex/ku2d-coffee-hardened-rerun-v1",
   "latest_prompt": "KU2D-P-000027",
   "latest_result": "KU2D-R-000027",
-  "latest_review": "KU2D-V-000026",
+  "latest_review": "KU2D-V-000027",
   "latest_human_decision": "KU2D-H-000010",
   "prompt_states": {
-    "KU2D-P-000001":"completed","KU2D-P-000002":"completed","KU2D-P-000003":"completed","KU2D-P-000004":"completed","KU2D-P-000005":"completed","KU2D-P-000006":"completed","KU2D-P-000007":"completed","KU2D-P-000008":"superseded","KU2D-P-000009":"reviewed","KU2D-P-000010":"reviewed","KU2D-P-000011":"reviewed","KU2D-P-000012":"completed","KU2D-P-000013":"reviewed","KU2D-P-000014":"completed","KU2D-P-000015":"reviewed","KU2D-P-000016":"completed","KU2D-P-000017":"reviewed","KU2D-P-000018":"completed","KU2D-P-000019":"reviewed","KU2D-P-000020":"completed","KU2D-P-000021":"reviewed","KU2D-P-000022":"completed","KU2D-P-000023":"reviewed","KU2D-P-000024":"completed","KU2D-P-000025":"completed","KU2D-P-000026":"completed","KU2D-P-000027":"result_submitted"
+    "KU2D-P-000001":"completed","KU2D-P-000002":"completed","KU2D-P-000003":"completed","KU2D-P-000004":"completed","KU2D-P-000005":"completed","KU2D-P-000006":"completed","KU2D-P-000007":"completed","KU2D-P-000008":"superseded","KU2D-P-000009":"reviewed","KU2D-P-000010":"reviewed","KU2D-P-000011":"reviewed","KU2D-P-000012":"completed","KU2D-P-000013":"reviewed","KU2D-P-000014":"completed","KU2D-P-000015":"reviewed","KU2D-P-000016":"completed","KU2D-P-000017":"reviewed","KU2D-P-000018":"completed","KU2D-P-000019":"reviewed","KU2D-P-000020":"completed","KU2D-P-000021":"reviewed","KU2D-P-000022":"completed","KU2D-P-000023":"reviewed","KU2D-P-000024":"completed","KU2D-P-000025":"completed","KU2D-P-000026":"completed","KU2D-P-000027":"completed"
   },
-  "completed_prompt_ids": ["KU2D-P-000001","KU2D-P-000002","KU2D-P-000003","KU2D-P-000004","KU2D-P-000005","KU2D-P-000006","KU2D-P-000007","KU2D-P-000012","KU2D-P-000014","KU2D-P-000016","KU2D-P-000018","KU2D-P-000020","KU2D-P-000022","KU2D-P-000024","KU2D-P-000025","KU2D-P-000026"],
-  "next_action": {"actor":"assistant","prompt_id":"KU2D-P-000027","result_id":"KU2D-R-000027","review_id":null,"human_decision_id":null,"replay_requested":false},
-  "branch_handoff":{"phase":"target_initialized","handoff_id":"KU2D-BH-000003","from_branch":"codex/ku2d-coffee-recovery-next-step-v1","to_branch":"codex/ku2d-coffee-hardened-rerun-v1","base_sha":"ca80865951846bea8a8cc0f2b298a672046db6c9","target_initial_head_sha":"ca80865951846bea8a8cc0f2b298a672046db6c9","source_close_commit_sha":"3cd1394d45cb85d9cb5694f17468afd069c8d4ca","target_prompt_id":"KU2D-P-000027","close_source_queue_before_switch":true,"initialize_target_queue":true,"target_initialization_succeeded":true,"human_authority_required":false},
-  "notes": "KU2D-R-000027 submitted for independent assistant review after exact branch handoff and one H10-authorized same-URL run. Exit 2 evidence_withheld: technical completion true; Roots stopped after one unusable strict observation; Nana retained two repeatable candidate-only records; aggregate Deep Audit failed. PR #55 is Ready and unmerged; no additional request is authorized."
+  "completed_prompt_ids": ["KU2D-P-000001","KU2D-P-000002","KU2D-P-000003","KU2D-P-000004","KU2D-P-000005","KU2D-P-000006","KU2D-P-000007","KU2D-P-000012","KU2D-P-000014","KU2D-P-000016","KU2D-P-000018","KU2D-P-000020","KU2D-P-000022","KU2D-P-000024","KU2D-P-000025","KU2D-P-000026","KU2D-P-000027"],
+  "next_action": {"actor":"none","prompt_id":null,"result_id":null,"review_id":null,"human_decision_id":null,"replay_requested":false},
+  "branch_handoff":{"phase":"completed","handoff_id":"KU2D-BH-000003","from_branch":"codex/ku2d-coffee-recovery-next-step-v1","to_branch":"codex/ku2d-coffee-hardened-rerun-v1","base_sha":"ca80865951846bea8a8cc0f2b298a672046db6c9","target_initial_head_sha":"ca80865951846bea8a8cc0f2b298a672046db6c9","source_close_commit_sha":"3cd1394d45cb85d9cb5694f17468afd069c8d4ca","target_prompt_id":"KU2D-P-000027","close_source_queue_before_switch":true,"initialize_target_queue":true,"target_initialization_succeeded":true,"human_authority_required":false},
+  "notes": "KU2D-P-000027 and KU2D-BH-000003 are independently reviewed and complete. Nana candidate evidence is accepted exactly as retained; Roots remains unresolved and aggregate Deep Audit failed. No knowledge promotion or additional request is authorized. PR #55 is Ready for controlled squash integration."
 }
