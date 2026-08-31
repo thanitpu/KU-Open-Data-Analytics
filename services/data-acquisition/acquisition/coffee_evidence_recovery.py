@@ -63,6 +63,20 @@ def validate_package(package: dict[str, Any]) -> dict[str, Any]:
     for field in ("candidate_promotion", "knowledge_mutation", "production_authorized"):
         if authorization.get(field) is not False:
             raise ValueError(f"Coffee recovery authorization boundary {field} must remain false.")
+    rerun = package.get("rerun_authorization") or {}
+    expected_rerun = {
+        "prompt_id": "KU2D-P-000027",
+        "review_id": "KU2D-V-000026",
+        "human_decision_id": "KU2D-H-000010",
+        "authoritative_branch": "codex/ku2d-coffee-hardened-rerun-v1",
+        "same_reviewed_urls_only": True,
+        "single_run": True,
+        "candidate_promotion": False,
+        "knowledge_mutation": False,
+        "production_authorized": False,
+    }
+    if any(rerun.get(field) != expected for field, expected in expected_rerun.items()):
+        raise ValueError("Coffee recovery rerun authorization provenance is incomplete or unsafe.")
 
     targets = package.get("targets")
     if not isinstance(targets, list) or {row.get("source_id") for row in targets if isinstance(row, dict)} != TARGET_IDS:

@@ -1,0 +1,18 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000010",
+  "prompt_id": "KU2D-P-000026",
+  "result_id": "KU2D-R-000026",
+  "review_id": "KU2D-V-000026",
+  "decided_at": "2026-08-31T18:07:00+07:00",
+  "decided_by": {"actor":"human","actor_id":"project_owner"},
+  "decision": "confirmed",
+  "reason_note": "Project owner explicitly said continue after the accepted Coffee next-step recommendation. Authorize only the separately bounded same-URL hardened-detector Coffee rerun described by Option A; preserve all reviewed request, stop, provenance, and non-escalation limits.",
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_context": "User said continue immediately after Option A was identified as the next logical live recovery action.",
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "depends_on_merge": "ca80865951846bea8a8cc0f2b298a672046db6c9"
+  },
+  "boundaries": {"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}

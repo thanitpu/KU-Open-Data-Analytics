@@ -1,0 +1,23 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000027",
+  "created_at": "2026-08-31T18:08:00+07:00",
+  "created_by": {"actor":"assistant","actor_id":"assistant_review"},
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-coffee-recovery-next-step-v1",
+  "objective": "Use Branch Handoff Protocol v1, then execute exactly one separately authorized same-URL Roots/Nana Coffee rerun with the hardened detector under the reviewed Option A envelope.",
+  "instructions": [
+    "Use branch_handoff mechanically: close this source queue before switching, then create/switch to codex/ku2d-coffee-hardened-rerun-v1 from integration/data-acquisition-platform at merge commit ca80865951846bea8a8cc0f2b298a672046db6c9 and initialize the target queue as sole authority.",
+    "Treat KU2D-H-000010 as authority only for this bounded rerun. Target the exact same reviewed Roots Coffee and Nana Coffee Roasters official URLs; do not broaden source scope.",
+    "Use the hardened access-boundary detector. Do not reinterpret the previous completed observation; retain it as historical evidence_withheld.",
+    "Maximum envelope: 2 observations per source, 4 acquisition attempts total, 12 transport requests total, zero retries, zero pagination, no browser/Edge escalation, no authentication, no bypass/circumvention, no private API. Stop after an unusable first observation; make a second observation only after a strict first product record.",
+    "Before each request, persist the pending request ledger. Before another request or exit, persist sanitized evidence and raw-to-normalized field provenance. Do not retain raw HTML, headers, cookies, credentials, or session state.",
+    "Exit 0 only if four attributable product records are retained (two per source), with stable identity/canonical repeatability, attributable displayed price, temporal status, required coffee attributes where explicit, field-level provenance, and Deep Audit passed. Exit 2 for technically completed but withheld/insufficient evidence or a hardened explicit access boundary. Exit 1 for transport/runtime/budget/evidence-writing failure.",
+    "Do not promote Candidate Learning Evidence or mutate Reviewed Corpus/Core Knowledge/Human Confirmation/Ground Truth automatically, regardless of result. Do not touch parked refs, production, scheduler, ML, Survey/DoE/SEM, or cleanup.",
+    "Open/update a PR against integration/data-acquisition-platform, perform safe mechanical PR operations including Ready transition where possible, and do not merge.",
+    "Return completed_queue_summary with only important items: work completed; key findings/results; repo/knowledge state changes; important out-of-scope actions not performed; remaining blockers/risks; recommended next logical step."
+  ],
+  "expected_result": {"result_id":"KU2D-R-000027","next_actor":"assistant"},
+  "provenance": {"repository":"thanitpu/KU-Open-Data-Analytics","source_branch":"codex/ku2d-coffee-recovery-next-step-v1","target_branch":"codex/ku2d-coffee-hardened-rerun-v1","depends_on_result":"KU2D-R-000026","depends_on_review":"KU2D-V-000026","depends_on_human_decision":"KU2D-H-000010","depends_on_merge":"ca80865951846bea8a8cc0f2b298a672046db6c9"},
+  "boundaries": {"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}

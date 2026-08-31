@@ -29,6 +29,8 @@ validated = validate_package(package)
 
 # CER1-CER4: the package has exact authorization, targets, and immutable budget.
 assert validated["authorization"]["human_decision_id"] == "KU2D-H-000009"
+assert validated["rerun_authorization"]["prompt_id"] == "KU2D-P-000027"
+assert validated["rerun_authorization"]["human_decision_id"] == "KU2D-H-000010"
 assert {target["source_id"] for target in validated["targets"]} == {"roots_coffee", "nana_coffee_roasters"}
 assert validated["request_budget"]["maximum_acquisition_attempts"] == 4
 assert validated["request_budget"]["retries"] == validated["request_budget"]["pagination"] == 0
@@ -109,7 +111,38 @@ with TemporaryDirectory() as folder:
     assert evidence["authority"]["candidate_promoted"] is False
     assert evidence["boundaries"]["scheduler_action"] is None
 
-# CER23-CER26: access evidence is durably written, exits 2, and is not called a parser failure.
+# CER23-CER28: an unusable first observation stops only that source. The next
+# source may make its second observation only after yielding a strict record.
+with TemporaryDirectory() as folder:
+    output = Path(folder) / "staged-stop.json"
+    calls = []
+
+    def staged_provider(target, budget, attempt_index):
+        pending = json.loads(output.read_text(encoding="utf-8"))
+        assert pending["run_state"] == "request-ledger-written-before-network"
+        assert pending["observations"][-1]["acquisition_attempted"] is False
+        calls.append((target["source_id"], attempt_index))
+        html = "<html><title>About our cafe</title><p>Welcome</p></html>" if target["source_id"] == "roots_coffee" else nana_html
+        return {
+            "transport_completed": True, "transport_requests": 1, "http_status": 200,
+            "final_url": target["url"], "content_type": "text/html; charset=utf-8",
+            "response_bytes_read": len(html.encode("utf-8")), "redirect_chain": [],
+            "access_boundary": None, "body": html,
+        }
+
+    code = cli.main([
+        "--package", str(PACKAGE_PATH), "--output", str(output), "--no-production-store",
+    ], fetch_provider=staged_provider, clock=Clock())
+    evidence = json.loads(output.read_text(encoding="utf-8"))
+    assert code == cli.EXIT_EVIDENCE_WITHHELD
+    assert calls == [("roots_coffee", 1), ("nana_coffee_roasters", 1), ("nana_coffee_roasters", 2)]
+    assert evidence["request_accounting"]["acquisition_attempts"] == 3
+    roots_rows = [row for row in evidence["observations"] if row["source_id"] == "roots_coffee"]
+    nana_rows = [row for row in evidence["observations"] if row["source_id"] == "nana_coffee_roasters"]
+    assert len(roots_rows) == 1 and roots_rows[0]["record"] is None
+    assert len(nana_rows) == 2 and all(isinstance(row["record"], dict) for row in nana_rows)
+
+# CER29-CER32: access evidence is durably written, exits 2, and is not called a parser failure.
 with TemporaryDirectory() as folder:
     output = Path(folder) / "withheld.json"
 
@@ -134,7 +167,7 @@ with TemporaryDirectory() as folder:
     assert withheld["observations"][0]["access_boundary"] == "http_status_403"
     assert withheld["observations"][0]["normalization_failure_reason"].startswith("extraction not attempted")
 
-# CER27-CER29: transport failure is written before exit 1.
+# CER33-CER35: transport failure is written before exit 1.
 with TemporaryDirectory() as folder:
     output = Path(folder) / "technical.json"
 
@@ -147,7 +180,8 @@ with TemporaryDirectory() as folder:
     assert technical["technical_completion"] is False
     assert technical["observations"][0]["technical_failure"]["type"] == "RuntimeError"
 
-# CER30-CER32: missing safety flag, impossible evidence path, and budget drift fail.
+# CER36-CER39: missing safety flag, impossible evidence path, budget drift, and
+# rerun-authorization drift fail.
 assert cli.main(["--output", "unused.json"], fetch_provider=lambda *_: None) == cli.EXIT_TECHNICAL_FAILURE
 with TemporaryDirectory() as folder:
     parent_file = Path(folder) / "not-a-directory"
@@ -160,8 +194,15 @@ try:
     raise AssertionError("request budget drift was accepted")
 except ValueError:
     pass
+drifted = deepcopy(package)
+drifted["rerun_authorization"]["human_decision_id"] = "KU2D-H-000009"
+try:
+    validate_package(drifted)
+    raise AssertionError("rerun authorization drift was accepted")
+except ValueError:
+    pass
 
-# CER33-CER35: script-only captcha words do not create a false boundary, while
+# CER40-CER42: script-only captcha words do not create a false boundary, while
 # explicit visible challenges and access status do.
 assert cli._access_marker(200, "<script>const captcha='optional';</script><h1>House Blend Coffee</h1>") == (None, None)
 visible_boundary, visible_evidence = cli._access_marker(200, "<title>Verify you are human</title>")
@@ -169,7 +210,7 @@ assert visible_boundary == "captcha_or_human_verification" and visible_evidence[
 status_boundary, status_evidence = cli._access_marker(403, "")
 assert status_boundary == "http_status_403" and status_evidence["confidence"] == "explicit"
 
-# CER36: a price deviation is temporal evidence and does not invent a transaction price.
+# CER43: a price deviation is temporal evidence and does not invent a transaction price.
 observations = []
 for index, price in enumerate((450.0, 460.0), 1):
     row = {
@@ -189,7 +230,7 @@ deviant = build_result(package, observations, completed_at=observed)
 roots_audit = next(row for row in deviant["deep_audit"]["source_audits"] if row["source_id"] == "roots_coffee")
 assert roots_audit["deviations"][0]["interpretation"] == "temporal display deviation; transaction price not inferred"
 
-# CER37-CER48: the retained live artifact is bounded, non-authorizing, and
+# CER44-CER55: the retained live artifact is bounded, non-authorizing, and
 # honest about the first detector's screening-only stop classification.
 live_path = ROOT.parents[1] / "docs" / "validation" / "coffee-evidence-recovery-2026-08-31.json"
 live = json.loads(live_path.read_text(encoding="utf-8"))
@@ -206,4 +247,29 @@ assert live["authority"]["candidate_promoted"] is False
 assert live["boundaries"]["production_approved"] is live["boundaries"]["production_store"] is False
 assert live["boundaries"]["scheduler_action"] is None and live["boundaries"]["knowledge_mutation"] is False
 
-print("Coffee evidence recovery deterministic tests passed (CER1-CER48).")
+# CER56-CER69: the separately authorized hardened rerun obeyed staged stopping,
+# retained repeatable Nana evidence, withheld Roots, and changed no authority.
+rerun_path = ROOT.parents[1] / "docs" / "validation" / "coffee-hardened-rerun-2026-08-31.json"
+rerun = json.loads(rerun_path.read_text(encoding="utf-8"))
+assert rerun["schema"] == "ku2d.coffee-evidence-recovery.v1"
+assert rerun["classification"] == "evidence_withheld"
+assert rerun["technical_completion"] is True and rerun["usable_candidate_evidence"] is False
+assert rerun["request_accounting"]["acquisition_attempts"] == rerun["request_accounting"]["transport_requests"] == 3
+assert rerun["request_accounting"]["retries"] == rerun["request_accounting"]["pagination"] == 0
+roots_rows = [row for row in rerun["observations"] if row["source_id"] == "roots_coffee"]
+nana_rows = [row for row in rerun["observations"] if row["source_id"] == "nana_coffee_roasters"]
+assert len(roots_rows) == 1 and roots_rows[0]["record"] is None
+assert roots_rows[0]["normalization_failure_reason"] == "normalized product withheld: coffee_product_semantics"
+assert len(nana_rows) == 2 and all(row["record"]["coffee_product_id"] == "nanacoffeeroasters.com:house-blend" for row in nana_rows)
+assert all(row["record"]["price"] == 470.0 and row["record"]["currency"] == "THB" for row in nana_rows)
+assert all(row["field_provenance"] and row["sanitized_response"]["raw_html_retained"] is False for row in nana_rows)
+rerun_audits = {row["source_id"]: row for row in rerun["deep_audit"]["source_audits"]}
+assert rerun_audits["roots_coffee"]["audit_passed"] is False
+assert rerun_audits["nana_coffee_roasters"]["audit_passed"] is True
+assert rerun_audits["nana_coffee_roasters"]["repeatability"]["identity_repeatability_pct"] == 100.0
+assert rerun_audits["nana_coffee_roasters"]["repeatability"]["canonical_repeatability_pct"] == 100.0
+assert rerun["authority"]["candidate_promoted"] is False
+assert rerun["boundaries"]["production_approved"] is rerun["boundaries"]["production_store"] is False
+assert rerun["boundaries"]["scheduler_action"] is None and rerun["boundaries"]["knowledge_mutation"] is False
+
+print("Coffee evidence recovery deterministic tests passed (CER1-CER69).")
