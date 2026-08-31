@@ -1,8 +1,8 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T11:29:00+07:00",
+  "updated_at": "2026-08-31T11:38:00+07:00",
   "authoritative_branch": "codex/ku2d-core-intelligence-v1",
-  "latest_prompt": "KU2D-P-000008",
+  "latest_prompt": "KU2D-P-000009",
   "latest_result": "KU2D-R-000007",
   "latest_review": "KU2D-V-000007",
   "latest_human_decision": "KU2D-H-000002",
@@ -14,7 +14,8 @@
     "KU2D-P-000005": "completed",
     "KU2D-P-000006": "completed",
     "KU2D-P-000007": "completed",
-    "KU2D-P-000008": "ready_for_codex"
+    "KU2D-P-000008": "superseded",
+    "KU2D-P-000009": "ready_for_codex"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -27,11 +28,11 @@
   ],
   "next_action": {
     "actor": "codex",
-    "prompt_id": "KU2D-P-000008",
+    "prompt_id": "KU2D-P-000009",
     "result_id": null,
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "PR #45 was manually marked Ready, independently rechecked, and squash-merged as 7f0e7d72517754dcd0e90e5243cabf56120cc224. Work now continues on the new authoritative branch codex/ku2d-core-intelligence-v1. KU2D-P-000008 builds a deterministic knowledge-guided Core Intelligence layer only; no source-scope expansion, live acquisition, ML execution/export, Survey/DoE/SEM, production authorization, or scheduling is authorized. Codex must switch to the authoritative branch before continuing from the queue."
+  "notes": "Quality-first redirect approved before broader Core Intelligence work. KU2D-P-000008 is superseded and must not be executed. KU2D-P-000009 strengthens evidence/codebook/iterative-coding/analytical-memo/negative-case/finding-verification/inter-agent-reliability/ontology-openness foundations on authoritative branch codex/ku2d-core-intelligence-v1. No source expansion, live acquisition, ML execution/export, Survey/DoE/SEM, production authorization, or scheduling is authorized."
 }
