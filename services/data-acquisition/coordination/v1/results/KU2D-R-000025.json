@@ -1,0 +1,118 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000025",
+  "prompt_id": "KU2D-P-000025",
+  "submitted_at": "2026-08-31T17:29:48+07:00",
+  "submitted_by": {"actor":"codex","actor_id":"codex/data-acquisition-agent"},
+  "status": "succeeded",
+  "summary": "Implemented and exercised Branch Handoff Protocol v1. The source Coffee queue was closed before switching, the target branch was created from exact integration merge 56e551acf35e0978851f6cafe03bd8ffa0fd2305, and the target queue alone received the active Codex action. The storage-neutral branch_handoff primitive now validates explicit source/target branches, exact base/head and source-close provenance, successful non-human target initialization, retained history, detached queue fingerprints, and single-authority bundle/checked-out-branch continuation. Deterministic regressions reject dual authority, switch-before-close, stale source evidence, mismatched base/head, inappropriate pointers, failed initialization, replay, and human-authority substitution. PR #53 was opened against integration/data-acquisition-platform; all exact implementation-head checks passed and the PR was mechanically marked Ready. It remains open and unmerged.",
+  "evidence_references": [
+    "KU2D-BH-000001",
+    "commit:6bc33df876cb1564f97f95300a15d0d1e37dc19a",
+    "commit:53e58a3210ed14c961b65b6fefa13258bdc95bf0",
+    "commit:0b18dad67f26f2b99a4bfe62eeae172d1f9b4ff5",
+    "PR:#53",
+    "workflow:Data Acquisition Platform CI#291",
+    "workflow:Frontend CI#1149",
+    "workflow:PR Browser Preview Link#203"
+  ],
+  "repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "source_branch": "codex/ku2d-coffee-evidence-recovery-v1",
+    "source_close_commit_sha": "6bc33df876cb1564f97f95300a15d0d1e37dc19a",
+    "target_branch": "codex/ku2d-branch-handoff-protocol-v1",
+    "authoritative_branch": "codex/ku2d-branch-handoff-protocol-v1",
+    "base_branch": "integration/data-acquisition-platform",
+    "base_sha": "56e551acf35e0978851f6cafe03bd8ffa0fd2305",
+    "target_initialization_commit_sha": "53e58a3210ed14c961b65b6fefa13258bdc95bf0",
+    "implementation_commit_sha": "0b18dad67f26f2b99a4bfe62eeae172d1f9b4ff5",
+    "pull_request_number": 53,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/53",
+    "pull_request_open": true,
+    "pull_request_draft": false,
+    "pull_request_ready_for_review": true,
+    "pull_request_merged": false
+  },
+  "branch_handoff_outcome": {
+    "handoff_id": "KU2D-BH-000001",
+    "close_source_queue_before_switch": true,
+    "source_next_actor_after_close": "none",
+    "initialize_target_queue": true,
+    "target_initialization_succeeded": true,
+    "target_initial_head_matches_base": true,
+    "target_prompt_id": "KU2D-P-000025",
+    "target_next_actor_after_initialization": "codex",
+    "completed_history_preserved": true,
+    "dual_active_authority": false,
+    "human_authority_required": false,
+    "git_versioned_coordination_only": true,
+    "database_or_external_queue_added": false
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "live_request_count": 0,
+    "git_diff_check": "passed",
+    "json_parse": "140 files passed",
+    "yaml_parse": "16 workflows passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service, tools passed",
+    "agent_handoff_tests": "AH1-AH31 passed",
+    "complete_deterministic_corpus": "45/45 scripts passed",
+    "supermarket_regressions": "passed",
+    "retail_transfer_regressions": "passed",
+    "youtube_shopee_lazada_jib_lifecycle_regressions": "passed"
+  },
+  "exact_head_ci": {
+    "head_sha": "0b18dad67f26f2b99a4bfe62eeae172d1f9b4ff5",
+    "data_acquisition_platform_ci": {"run_number":291,"run_id":33382540620,"status":"completed","conclusion":"success"},
+    "frontend_ci": {"run_number":1149,"run_id":33382540552,"status":"completed","conclusion":"success"},
+    "pr_browser_preview_link": {"run_number":203,"run_id":33382540483,"status":"completed","conclusion":"success"}
+  },
+  "pr_operations": {
+    "description_created_and_current": true,
+    "draft_created": true,
+    "exact_implementation_head_checks_successful": true,
+    "ready_transition_attempted_through_connector": true,
+    "connector_limitation": "Repository.fullDatabaseId is unavailable in the connector GraphQL selection",
+    "ready_transition_completed_with_minimal_graphql_mutation": true,
+    "secret_material_logged_or_persisted": false,
+    "merge_attempted": false,
+    "merged": false
+  },
+  "security_and_boundaries": {
+    "new_live_request_count": 0,
+    "production_authorized": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "learning_memory_mutation_count": 0,
+    "reviewed_learning_corpus_mutation_count": 0,
+    "core_knowledge_mutation_count": 0,
+    "human_confirmation_mutation_count": 0,
+    "ground_truth_mutation_count": 0,
+    "ml_training_or_inference": false,
+    "parked_ref_action_count": 0,
+    "main_or_integration_mutation_count": 0
+  },
+  "completed_queue_summary": {
+    "work_completed": "Closed the source queue, initialized the exact-base target queue, implemented Branch Handoff Protocol v1, preserved immutable coordination history, added fail-closed regression coverage, and opened/validated PR #53.",
+    "key_findings_results": "A mechanical handoff can preserve one immutable Prompt across branches safely when source closure, exact target initialization, canonical queue fingerprints, and one valid transition record are all required. AH1-AH31, 45/45 deterministic scripts, and all exact implementation-head workflows passed.",
+    "repo_knowledge_state_changes": "Added the storage-neutral branch_handoff contract, KU2D-BH-000001 transition evidence, documentation, and bundle/branch validation support. No learning or source-knowledge authority changed.",
+    "important_out_of_scope_actions_not_performed": "No acquisition, live source request, production approval/storage, scheduling, database or external queue, Learning Memory/Reviewed Corpus/Core Knowledge/Ground Truth mutation, ML work, parked-ref action, main/integration mutation, or PR merge.",
+    "remaining_blockers_risks": "PR #53 remains open and unmerged for independent review. Future branch transitions must create a fresh handoff ID and exact source/target snapshots rather than reusing KU2D-BH-000001.",
+    "recommended_next_logical_step": "Assistant independently reviews KU2D-R-000025 and PR #53, then either records a correction request or requests controlled integration without re-running this completed Prompt unless replay_requested=true."
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-branch-handoff-protocol-v1",
+    "authoritative_branch": "codex/ku2d-branch-handoff-protocol-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000025.json",
+    "branch_handoff_record": "coordination/v1/branch-handoffs/KU2D-BH-000001.json",
+    "target_pr": 53,
+    "learning_memory_record_id": null
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
