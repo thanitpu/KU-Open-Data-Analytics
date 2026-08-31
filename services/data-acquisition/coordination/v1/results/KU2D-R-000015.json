@@ -1,0 +1,257 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000015",
+  "prompt_id": "KU2D-P-000015",
+  "submitted_at": "2026-08-31T14:06:30+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "Created a storage-neutral claim-level review of the unique synthesis in parked Draft PRs #42 and #43 without modifying or merging either branch. The review inventories nine historical assertions and 39 synthesis claims with exact parked provenance and a current-evidence dependency graph: nine already-integrated equivalents, eight current-knowledge duplicates, nine candidate-supported claims, three partially supported candidates, three stale claims, and seven insufficient-evidence claims. Candidate promotion, branch mutation/deletion, live requests, production, scheduling, ML, and broader ranking remain disabled. Draft PR #48 is open, mergeable, unmerged, and exact-head CI passes.",
+  "evidence_references": [
+    "PR:#48",
+    "commit:4611b6d51677672d7cb9d13c9768a6b2eb0bc01f",
+    "base:f2c94299776b969948ee85883328806244a42d0e",
+    "parked-PR:#42@4c024a480dafda27b0064b3059e34eebaadf353d",
+    "parked-PR:#43@87b700db3e9c2b507530f0427a6a1a2bea9ab3e9",
+    "config/parked_synthesis_review.json",
+    "docs/PARKED_SYNTHESIS_REVIEW.md",
+    "workflow:Data Acquisition Platform CI#245",
+    "workflow:Frontend CI#1042",
+    "workflow:PR Browser Preview Link#162"
+  ],
+  "repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-parked-synthesis-review-v1",
+    "authoritative_branch": "codex/ku2d-parked-synthesis-review-v1",
+    "base_branch": "integration/data-acquisition-platform",
+    "base_sha": "f2c94299776b969948ee85883328806244a42d0e",
+    "validated_content_head_sha": "4611b6d51677672d7cb9d13c9768a6b2eb0bc01f",
+    "pull_request_number": 48,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/48",
+    "pull_request_title": "KU2D: Review parked synthesis evidence v1",
+    "pull_request_open": true,
+    "pull_request_draft": true,
+    "pull_request_mergeable": true,
+    "pull_request_merged": false,
+    "changed_file_count_before_result_submission": 10,
+    "additions_before_result_submission": 1563,
+    "deletions_before_result_submission": 12
+  },
+  "parked_surfaces": [
+    {
+      "pr_number": 42,
+      "branch": "codex/overnight-acquisition-technique-transfer-matrix",
+      "head_sha": "4c024a480dafda27b0064b3059e34eebaadf353d",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "unique_file": "services/data-acquisition/docs/ACQUISITION_TECHNIQUE_TRANSFER_MATRIX_2026_08_31.md",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "mutated_by_checkpoint": false
+    },
+    {
+      "pr_number": 43,
+      "branch": "codex/overnight-exploration-summary",
+      "head_sha": "87b700db3e9c2b507530f0427a6a1a2bea9ab3e9",
+      "historical_base_sha": "820994f7521ef5f181e96826fdaaee40202b91ba",
+      "unique_file": "services/data-acquisition/docs/OVERNIGHT_EXPLORATION_REPORT_2026-08-31.md",
+      "open": true,
+      "draft": true,
+      "merged": false,
+      "mutated_by_checkpoint": false
+    }
+  ],
+  "review_inventory": {
+    "historical_surface_count": 2,
+    "historical_assertion_count": 9,
+    "distinct_synthesis_claim_count": 39,
+    "evidence_node_count": 14,
+    "dependency_graph_claim_count": 39,
+    "review_status_counts": {
+      "already_integrated_equivalent": 9,
+      "candidate_supported": 9,
+      "candidate_partially_supported": 3,
+      "contradicted_or_stale": 3,
+      "insufficient_evidence": 7,
+      "duplicate_of_current_knowledge": 8
+    },
+    "disposition_counts": {
+      "use_current_equivalent": 9,
+      "retain_candidate_synthesis": 12,
+      "rewrite_before_reuse": 5,
+      "retire_historical_claim": 1,
+      "retain_historical_only": 4,
+      "no_new_knowledge": 8
+    }
+  },
+  "retained_candidate_synthesis": [
+    "KU2D-SYN-000005",
+    "KU2D-SYN-000007",
+    "KU2D-SYN-000008",
+    "KU2D-SYN-000009",
+    "KU2D-SYN-000010",
+    "KU2D-SYN-000014",
+    "KU2D-SYN-000024",
+    "KU2D-SYN-000025",
+    "KU2D-SYN-000027",
+    "KU2D-SYN-000032",
+    "KU2D-SYN-000033",
+    "KU2D-SYN-000034"
+  ],
+  "rewritten_or_retired_claims": {
+    "rewrite_before_reuse": [
+      "KU2D-SYN-000003",
+      "KU2D-SYN-000006",
+      "KU2D-SYN-000016",
+      "KU2D-SYN-000023",
+      "KU2D-SYN-000028"
+    ],
+    "retire_historical_claim": ["KU2D-SYN-000039"],
+    "retain_historical_only": [
+      "KU2D-SYN-000021",
+      "KU2D-SYN-000029",
+      "KU2D-SYN-000037",
+      "KU2D-SYN-000038"
+    ]
+  },
+  "duplicate_or_current_equivalent_claims": {
+    "already_integrated_equivalent": [
+      "KU2D-SYN-000001",
+      "KU2D-SYN-000002",
+      "KU2D-SYN-000004",
+      "KU2D-SYN-000011",
+      "KU2D-SYN-000015",
+      "KU2D-SYN-000018",
+      "KU2D-SYN-000026",
+      "KU2D-SYN-000035",
+      "KU2D-SYN-000036"
+    ],
+    "duplicate_of_current_knowledge": [
+      "KU2D-SYN-000012",
+      "KU2D-SYN-000013",
+      "KU2D-SYN-000017",
+      "KU2D-SYN-000019",
+      "KU2D-SYN-000020",
+      "KU2D-SYN-000022",
+      "KU2D-SYN-000030",
+      "KU2D-SYN-000031"
+    ]
+  },
+  "authority_audit": {
+    "review_equals_promotion": false,
+    "historical_synthesis_is_authoritative": false,
+    "candidate_promotion_count": 0,
+    "reviewed_learning_corpus_changed": false,
+    "core_knowledge_changed": false,
+    "ground_truth_changed": false,
+    "learning_memory_changed": false,
+    "candidate_learning_evidence_changed": false,
+    "technique_environment_separation_preserved": true,
+    "evidence_interpretation_separation_preserved": true,
+    "display_order_demand_separation_preserved": true,
+    "product_variant_identity_separation_preserved": true,
+    "unsupported_claims_fail_closed": true,
+    "old_cross_source_ranking_retired": true
+  },
+  "coordination_protocol_corrections": {
+    "prompt_000015_required_fields_restored": true,
+    "human_decision_000005_required_fields_restored": true,
+    "codex_next_action_downstream_pointer_removed": true,
+    "semantic_scope_or_human_authorization_changed": false
+  },
+  "files_changed": [
+    ".github/workflows/data-acquisition-platform-ci.yml",
+    "services/data-acquisition/README.md",
+    "services/data-acquisition/acquisition/parked_synthesis_review.py",
+    "services/data-acquisition/config/parked_synthesis_review.json",
+    "services/data-acquisition/coordination/queue.json",
+    "services/data-acquisition/coordination/v1/human-decisions/KU2D-H-000005.json",
+    "services/data-acquisition/coordination/v1/prompts/KU2D-P-000015.json",
+    "services/data-acquisition/docs/PARKED_SYNTHESIS_REVIEW.md",
+    "services/data-acquisition/tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py",
+    "services/data-acquisition/tools/SELF_TEST_PARKED_SYNTHESIS_REVIEW.py"
+  ],
+  "verification": {
+    "deterministic_tests_passed": true,
+    "git_diff_check": "passed",
+    "json_parse": "101 files passed before Result submission",
+    "yaml_parse": "16 workflows passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service, tools passed",
+    "parked_synthesis_review_tests": "PSR1-PSR30 passed",
+    "quality_foundation_tests": "QF1-QF42 passed",
+    "core_knowledge_tests": "CK1-CK30 passed",
+    "learning_memory_tests": "LM1-LM30 passed",
+    "branch_governance_tests": "BG1-BG25 passed",
+    "agent_handoff_tests": "AH1-AH23 passed",
+    "complete_deterministic_corpus": "41/41 scripts passed",
+    "supermarket_regressions": "passed",
+    "retail_transfer_regressions": "passed",
+    "youtube_regressions": "passed",
+    "shopee_regressions": "passed",
+    "lazada_regressions": "passed",
+    "jib_and_lifecycle_regressions": "passed",
+    "live_request_count": 0
+  },
+  "ci": {
+    "head_sha": "4611b6d51677672d7cb9d13c9768a6b2eb0bc01f",
+    "data_acquisition_platform_ci": {
+      "run_number": 245,
+      "run_id": 33366779403,
+      "conclusion": "success"
+    },
+    "frontend_ci": {
+      "run_number": 1042,
+      "run_id": 33366779445,
+      "conclusion": "success"
+    },
+    "pr_browser_preview_link": {
+      "run_number": 162,
+      "run_id": 33366779391,
+      "conclusion": "success"
+    }
+  },
+  "security_and_boundaries": {
+    "credentials_or_private_material_added": false,
+    "new_source_count": 0,
+    "live_request_count": 0,
+    "candidate_source_promotion_count": 0,
+    "branch_deletion_count": 0,
+    "parked_branch_mutation_count": 0,
+    "parked_pr_merge_count": 0,
+    "production_authorized": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "runtime_auto_write": false,
+    "ml_training_or_inference": false,
+    "embedding_or_vector_storage": false,
+    "ml_dataset_export": false,
+    "survey_doe_sem_work": false,
+    "broader_core_intelligence_recommendation_or_ranking": false
+  },
+  "remaining_risks": [
+    "The twelve retained candidate syntheses still depend partly or wholly on unreviewed Candidate Learning Evidence and cannot be promoted without separate evidence review authority.",
+    "Historical exact request/yield counts from PR #43 remain ledger-only because current durable artifacts do not contain a lossless independent recomputation.",
+    "PR #42 and PR #43 remain parked with unique unmerged files; this review is a claim projection, not lossless replacement or cleanup authority."
+  ],
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-parked-synthesis-review-v1",
+    "authoritative_branch": "codex/ku2d-parked-synthesis-review-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000015.json",
+    "depends_on_result": "KU2D-R-000014",
+    "depends_on_review": "KU2D-V-000014",
+    "depends_on_human_decision": "KU2D-H-000005",
+    "depends_on_merge": "f2c94299776b969948ee85883328806244a42d0e",
+    "target_pr": 48,
+    "historical_prs": [42, 43],
+    "learning_memory_record_id": null
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
