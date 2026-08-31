@@ -1,9 +1,9 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T11:38:00+07:00",
+  "updated_at": "2026-08-31T12:09:13+07:00",
   "authoritative_branch": "codex/ku2d-core-intelligence-v1",
   "latest_prompt": "KU2D-P-000009",
-  "latest_result": "KU2D-R-000007",
+  "latest_result": "KU2D-R-000009",
   "latest_review": "KU2D-V-000007",
   "latest_human_decision": "KU2D-H-000002",
   "prompt_states": {
@@ -15,7 +15,7 @@
     "KU2D-P-000006": "completed",
     "KU2D-P-000007": "completed",
     "KU2D-P-000008": "superseded",
-    "KU2D-P-000009": "ready_for_codex"
+    "KU2D-P-000009": "result_submitted"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -27,12 +27,12 @@
     "KU2D-P-000007"
   ],
   "next_action": {
-    "actor": "codex",
+    "actor": "assistant",
     "prompt_id": "KU2D-P-000009",
-    "result_id": null,
+    "result_id": "KU2D-R-000009",
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "Quality-first redirect approved before broader Core Intelligence work. KU2D-P-000008 is superseded and must not be executed. KU2D-P-000009 strengthens evidence/codebook/iterative-coding/analytical-memo/negative-case/finding-verification/inter-agent-reliability/ontology-openness foundations on authoritative branch codex/ku2d-core-intelligence-v1. No source expansion, live acquisition, ML execution/export, Survey/DoE/SEM, production authorization, or scheduling is authorized."
+  "notes": "KU2D-R-000009 reports the completed Core Intelligence Quality Foundation v1 on Draft PR #46. Exact-head deterministic and CI checks passed with zero live requests; Candidate Learning Evidence remains unpromoted and runtime, production, scheduler, and ML boundaries remain disabled. Control now passes to assistant for independent review. KU2D-P-000008 remains superseded and was not published."
 }
