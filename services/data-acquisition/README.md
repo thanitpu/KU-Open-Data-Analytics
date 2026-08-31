@@ -434,3 +434,9 @@ No parked PR is currently closure-eligible and no lossless-preservation claim is
 `config/evidence_recovery_prioritization.json` and `docs/EVIDENCE_RECOVERY_PRIORITIZATION.md` compare only the three reviewed targeted-rerun candidates: Marketplace PR #37, Coffee PR #39, and Q-Diving PR #40. A deterministic six-criterion matrix recommends Coffee first because a bounded official-detail evidence-before-exit package directly repairs its known retention failure at the lowest expected compliance and effort cost.
 
 The recommendation is not execution authority. The artifact maps every relevant CLE and reviewed claim dependency to an explicit evidence gap or no-rerun reason, explains why the other candidates wait and what would change the ranking, and keeps live requests, rerun execution, promotion, knowledge/runtime writes, parked-ref actions, production, scheduling, ML, Survey/DoE/SEM, and broader ranking disabled.
+
+## Coffee Evidence Recovery v1
+
+`config/coffee_evidence_recovery_package.json`, `acquisition/coffee_evidence_recovery.py`, and `tools/LIVE_COFFEE_EVIDENCE_RECOVERY.py` define the separately authorized bounded recovery for the official Roots Coffee and Nana Coffee Roasters product details selected by Evidence Recovery Prioritization v1. The CLI durably writes its request ledger before each request and sanitized response/normalized provenance before another request or exit.
+
+The fixed budget is two observations per source with no retry or pagination. Deep Audit requires attributable retail coffee-product identity and displayed price, stable official canonical identity, field-level raw-to-normalized provenance, and repeat evidence while keeping roasted-bean prices separate from cafe menus. Access boundaries remain distinct from extraction failure. Recovered evidence stays candidate-only; production approval/storage, scheduling, knowledge-layer mutation, and automatic Learning Memory export remain disabled.

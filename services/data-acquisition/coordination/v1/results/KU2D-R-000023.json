@@ -1,0 +1,168 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000023",
+  "prompt_id": "KU2D-P-000023",
+  "submitted_at": "2026-08-31T16:54:37+07:00",
+  "submitted_by": {"actor":"codex","actor_id":"codex/data-acquisition-agent"},
+  "status": "partial",
+  "summary": "Defined and executed the separately authorized bounded Coffee evidence-recovery package for the exact Roots Coffee and Nana Coffee Roasters official product-detail URLs. The package and evidence-before-exit implementation were committed before network access. The run used one public read-only request per source, retained diagnostic evidence, stopped each source on the reviewed boundary rule, and exited 2 with technical_completion=true, zero retained product records, repeatability unavailable, and Deep Audit failed. The first detector classified a document-wide captcha string as a screening boundary; because raw HTML was intentionally not retained, the artifact explicitly does not claim a confirmed visible challenge. The detector is hardened for future use, but this checkpoint did not rerun. Candidate knowledge and every higher authority layer remain unchanged. Draft PR #52 is open and unmerged for independent review.",
+  "evidence_references": [
+    "KU2D-H-000009",
+    "config/coffee_evidence_recovery_package.json",
+    "docs/validation/coffee-evidence-recovery-2026-08-31.json",
+    "commit:aa6b060",
+    "commit:bfa05ea8589a41a2e6889dd9a699e13d866211ca",
+    "PR:#52"
+  ],
+  "repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-coffee-evidence-recovery-v1",
+    "authoritative_branch": "codex/ku2d-coffee-evidence-recovery-v1",
+    "base_branch": "integration/data-acquisition-platform",
+    "base_sha": "2f06a082f53e9fa8781f7ecab4bbccd29c950c09",
+    "pre_live_contract_commit": "aa6b060",
+    "validated_implementation_head_sha": "bfa05ea8589a41a2e6889dd9a699e13d866211ca",
+    "pull_request_number": 52,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/52",
+    "pull_request_title": "Recover Coffee product-detail evidence safely",
+    "pull_request_open": true,
+    "pull_request_draft": true,
+    "pull_request_mergeable": true,
+    "pull_request_merged": false
+  },
+  "recovery_package": {
+    "package_id": "KU2D-CER-000001",
+    "target_sources": ["Roots Coffee", "Nana Coffee Roasters"],
+    "observations_per_source_planned": 2,
+    "maximum_acquisition_attempts": 4,
+    "maximum_transport_requests": 12,
+    "maximum_redirects_per_attempt": 2,
+    "maximum_response_bytes": 1000000,
+    "timeout_seconds": 15,
+    "retries": 0,
+    "pagination": 0,
+    "package_was_committed_before_live_access": true,
+    "request_ledger_written_before_each_request": true,
+    "sanitized_evidence_written_before_next_request_or_exit": true
+  },
+  "live_execution": {
+    "exit_classification": 2,
+    "classification": "evidence_withheld",
+    "technical_completion": true,
+    "usable_candidate_evidence": false,
+    "acquisition_attempts": 2,
+    "transport_requests": 2,
+    "redirects": 0,
+    "retries": 0,
+    "pagination": 0,
+    "retained_product_records": 0,
+    "repeatability_available": false,
+    "sources": [
+      {"source":"Roots Coffee","http_status":200,"exact_official_url_retained":true,"screening_boundary":"captcha_or_human_verification","boundary_confidence":"screening-only","challenge_independently_confirmed":false,"second_observation_attempted":false},
+      {"source":"Nana Coffee Roasters","http_status":200,"exact_official_url_retained":true,"screening_boundary":"captcha_or_human_verification","boundary_confidence":"screening-only","challenge_independently_confirmed":false,"second_observation_attempted":false}
+    ]
+  },
+  "deep_audit": {
+    "audit_passed": false,
+    "source_audit_count": 2,
+    "hard_failures_per_source": [
+      "bounded_attempts_completed",
+      "product_identity_and_price_yield",
+      "official_https_canonical_identity",
+      "stable_product_identity",
+      "field_level_provenance",
+      "retail_product_not_cafe_menu"
+    ],
+    "identity_repeatability_pct": 0.0,
+    "canonical_repeatability_pct": 0.0,
+    "price_values": [],
+    "availability_values": [],
+    "interpretation": "Deep Audit failed because the stop rule prevented extraction and repeat observations; HTTP 200 or response size is not evidence of product quality."
+  },
+  "detector_correction": {
+    "initial_behavior": "Matched the word captcha anywhere in the bounded response document.",
+    "retained_interpretation": "Screening-only boundary; visible challenge not independently confirmed because raw HTML was intentionally not retained.",
+    "future_behavior": "Requires explicit HTTP status, visible/title/widget evidence, route evidence, or challenge markup; script-only captcha text is a negative fixture.",
+    "historical_evidence_reinterpreted_as_success": false,
+    "rerun_after_correction": false,
+    "gate_weakened": false
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "live_request_count": 2,
+    "git_diff_check": "passed",
+    "json_parse": "145 files passed",
+    "yaml_parse": "16 workflows passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service, tools passed",
+    "coffee_recovery_tests": "CER1-CER48 passed",
+    "agent_handoff_tests": "AH1-AH23 passed before Result submission",
+    "complete_deterministic_corpus": "45/45 scripts passed",
+    "supermarket_regressions": "passed",
+    "retail_transfer_regressions": "passed",
+    "youtube_shopee_lazada_jib_lifecycle_regressions": "passed",
+    "implementation_head_ci": {
+      "data_acquisition_platform_ci": {"run_number":283,"run_id":33379929656,"conclusion":"success"},
+      "frontend_ci": {"run_number":1130,"run_id":33379929610,"conclusion_at_submission":"in_progress"},
+      "pr_browser_preview_link": {"run_number":196,"run_id":33379929628,"conclusion":"success"}
+    }
+  },
+  "remaining_blockers": [
+    "No attributable product/price record was retained, so neither Candidate Learning Evidence recovery gap is satisfied.",
+    "Repeatability and field-level provenance could not be evaluated from the stopped live observations.",
+    "The screening-only captcha string cannot be independently classified as a visible challenge from the intentionally sanitized artifact.",
+    "Any further request or alternate execution environment requires a new independent review/authorization decision."
+  ],
+  "completed_queue_summary": {
+    "work_completed": "Defined, pre-committed, executed, retained, tested, pushed, and opened Draft PR #52 for the exact Roots/Nana Coffee recovery package.",
+    "key_findings_results": "Exit 2; technical completion true; 2 requests; both HTTP 200 exact official URLs stopped on screening-only captcha strings; 0 records; repeatability unavailable; Deep Audit failed.",
+    "repo_knowledge_state_changes": "Added candidate-only recovery tooling, deterministic fixtures/tests, durable sanitized diagnostics, and documentation; Candidate Learning Evidence and all higher knowledge-authority layers remain unchanged.",
+    "important_out_of_scope_actions_not_performed": "No rerun, browser/Edge escalation, authentication, bypass, retry, promotion, production/scheduler action, parked-ref mutation, merge, close, deletion, or ML work.",
+    "remaining_blockers_risks": "The intended evidence gaps remain open; the initial screening boundary is not a confirmed visible challenge and no retained product/price or repeat evidence exists.",
+    "recommended_next_logical_step": "Assistant independently reviews PR #52 and decides whether the withheld evidence closes this attempt or a separately authorized bounded rerun with the hardened detector is warranted."
+  },
+  "security_and_boundaries": {
+    "credentials_or_private_material_added": false,
+    "raw_html_retained": false,
+    "headers_retained": false,
+    "cookies_or_session_material_retained": false,
+    "authentication_attempt_count": 0,
+    "captcha_handling_count": 0,
+    "bypass_or_circumvention_count": 0,
+    "proxy_or_session_reuse_count": 0,
+    "browser_or_edge_escalation_count": 0,
+    "candidate_source_promotion_count": 0,
+    "learning_memory_mutation_count": 0,
+    "reviewed_learning_corpus_mutation_count": 0,
+    "core_knowledge_mutation_count": 0,
+    "human_confirmation_mutation_count": 0,
+    "ground_truth_mutation_count": 0,
+    "parked_pr_close_count": 0,
+    "parked_pr_merge_count": 0,
+    "parked_ref_mutation_count": 0,
+    "branch_deletion_count": 0,
+    "production_authorized": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "ml_training_or_inference": false,
+    "automatic_learning_memory_export": false
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-coffee-evidence-recovery-v1",
+    "authoritative_branch": "codex/ku2d-coffee-evidence-recovery-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000023.json",
+    "depends_on_result": "KU2D-R-000022",
+    "depends_on_review": "KU2D-V-000022",
+    "depends_on_human_decision": "KU2D-H-000009",
+    "depends_on_merge": "2f06a082f53e9fa8781f7ecab4bbccd29c950c09",
+    "target_pr": 52,
+    "historical_pr": 39,
+    "learning_memory_record_id": null
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

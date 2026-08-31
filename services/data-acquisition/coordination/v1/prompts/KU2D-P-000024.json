@@ -1,0 +1,35 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000024",
+  "created_at": "2026-08-31T17:04:00+07:00",
+  "created_by": {"actor":"assistant","actor_id":"assistant_review"},
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-coffee-evidence-recovery-v1",
+  "objective": "Final merge-readiness validation and mechanical PR finalization for PR #52 Coffee Evidence Recovery v1 only.",
+  "instructions": [
+    "Stay on codex/ku2d-coffee-evidence-recovery-v1 and read KU2D-V-000023.",
+    "Refresh PR #52 exact head and exact-head CI, then rerun all deterministic/regression checks.",
+    "Confirm the bounded live result remains exactly: two public read-only requests, zero retained product records, repeatability unavailable, Deep Audit failed, screening-only captcha classification not independently confirmed, and zero candidate/higher-authority promotion.",
+    "Confirm the hardened detector was not used to reinterpret the completed observation and that no rerun or environment escalation occurred.",
+    "Confirm no new live request, authentication, bypass, browser/Edge escalation, parked-ref mutation, cleanup, production, scheduler, ML, Survey/DoE/SEM, or knowledge-authority mutation is introduced.",
+    "Update PR #52 description to exact current validation state if needed.",
+    "Perform mechanical Draft-to-Ready transition yourself if a safe authenticated GitHub path is available, including gh CLI or GitHub API from the coding environment. This transition is mechanical and does not require human judgment. Do not stop merely because the previously used connector GraphQL transition is broken. If all safe authenticated mechanical paths are unavailable, record the exact blocker and continue to return control to assistant without asking the project owner unless genuinely necessary.",
+    "Do not merge PR #52.",
+    "Write KU2D-R-000024 and return control to assistant.",
+    "Include completed_queue_summary with concise bullets/fields covering: work completed; key findings/results; repo/knowledge state changes; important out-of-scope actions not performed; remaining blockers/risks; recommended next logical step."
+  ],
+  "expected_result": {"result_id":"KU2D-R-000024","next_actor":"assistant"},
+  "provenance": {
+    "repository":"thanitpu/KU-Open-Data-Analytics",
+    "depends_on_result":"KU2D-R-000023",
+    "depends_on_review":"KU2D-V-000023",
+    "target_pr":52,
+    "authoritative_branch":"codex/ku2d-coffee-evidence-recovery-v1"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
