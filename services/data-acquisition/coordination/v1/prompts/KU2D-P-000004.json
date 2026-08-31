@@ -1,0 +1,47 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000004",
+  "created_at": "2026-08-31T09:26:00+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "objective": "Build KU2D Core Knowledge Backfill & Coverage Audit v1 without expanding acquisition scope",
+  "instructions": [
+    "Work only on branch codex/ku2d-core-knowledge-backfill-v1 based on merge d594592f07594bba8d16ca0d42ec51b4861c6bf6.",
+    "Do not implement Survey, Google Forms, DoE, bias tooling, SEM, new source acquisition, new live requests, production scheduling, model training, embeddings, or inference.",
+    "Inspect repository-grounded historical KU2D acquisition evidence and prior reviewed artifacts for Lotus's, Big C, Makro, Tops, Gourmet Market, JIB, Shopee, Lazada, LINE SHOPPING, Q-Diving/YouTube, Coffee sources, TikTok access boundary, Agoda/Traveloka access boundary, NocNoc ceased-source evidence, and other high-confidence completed episodes actually present in the repository.",
+    "Create a generic KU2D Core Knowledge taxonomy that separates Source Characteristics, Acquisition Technique, Execution Environment, Evidence Type, Semantic Interpretation, Acquisition Outcome, Failure/Boundary Type, Transferability, Evidence Strength, Review/Authority, Change/Drift, Data Quality/Yield, Request Cost/Latency when evidenced, Privacy/Authorization class, and provenance.",
+    "Preserve explicit distinctions such as Technique != Execution Environment, Evidence != Interpretation, Observation != Ground Truth, Displayed Order != Demand, Product Identity != Variant Identity, and blocked access != extraction failure when supported by reviewed evidence.",
+    "Backfill only high-confidence sanitized historical learning episodes from repository evidence. Do not fabricate human review, exact observations, timestamps, request counts, costs, or source outcomes that are not supported.",
+    "Represent both positive and negative learning episodes, including blocked/challenge/application-shell/ceased-source cases where repository evidence exists.",
+    "Introduce a Reviewed Learning Corpus concept separate from raw Learning Memory and from future ML Training Datasets. Define eligibility/provenance rules but do not export or train any ML dataset.",
+    "Create an ML Knowledge Map identifying future supervised-learning tasks that existing reviewed evidence could eventually support, such as price semantics, counter semantics, source classification, technique selection, access outcome prediction, field semantic mapping, evidence-strength classification, and review prioritization. For each task, identify candidate inputs/features, target label, current evidence source, label authority, leakage risks, and current readiness. Do not claim readiness where evidence is insufficient.",
+    "Build a Core Coverage Matrix across acquisition capabilities/patterns rather than counting websites. At minimum assess official API, sitemap/static discovery, canonical detail extraction, rendered DOM, browser acquisition, app-bundle discovery, structured response use, pagination, execution-environment dependence, authentication boundary handling, change monitoring, incremental refresh, entity resolution, cross-source matching, temporal observation, semantic normalization, quality/yield, and provenance/review maturity. Use qualitative states with evidence references and explicit gaps.",
+    "Produce a ranked Knowledge Gap Register. Recommend future exploration targets by the acquisition pattern/gap they would test, not merely by brand/domain popularity. Do not start those explorations in this prompt.",
+    "Keep the core taxonomy and corpus storage-neutral, versioned, deterministic, JSON/JSONL compatible, safe, and logically separate from production authorization and coordination records.",
+    "Add deterministic tests for schema validation, provenance, authority, contradiction handling, negative episodes, taxonomy IDs, coverage states, corpus eligibility, sensitive-material rejection, and no automatic runtime writes.",
+    "Add documentation explaining Learning Memory -> Reviewed Learning Corpus -> future task-specific ML Training Dataset, and why the latter does not yet exist.",
+    "Run git diff --check, JSON/YAML parsing, Python compilation, all Learning Memory and Agent Handoff tests, complete deterministic Data Acquisition corpus, and relevant domain regressions. Live request count must remain 0.",
+    "Open a new Draft PR against integration/data-acquisition-platform titled 'KU2D: Add Core Knowledge Backfill v1'. Do not merge.",
+    "When complete, write KU2D-R-000004 with exact branch, PR number, commit SHAs, files changed, taxonomy/schema additions, historical episodes included/excluded and why, coverage matrix summary, Knowledge Gap Register, ML Knowledge Map, tests/CI/security, live request count, production boundary, uncertainties, and blockers. Update queue so next_action.actor=assistant and stop."
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000004",
+    "next_actor": "assistant",
+    "draft_pr_required": true,
+    "live_request_count": 0
+  },
+  "provenance": {
+    "depends_on_review": "KU2D-V-000003",
+    "depends_on_merge": "d594592f07594bba8d16ca0d42ec51b4861c6bf6",
+    "design_intent": "strengthen KU2D core and preserve ML-ready reviewed knowledge before expanding acquisition scope"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

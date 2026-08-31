@@ -1,0 +1,25 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000001",
+  "prompt_id": "KU2D-P-000005",
+  "result_id": "KU2D-R-000005",
+  "review_id": "KU2D-V-000005",
+  "decided_at": "2026-08-31T10:15:00+07:00",
+  "decided_by": {
+    "actor": "human",
+    "actor_id": "project-human-authority"
+  },
+  "decision": "confirmed",
+  "reason_note": "Human authority confirmed all five semantic policy candidates. HC-000001: bare marketplace counters remain unknown until an explicit sold/order/review/item-role label exists. HC-000002: price temporal semantics are revised and confirmed as follows: when a price is observed on a current active official business webpage used to advertise product prices, and there is no contrary evidence that the display is historical, treat it as current_advertised_price at observed_at; do not infer transaction price, all-branch price, or variant equivalence. For API, rendered DOM, structured responses, exports, snapshots, archives, caches, or other acquisition methods, acquisition technique alone does not determine temporality: use source temporal evidence. Evidence known to be historical is historical_observed_price with its observation/effective time where available; unresolved temporality is temporal_status_unknown. Temporal status remains a separate axis from price role such as current/from/promotional/discount/member/unknown_display_price. HC-000003: product identity match does not imply variant match without explicit variant-equivalence evidence. HC-000004: default/recommended displayed order remains display-order-only and is not demand/popularity/national rank without an explicit sort contract. HC-000005: when cloud access is blocked but the same technique succeeds in a separately approved normal-network environment, classify it as an environment boundary rather than technique failure.",
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_candidate_packet": "config/human_confirmation_candidate_packet.json",
+    "authoritative_branch": "codex/ku2d-core-knowledge-backfill-v1"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

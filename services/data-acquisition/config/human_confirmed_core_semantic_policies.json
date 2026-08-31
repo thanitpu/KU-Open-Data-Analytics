@@ -1,0 +1,111 @@
+{
+  "schema": "ku2d.human-confirmed-core-semantic-policies.v1",
+  "version": "1.0",
+  "purpose": "Five semantic policies confirmed by explicit human authority and projected through Learning Memory, Human Confirmation, and Ground Truth contracts. These policies do not validate source outcomes or authorize production.",
+  "source_human_decision_id": "KU2D-H-000001",
+  "source_human_decision_reference": "coordination/v1/human-decisions/KU2D-H-000001.json",
+  "confirmed_by": "project-human-authority",
+  "confirmed_at": "2026-08-31T10:15:00+07:00",
+  "production_authorized": false,
+  "ml_dataset_export_enabled": false,
+  "policies": [
+    {
+      "policy_id": "KU2D-HC-000001",
+      "status": "human_confirmed",
+      "decision_type": "counter_semantics",
+      "semantic_label": "unknown-until-explicit-role-label",
+      "question": "When a marketplace counter has a number and unit but no explicit sold, order, review, or item-role label, should KU2D retain its semantic type as unknown?",
+      "system_suggestion": "unknown-until-explicit-label",
+      "final_decision": {
+        "canonical_label": "unknown-until-explicit-role-label",
+        "counter_role": "unknown",
+        "required_evidence_for_typed_role": "explicit sold, order, review, or item-role label",
+        "numeric_magnitude_alone_is_role_evidence": false
+      },
+      "explanation": "Bare marketplace counters remain unknown until the source explicitly labels their semantic role.",
+      "evidence_references": ["config/human_confirmation_candidate_packet.json", "coordination/v1/human-decisions/KU2D-H-000001.json", "fixtures/acquisition_learning_memory/sanitized_historical_episodes.json"],
+      "learning_record_id": "learning-core-counter-role-policy",
+      "human_confirmation_record_id": "confirmation-core-counter-role-policy",
+      "ground_truth_record_id": "ground-core-counter-role-policy"
+    },
+    {
+      "policy_id": "KU2D-HC-000002",
+      "status": "human_confirmed",
+      "decision_type": "price_role_and_temporal_status",
+      "semantic_label": "source-temporal-evidence-governs-price-temporal-status",
+      "question": "How should KU2D classify price temporal status separately from price role?",
+      "system_suggestion": "unknown-display-price",
+      "final_decision": {
+        "canonical_label": "source-temporal-evidence-governs-price-temporal-status",
+        "current_active_official_business_page_without_contrary_history": "current_advertised_price",
+        "current_advertised_price_temporal_reference": "observed_at",
+        "known_historical_evidence": "historical_observed_price",
+        "unresolved_temporality": "temporal_status_unknown",
+        "acquisition_method_alone_determines_temporality": false,
+        "acquisition_methods_that_do_not_determine_temporality_alone": ["official_api", "rendered_dom", "structured_response", "export", "snapshot", "archive", "cache", "other_acquisition_method"],
+        "temporal_status_separate_from_price_role": true,
+        "does_not_imply": ["transaction_price", "all_branch_price", "variant_equivalence"]
+      },
+      "explanation": "Source temporal evidence, not API, DOM, export, snapshot, archive, cache, or other acquisition method alone, determines price temporal status. Current advertised, historical observed, and unknown temporal states remain separate from price role and broader price claims.",
+      "evidence_references": ["config/human_confirmation_candidate_packet.json", "coordination/v1/human-decisions/KU2D-H-000001.json", "fixtures/acquisition_learning_memory/sanitized_historical_episodes.json"],
+      "learning_record_id": "learning-core-price-temporal-policy",
+      "human_confirmation_record_id": "confirmation-core-price-temporal-policy",
+      "ground_truth_record_id": "ground-core-price-temporal-policy"
+    },
+    {
+      "policy_id": "KU2D-HC-000003",
+      "status": "human_confirmed",
+      "decision_type": "product_variant_identity",
+      "semantic_label": "product-match-variant-unresolved",
+      "question": "Does matching product identity imply matching selected variant identity?",
+      "system_suggestion": "product-match-variant-unresolved",
+      "final_decision": {
+        "canonical_label": "product-match-variant-unresolved",
+        "product_identity_match_implies_variant_match": false,
+        "variant_status_without_explicit_equivalence_evidence": "unresolved"
+      },
+      "explanation": "A canonical product or item match does not establish selected size, color, bundle, or configuration equivalence.",
+      "evidence_references": ["config/human_confirmation_candidate_packet.json", "coordination/v1/human-decisions/KU2D-H-000001.json", "config/retail_commerce_core_patterns.json"],
+      "learning_record_id": "learning-core-product-variant-policy",
+      "human_confirmation_record_id": "confirmation-core-product-variant-policy",
+      "ground_truth_record_id": "ground-core-product-variant-policy"
+    },
+    {
+      "policy_id": "KU2D-HC-000004",
+      "status": "human_confirmed",
+      "decision_type": "display_order_semantics",
+      "semantic_label": "display-order-only-without-explicit-sort-contract",
+      "question": "Does default or recommended display order establish demand, popularity, or national rank?",
+      "system_suggestion": "display-order-only",
+      "final_decision": {
+        "canonical_label": "display-order-only-without-explicit-sort-contract",
+        "default_or_recommended_order": "display_order_only",
+        "explicit_sort_contract_required_for": ["demand", "popularity", "national_rank"]
+      },
+      "explanation": "Contextual merchandising order remains display context unless the source explicitly contracts the sort meaning.",
+      "evidence_references": ["config/human_confirmation_candidate_packet.json", "coordination/v1/human-decisions/KU2D-H-000001.json", "config/candidate_learning_evidence_registry.json"],
+      "learning_record_id": "learning-core-display-order-policy",
+      "human_confirmation_record_id": "confirmation-core-display-order-policy",
+      "ground_truth_record_id": "ground-core-display-order-policy"
+    },
+    {
+      "policy_id": "KU2D-HC-000005",
+      "status": "human_confirmed",
+      "decision_type": "environment_boundary_classification",
+      "semantic_label": "environment-boundary-not-technique-failure",
+      "question": "How should KU2D classify cloud blocking when the same technique succeeds in a separately approved normal-network environment?",
+      "system_suggestion": "environment-boundary-not-technique-failure",
+      "final_decision": {
+        "canonical_label": "environment-boundary-not-technique-failure",
+        "classification": "environment_boundary",
+        "technique_failure": false,
+        "conditions": ["cloud access is blocked", "the same technique succeeds in a separately approved normal-network environment"]
+      },
+      "explanation": "Execution-environment suitability remains separate from extraction-technique validity when the same technique has approved alternative-environment success.",
+      "evidence_references": ["config/human_confirmation_candidate_packet.json", "coordination/v1/human-decisions/KU2D-H-000001.json", "../../docs/validation/gourmet-access-environment-2026-08-29.json"],
+      "learning_record_id": "learning-core-environment-boundary-policy",
+      "human_confirmation_record_id": "confirmation-core-environment-boundary-policy",
+      "ground_truth_record_id": "ground-core-environment-boundary-policy"
+    }
+  ]
+}

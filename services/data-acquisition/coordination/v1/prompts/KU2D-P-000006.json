@@ -1,0 +1,42 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000006",
+  "created_at": "2026-08-31T10:16:00+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-core-knowledge-backfill-v1",
+  "objective": "Apply the explicit human-confirmed five core semantic policies to KU2D Core Knowledge and Learning Memory without expanding acquisition scope.",
+  "instructions": [
+    "Before doing anything, verify the checked-out branch and queue authoritative_branch are exactly codex/ku2d-core-knowledge-backfill-v1; fail closed otherwise.",
+    "Read KU2D-H-000001 and treat it as the explicit Human Decision for the five candidate semantic policies from config/human_confirmation_candidate_packet.json.",
+    "Promote only those five confirmed semantic policies through the existing reviewed Learning Memory/Human Confirmation/Ground Truth mechanisms where the evidence and contracts support promotion. Do not promote unrelated candidate source observations.",
+    "For price semantics, implement the revised human policy precisely: a price on a current active official business webpage used to advertise product prices may be labelled current_advertised_price at observed_at absent contrary historical evidence; acquisition method alone never determines temporal status; known historical evidence is historical_observed_price; unresolved temporality is temporal_status_unknown; temporal status is separate from price role and does not imply transaction price, all-branch price, or variant equivalence.",
+    "Preserve the other confirmed policies: unknown counter until explicit role label; product match does not imply variant match; displayed order is not demand/rank without explicit sort semantics; environment boundary is not technique failure when the technique succeeds in an approved alternative environment.",
+    "Update taxonomy, reviewed corpus, candidate packet status, ML knowledge specifications, documentation, and deterministic tests only as required to reflect the confirmed policies.",
+    "Keep all 11 unmerged source-history observations candidate-only unless there is already merged durable repository evidence that independently satisfies promotion criteria. Do not use the Human Decision to promote source outcomes.",
+    "Do not create an ML training dataset, enable dataset export, train or run a model, perform live acquisition, expand source/domain scope, or implement Survey/Google Forms/DoE/Bias/SEM.",
+    "Re-run Core Knowledge, Learning Memory, Agent Handoff, complete deterministic corpus, regression tests, JSON/YAML parsing, compilation, and security/runtime-isolation checks.",
+    "Update Draft PR #45 with the human-confirmed policy integration. Keep the PR Draft and unmerged.",
+    "Emit KU2D-R-000006, update the coordination queue to next_action.actor=assistant, push the branch, and stop."
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000006",
+    "next_actor": "assistant"
+  },
+  "provenance": {
+    "depends_on_prompt": "KU2D-P-000005",
+    "depends_on_result": "KU2D-R-000005",
+    "depends_on_review": "KU2D-V-000005",
+    "depends_on_human_decision": "KU2D-H-000001",
+    "target_pr": 45
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

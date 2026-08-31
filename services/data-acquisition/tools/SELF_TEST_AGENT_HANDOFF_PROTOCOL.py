@@ -18,7 +18,9 @@ from agent_handoff_protocol import (
     QUEUE_SCHEMA,
     RESULT_SCHEMA,
     serialize_coordination_record_json,
+    validate_authoritative_branch,
     validate_agent_handoff_bundle,
+    validate_branch_name,
     validate_assistant_review_record,
     validate_human_decision_record,
     validate_prompt_record,
@@ -292,6 +294,66 @@ repository_bundle = validate_agent_handoff_bundle(
 assert repository_bundle["queue_state"]["next_action"]["actor"] in {"codex", "assistant", "human", "none"}
 if repository_bundle["queue_state"]["next_action"]["actor"] == "assistant":
     assert repository_bundle["queue_state"]["latest_result"] == repository_bundle["queue_state"]["next_action"]["result_id"]
-assert repository_bundle["human_decision_records"] == {}
+assert set(repository_bundle["human_decision_records"]) == {"KU2D-H-000001"}
+assert repository_bundle["human_decision_records"]["KU2D-H-000001"]["decision"] == "confirmed"
+assert validate_authoritative_branch(
+    repository_prompts[-1], repository_queue, repository_queue["authoritative_branch"],
+) == repository_queue["authoritative_branch"]
 
-print("Agent Handoff Protocol deterministic tests passed (AH1-AH18).")
+# AH19: new branch-authority metadata accepts only the exact checked-out branch.
+branch_prompt = prompt()
+branch_prompt["provenance"]["authoritative_branch"] = "codex/ku2d-core-knowledge-backfill-v1"
+branch_queue = queue("ready_for_codex", "codex")
+branch_queue["authoritative_branch"] = "codex/ku2d-core-knowledge-backfill-v1"
+assert validate_authoritative_branch(
+    branch_prompt, branch_queue, "codex/ku2d-core-knowledge-backfill-v1",
+) == "codex/ku2d-core-knowledge-backfill-v1"
+
+# AH20: a stale checked-out branch fails before task execution.
+try:
+    validate_authoritative_branch(branch_prompt, branch_queue, "codex/stale-branch")
+    raise AssertionError("stale authoritative branch validated")
+except ValueError:
+    pass
+
+# AH21: Prompt and Queue branch authority cannot contradict or be invented.
+wrong_queue = deepcopy(branch_queue)
+wrong_queue["authoritative_branch"] = "codex/other-branch"
+try:
+    validate_authoritative_branch(branch_prompt, wrong_queue, "codex/other-branch")
+    raise AssertionError("contradictory queue branch validated")
+except ValueError:
+    pass
+invented_queue = queue("ready_for_codex", "codex")
+invented_queue["authoritative_branch"] = "codex/invented-branch"
+try:
+    validate_authoritative_branch(prompt(), invented_queue, "codex/invented-branch")
+    raise AssertionError("queue-invented branch authority validated")
+except ValueError:
+    pass
+
+# AH22: backward-compatible records may omit branch metadata; unsafe refs fail.
+assert validate_authoritative_branch(prompt(), queue("ready_for_codex", "codex"), "codex/any") is None
+for unsafe_branch in ("refs/heads/main", "codex/../main", "codex/bad branch", "codex/bad~ref"):
+    try:
+        validate_branch_name(unsafe_branch)
+        raise AssertionError(f"unsafe branch validated: {unsafe_branch}")
+    except ValueError:
+        pass
+
+# AH23: top-level Prompt branch metadata is accepted for the current format,
+# while contradictory top-level/provenance declarations fail closed.
+top_level_prompt = prompt()
+top_level_prompt["authoritative_branch"] = "codex/ku2d-core-knowledge-backfill-v1"
+assert validate_authoritative_branch(
+    top_level_prompt, branch_queue, "codex/ku2d-core-knowledge-backfill-v1",
+) == "codex/ku2d-core-knowledge-backfill-v1"
+contradictory_prompt = deepcopy(top_level_prompt)
+contradictory_prompt["provenance"]["authoritative_branch"] = "codex/other-branch"
+try:
+    validate_prompt_record(contradictory_prompt)
+    raise AssertionError("contradictory Prompt branch declarations validated")
+except ValueError:
+    pass
+
+print("Agent Handoff Protocol deterministic tests passed (AH1-AH23).")

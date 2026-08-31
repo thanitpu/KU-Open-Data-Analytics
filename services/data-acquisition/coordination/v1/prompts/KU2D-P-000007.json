@@ -1,0 +1,41 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000007",
+  "created_at": "2026-08-31T11:25:00+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-core-knowledge-backfill-v1",
+  "objective": "Finalize PR #45 for independent merge review without expanding KU2D acquisition scope.",
+  "instructions": [
+    "Confirm the checked-out branch exactly matches authoritative_branch and pull the latest remote state before any work.",
+    "Review the entire PR #45 delta for consistency across Core Knowledge taxonomy, Reviewed Learning Corpus, Candidate Learning Evidence Registry, ML Knowledge Map, Human Confirmation policies, Agent Handoff, documentation, and tests.",
+    "Do not add new acquisition sources, perform live requests, promote any of the 11 candidate source observations, create/export an ML training dataset, train/infer any model, or start Survey/Google Forms/DoE/Bias/SEM work.",
+    "Ensure the five KU2D-H-000001 policies remain semantic-policy authority only and do not validate source outcomes or production state.",
+    "Verify price temporal status remains separate from price role and that acquisition method alone cannot determine temporality.",
+    "Run git diff --check, JSON/YAML parsing, Python compilation, Core Knowledge tests, Learning Memory tests, Agent Handoff tests, the complete deterministic Data Acquisition corpus, and relevant regressions.",
+    "Update PR #45 description only if necessary to reflect the exact final scope and verification state.",
+    "If technically clean, attempt to mark PR #45 Ready for review. If the connector fails, record the limitation and do not attempt an unsafe workaround.",
+    "Write KU2D-R-000007 with exact head SHA, CI status, final scope, any remaining blockers, and hand control back to assistant.",
+    "Do not merge PR #45."
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000007",
+    "next_actor": "assistant"
+  },
+  "provenance": {
+    "depends_on_result": "KU2D-R-000006",
+    "depends_on_review": "KU2D-V-000006",
+    "depends_on_human_decision": "KU2D-H-000001",
+    "target_pr": 45,
+    "authoritative_branch": "codex/ku2d-core-knowledge-backfill-v1"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

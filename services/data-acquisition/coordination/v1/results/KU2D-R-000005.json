@@ -1,0 +1,138 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000005",
+  "prompt_id": "KU2D-P-000005",
+  "submitted_at": "2026-08-31T10:09:50+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "Deepened KU2D Core Knowledge using repository history only: retained 16 reviewed episodes, registered 11 open-unmerged candidate evidence records without promotion, separated future ML features from labels and decisions, created an unconfirmed five-item Human Confirmation candidate packet, and added a fail-closed authoritative-branch handoff safeguard.",
+  "evidence_references": [
+    "PR:#45",
+    "commit:7b165fb470abf1a40839767380448c3d2c653145",
+    "KU2D-P-000005",
+    "KU2D-R-000004",
+    "KU2D-V-000004"
+  ],
+  "repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-core-knowledge-backfill-v1",
+    "implementation_commit_sha": "7b165fb470abf1a40839767380448c3d2c653145",
+    "pull_request_number": 45,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/45",
+    "pull_request_base": "integration/data-acquisition-platform",
+    "pull_request_draft": true,
+    "pull_request_merged": false
+  },
+  "historical_evidence_recovered": {
+    "candidate_count": 11,
+    "reviewed_episode_count": 16,
+    "candidate_sources": [
+      "TikTok Shop",
+      "LINE SHOPPING",
+      "NocNoc",
+      "Agoda",
+      "Traveloka",
+      "Roots",
+      "Nana",
+      "SSI Blog",
+      "Scubadoo",
+      "Aquamaster",
+      "Akha Ama"
+    ],
+    "provenance_policy": "Every candidate cites an exact open Draft PR, 40-character head commit SHA, and source file. Candidate evidence remains separate from the Reviewed Learning Corpus and Ground Truth.",
+    "promoted_candidate_count": 0,
+    "fabricated_human_confirmation_count": 0
+  },
+  "ml_knowledge_specifications": {
+    "task_count": 8,
+    "tasks": [
+      "price semantics",
+      "counter semantics",
+      "source classification",
+      "technique selection",
+      "access outcome prediction",
+      "field semantic mapping",
+      "evidence-strength assessment",
+      "review prioritization"
+    ],
+    "feature_label_separation_validated": true,
+    "authority_and_exclusion_criteria_present": true,
+    "training_or_inference_enabled": false,
+    "dataset_export_enabled": false
+  },
+  "human_confirmation_candidate_packet": {
+    "candidate_count": 5,
+    "topics": [
+      "bare marketplace counters",
+      "ambiguous displayed price roles",
+      "product versus variant identity",
+      "displayed order versus demand",
+      "environment boundary versus technique failure"
+    ],
+    "all_awaiting_explicit_human_authority": true,
+    "human_confirmation_created": false
+  },
+  "coverage_and_gaps": {
+    "coverage_state_upgrades_from_candidates": 0,
+    "evidence_weighting_explicit": true,
+    "candidate_evidence_cannot_validate_coverage": true,
+    "gap_changes": [
+      "KG-006 now requests independent disposition of unmerged candidate evidence without repeated live requests",
+      "KG-007 now routes contradiction-rich semantics to the explicit Human Confirmation candidate packet"
+    ],
+    "weak_evidence_gaps_preserved": true
+  },
+  "branch_authority_safeguard": {
+    "authoritative_branch": "codex/ku2d-core-knowledge-backfill-v1",
+    "prompt_queue_exact_match_required": true,
+    "checked_out_branch_exact_match_required": true,
+    "stale_or_contradictory_handoff_fails_closed": true,
+    "existing_v1_records_without_branch_metadata_remain_valid": true,
+    "tests": "AH19-AH22 passed"
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "git_diff_check": "passed",
+    "json_parse": "74 files passed before Result submission",
+    "yaml_parse": "16 workflows passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service, tools passed",
+    "core_knowledge_tests": "CK1-CK24 passed",
+    "learning_memory_tests": "LM1-LM24 passed",
+    "agent_handoff_tests": "AH1-AH22 passed",
+    "complete_deterministic_corpus": "38/38 passed",
+    "supermarket_regressions": "passed",
+    "retail_transfer_regressions": "passed",
+    "live_request_count": 0
+  },
+  "ci": {
+    "status_at_result_submission": "pending branch push",
+    "pull_request_kept_draft": true
+  },
+  "uncertainties": [
+    "All 11 newly registered source observations remain candidate-only because their exact evidence lives in open unmerged Draft PRs.",
+    "Roots and Nana lack durable captured live output and are therefore represented only as unmerged deterministic-contract candidates.",
+    "The five semantic decisions in the candidate packet remain unresolved until explicit human authority is recorded.",
+    "No ML Training Dataset exists and no episode or candidate is automatically training eligible.",
+    "Coverage remains qualitative and evidence-weighted; candidate source count does not raise validation state."
+  ],
+  "blockers": [],
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-core-knowledge-backfill-v1",
+    "authoritative_branch": "codex/ku2d-core-knowledge-backfill-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000005.json",
+    "depends_on_result": "KU2D-R-000004",
+    "depends_on_review": "KU2D-V-000004",
+    "target_pr": 45,
+    "learning_memory_record_id": null
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

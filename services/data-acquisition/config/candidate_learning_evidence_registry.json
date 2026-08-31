@@ -1,0 +1,99 @@
+{
+  "schema": "ku2d.candidate-learning-evidence-registry.v1",
+  "version": "1.0",
+  "description": "Bounded evidence recovered from open unmerged Draft PRs. Candidate records are not Reviewed Learning Corpus episodes or Ground Truth.",
+  "production_authorized": false,
+  "automatic_promotion_to_reviewed_corpus": false,
+  "ground_truth_authorized": false,
+  "ml_dataset_export_enabled": false,
+  "candidates": [
+    {
+      "candidate_id": "KU2D-CLE-000001", "source": "TikTok Shop Thailand", "domain": "Commerce Market Observation", "polarity": "negative", "candidate_status": "unmerged_draft_boundary",
+      "observation_summary": "One bounded official public product-detail request completed technically but encountered a challenge or required-login marker and retained zero normalized records; no escalation or circumvention occurred.",
+      "ml_projection": {"candidate_feature_families": ["public_surface_class", "http_status_class", "challenge_marker_class", "stable_identity_count", "execution_environment"], "label_candidate": {"target_family": "access_outcome", "value": "challenge-or-required-login-boundary"}, "excluded_leakage_fields": ["exit_classification", "failure_reason", "candidate_status"], "training_eligible": false},
+      "authority": {"candidate_only": true, "reviewed_corpus_authorized": false, "human_confirmed": false, "ground_truth_asserted": false, "promoted_to_reviewed_episode_id": null},
+      "provenance": {"artifact_state": "open-unmerged-draft-pr", "pr_number": 36, "head_commit_sha": "9f62c33f933989bb12581fdb3b2a6fb21a1ca6b5", "source_file": "services/data-acquisition/config/tiktok_shop_commerce_pulse_sources.json"},
+      "production_store": false, "scheduler_action": null
+    },
+    {
+      "candidate_id": "KU2D-CLE-000002", "source": "LINE SHOPPING", "domain": "Commerce Market Observation", "polarity": "positive", "candidate_status": "unmerged_draft_observation",
+      "observation_summary": "One public seller collection candidate retained bounded stable product, shop, collection, title, and explicit baht-price observations; collection order remained display context and not demand.",
+      "ml_projection": {"candidate_feature_families": ["canonical_product_identity", "explicit_price_text", "shop_identity", "collection_context", "display_position"], "label_candidate": {"target_family": "observation_usability", "value": "seller-collection-product-price-candidate"}, "excluded_leakage_fields": ["priority_score", "next_action", "candidate_status"], "training_eligible": false},
+      "authority": {"candidate_only": true, "reviewed_corpus_authorized": false, "human_confirmed": false, "ground_truth_asserted": false, "promoted_to_reviewed_episode_id": null},
+      "provenance": {"artifact_state": "open-unmerged-draft-pr", "pr_number": 37, "head_commit_sha": "0e99926c72cec7e83e259408c153fd6c99fd1492", "source_file": "services/data-acquisition/config/marketplace_source_inventory.json"},
+      "production_store": false, "scheduler_action": null
+    },
+    {
+      "candidate_id": "KU2D-CLE-000003", "source": "NocNoc", "domain": "Commerce Market Observation", "polarity": "negative", "candidate_status": "unmerged_draft_boundary",
+      "observation_summary": "One bounded public HTTP request and one normal browser load in Draft PR #37 reported an official cessation notice and no commerce records; this remains unmerged candidate evidence.",
+      "ml_projection": {"candidate_feature_families": ["official_notice_presence", "public_surface_class", "retained_record_count", "observed_date_context"], "label_candidate": {"target_family": "source_lifecycle_boundary", "value": "ceased-source-candidate"}, "excluded_leakage_fields": ["priority", "next_action", "candidate_status"], "training_eligible": false},
+      "authority": {"candidate_only": true, "reviewed_corpus_authorized": false, "human_confirmed": false, "ground_truth_asserted": false, "promoted_to_reviewed_episode_id": null},
+      "provenance": {"artifact_state": "open-unmerged-draft-pr", "pr_number": 37, "head_commit_sha": "0e99926c72cec7e83e259408c153fd6c99fd1492", "source_file": "services/data-acquisition/config/marketplace_source_inventory.json"},
+      "production_store": false, "scheduler_action": null
+    },
+    {
+      "candidate_id": "KU2D-CLE-000004", "source": "Agoda", "domain": "OTA", "polarity": "negative", "candidate_status": "unmerged_draft_boundary",
+      "observation_summary": "A single contextual public Bangkok-search request in Draft PR #38 returned HTTP 200 with a challenge marker and zero retained property or rate records.",
+      "ml_projection": {"candidate_feature_families": ["destination_context", "date_context", "occupancy_context", "currency_context", "http_status_class", "challenge_marker_class"], "label_candidate": {"target_family": "access_outcome", "value": "access-boundary-stop"}, "excluded_leakage_fields": ["classification", "next_action", "candidate_status"], "training_eligible": false},
+      "authority": {"candidate_only": true, "reviewed_corpus_authorized": false, "human_confirmed": false, "ground_truth_asserted": false, "promoted_to_reviewed_episode_id": null},
+      "provenance": {"artifact_state": "open-unmerged-draft-pr", "pr_number": 38, "head_commit_sha": "8c8ac59c5ef852bf2bbd33be6c8ff44e55e00c73", "source_file": "services/data-acquisition/config/ota_source_expansion_2026_08_31.json"},
+      "production_store": false, "scheduler_action": null
+    },
+    {
+      "candidate_id": "KU2D-CLE-000005", "source": "Traveloka", "domain": "OTA", "polarity": "negative", "candidate_status": "unmerged_draft_boundary",
+      "observation_summary": "A single public Thailand-destination request in Draft PR #38 returned HTTP 403 with a challenge marker and zero retained records; browser escalation was not attempted.",
+      "ml_projection": {"candidate_feature_families": ["destination_context", "date_context_completeness", "http_status_class", "challenge_marker_class", "execution_environment"], "label_candidate": {"target_family": "access_outcome", "value": "access-boundary-stop"}, "excluded_leakage_fields": ["classification", "next_action", "candidate_status"], "training_eligible": false},
+      "authority": {"candidate_only": true, "reviewed_corpus_authorized": false, "human_confirmed": false, "ground_truth_asserted": false, "promoted_to_reviewed_episode_id": null},
+      "provenance": {"artifact_state": "open-unmerged-draft-pr", "pr_number": 38, "head_commit_sha": "8c8ac59c5ef852bf2bbd33be6c8ff44e55e00c73", "source_file": "services/data-acquisition/config/ota_source_expansion_2026_08_31.json"},
+      "production_store": false, "scheduler_action": null
+    },
+    {
+      "candidate_id": "KU2D-CLE-000006", "source": "Roots Coffee", "domain": "Coffee retail product", "polarity": "mixed", "candidate_status": "unmerged_draft_observation",
+      "observation_summary": "A public product-detail request completed in Draft PR #39, but console evidence was not durably retained; only the deterministic product-detail contract and indexed research context remain candidates.",
+      "ml_projection": {"candidate_feature_families": ["canonical_product_url", "explicit_price_context", "origin_text", "process_text", "product_class"], "label_candidate": {"target_family": "technique_readiness", "value": "promising-needs-reviewed-live-rerun"}, "excluded_leakage_fields": ["technique_status", "next_action", "candidate_status"], "training_eligible": false},
+      "authority": {"candidate_only": true, "reviewed_corpus_authorized": false, "human_confirmed": false, "ground_truth_asserted": false, "promoted_to_reviewed_episode_id": null},
+      "provenance": {"artifact_state": "open-unmerged-draft-pr", "pr_number": 39, "head_commit_sha": "441c71d678a30cc62b742ea58f23f629a9d1e2d6", "source_file": "services/data-acquisition/config/coffee_source_expansion_2026_08_31.json"},
+      "production_store": false, "scheduler_action": null
+    },
+    {
+      "candidate_id": "KU2D-CLE-000007", "source": "Nana Coffee Roasters", "domain": "Coffee retail product", "polarity": "mixed", "candidate_status": "unmerged_draft_observation",
+      "observation_summary": "A public product-detail request completed in Draft PR #39, but console evidence was not durably retained; roasted-bean product semantics remain distinct from cafe menu pricing.",
+      "ml_projection": {"candidate_feature_families": ["canonical_product_url", "origin_text", "process_text", "roast_level_text", "package_size_text"], "label_candidate": {"target_family": "technique_readiness", "value": "promising-needs-reviewed-live-rerun"}, "excluded_leakage_fields": ["technique_status", "next_action", "candidate_status"], "training_eligible": false},
+      "authority": {"candidate_only": true, "reviewed_corpus_authorized": false, "human_confirmed": false, "ground_truth_asserted": false, "promoted_to_reviewed_episode_id": null},
+      "provenance": {"artifact_state": "open-unmerged-draft-pr", "pr_number": 39, "head_commit_sha": "441c71d678a30cc62b742ea58f23f629a9d1e2d6", "source_file": "services/data-acquisition/config/coffee_source_expansion_2026_08_31.json"},
+      "production_store": false, "scheduler_action": null
+    },
+    {
+      "candidate_id": "KU2D-CLE-000008", "source": "SSI Blog", "domain": "Q-Diving content", "polarity": "positive", "candidate_status": "unmerged_draft_observation",
+      "observation_summary": "Draft PR #40 retained bounded public article candidates with canonical identities; automated relevance remains non-authoritative and requires Human Review.",
+      "ml_projection": {"candidate_feature_families": ["canonical_article_url", "title_metadata", "content_source_class", "public_status"], "label_candidate": {"target_family": "source_technique_readiness", "value": "promising-ready-for-deep-audit"}, "excluded_leakage_fields": ["technique_status", "review_decision", "candidate_status"], "training_eligible": false},
+      "authority": {"candidate_only": true, "reviewed_corpus_authorized": false, "human_confirmed": false, "ground_truth_asserted": false, "promoted_to_reviewed_episode_id": null},
+      "provenance": {"artifact_state": "open-unmerged-draft-pr", "pr_number": 40, "head_commit_sha": "5f972d456415dbd0d8ae695f02c056e4a7c76e56", "source_file": "services/data-acquisition/config/qdiving_source_expansion_2026_08_31.json"},
+      "production_store": false, "scheduler_action": null
+    },
+    {
+      "candidate_id": "KU2D-CLE-000009", "source": "Scubadoo Koh Tao", "domain": "Q-Diving course services", "polarity": "positive", "candidate_status": "unmerged_draft_observation",
+      "observation_summary": "Draft PR #40 retained bounded public course-service candidates with explicit THB service prices; service pricing is not retail product pricing or demand.",
+      "ml_projection": {"candidate_feature_families": ["official_host", "course_name", "explicit_service_price", "duration_context", "dive_count_context"], "label_candidate": {"target_family": "source_technique_readiness", "value": "promising-ready-for-deep-audit"}, "excluded_leakage_fields": ["technique_status", "review_decision", "candidate_status"], "training_eligible": false},
+      "authority": {"candidate_only": true, "reviewed_corpus_authorized": false, "human_confirmed": false, "ground_truth_asserted": false, "promoted_to_reviewed_episode_id": null},
+      "provenance": {"artifact_state": "open-unmerged-draft-pr", "pr_number": 40, "head_commit_sha": "5f972d456415dbd0d8ae695f02c056e4a7c76e56", "source_file": "services/data-acquisition/config/qdiving_source_expansion_2026_08_31.json"},
+      "production_store": false, "scheduler_action": null
+    },
+    {
+      "candidate_id": "KU2D-CLE-000010", "source": "Aquamaster Thailand", "domain": "Q-Diving retail equipment", "polarity": "positive", "candidate_status": "unmerged_draft_observation",
+      "observation_summary": "Draft PR #40 retained bounded official equipment product candidates with canonical identity and explicit THB price or variant range; display order was not treated as demand.",
+      "ml_projection": {"candidate_feature_families": ["canonical_product_url", "product_slug", "explicit_price_or_range", "source_class", "display_position"], "label_candidate": {"target_family": "source_technique_readiness", "value": "promising-ready-for-deep-audit"}, "excluded_leakage_fields": ["technique_status", "demand_claim", "candidate_status"], "training_eligible": false},
+      "authority": {"candidate_only": true, "reviewed_corpus_authorized": false, "human_confirmed": false, "ground_truth_asserted": false, "promoted_to_reviewed_episode_id": null},
+      "provenance": {"artifact_state": "open-unmerged-draft-pr", "pr_number": 40, "head_commit_sha": "5f972d456415dbd0d8ae695f02c056e4a7c76e56", "source_file": "services/data-acquisition/config/qdiving_source_expansion_2026_08_31.json"},
+      "production_store": false, "scheduler_action": null
+    },
+    {
+      "candidate_id": "KU2D-CLE-000011", "source": "Akha Ama Coffee", "domain": "Coffee retail product", "polarity": "positive", "candidate_status": "unmerged_draft_observation",
+      "observation_summary": "Draft PR #41 reports one bounded official catalog load with stable product URLs, product names, roast or package cues, and explicit THB prices; it remains unmerged candidate evidence.",
+      "ml_projection": {"candidate_feature_families": ["canonical_product_url", "product_name", "explicit_price_text", "roast_context", "package_context"], "label_candidate": {"target_family": "source_technique_readiness", "value": "catalog-to-detail-deep-audit-candidate"}, "excluded_leakage_fields": ["priority_rank", "next_action", "candidate_status"], "training_eligible": false},
+      "authority": {"candidate_only": true, "reviewed_corpus_authorized": false, "human_confirmed": false, "ground_truth_asserted": false, "promoted_to_reviewed_episode_id": null},
+      "provenance": {"artifact_state": "open-unmerged-draft-pr", "pr_number": 41, "head_commit_sha": "408e4a3889a70b89b71cbd076b0b980d1aaae2d3", "source_file": "services/data-acquisition/config/cross_domain_source_gap_scan_2026_08_31.json"},
+      "production_store": false, "scheduler_action": null
+    }
+  ]
+}

@@ -71,6 +71,7 @@ jobs:
           python tools/SELF_TEST_LAZADA_RENDERED_DOM_DEEP_AUDIT.py
           python tools/SELF_TEST_ACQUISITION_LEARNING_RECORD.py
           python tools/SELF_TEST_ACQUISITION_LEARNING_MEMORY.py
+          python tools/SELF_TEST_CORE_KNOWLEDGE.py
           python tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py
           rm -f "$KU2D_OPERATIONS_DB" "$KU2D_OBSERVATION_DB"
           python tools/SELF_TEST_LIFECYCLE_ACCEPTANCE.py

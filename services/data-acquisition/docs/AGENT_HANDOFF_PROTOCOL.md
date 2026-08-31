@@ -59,11 +59,17 @@ Queue linkage is fail-closed:
 
 The bundle validator rejects duplicate/orphan IDs, inconsistent chains, self-reference, fabricated human authority, invalid state transitions, implicit replay, missing completed history, contradictory queue pointers, sensitive material, and non-JSON-safe values.
 
+## Authoritative branch safeguard
+
+New Prompt records may declare top-level `authoritative_branch`; existing v1 records that use `provenance.authoritative_branch` remain valid. If both locations are present they must match exactly. When either is present, the current Queue must repeat the exact value as `authoritative_branch`. Before reading or executing `next_action`, Codex must fetch the remote branch, verify the checked-out branch, and call the equivalent of `validate_authoritative_branch(prompt, queue, checked_out_branch)`. A contradiction or mismatch is a stale-branch handoff and fails closed before task work begins.
+
+The field is optional for backward compatibility: existing v1 records are not rewritten and continue to validate when both Prompt and Queue omit it. A Queue cannot invent branch authority that its Prompt did not declare, and branch metadata coordinates repository state only; it does not authorize production, acquisition, scheduling, or replay.
+
 ## Operating workflow
 
 1. **ChatGPT/assistant reads GitHub state.** It reads the queue, referenced records, commits, checks, and review evidence.
 2. **Assistant writes a Prompt or Assistant Review artifact.** Chat text alone is not authoritative repository state.
-3. **Codex reads a `ready_for_codex` Prompt.** It executes only the bounded request, creates a Result, and updates the queue to `result_submitted` with `next_action.actor=assistant`.
+3. **Codex verifies branch authority, then reads a `ready_for_codex` Prompt.** It fetches the named branch, fails closed on a mismatch, executes only the bounded request, creates a Result, and updates the queue to `result_submitted` with `next_action.actor=assistant`.
 4. **Assistant reviews the Result.** It either records a non-human Assistant Review or requests explicit human authority.
 5. **Human acts only when queued.** A person is asked only when `next_action.actor=human`; explicit input is serialized as a Human Decision.
 6. **Queue completes or advances.** GitHub remains the shared source of truth throughout.
