@@ -1,0 +1,15 @@
+{
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
+  "review_id": "KU2D-V-000026",
+  "prompt_id": "KU2D-P-000026",
+  "result_id": "KU2D-R-000026",
+  "reviewed_at": "2026-08-31T18:00:00+07:00",
+  "reviewed_by": {"actor":"assistant","actor_id":"assistant_review","human_authority_claimed":false},
+  "review_result": "accepted",
+  "requires_human_decision": false,
+  "reason_code": "planning_result_accepted",
+  "explanation": "Accepted the planning-only Coffee follow-up. The prior Coffee observation remains evidence_withheld and is not reinterpreted as success. Option A, one separately bounded same-URL rerun with the hardened detector, is the strongest next step at 4.50 versus Q-Diving 3.15 and defer 1.80. The proposed envelope is narrow, public read-only, fail-closed, and remains non-authorizing until separately queued.",
+  "evidence_references": ["KU2D-R-000026","PR:#54","commit:785082120c908b1f670372a09c1d69241e33e271","workflow:Data Acquisition Platform CI#297","workflow:Frontend CI#1164","workflow:PR Browser Preview Link#208"],
+  "provenance": {"repository":"thanitpu/KU-Open-Data-Analytics","branch":"codex/ku2d-coffee-recovery-next-step-v1","target_pr":54,"reviewed_result":"KU2D-R-000026"},
+  "boundaries": {"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
