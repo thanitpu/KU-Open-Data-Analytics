@@ -1,0 +1,25 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000003",
+  "prompt_id": "KU2D-P-000008",
+  "result_id": null,
+  "review_id": null,
+  "decided_at": "2026-08-31T11:35:00+07:00",
+  "decided_by": {
+    "actor": "human",
+    "actor_id": "project-human-authority"
+  },
+  "decision": "redirect_before_execution",
+  "reason_note": "Human authority approved adopting the qualitative-analysis quality principles reviewed from Chapters 11-13 of Social Data Analysis before advancing Core Intelligence. Priority is to strengthen evidence management, codebook discipline, first/second-cycle coding, analytical memos, negative/deviant-case verification, independent coding/reliability, finding verification, and ontology-lock-in safeguards. KU2D-P-000008 must not be executed as-is; a replacement prompt will implement the quality foundation first on the same authoritative branch.",
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_context": "review of Chapters 11-13 qualitative data management, coding, and findings workflow",
+    "authoritative_branch": "codex/ku2d-core-intelligence-v1"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
