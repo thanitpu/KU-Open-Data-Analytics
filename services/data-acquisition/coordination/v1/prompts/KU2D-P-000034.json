@@ -1,0 +1,142 @@
+{
+  "schema":"ku2d.agent-handoff-prompt.v1",
+  "prompt_id":"KU2D-P-000034",
+  "created_at":"2026-08-31T21:45:00+07:00",
+  "created_by":{"actor":"assistant","actor_id":"assistant_orchestrator"},
+  "title":"KU2D YouTube Metadata, Transcript, Comments & Acquisition Pattern v2",
+  "objective":"In one continuous queue, extend the existing YouTube acquisition design from metadata-only foundations into a durable YouTube content-and-audience acquisition architecture covering metadata, Thai/English transcript or captions only, comments/replies, cross-content semantics, KU2D-to-KU2A dataset contracts, deterministic fixtures/tests, and YouTube Acquisition Pattern v2. Perform Branch Handoff Protocol v1 first, then continue without returning control between phases unless repository integrity or coordination protocol requires fail-closed stop.",
+  "branch_handoff":{
+    "protocol":"ku2d.branch-handoff.v1",
+    "handoff_id":"KU2D-BH-000009",
+    "from_branch":"codex/ku2d-tier-a-locked-source-batch-manifest-v1",
+    "to_branch":"codex/ku2d-youtube-content-acquisition-v2",
+    "required_base_branch":"integration/data-acquisition-platform",
+    "required_base_sha":"8056fdae7ff6ba8501fa16b5d5f7605a997a9526",
+    "close_source_queue_before_switch":true,
+    "initialize_target_queue":true,
+    "human_authority_required":false
+  },
+  "work_phases":[
+    {
+      "phase":1,
+      "name":"Existing YouTube foundation and expanded metadata capability",
+      "requirements":[
+        "Inspect all merged YouTube acquisition policies, schemas, fixtures, tests, results, and source-registry records before editing.",
+        "Map existing supported metadata and gaps across channel, playlist, video enumeration, video details, category, duration, language/default-language signals, live/broadcast status where available, statistics, publish/update timestamps, thumbnails, tags/topics where contractually available, and relationship identifiers.",
+        "Keep observed API fields, derived fields, unavailable fields, and proposal-only fields explicitly distinct.",
+        "Document endpoint/quota implications and any owner-authorized-only metadata capability separately from public-read capability.",
+        "Do not infer unavailable semantics from display order, counters, or missing fields."
+      ]
+    },
+    {
+      "phase":2,
+      "name":"Transcript and captions capability with strict language scope",
+      "requirements":[
+        "Design transcript/caption acquisition for Thai and English only. Do not retain or normalize transcript text in any other language.",
+        "Represent language scope canonically as allowed_languages=[th,en]. Other-language tracks may be observed only as availability metadata if needed, never acquired/retained as transcript content.",
+        "Separate manual captions, auto-generated captions, translated tracks, original-language tracks, owner-authorized caption download, and any public transcript surface. Do not conflate capability classes.",
+        "Define deterministic selection precedence when both Thai and English tracks exist and when multiple tracks of the same language exist; preserve original vs translated vs auto-generated provenance.",
+        "Define normalized transcript_segment entity with video identity, segment order, start/end or duration when available, text, language, caption kind, source surface/API, acquisition timestamp, provenance, and completeness indicators.",
+        "Model cases: manual Thai, manual English, auto-generated Thai, auto-generated English, both languages, unsupported-language-only, no captions, captions disabled/unavailable, private/deleted/unavailable video, partial transcript, timestamp gaps, translated track, and owner-authorization-required track.",
+        "No-transcript and unsupported-language-only must not automatically be classified as extraction failure."
+      ]
+    },
+    {
+      "phase":3,
+      "name":"Comments and replies capability",
+      "requirements":[
+        "Design commentThreads/comments acquisition including top-level comments, replies, pagination, publishedAt, updatedAt, likeCount where available, author/channel identifiers exposed by the API, moderation/deletion states where observable, and comments-disabled behavior.",
+        "Separate requested ordering from representativeness; displayed/API order must never be interpreted as population sentiment or demand.",
+        "Define normalized comment and comment_reply entities, stable relationship keys, source provenance, acquisition timestamp, original publish/update timestamp, and completeness/coverage indicators.",
+        "Define quota and bounded pagination semantics and stop conditions.",
+        "Model disabled comments, no comments, replies absent, replies partially returned, deleted/unavailable content, pagination, duplicate observation, edited comments, and quota/budget boundary cases."
+      ]
+    },
+    {
+      "phase":4,
+      "name":"Cross-content semantics and quality boundaries",
+      "requirements":[
+        "Encode explicit rules: transcript != description; creator speech != viewer opinion; comment count != sentiment; ordering != representativeness; moderated/deleted comments imply potentially incomplete sampling; transcript absence != irrelevance; metadata statistics are observation snapshots, not causal explanations.",
+        "Define provenance and authority separately from interpretation.",
+        "Define Deep Audit gates per module and module-level status values such as required, optional, unavailable, owner_authorized_only, public_accessible, evidence_withheld, unsupported_language_only, and comments_disabled where appropriate.",
+        "Define source-level exit 0/2/1 without treating optional-module absence as a technical failure unless the contract requires that module."
+      ]
+    },
+    {
+      "phase":5,
+      "name":"YouTube Acquisition Pattern v2",
+      "requirements":[
+        "Produce a durable v2 pattern: Channel Discovery -> Playlist/Video Enumeration -> Metadata -> Thai/English Transcript/Caption -> Comments/Replies -> Normalize -> Provenance -> Quality/Deep Audit -> Dataset Intake.",
+        "Make module requirements configurable and fail-closed; metadata may be required while transcript/comments can be optional depending on acquisition objective.",
+        "Separate official API methods, owner-authorized methods, public transcript surfaces, and non-durable/non-approved methods.",
+        "Do not add browser scraping, challenge bypass, auth bypass, or undocumented endpoint dependence as an approved durable pattern."
+      ]
+    },
+    {
+      "phase":6,
+      "name":"KU2D to KU2A Dataset Intake contracts",
+      "requirements":[
+        "Define storage-neutral entities and relationships for channel, playlist where useful, video, transcript_segment, comment, and comment_reply.",
+        "Include acquisition timestamp, original publish/update timestamps, language, transcript/caption kind, relationship keys, provenance, completeness indicators, module status, and quality/audit fields.",
+        "Design so KU2A can perform text analytics, sentiment, topic analysis, semantic search, and temporal analysis without knowing YouTube-specific acquisition logic.",
+        "Do not implement analytics or ML in this queue."
+      ]
+    },
+    {
+      "phase":7,
+      "name":"Offline fixtures, validators, deterministic tests, and readiness",
+      "requirements":[
+        "Add offline fixtures covering metadata, Thai/English transcript cases, comments/replies, pagination, disabled/unavailable content, language filtering, quota boundaries, provenance, Deep Audit, and partial acquisition.",
+        "Add fail-closed validators and deterministic tests without weakening existing YouTube, supermarket, retail, marketplace, coffee, governance, or handoff regressions.",
+        "Produce a final YouTube v2 readiness report that states metadata readiness, Thai transcript readiness, English transcript readiness, comments readiness, owner-authorization dependencies, quota implications, public-read capability, remaining gaps, and the smallest bounded live pilot required to validate unresolved behavior.",
+        "Recommend an appropriate pilot source such as Q-Diving only if supported by repository evidence; do not execute that pilot in this queue."
+      ]
+    }
+  ],
+  "external_research_policy":{
+    "official_documentation_research_permitted":true,
+    "preferred_sources":["Google/YouTube official developer documentation","existing merged repository evidence"],
+    "youtube_api_source_execution_permitted":false,
+    "caption_download_execution_permitted":false,
+    "comment_live_acquisition_permitted":false,
+    "browser_or_edge_acquisition_permitted":false,
+    "oauth_or_owner_authorization_flow_permitted":false,
+    "note":"Documentation research may be used to map capabilities, but no live YouTube content/source acquisition is authorized by this prompt. Any unresolved behavior requiring a live API call must be carried forward as a separately governed bounded pilot objective."
+  },
+  "language_contract":{
+    "transcript_allowed_languages":["th","en"],
+    "other_transcript_languages_retained":false,
+    "other_language_availability_metadata_may_be_retained":true,
+    "translation_must_be_explicitly_provenanced":true,
+    "automatic_language_substitution":false
+  },
+  "quality_rules":[
+    "Evidence before conclusion.",
+    "Code/contract capability must not be confused with live proof.",
+    "Absence, disabled state, unsupported language, access restriction, quota boundary, and extraction failure are separate classifications.",
+    "Do not promote candidate evidence, Reviewed Corpus, Core Knowledge, Human Confirmation, or Ground Truth automatically.",
+    "Do not mutate parked references or production/scheduler state.",
+    "Do not silently broaden from Thai/English transcript scope to other languages."
+  ],
+  "deliverables":[
+    "Expanded YouTube metadata capability map and contract",
+    "Thai/English-only transcript/caption contract",
+    "Comments/replies contract",
+    "Cross-content semantic boundary rules",
+    "YouTube Acquisition Pattern v2",
+    "KU2D-to-KU2A storage-neutral Dataset Intake contract",
+    "Offline fixtures, fail-closed validators, deterministic regression tests, and CI coverage",
+    "YouTube v2 readiness report with bounded future live-pilot recommendation",
+    "KU2D-R-000034 with completed_queue_summary"
+  ],
+  "completion_behavior":{
+    "single_queue_continuous_execution":true,
+    "return_control_between_phases":false,
+    "if_phase_blocked":"record blocker and continue remaining offline phases where safe",
+    "stop_only_for":["repository_integrity_risk","coordination_protocol_failure","cannot_preserve_fail_closed_contract"],
+    "open_single_pr":true,
+    "mark_ready_when_ci_green":true,
+    "merge_pr":false
+  },
+  "boundaries":{"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
