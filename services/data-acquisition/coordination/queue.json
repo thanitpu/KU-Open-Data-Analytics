@@ -1,9 +1,9 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-08-31T12:17:00+07:00",
+  "updated_at": "2026-08-31T12:25:49+07:00",
   "authoritative_branch": "codex/ku2d-core-intelligence-v1",
   "latest_prompt": "KU2D-P-000010",
-  "latest_result": "KU2D-R-000009",
+  "latest_result": "KU2D-R-000010",
   "latest_review": "KU2D-V-000009",
   "latest_human_decision": "KU2D-H-000002",
   "prompt_states": {
@@ -16,7 +16,7 @@
     "KU2D-P-000007": "completed",
     "KU2D-P-000008": "superseded",
     "KU2D-P-000009": "reviewed",
-    "KU2D-P-000010": "ready_for_codex"
+    "KU2D-P-000010": "result_submitted"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -28,12 +28,12 @@
     "KU2D-P-000007"
   ],
   "next_action": {
-    "actor": "codex",
+    "actor": "assistant",
     "prompt_id": "KU2D-P-000010",
-    "result_id": null,
+    "result_id": "KU2D-R-000010",
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
   },
-  "notes": "Independent review found the Quality Foundation technically strong but identified one ontology/codebook blocker: AT-* acquisition-technique and FB-* failure-boundary taxonomy IDs are currently forced into code_kind=semantic_code. KU2D-P-000010 corrects the codebook to preserve taxonomy dimensions, adds an explicit Theme distinction, and makes reliability dimension-aware. No source expansion, live acquisition, broader recommendation/ranking, ML execution/export, production authorization, or scheduling is authorized."
+  "notes": "KU2D-R-000010 corrects the PR #46 ontology/codebook blocker: code family is derived from the authoritative taxonomy, Theme is explicit and non-authorizing, coding/reliability are dimension-aware, and partial codebook coverage is exact. QF1-QF42, the full 39/39 deterministic corpus, and exact-head CI all pass with zero live requests. Control returns to assistant for independent review; broader recommendation/ranking remains out of scope."
 }
