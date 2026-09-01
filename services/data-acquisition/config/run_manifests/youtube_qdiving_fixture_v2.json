@@ -1,0 +1,67 @@
+{
+  "schema": "ku2d.immutable-run-manifest.v2",
+  "manifest_id": "KU2D-RM-000001-V002",
+  "manifest_version": "2.0.0",
+  "run_id": "KU2D-RUN-000002",
+  "created_at": "2026-09-01T19:45:00.000+07:00",
+  "execution_started_at": "2026-09-01T19:45:00.000+07:00",
+  "source_manifest": {
+    "manifest_id": "KU2D-SM-YOUTUBE-QDIVING-000001",
+    "path": "config/source_manifests/youtube_qdiving_v1.json",
+    "sha256": "c08781e2c20222d2675833bd6877f9ae5d4272cc0a90d03a5a5efb65da9483ff"
+  },
+  "adapter": {
+    "registry_id": "KU2D-ADAPTER-REGISTRY-V2",
+    "registry_version": "2.0.0",
+    "adapter_id": "youtube-qdiving-reference-adapter",
+    "adapter_version": "1.0.0",
+    "parser_id": "youtube-qdiving-sanitized-candidate-parser.v1",
+    "parser_version": "1.0.0",
+    "mapper_id": "public-video-q-diving-mapper.v1",
+    "mapper_version": "1.0.0",
+    "connector_contract_version": "1.0.0"
+  },
+  "domain_capability_profile": {
+    "profile_id": "public-video-q-diving.v1",
+    "version": "1.0",
+    "path": "config/domain_capability_profiles/public_video_q_diving_v1.json",
+    "sha256": "4da10146e9ce2cdad68cb284e26e52983389661f9646766c0ad030dc9d4252cf"
+  },
+  "requested_capabilities": ["video_metadata", "channel_identity"],
+  "transport": {
+    "mode": "fixture_replay",
+    "fixture_id": "KU2D-YT-QDIVING-CANDIDATES-000001"
+  },
+  "fixture_references": [
+    {
+      "fixture_id": "KU2D-YT-QDIVING-CANDIDATES-000001",
+      "path": "knowledge/v1/candidate-closure-packets/KU2D-YT-QDIVING-CANDIDATES-000001.json",
+      "sha256": "3e9e95e6f4bec40628046f64269d54985737b70558aa9e08954aa813372d5f0d"
+    }
+  ],
+  "evidence_references": ["KU2D-R-000050", "KU2D-R-000051", "KU2D-AI-000001", "KU2D-MTC-000001", "KU2D-P-000055"],
+  "request_policy": {
+    "maximum_attempts_per_capability": 1,
+    "maximum_provider_requests": 0,
+    "maximum_documented_quota_units": 0,
+    "credential_required": false,
+    "allow_live_provider": false
+  },
+  "integrity": {
+    "adapter_registry_catalog_path": "config/adapter_registry_catalog_v1.json",
+    "adapter_registry_catalog_sha256": "790e28d6763f523584d62f396a685dc595623439aa50e98b9ed6bf4d0a93c24b",
+    "adapter_registry_path": "config/adapter_registry_v2.json",
+    "adapter_registry_sha256": "a9b1204297c2df3c61c74b550391c5fe340864c88312079c833ae86c043f219c"
+  },
+  "authority_boundaries": {
+    "semantic_quality_owner": "analysis",
+    "production_store": false,
+    "production_approved": false,
+    "scheduler_action": null
+  },
+  "immutability": {
+    "executed_manifest_mutation_allowed": false,
+    "correction_mode": "new_manifest_version",
+    "supersedes_manifest_id": "KU2D-RM-000001-V001"
+  }
+}

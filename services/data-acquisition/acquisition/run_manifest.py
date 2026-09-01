@@ -1,4 +1,4 @@
-"""Fail-closed validator for immutable KU2D Run Manifest v1."""
+"""Fail-closed validators for immutable, versioned KU2D Run Manifests."""
 from __future__ import annotations
 
 import copy
@@ -70,13 +70,18 @@ def _unique_texts(value: Any, name: str) -> list[str]:
 
 def validate_run_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
     manifest = _exact(manifest, TOP_FIELDS, "run manifest")
-    if manifest["schema"] != "ku2d.immutable-run-manifest.v1":
-        raise ValueError("invalid immutable run manifest schema")
+    schema = manifest["schema"]
+    if schema == "ku2d.immutable-run-manifest.v1":
+        expected_version = "1.0.0"
+    elif schema == "ku2d.immutable-run-manifest.v2":
+        expected_version = "2.0.0"
+    else:
+        raise ValueError("invalid or unsupported immutable run manifest schema")
     if not isinstance(manifest["manifest_id"], str) or not MANIFEST_ID.fullmatch(manifest["manifest_id"]):
         raise ValueError("manifest_id is invalid")
     _version(manifest["manifest_version"], "manifest_version")
-    if manifest["manifest_version"] != "1.0.0":
-        raise ValueError("Run Manifest v1 runtime version is unsupported")
+    if manifest["manifest_version"] != expected_version:
+        raise ValueError("Run Manifest runtime version is unsupported")
     if not isinstance(manifest["run_id"], str) or not RUN_ID.fullmatch(manifest["run_id"]):
         raise ValueError("run_id is invalid")
     created_at = _timestamp(manifest["created_at"], "created_at")
@@ -152,12 +157,17 @@ def validate_run_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
         "allow_live_provider": False,
     }:
         raise ValueError("request policy exceeds fixture-only authority")
-    integrity = _exact(
-        manifest["integrity"], {"adapter_registry_path", "adapter_registry_sha256"},
-        "integrity",
-    )
+    integrity_fields = {"adapter_registry_path", "adapter_registry_sha256"}
+    if schema == "ku2d.immutable-run-manifest.v2":
+        integrity_fields |= {
+            "adapter_registry_catalog_path", "adapter_registry_catalog_sha256",
+        }
+    integrity = _exact(manifest["integrity"], integrity_fields, "integrity")
     _text(integrity["adapter_registry_path"], "adapter_registry_path")
     _sha(integrity["adapter_registry_sha256"], "adapter_registry_sha256")
+    if schema == "ku2d.immutable-run-manifest.v2":
+        _text(integrity["adapter_registry_catalog_path"], "adapter_registry_catalog_path")
+        _sha(integrity["adapter_registry_catalog_sha256"], "adapter_registry_catalog_sha256")
     if manifest["authority_boundaries"] != {
         "semantic_quality_owner": "analysis",
         "production_store": False,
@@ -182,4 +192,48 @@ def validate_run_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
         or supersedes == manifest["manifest_id"]
     ):
         raise ValueError("superseded manifest identity is invalid")
+    if schema == "ku2d.immutable-run-manifest.v2" and supersedes is None:
+        raise ValueError("Run Manifest v2 requires explicit supersession lineage")
     return copy.deepcopy(manifest)
+
+
+def validate_manifest_lineage(manifests: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Validate an explicit, closed manifest lineage and reject missing links or cycles."""
+    if not isinstance(manifests, list) or not manifests:
+        raise ValueError("manifest lineage must be a non-empty array")
+    validated = [validate_run_manifest(manifest) for manifest in manifests]
+    by_id: dict[str, dict[str, Any]] = {}
+    for manifest in validated:
+        manifest_id = manifest["manifest_id"]
+        if manifest_id in by_id:
+            raise ValueError("manifest lineage contains duplicate identities")
+        by_id[manifest_id] = manifest
+    for manifest in validated:
+        supersedes = manifest["immutability"]["supersedes_manifest_id"]
+        if supersedes is None:
+            continue
+        if supersedes not in by_id:
+            raise ValueError("manifest supersession target is missing")
+        current_series = manifest["manifest_id"].rsplit("-V", 1)[0]
+        prior_series = supersedes.rsplit("-V", 1)[0]
+        if current_series != prior_series:
+            raise ValueError("manifest supersession crosses identity series")
+
+    visiting: set[str] = set()
+    visited: set[str] = set()
+
+    def visit(manifest_id: str) -> None:
+        if manifest_id in visiting:
+            raise ValueError("manifest supersession cycle detected")
+        if manifest_id in visited:
+            return
+        visiting.add(manifest_id)
+        supersedes = by_id[manifest_id]["immutability"]["supersedes_manifest_id"]
+        if supersedes is not None:
+            visit(supersedes)
+        visiting.remove(manifest_id)
+        visited.add(manifest_id)
+
+    for manifest_id in by_id:
+        visit(manifest_id)
+    return copy.deepcopy(validated)

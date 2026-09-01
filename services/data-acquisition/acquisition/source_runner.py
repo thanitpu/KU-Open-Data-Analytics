@@ -1,4 +1,4 @@
-"""Authoritative source-neutral execution path for immutable Run Manifest v1."""
+"""Authoritative source-neutral execution path for immutable Run Manifests."""
 from __future__ import annotations
 
 import copy
@@ -7,7 +7,12 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from acquisition_quality_gate import validate_early_acquisition_quality
-from adapter_registry import AdapterComponents, AdapterRegistry
+from adapter_registry import (
+    AdapterComponents,
+    AdapterRegistry,
+    resolve_registry_snapshot,
+    validate_adapter_registry_catalog,
+)
 from connector_kit import (
     ConnectorKit,
     FixtureReplayTransport,
@@ -228,9 +233,37 @@ def run_source_from_manifest(
         repository_root, validated["domain_capability_profile"]["path"],
         "domain capability profile",
     )
+    integrity = validated["integrity"]
+    if validated["schema"] == "ku2d.immutable-run-manifest.v2":
+        catalog = _load_pinned_json(
+            repository_root,
+            integrity["adapter_registry_catalog_path"],
+            "adapter registry catalog",
+        )
+        catalog = validate_adapter_registry_catalog(catalog)
+        _assert_fingerprint(
+            catalog,
+            integrity["adapter_registry_catalog_sha256"],
+            "adapter registry catalog",
+        )
+        snapshot = resolve_registry_snapshot(
+            catalog,
+            validated["adapter"]["registry_id"],
+            validated["adapter"]["registry_version"],
+        )
+        if (
+            snapshot["path"] != integrity["adapter_registry_path"]
+            or snapshot["sha256"] != integrity["adapter_registry_sha256"]
+        ):
+            raise ValueError("manifest registry pin does not match the catalog snapshot")
     registry_document = _load_pinned_json(
-        repository_root, validated["integrity"]["adapter_registry_path"], "adapter registry",
+        repository_root, integrity["adapter_registry_path"], "adapter registry",
     )
+    if validated["schema"] == "ku2d.immutable-run-manifest.v2" and (
+        registry_document.get("supersedes_registry_id")
+        != snapshot["supersedes_registry_id"]
+    ):
+        raise ValueError("registry snapshot supersession does not match the catalog")
     fixtures = {
         row["fixture_id"]: _load_pinned_json(
             repository_root, row["path"], f"fixture {row['fixture_id']}",

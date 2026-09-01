@@ -1,16 +1,25 @@
-"""Closed Adapter Registry v1 with explicit, allowlisted implementations."""
+"""Closed, versioned Adapter Registry with explicit implementations."""
 from __future__ import annotations
 
 import copy
 import re
 from dataclasses import dataclass
+from pathlib import PurePosixPath
 from typing import Any, Callable, Mapping
 
 
 VERSION = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
+SHA256 = re.compile(r"^[0-9a-f]{64}$")
 REGISTRY_FIELDS = {
     "schema", "registry_id", "registry_version", "connector_contract_version",
     "registrations", "boundaries",
+}
+REGISTRY_V2_FIELDS = REGISTRY_FIELDS | {"supersedes_registry_id"}
+CATALOG_FIELDS = {
+    "schema", "catalog_id", "catalog_version", "snapshots", "boundaries",
+}
+SNAPSHOT_FIELDS = {
+    "registry_id", "registry_version", "path", "sha256", "supersedes_registry_id",
 }
 REGISTRATION_FIELDS = {
     "source_id", "source_manifest_id", "adapter_id", "adapter_version",
@@ -41,6 +50,12 @@ def _version(value: Any, name: str) -> str:
     return text
 
 
+def _sha(value: Any, name: str) -> str:
+    if not isinstance(value, str) or not SHA256.fullmatch(value):
+        raise ValueError(f"{name} must be a lowercase SHA-256")
+    return value
+
+
 def _unique_texts(value: Any, name: str) -> list[str]:
     if not isinstance(value, list) or not value:
         raise ValueError(f"{name} must be a non-empty array")
@@ -67,14 +82,29 @@ class ResolvedAdapter:
 
 
 def validate_adapter_registry(document: dict[str, Any]) -> dict[str, Any]:
-    document = _exact(document, REGISTRY_FIELDS, "adapter registry")
-    if document["schema"] != "ku2d.adapter-registry.v1":
-        raise ValueError("invalid Adapter Registry v1 schema")
+    if not isinstance(document, dict):
+        raise ValueError("adapter registry must be a JSON object")
+    schema = document.get("schema")
+    if schema == "ku2d.adapter-registry.v1":
+        fields = REGISTRY_FIELDS
+        expected_version = "1.0.0"
+    elif schema == "ku2d.adapter-registry.v2":
+        fields = REGISTRY_V2_FIELDS
+        expected_version = "2.0.0"
+    else:
+        raise ValueError("invalid or unsupported Adapter Registry schema")
+    document = _exact(document, fields, "adapter registry")
     _text(document["registry_id"], "registry_id")
     _version(document["registry_version"], "registry_version")
     _version(document["connector_contract_version"], "connector_contract_version")
-    if document["registry_version"] != "1.0.0" or document["connector_contract_version"] != "1.0.0":
-        raise ValueError("Adapter Registry v1 runtime version is unsupported")
+    if document["registry_version"] != expected_version:
+        raise ValueError("Adapter Registry runtime version is unsupported")
+    if document["connector_contract_version"] != "1.0.0":
+        raise ValueError("Connector contract version is unsupported")
+    if schema == "ku2d.adapter-registry.v2":
+        supersedes = _text(document["supersedes_registry_id"], "supersedes_registry_id")
+        if supersedes == document["registry_id"]:
+            raise ValueError("registry snapshot cannot supersede itself")
     if document["boundaries"] != {
         "dynamic_imports": False,
         "production_approved": False,
@@ -120,6 +150,91 @@ def validate_adapter_registry(document: dict[str, Any]) -> dict[str, Any]:
         source_manifests.add(row["source_manifest_id"])
         implementation_keys.add(row["implementation_key"])
     return copy.deepcopy(document)
+
+
+def validate_adapter_registry_catalog(document: dict[str, Any]) -> dict[str, Any]:
+    """Validate an immutable catalog without selecting an implicit latest snapshot."""
+    document = _exact(document, CATALOG_FIELDS, "adapter registry catalog")
+    if document["schema"] != "ku2d.adapter-registry-catalog.v1":
+        raise ValueError("invalid Adapter Registry Catalog schema")
+    _text(document["catalog_id"], "catalog_id")
+    if _version(document["catalog_version"], "catalog_version") != "1.0.0":
+        raise ValueError("Adapter Registry Catalog runtime version is unsupported")
+    if document["boundaries"] != {
+        "default_to_latest": False,
+        "dynamic_discovery": False,
+        "production_approved": False,
+        "scheduler_action": None,
+    }:
+        raise ValueError("adapter registry catalog boundaries are not fail-closed")
+    snapshots = document["snapshots"]
+    if not isinstance(snapshots, list) or not snapshots:
+        raise ValueError("catalog snapshots must be a non-empty array")
+    identities: set[tuple[str, str]] = set()
+    registry_ids: set[str] = set()
+    paths: set[str] = set()
+    superseded_ids: set[str] = set()
+    for index, snapshot in enumerate(snapshots):
+        snapshot = _exact(snapshot, SNAPSHOT_FIELDS, f"snapshots[{index}]")
+        registry_id = _text(snapshot["registry_id"], f"snapshots[{index}].registry_id")
+        registry_version = _version(
+            snapshot["registry_version"], f"snapshots[{index}].registry_version",
+        )
+        path = _text(snapshot["path"], f"snapshots[{index}].path")
+        parsed_path = PurePosixPath(path)
+        if parsed_path.is_absolute() or ".." in parsed_path.parts or "\\" in path:
+            raise ValueError("registry snapshot path must be repository-relative and contained")
+        _sha(snapshot["sha256"], f"snapshots[{index}].sha256")
+        supersedes = snapshot["supersedes_registry_id"]
+        if supersedes is not None:
+            supersedes = _text(supersedes, f"snapshots[{index}].supersedes_registry_id")
+            if supersedes == registry_id or supersedes in superseded_ids:
+                raise ValueError("registry supersession lineage is invalid")
+            superseded_ids.add(supersedes)
+        identity = (registry_id, registry_version)
+        if identity in identities or registry_id in registry_ids or path in paths:
+            raise ValueError("duplicate registry catalog snapshot")
+        identities.add(identity)
+        registry_ids.add(registry_id)
+        paths.add(path)
+    for snapshot in snapshots:
+        supersedes = snapshot["supersedes_registry_id"]
+        if supersedes is not None and supersedes not in registry_ids:
+            raise ValueError("registry supersession target is not cataloged")
+
+    by_id = {snapshot["registry_id"]: snapshot for snapshot in snapshots}
+    visiting: set[str] = set()
+    visited: set[str] = set()
+
+    def visit(registry_id: str) -> None:
+        if registry_id in visiting:
+            raise ValueError("registry supersession cycle detected")
+        if registry_id in visited:
+            return
+        visiting.add(registry_id)
+        supersedes = by_id[registry_id]["supersedes_registry_id"]
+        if supersedes is not None:
+            visit(supersedes)
+        visiting.remove(registry_id)
+        visited.add(registry_id)
+
+    for registry_id in by_id:
+        visit(registry_id)
+    return copy.deepcopy(document)
+
+
+def resolve_registry_snapshot(
+    catalog: dict[str, Any], registry_id: str, registry_version: str,
+) -> dict[str, Any]:
+    """Resolve one exact snapshot identity; default-to-latest is deliberately absent."""
+    catalog = validate_adapter_registry_catalog(catalog)
+    matches = [
+        row for row in catalog["snapshots"]
+        if row["registry_id"] == registry_id and row["registry_version"] == registry_version
+    ]
+    if len(matches) != 1:
+        raise ValueError("requested registry snapshot is not cataloged")
+    return copy.deepcopy(matches[0])
 
 
 class AdapterRegistry:

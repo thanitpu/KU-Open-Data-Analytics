@@ -1,0 +1,137 @@
+{
+  "schema": "ku2d.technical-correction-journal.v1",
+  "journal_id": "KU2D-CJ-000005",
+  "source_completion_prompt_id": "KU2D-P-000055",
+  "created_at": "2026-09-01T19:45:00.000+07:00",
+  "closed_at": "2026-09-01T20:35:00.000+07:00",
+  "events": [
+    {
+      "event_id": "KU2D-TC-000019",
+      "observed_at": "2026-09-01T19:45:00.000+07:00",
+      "phase": "implementation",
+      "failure_code": "singleton_registry_fingerprint_blocked_additive_source_registration",
+      "observed_signal": "The immutable YouTube V001 manifest pins the complete V1 registry fingerprint, so changing that snapshot to register another source would invalidate historical replay.",
+      "root_cause_layer": "runtime_code",
+      "correction": {
+        "action": "Preserved V1 byte-identically and added a closed registry catalog, immutable V2 snapshot, exact pinned resolver and V002 manifest with explicit supersession lineage.",
+        "components": ["acquisition/adapter_registry.py", "acquisition/run_manifest.py", "acquisition/source_runner.py", "config/adapter_registry_v2.json", "config/adapter_registry_catalog_v1.json", "config/run_manifests/youtube_qdiving_fixture_v2.json"],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": ["V1 byte invariants", "V1/V2 exact snapshot resolution", "V002 supersession", "10/10 replay parity", "zero provider/quota"],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "schema_impact": "Adds independent V2 registry, catalog and immutable-manifest schemas without modifying either V1 schema.",
+      "quality_impact": "Prevents false historical integrity drift while preserving the existing technical quality gate and Analysis ownership.",
+      "related_commit_or_pending_commit": "a6c02b17424bc883f0424fca69b9344422f23fa1",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "An executed manifest must pin an immutable registry snapshot; additive registration belongs in a new snapshot and a superseding manifest identity.",
+        "future_prevention": "Require cataloged snapshot identity, path and fingerprint plus historical byte-invariant replay for every registry evolution.",
+        "labels": ["immutable-history", "registry-versioning", "manifest-supersession", "fail-closed"]
+      },
+      "evidence_refs": ["KU2D-P-000055", "KU2D-SCOPE-000002", "KU2D-RMIG-000001", "SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py"]
+    },
+    {
+      "event_id": "KU2D-TC-000020",
+      "observed_at": "2026-09-01T20:00:00.000+07:00",
+      "phase": "test",
+      "failure_code": "synthetic_adapter_fixture_omitted_declared_parser_mapper_identity",
+      "observed_signal": "The first targeted additive-composition run failed because the test adapter omitted parser_id and mapper_id required by Connector Kit's exact identity contract.",
+      "root_cause_layer": "runtime_code",
+      "correction": {
+        "action": "Added the declared parser and mapper identities to the test-only synthetic adapter while leaving the runtime contract and source connectors unchanged.",
+        "components": ["tools/SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py"],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": ["synthetic additive composition", "exact implementation identity", "V1 source-runner regression", "foundation aggregation"],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "schema_impact": "None; this correction aligns the deterministic fixture with the existing Connector Kit identity contract.",
+      "quality_impact": "Ensures the additive proof exercises exact adapter/parser/mapper composition rather than bypassing identity validation.",
+      "related_commit_or_pending_commit": "a6c02b17424bc883f0424fca69b9344422f23fa1",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "Synthetic implementations must satisfy the same declared component identities as production-facing registry composition.",
+        "future_prevention": "Construct additive fixtures with complete adapter, parser, mapper and connector-contract identity before first execution.",
+        "labels": ["deterministic-test", "implementation-composition", "identity-contract"]
+      },
+      "evidence_refs": ["SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py", "SELF_TEST_SOURCE_RUNNER_V1.py", "SELF_TEST_FOUNDATION_CONSOLIDATION.py"]
+    },
+    {
+      "event_id": "KU2D-TC-000021",
+      "observed_at": "2026-09-01T20:10:00.000+07:00",
+      "phase": "test",
+      "failure_code": "catalog_supersession_lineage_not_cross_checked_with_loaded_snapshot",
+      "observed_signal": "Contract self-review found that a syntactically valid catalog could form a registry supersession cycle or disagree with the supersession declared by the loaded V2 snapshot.",
+      "root_cause_layer": "runtime_code",
+      "correction": {
+        "action": "Added registry-catalog cycle detection and required the loaded V2 snapshot supersession identity to equal the catalog entry before execution.",
+        "components": ["acquisition/adapter_registry.py", "acquisition/source_runner.py", "tools/SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py"],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": ["registry supersession cycle rejection", "loaded snapshot/catalog supersession equality", "V1/V2 replay parity"],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "schema_impact": "No shape change; runtime validation now enforces the lineage already represented by the V2 schema and catalog.",
+      "quality_impact": "Prevents a catalog and loaded snapshot from presenting inconsistent migration provenance while otherwise producing valid records.",
+      "related_commit_or_pending_commit": "a6c02b17424bc883f0424fca69b9344422f23fa1",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "A version catalog must validate both graph integrity and agreement with the immutable artifact it indexes.",
+        "future_prevention": "Include catalog-cycle and indexed-artifact-lineage mismatch negatives in every versioned registry suite.",
+        "labels": ["catalog-integrity", "supersession-lineage", "fail-closed"]
+      },
+      "evidence_refs": ["KU2D-P-000055", "KU2D-RMIG-000001", "SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py"]
+    },
+    {
+      "event_id": "KU2D-TC-000022",
+      "observed_at": "2026-09-01T20:25:00.000+07:00",
+      "phase": "ci",
+      "failure_code": "working_tree_line_endings_caused_cross_platform_invariant_false_negative",
+      "observed_signal": "Data Acquisition CI run 33511029816 failed VAR1 because the test hashed Windows CRLF working-tree bytes while GitHub checked out LF bytes, although all four repository Git blobs were identical to baseline.",
+      "root_cause_layer": "ci",
+      "correction": {
+        "action": "Changed the invariant proof to compare Git-clean-filtered blob identities and SHA-256 of repository blob bytes, and corrected migration evidence to the platform-independent blob-byte fingerprints.",
+        "components": ["tools/SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py", "knowledge/v1/registry-migrations/KU2D-RMIG-000001.json", "knowledge/v1/correction-journals/KU2D-CJ-000005.json"],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": ["Windows Git-filtered blob identity", "repository blob-byte SHA-256", "Linux Data Acquisition CI", "four V1 invariants"],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "schema_impact": "None; invariant evidence now measures committed bytes rather than platform-specific checkout representation.",
+      "quality_impact": "Removes a cross-platform false negative without weakening or normalizing away repository blob identity checks.",
+      "related_commit_or_pending_commit": "3cd96eb30499b9bae62c56990d0b6472c4f1dac7",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "Byte invariants in cross-platform repositories must be asserted against Git object identity and blob bytes, not checkout line endings.",
+        "future_prevention": "Use Git clean filters plus cat-file blob hashing for every immutable repository artifact test.",
+        "labels": ["cross-platform", "git-blob", "byte-invariant", "ci"]
+      },
+      "evidence_refs": ["Data Acquisition Platform CI:33511029816", "job:99866433421", "KU2D-RMIG-000001", "SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py"]
+    }
+  ],
+  "summary": {
+    "event_count": 4,
+    "resolved_count": 4,
+    "unresolved_count": 0,
+    "correction_cycles_used": 4
+  },
+  "safety": {
+    "contains_secret": false,
+    "contains_raw_payload": false,
+    "contains_request_url": false,
+    "contains_personal_data": false
+  }
+}

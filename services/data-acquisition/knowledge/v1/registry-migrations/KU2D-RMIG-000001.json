@@ -1,0 +1,68 @@
+{
+  "schema": "ku2d.registry-manifest-migration.v1",
+  "migration_id": "KU2D-RMIG-000001",
+  "prompt_id": "KU2D-P-000055",
+  "scope_declaration_id": "KU2D-SCOPE-000002",
+  "created_at": "2026-09-01T19:45:00.000+07:00",
+  "integration_baseline": "ecd8614c6be78b662d637b1f2caa954fdb1b7dca",
+  "historical_invariants": [
+    {"path": "config/adapter_registry_v1.json", "git_blob": "398dd4daba89d5e6d3e80cb67d52984b114058d3", "byte_sha256": "be91ed647855424e068b0e747c60e71d15d143aeeaba806f27aa60d26c32cd7a", "mutation_allowed": false},
+    {"path": "config/run_manifests/youtube_qdiving_fixture_v1.json", "git_blob": "80e2b6afc978542cb5a2fc75e137cd55bd656ef6", "byte_sha256": "6bec287d683b069fd0cbb6f65205095c4abfafca1b54d065a296c927152421f3", "mutation_allowed": false},
+    {"path": "knowledge/v1/adapter-registry.schema.json", "git_blob": "53bda7d3f1c5d3b1765363c2c02e13a61c8f83d9", "byte_sha256": "469fc6f5789aaad6a69be11c9be9b03dc74fdd7790d29f7a629e5cde6fc51d42", "mutation_allowed": false},
+    {"path": "knowledge/v1/immutable-run-manifest.schema.json", "git_blob": "e7b66d15df96cbf75fe87fa2d445d8e595ffa544", "byte_sha256": "1ee2a6a36dae2c87c6d2fc47e194436f28ce542dd5cbb15b06c5acb21a8665ac", "mutation_allowed": false}
+  ],
+  "registry_migration": {
+    "catalog_id": "KU2D-ADAPTER-REGISTRY-CATALOG-000001",
+    "catalog_path": "config/adapter_registry_catalog_v1.json",
+    "catalog_sha256": "790e28d6763f523584d62f396a685dc595623439aa50e98b9ed6bf4d0a93c24b",
+    "from": {"registry_id": "KU2D-ADAPTER-REGISTRY-V1", "registry_version": "1.0.0", "path": "config/adapter_registry_v1.json", "sha256": "960af6301b52b029bb26d1b3ad08159d261734e51ae6dd382dad7bbc3ec7e6e0"},
+    "to": {"registry_id": "KU2D-ADAPTER-REGISTRY-V2", "registry_version": "2.0.0", "path": "config/adapter_registry_v2.json", "sha256": "a9b1204297c2df3c61c74b550391c5fe340864c88312079c833ae86c043f219c", "supersedes_registry_id": "KU2D-ADAPTER-REGISTRY-V1"},
+    "resolution": "exact_registry_id_and_registry_version",
+    "default_to_latest": false
+  },
+  "manifest_migration": {
+    "from_manifest_id": "KU2D-RM-000001-V001",
+    "to_manifest_id": "KU2D-RM-000001-V002",
+    "supersedes_manifest_id": "KU2D-RM-000001-V001",
+    "historical_manifest_retargeted": false,
+    "new_manifest_pins_catalog_and_snapshot": true
+  },
+  "scope_audit": {
+    "declared_scope_equals_actual_scope": true,
+    "changed_paths": [
+      "acquisition/adapter_registry.py",
+      "acquisition/run_manifest.py",
+      "acquisition/source_runner.py",
+      "config/adapter_registry_catalog_v1.json",
+      "config/adapter_registry_v2.json",
+      "config/run_manifests/youtube_qdiving_fixture_v2.json",
+      "docs/ADAPTER_REGISTRY_VERSIONING_AND_MANIFEST_MIGRATION.md",
+      "knowledge/v1/adapter-registry-catalog.schema.json",
+      "knowledge/v1/adapter-registry-v2.schema.json",
+      "knowledge/v1/correction-journals/KU2D-CJ-000005.json",
+      "knowledge/v1/immutable-run-manifest-v2.schema.json",
+      "knowledge/v1/registry-migrations/KU2D-RMIG-000001.json",
+      "knowledge/v1/registry-migrations/KU2D-SCOPE-000002.json",
+      "tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py",
+      "tools/SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py"
+    ],
+    "unauthorized_changed_paths": [],
+    "read_only_invariant_changes": []
+  },
+  "validation": {
+    "v1_record_count": 10,
+    "v2_record_count": 10,
+    "record_parity": true,
+    "synthetic_additive_registration": true,
+    "provider_requests": 0,
+    "documented_quota_units": 0,
+    "semantic_quality_scored": false
+  },
+  "boundaries": {
+    "dynamic_imports": false,
+    "provider_access": false,
+    "production_store": false,
+    "production_approved": false,
+    "scheduler_action": null
+  }
+}
