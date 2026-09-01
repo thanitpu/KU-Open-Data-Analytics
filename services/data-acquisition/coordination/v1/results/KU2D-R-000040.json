@@ -1,0 +1,172 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000040",
+  "prompt_id": "KU2D-P-000040",
+  "submitted_at": "2026-09-01T08:44:55.001+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "Corrected the Q-Diving launcher's two-checkout authorization continuity without replaying P39 or issuing any YouTube request. The immutable authorization-record revision is now used only to verify HEAD and copy the exact bounded regular Human Decision JSON file into runner-temporary storage; no Python, dependency installation, repository script or executable project content runs from that revision. The workspace is then replaced by the immutable reviewed execution revision, whose code and dependencies validate and consume the staged untrusted record before the secret-scoped runtime step. Missing, malformed, mismatched, broadened, unconfirmed and stale workspace records all fail before provider preflight. All 55 deterministic scripts and exact-head CI pass. PR #64 remains Ready, open, cleanly mergeable and unmerged.",
+  "evidence_references": [
+    "KU2D-P-000040",
+    "KU2D-V-000039",
+    ".github/workflows/youtube-qdiving-identity-discovery.yml",
+    "docs/YOUTUBE_QDIVING_DEFAULT_BRANCH_LAUNCHER_PLAN.md",
+    "tools/SELF_TEST_YOUTUBE_IDENTITY_DISCOVERY_DISPATCH.py",
+    "commit:651969cd67b9f7e88cce1b6464136fdb24df5f29",
+    "PR:#64"
+  ],
+  "repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "base_branch": "integration/data-acquisition-platform",
+    "implementation_commit_sha": "651969cd67b9f7e88cce1b6464136fdb24df5f29",
+    "pull_request_number": 64,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/64",
+    "ready": true,
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "merged": false
+  },
+  "two_checkout_lifecycle": {
+    "pre_checkout": [
+      "validate requested decision ID against the embedded reviewed decision ID",
+      "validate requested execution SHA against the embedded immutable execution SHA",
+      "validate requested decision-record SHA against the embedded immutable record SHA"
+    ],
+    "authorization_record_revision": {
+      "head_verified": true,
+      "permitted_payload": "exact expected Human Decision JSON regular file only",
+      "symlink_rejected": true,
+      "maximum_bytes": 131072,
+      "staged_outside_workspace": true,
+      "runner_temporary_permissions": "0600",
+      "python_executed": false,
+      "dependencies_installed": false,
+      "repository_scripts_executed": false,
+      "executable_project_content_executed": false
+    },
+    "execution_revision": {
+      "workspace_replaced": true,
+      "head_verified": true,
+      "python_setup_after_checkout": true,
+      "dependencies_installed_from_reviewed_execution_revision": true,
+      "staged_record_survives_checkout": true,
+      "staged_record_validated_by_reviewed_execution_code": true,
+      "runtime_uses_staged_record_path": true,
+      "workspace_decision_path_used": false
+    }
+  },
+  "negative_authorization_coverage": {
+    "missing_staged_record": "failed before provider preflight",
+    "malformed_json": "failed before provider preflight",
+    "wrong_decision_id": "failed before provider preflight",
+    "wrong_execution_sha": "failed before provider preflight",
+    "wrong_execution_branch": "failed before provider preflight",
+    "broadened_scope": "failed before provider preflight",
+    "unconfirmed_decision": "failed before provider preflight",
+    "workspace_path_after_second_checkout": "failed before provider preflight",
+    "negative_runtime_evidence_written": false,
+    "provider_request_count": 0
+  },
+  "preserved_contracts": {
+    "exit_0": "candidate-evidence-obtained",
+    "exit_2": "evidence-withheld with sanitized summary and artifact handling",
+    "unexpected_nonzero": "technical-failure",
+    "trigger": "workflow_dispatch only",
+    "permissions": "contents: read",
+    "profiles": [
+      "QYT-BEGINNER-KOH-TAO-TH",
+      "QYT-BEGINNER-EN"
+    ],
+    "max_pages_per_profile": 1,
+    "max_results_per_profile": 5,
+    "max_search_list_requests": 2,
+    "max_videos_list_requests": 1,
+    "max_documented_quota_units": 201,
+    "comments_replies_captions_transcripts_oauth_browser_scraping": false,
+    "production_store": false,
+    "scheduler_action": null
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "live_request_count": 0,
+    "git_diff_check": "passed",
+    "json_parse": "215 JSON files passed before Result submission",
+    "yaml_parse": "17 workflow files passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service and tools passed under Python 3.12",
+    "targeted_two_checkout_tests": "YIDW1-YIDW72 passed",
+    "agent_handoff_protocol": "AH1-AH31 passed",
+    "complete_deterministic_corpus": "55/55 scripts passed",
+    "historical_p39_prompt_and_result_unchanged": true,
+    "workflow_registration": "clean; no invalid-workflow or manual-dispatch run at the exact implementation head",
+    "exact_head_ci": {
+      "head_sha": "651969cd67b9f7e88cce1b6464136fdb24df5f29",
+      "data_acquisition_platform_ci": {
+        "run_number": 371,
+        "run_id": 33459811826,
+        "conclusion": "success"
+      },
+      "frontend_ci": [
+        {
+          "run_number": 1348,
+          "run_id": 33459808491,
+          "event": "push",
+          "conclusion": "success"
+        },
+        {
+          "run_number": 1349,
+          "run_id": 33459811844,
+          "event": "pull_request",
+          "conclusion": "success"
+        }
+      ],
+      "pr_browser_preview": {
+        "run_number": 272,
+        "run_id": 33459811821,
+        "conclusion": "success"
+      }
+    }
+  },
+  "security_and_boundaries": {
+    "youtube_requests": 0,
+    "documented_quota_units": 0,
+    "workflow_dispatched": false,
+    "github_secret_read": false,
+    "secret_value_read_printed_persisted_uploaded_or_committed": false,
+    "secret_reference_scope": "runtime API step only after all validation gates",
+    "human_review_conducted": false,
+    "production_store": false,
+    "production_approved": false,
+    "authority_promoted": false,
+    "scheduler_action": null,
+    "main_modified": false,
+    "integration_modified": false,
+    "pr_merged": false
+  },
+  "completed_queue_summary": {
+    "work_completed": "Implemented P40 two-checkout record staging, trusted execution validation, runtime path continuity, documentation, negative tests and exact-head CI.",
+    "key_findings_results": "A separately committed Human Decision now survives replacement of the record workspace with the older reviewed execution tree. Only data crosses the checkout boundary; execution authority remains with the pinned reviewed code.",
+    "repo_knowledge_state_changes": "Added launcher safety and deterministic evidence only. P39/R39 remain unchanged, and no source, identity, Human Review, approval or production authority state changed.",
+    "important_out_of_scope_actions_not_performed": "No workflow dispatch, GitHub secret read, YouTube request, quota use, Human Review, production write, scheduling, main/integration mutation, PR merge, authority promotion or P39 replay.",
+    "remaining_blockers_risks": "The launcher remains intentionally inoperable until a separate assistant review, explicit Human Decision and reviewed one-file main promotion replace all three immutable trust anchors.",
+    "recommended_next_step": "Assistant reviews R40 and exact-head PR #64. Do not dispatch or promote the launcher without the separately recorded continuation and Human Decision required by the queue."
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000040.json",
+    "depends_on_prompt": "KU2D-P-000039",
+    "depends_on_result": "KU2D-R-000039",
+    "depends_on_review": "KU2D-V-000039",
+    "target_pr": 64
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
