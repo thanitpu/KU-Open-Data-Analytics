@@ -364,7 +364,7 @@ assert set(repository_bundle["human_decision_records"]) == {
     "KU2D-H-000006", "KU2D-H-000007", "KU2D-H-000008", "KU2D-H-000009",
     "KU2D-H-000010", "KU2D-H-000011", "KU2D-H-000012", "KU2D-H-000013", "KU2D-H-000014", "KU2D-H-000015",
     "KU2D-H-000016", "KU2D-H-000018", "KU2D-H-000019", "KU2D-H-000020",
-    "KU2D-H-000021",
+    "KU2D-H-000021", "KU2D-H-000022",
 }
 assert repository_bundle["human_decision_records"]["KU2D-H-000001"]["decision"] == "confirmed"
 assert repository_bundle["human_decision_records"]["KU2D-H-000002"]["decision"] == "confirmed"
@@ -385,6 +385,7 @@ assert repository_bundle["human_decision_records"]["KU2D-H-000018"]["decision"] 
 assert repository_bundle["human_decision_records"]["KU2D-H-000019"]["decision"] == "confirmed"
 assert repository_bundle["human_decision_records"]["KU2D-H-000020"]["decision"] == "confirmed"
 assert repository_bundle["human_decision_records"]["KU2D-H-000021"]["decision"] == "confirmed"
+assert repository_bundle["human_decision_records"]["KU2D-H-000022"]["decision"] == "confirmed"
 assert set(repository_bundle["historical_records"]) == {"KU2D-V-000047", "KU2D-H-000017"}
 assert all(
     record["active_authority"] is False
@@ -560,7 +561,7 @@ except ValueError:
     pass
 
 # AH32: the repository migration is exact, visible, and non-authoritative.
-assert len(repository_migrations) == 3
+assert len(repository_migrations) == 4
 assert validate_historical_migration_manifest(repository_migrations[0])["migration_id"] == (
     "KU2D-M-000001"
 )
@@ -570,7 +571,7 @@ assert all(
     for item in repository_bundle["historical_records"].values()
 )
 assert repository_bundle["proactive_human_decision_ids"] == [
-    "KU2D-H-000018", "KU2D-H-000019", "KU2D-H-000021",
+    "KU2D-H-000018", "KU2D-H-000019", "KU2D-H-000021", "KU2D-H-000022",
 ]
 assert repository_bundle["review_flag_compatibility_ids"] == ["KU2D-V-000050"]
 
