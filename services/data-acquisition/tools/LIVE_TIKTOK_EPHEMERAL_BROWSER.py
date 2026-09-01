@@ -270,8 +270,14 @@ def run_campaign(
                 return EXIT_EVIDENCE_WITHHELD, evidence
 
         round_one_records: dict[str, list[dict[str, Any]]] = {topic: [] for topic in TOPICS}
+        recovery_index = 0
+        if resume_mode == "render":
+            recovery_index = 1 + sum(
+                str(row.get("round_id") or "").startswith("round-1-recovery")
+                for row in evidence.get("rounds", [])
+            )
         for round_number in (1, 2):
-            round_id = f"round-{round_number}-recovery" if resume_mode == "render" else f"round-{round_number}"
+            round_id = f"round-{round_number}-recovery-{recovery_index}" if resume_mode == "render" else f"round-{round_number}"
             phase = f"P58-0{round_number + 1}"
             if phase not in evidence["entered_phases"]:
                 evidence["entered_phases"].append(phase)

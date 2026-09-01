@@ -357,7 +357,24 @@ class EphemeralBrowser:
                     pass
                 break
         evaluation = self._command("Runtime.evaluate", {
-            "expression": """(() => { const text=(document.body&&document.body.innerText||'').toLowerCase(); return {title:(document.title||'').slice(0,300),url:location.href,challenge:/captcha|verify you are human|security check/.test(text),login:/log in to tiktok|sign in to tiktok/.test(text),anchors:Array.from(document.querySelectorAll('a[href*=\"/video/\"]')).slice(0,80).map(a=>({href:a.href,text:(a.innerText||a.getAttribute('aria-label')||'').slice(0,300)}))}; })()""",
+            "expression": r"""(() => {
+              const text=(document.body&&document.body.innerText||'').toLowerCase();
+              const candidates=[]; const seen=new Set();
+              const add=(href,label)=>{ try { const absolute=new URL(href,location.origin).href; if(!seen.has(absolute)){seen.add(absolute);candidates.push({href:absolute,text:String(label||'').slice(0,300)});} } catch(_){} };
+              for(const a of Array.from(document.querySelectorAll('a[href*="/video/"]')).slice(0,120)){add(a.href,a.innerText||a.getAttribute('aria-label')||'');}
+              const html=(document.documentElement&&document.documentElement.innerHTML||'').replace(/\\u002F/gi,'/').replace(/\\\//g,'/');
+              for(const match of (html.match(/\/@[A-Za-z0-9._-]+\/video\/[0-9]+/g)||[]).slice(0,120)){add(match,'');}
+              let visited=0;
+              const walk=(node)=>{ if(!node||visited++>50000)return; if(Array.isArray(node)){for(const value of node)walk(value);return;} if(typeof node!=='object')return;
+                const author=node.author||node.authorInfo||node.author_info||{};
+                const creator=String(author.uniqueId||author.unique_id||node.authorUniqueId||'');
+                const id=String(node.id||node.itemId||node.aweme_id||'');
+                if(/^[A-Za-z0-9._-]+$/.test(creator)&&/^[0-9]{10,}$/.test(id)){add('/@'+creator+'/video/'+id,node.desc||node.description||'');}
+                for(const value of Object.values(node))walk(value);
+              };
+              for(const script of Array.from(document.scripts)){const raw=script.textContent||'';if(!raw||raw.length>5000000)continue;try{walk(JSON.parse(raw));}catch(_){}}
+              return {title:(document.title||'').slice(0,300),url:location.href,challenge:/captcha|verify you are human|security check/.test(text),login:/log in to tiktok|sign in to tiktok/.test(text),anchors:candidates.slice(0,120)};
+            })()""",
             "returnByValue": True,
         })
         value = (((evaluation.get("result") or {}).get("result") or {}).get("value") or {})
@@ -383,6 +400,7 @@ class EphemeralBrowser:
                 "tiktok_response_count": self.allowed_subresource_responses,
                 "third_party_requests_blocked": self.third_party_requests_blocked,
                 "first_party_cookie_count": self.first_party_cookie_count,
+                "sanitized_candidate_count": len(sanitize_discovery_candidates(value.get("anchors"))),
             },
         }
 

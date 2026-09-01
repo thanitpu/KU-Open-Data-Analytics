@@ -342,6 +342,6 @@ with tempfile.TemporaryDirectory(prefix="ku2d-p58-render-correction-") as tempor
     )
     assert code == live.EXIT_SUCCESS
     assert result["operation_accounting"]["provider_reached"] > 25
-    assert [row["round_id"] for row in result["rounds"][-2:]] == ["round-1-recovery", "round-2-recovery"]
+    assert [row["round_id"] for row in result["rounds"][-2:]] == ["round-1-recovery-1", "round-2-recovery-1"]
 
 print("TikTok P58 ephemeral-browser checks passed: scope=2 identity=8 ledger=3 cdp=2 teardown=9 campaigns=5")
