@@ -364,4 +364,38 @@ with tempfile.TemporaryDirectory(prefix="ku2d-p58-render-correction-") as tempor
     assert result["operation_accounting"]["provider_reached"] > 25
     assert [row["round_id"] for row in result["rounds"][-2:]] == ["round-1-recovery-1", "round-2-recovery-1"]
 
-print("TikTok P58 ephemeral-browser checks passed: scope=2 identity=9 ledger=3 cdp=2 teardown=9 campaigns=5")
+with tempfile.TemporaryDirectory(prefix="ku2d-p58-frame-correction-") as temporary:
+    output = Path(temporary) / "evidence.json"
+    evidence = live.initial_evidence()
+    ledger = browser.OperationLedger()
+    preflight = ledger.begin(phase="P58-01", round_id="preflight", operation="network_preflight")
+    ledger.finish(preflight, provider_reached=True, response_status=200)
+    failed = ledger.begin(phase="P58-02", round_id="round-1", operation="public_render_warmup")
+    ledger.finish(failed, provider_reached=False, failure_code="preconnect_ConnectionClosedError")
+    evidence.update({
+        "status": "technical_failure",
+        "stop_condition": "technical_failure",
+        "technical_failure": {
+            "type": "ConnectionClosedError",
+            "message": "frame with 1230407 bytes exceeds limit of 1048576 bytes",
+        },
+        "network_preflight": {"provider_reached": True, "response_status": 200, "failure_code": None},
+        "network_preflight_history": [{"provider_reached": True, "response_status": 200, "failure_code": None}],
+        "rounds": [{
+            "round_id": "round-1", "phase": "P58-02", "started_at": browser.observed_at(),
+            "discovery_counts": {}, "records": {topic: [] for topic in live.TOPICS}, "completed_at": None,
+        }],
+    })
+    live.write_evidence(output, evidence, ledger)
+    counter = iter((1, 2))
+    code, result = live.run_campaign(
+        output,
+        browser_factory=lambda: FakeLiveBrowser(next(counter)),  # type: ignore[arg-type]
+        verifier=fake_verifier,
+        resume_mode="technical_frame",
+    )
+    assert code == live.EXIT_SUCCESS
+    assert result["technical_failure_history"][0]["type"] == "ConnectionClosedError"
+    assert result["operation_accounting"]["preconnect_failures"] == 1
+
+print("TikTok P58 ephemeral-browser checks passed: scope=2 identity=9 ledger=3 cdp=2 teardown=9 campaigns=6")

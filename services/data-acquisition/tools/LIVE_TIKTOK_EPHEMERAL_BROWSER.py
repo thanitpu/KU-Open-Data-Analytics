@@ -45,6 +45,7 @@ def parser() -> argparse.ArgumentParser:
     resume = value.add_mutually_exclusive_group()
     resume.add_argument("--resume-after-preconnect-correction", action="store_true")
     resume.add_argument("--resume-after-render-correction", action="store_true")
+    resume.add_argument("--resume-after-cdp-frame-correction", action="store_true")
     return value
 
 
@@ -56,7 +57,10 @@ def validate_args(args: argparse.Namespace) -> Path:
     output = args.output.resolve()
     if not output.is_relative_to(ALLOWED_OUTPUT_ROOT):
         raise ValueError("evidence output must remain under knowledge/v1/tiktok")
-    resuming = args.resume_after_preconnect_correction or args.resume_after_render_correction
+    resuming = (
+        args.resume_after_preconnect_correction or args.resume_after_render_correction
+        or args.resume_after_cdp_frame_correction
+    )
     if output.exists() and not resuming:
         raise ValueError("live evidence already exists; automatic replay is prohibited")
     if resuming and not output.is_file():
@@ -89,6 +93,7 @@ def initial_evidence() -> dict[str, Any]:
         "context_destruction_proofs": [],
         "stop_condition": None,
         "technical_failure": None,
+        "technical_failure_history": [],
         "minimum_trusted_connection": None,
         "analysis_handoff": None,
         "boundaries": {
@@ -203,17 +208,27 @@ def run_campaign(
     verifier: Callable[[str], dict[str, Any]] = verify_oembed,
     resume_mode: str | None = None,
 ) -> tuple[int, dict[str, Any]]:
-    if resume_mode not in {None, "preconnect", "render"}:
+    if resume_mode not in {None, "preconnect", "render", "technical_frame"}:
         raise ValueError("invalid correction resume mode")
     if resume_mode:
         evidence = json.loads(output.read_text(encoding="utf-8"))
         if not isinstance(evidence, dict) or evidence.get("evidence_id") != EVIDENCE_ID:
             raise ValueError("existing evidence identity is invalid")
-        expected_stop = "network_preflight_failed" if resume_mode == "preconnect" else "insufficient_topic_records:Diving lesson"
-        if evidence.get("status") != "evidence_withheld" or evidence.get("stop_condition") != expected_stop or evidence.get("success") is not False:
+        expected_stop = (
+            "network_preflight_failed" if resume_mode == "preconnect"
+            else "technical_failure" if resume_mode == "technical_frame"
+            else "insufficient_topic_records:Diving lesson"
+        )
+        expected_status = "technical_failure" if resume_mode == "technical_frame" else "evidence_withheld"
+        if evidence.get("status") != expected_status or evidence.get("stop_condition") != expected_stop or evidence.get("success") is not False:
             raise ValueError("existing evidence is not resumable for the declared correction")
         if resume_mode == "preconnect" and evidence.get("rounds"):
             raise ValueError("preconnect correction cannot follow a candidate batch")
+        if resume_mode == "technical_frame":
+            failure = evidence.get("technical_failure") or {}
+            if failure.get("type") != "ConnectionClosedError" or "exceeds limit" not in str(failure.get("message") or ""):
+                raise ValueError("technical-frame resume requires the bounded CDP frame failure")
+            evidence.setdefault("technical_failure_history", []).append(copy.deepcopy(failure))
         rows = evidence.get("operation_ledger")
         if not isinstance(rows, list) or not rows or any(row.get("status") == "started" for row in rows):
             raise ValueError("existing operation ledger is incomplete")
@@ -237,7 +252,7 @@ def run_campaign(
         write_evidence(output, evidence, ledger)
     session: EphemeralBrowser | None = None
     try:
-        if resume_mode != "render":
+        if resume_mode not in {"render", "technical_frame"}:
             session = browser_factory()
             preflight_row = ledger.begin(
                 phase="P58-01", round_id="preflight",
@@ -274,13 +289,13 @@ def run_campaign(
 
         round_one_records: dict[str, list[dict[str, Any]]] = {topic: [] for topic in TOPICS}
         recovery_index = 0
-        if resume_mode == "render":
+        if resume_mode in {"render", "technical_frame"}:
             recovery_index = 1 + sum(
                 str(row.get("round_id") or "").startswith("round-1-recovery")
                 for row in evidence.get("rounds", [])
             )
         for round_number in (1, 2):
-            round_id = f"round-{round_number}-recovery-{recovery_index}" if resume_mode == "render" else f"round-{round_number}"
+            round_id = f"round-{round_number}-recovery-{recovery_index}" if resume_mode in {"render", "technical_frame"} else f"round-{round_number}"
             phase = f"P58-0{round_number + 1}"
             if phase not in evidence["entered_phases"]:
                 evidence["entered_phases"].append(phase)
@@ -445,7 +460,12 @@ def main(argv=None) -> int:
         print(f"TikTok P58 argument validation failed: {exc}", file=sys.stderr)
         return EXIT_TECHNICAL_FAILURE
     try:
-        resume_mode = "preconnect" if args.resume_after_preconnect_correction else "render" if args.resume_after_render_correction else None
+        resume_mode = (
+            "preconnect" if args.resume_after_preconnect_correction
+            else "render" if args.resume_after_render_correction
+            else "technical_frame" if args.resume_after_cdp_frame_correction
+            else None
+        )
         exit_code, evidence = run_campaign(output, resume_mode=resume_mode)
     except Exception as exc:
         print(f"TikTok P58 evidence writing failed: {exc}", file=sys.stderr)

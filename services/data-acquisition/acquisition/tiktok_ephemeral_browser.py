@@ -343,7 +343,10 @@ class EphemeralBrowser:
         websocket_url = target.get("webSocketDebuggerUrl")
         if not websocket_url:
             raise RuntimeError("browser CDP target did not expose a WebSocket URL")
-        self.connection = connect(websocket_url, origin="http://localhost", open_timeout=5, close_timeout=2)
+        self.connection = connect(
+            websocket_url, origin="http://localhost", open_timeout=5, close_timeout=2,
+            max_size=MAX_PUBLIC_JSON_BYTES * 5,
+        )
         self._command("Page.enable")
         self._command("Runtime.enable")
         self._command("Network.enable", {
