@@ -249,6 +249,8 @@ def parse_args(argv=None):
     parser.add_argument("--mode", choices=("preflight", "canary", "execute"), required=True)
     parser.add_argument("--acknowledge-one-time-p59", action="store_true")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--canary-ledger", type=Path)
+    parser.add_argument("--canary-attestation", type=Path)
     parser.add_argument("--no-production-store", action="store_true", required=True)
     return parser.parse_args(argv)
 
@@ -274,11 +276,20 @@ def main(argv=None) -> int:
     if args.resume:
         runner = RoundRobinCampaign.resume(manifest, checkpoint, adapters, run_id=args.run_id)
     else:
+        if args.canary_ledger is None:
+            raise CampaignValidationError("--canary-ledger is required so P59 canary operations and stops are not replayed")
         if checkpoint.exists():
             raise CampaignValidationError("run checkpoint already exists; use --resume only for an unsealed interrupted run")
         runner = RoundRobinCampaign(manifest, checkpoint, adapters, run_id=args.run_id)
         sha, tree = git_identity()
         runner.set_code_identity(sha, tree)
+        attestation = (
+            json.loads(args.canary_attestation.read_text(encoding="utf-8"))
+            if args.canary_attestation else None
+        )
+        runner.import_prelive_canary(
+            json.loads(args.canary_ledger.read_text(encoding="utf-8")), attestation,
+        )
     ledger = verify_sealed_ledger(runner.run())
     fixture_report = fixture_replay(manifest, ledger)
     fixture_path = output_dir / f"{args.run_id}.fixture-report.json"

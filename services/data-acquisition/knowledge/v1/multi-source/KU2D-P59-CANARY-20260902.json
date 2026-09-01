@@ -1,0 +1,25 @@
+{
+  "schema": "ku2d.multi-source-prelive-canary-attestation.v1",
+  "run_id": "KU2D-P59-CANARY-20260902",
+  "observed_at": "2026-09-02T00:15:17+07:00",
+  "code_sha": "39fbcd16af934dc23ce53ee6b96ddd6ba35640ea",
+  "code_tree": "c26681de63b04de1eb4f4d26eed5b12b55e44b61",
+  "manifest_fingerprint": "631d303626447124f9e77f09b5c75ae0e6779bc7c219e0b7c2b9b66053f77b41",
+  "canary_ledger_canonical_sha256": "eb33255386d48a4e188adfe9336bda33fbab6e078dd7db655cc66c10e4dc1362",
+  "provider_operations": 4,
+  "quota": 0,
+  "source_results": [
+    {"source_id": "SRC-001", "http_status": 403, "ok": false, "campaign_disposition": "to_be_skipped", "reason": "http_403_access_boundary"},
+    {"source_id": "SRC-002", "http_status": 200, "ok": true, "campaign_disposition": "active", "reason": null},
+    {"source_id": "SRC-004", "http_status": 200, "ok": true, "campaign_disposition": "active", "reason": null},
+    {"source_id": "SRC-005", "http_status": 200, "ok": true, "campaign_disposition": "active", "reason": null}
+  ],
+  "safety": {
+    "contains_secret": false,
+    "contains_raw_payload": false,
+    "contains_query_string": false,
+    "contains_headers": false,
+    "contains_personal_data": false,
+    "production_store": false
+  }
+}

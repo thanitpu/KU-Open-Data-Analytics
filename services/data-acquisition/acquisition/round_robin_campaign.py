@@ -340,6 +340,7 @@ class RoundRobinCampaign:
             }
         return {
             "schema": LEDGER_SCHEMA, "run_id": self.run_id,
+            "manifest_fingerprint": hashlib.sha256(canonical_json(self.manifest).encode("utf-8")).hexdigest(),
             "code_sha": None, "code_tree": None, "started_at": self.now(), "ended_at": None,
             "sealed_live": False, "stop_reason": None, "rounds_completed": 0,
             "provider_operations": 0, "quota": 0, "accepted_unique": 0,
@@ -371,6 +372,8 @@ class RoundRobinCampaign:
             manifest, checkpoint_path, adapters, run_id=run_id,
             now=now, monotonic=monotonic, sleeper=sleeper,
         )
+        if checkpoint.get("manifest_fingerprint") != runner.ledger["manifest_fingerprint"]:
+            raise CampaignValidationError("resume manifest fingerprint mismatch")
         runner.ledger = checkpoint
         elapsed = max(0.0, float(checkpoint.get("elapsed_seconds") or 0))
         runner.started_monotonic = monotonic() - elapsed
@@ -390,6 +393,62 @@ class RoundRobinCampaign:
             runner.ledger["pending_operation"] = None
             runner._checkpoint()
         return runner
+
+    def import_prelive_canary(
+        self, canary_ledger: dict[str, Any], attestation: dict[str, Any] | None = None,
+    ) -> None:
+        """Import one sealed P59 canary without replaying any provider call."""
+        if self.ledger["provider_operations"] or self.ledger["operation_log"]:
+            raise CampaignValidationError("pre-live canary must be imported before campaign operations")
+        if not isinstance(canary_ledger, dict) or canary_ledger.get("schema") != LEDGER_SCHEMA:
+            raise CampaignValidationError("invalid pre-live canary ledger")
+        canary_fingerprint = canary_ledger.get("manifest_fingerprint")
+        if canary_fingerprint is None:
+            if not isinstance(attestation, dict) or attestation.get("schema") != "ku2d.multi-source-prelive-canary-attestation.v1":
+                raise CampaignValidationError("legacy pre-live canary requires exact sanitized attestation")
+            canonical_hash = hashlib.sha256(canonical_json(canary_ledger).encode("utf-8")).hexdigest()
+            if attestation.get("canary_ledger_canonical_sha256") != canonical_hash:
+                raise CampaignValidationError("pre-live canary attestation hash mismatch")
+            if attestation.get("run_id") != canary_ledger.get("run_id"):
+                raise CampaignValidationError("pre-live canary attestation run mismatch")
+            canary_fingerprint = attestation.get("manifest_fingerprint")
+        if canary_fingerprint != self.ledger["manifest_fingerprint"]:
+            raise CampaignValidationError("pre-live canary manifest fingerprint mismatch")
+        if canary_ledger.get("sealed_live") is not True or canary_ledger.get("stop_reason") != "canary_complete":
+            raise CampaignValidationError("pre-live canary ledger is not sealed and complete")
+        operations = canary_ledger.get("operation_log")
+        if not isinstance(operations, list) or canary_ledger.get("provider_operations") != len(operations):
+            raise CampaignValidationError("pre-live canary operation totals do not reconcile")
+        active_ids = {
+            source["source_id"] for source in self.manifest["sources"]
+            if source["preflight_status"] == "live_eligible"
+        }
+        seen: set[str] = set()
+        for operation in operations:
+            source_id = operation.get("source_id")
+            if source_id not in active_ids or source_id in seen:
+                raise CampaignValidationError("canary must contain exactly one operation per live source")
+            seen.add(source_id)
+            if operation.get("state") != "finalized" or operation.get("provider_reached") is not True:
+                raise CampaignValidationError("canary operation is not finalized provider evidence")
+        if seen != active_ids:
+            raise CampaignValidationError("canary source coverage is incomplete")
+        self.ledger["provider_operations"] = len(operations)
+        self.ledger["operation_log"] = deepcopy(operations)
+        self.ledger["quota"] = int(canary_ledger.get("quota") or 0)
+        for source_id in active_ids:
+            prior = canary_ledger["source_states"][source_id]
+            state = self.ledger["source_states"][source_id]
+            state["provider_operations"] = int(prior.get("provider_operations") or 0)
+            state["quota"] = int(prior.get("quota") or 0)
+            if str(prior.get("reason") or "").startswith("http_"):
+                state.update(state="to_be_skipped", reason=f"prelive_canary_{prior['reason']}")
+        self.ledger["prelive_canary"] = {
+            "run_id": canary_ledger.get("run_id"), "code_sha": canary_ledger.get("code_sha"),
+            "code_tree": canary_ledger.get("code_tree"), "provider_operations": len(operations),
+            "quota": int(canary_ledger.get("quota") or 0),
+        }
+        self._checkpoint()
 
     def set_code_identity(self, sha: str, tree: str) -> None:
         if len(sha) != 40 or len(tree) != 40:

@@ -82,8 +82,13 @@ python tools/LIVE_MULTI_SOURCE_ROUND_ROBIN.py `
 ```
 
 The preflight performs zero provider operations. `--mode canary` performs one
-public request per live-eligible source. `--mode execute` performs the one-time
-campaign. An interrupted unsealed run may use `--resume`; a sealed run cannot.
+public request per live-eligible source. `--mode execute` requires the sealed
+canary ledger through `--canary-ledger`; it imports those operations into the
+global and source counters and keeps every canary access stop terminal without
+repeating it. A canary created before manifest fingerprinting additionally needs
+its exact sanitized `--canary-attestation`; the attestation pins the canonical
+ledger hash and manifest fingerprint without changing the original evidence.
+An interrupted unsealed run may use `--resume`; a sealed run cannot.
 Neither mode is a recurring scheduler or production Human Approve.
 
 ## Deterministic verification

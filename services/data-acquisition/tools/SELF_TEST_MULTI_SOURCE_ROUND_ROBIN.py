@@ -223,4 +223,52 @@ with TemporaryDirectory() as tmp:
     assert by_source["SRC-001"]["status"] == "not_available"
 
 
-print("P59 multi-source round-robin deterministic tests passed (RR1-RR42).")
+# RR43-RR48: a sealed canary is imported exactly once; 403 is terminal and successful canaries remain active.
+with TemporaryDirectory() as tmp:
+    calls = []
+    adapters = {row["source_id"]: exhaust_adapter(calls) for row in ACTIVE}
+    canary = RoundRobinCampaign(MANIFEST, Path(tmp) / "canary.json", {}, run_id="RR-CANARY", sleeper=lambda _: None)
+    canary.set_code_identity("3" * 40, "4" * 40)
+    for source in ACTIVE:
+        state = canary.ledger["source_states"][source["source_id"]]
+        context = VisitContext(canary, source, state)
+        status = 403 if source["source_id"] == "SRC-001" else 200
+        context.provider_call(
+            f"https://{source['source_id'].lower()}.example/canary",
+            lambda status=status: {"ok": status == 200, "status": status},
+        )
+        if context.access_boundary:
+            state.update(state="to_be_skipped", reason=context.access_boundary)
+        else:
+            state.update(state="exhausted", reason="canary_only_complete")
+    canary.ledger.update(sealed_live=True, stop_reason="canary_complete", ended_at="2026-09-02T00:00:00+00:00")
+    canary._checkpoint()
+    runner = RoundRobinCampaign(MANIFEST, Path(tmp) / "campaign.json", adapters, run_id="RR-AFTER-CANARY", sleeper=lambda _: None)
+    runner.import_prelive_canary(canary.ledger)
+    assert runner.ledger["provider_operations"] == 4
+    assert runner.ledger["source_states"]["SRC-001"]["state"] == "to_be_skipped"
+    assert runner.ledger["source_states"]["SRC-002"]["state"] == "active"
+    ledger = runner.run()
+    assert "SRC-001" not in calls and calls == ["SRC-002", "SRC-004", "SRC-005"]
+    assert ledger["provider_operations"] == 7
+    try:
+        runner.import_prelive_canary(canary.ledger)
+        raise AssertionError("canary was imported twice")
+    except CampaignValidationError:
+        pass
+    legacy = deepcopy(canary.ledger)
+    legacy.pop("manifest_fingerprint")
+    import hashlib
+    from round_robin_campaign import canonical_json
+    attestation = {
+        "schema": "ku2d.multi-source-prelive-canary-attestation.v1",
+        "run_id": legacy["run_id"],
+        "manifest_fingerprint": runner.ledger["manifest_fingerprint"],
+        "canary_ledger_canonical_sha256": hashlib.sha256(canonical_json(legacy).encode("utf-8")).hexdigest(),
+    }
+    legacy_runner = RoundRobinCampaign(MANIFEST, Path(tmp) / "legacy.json", {}, run_id="RR-LEGACY", sleeper=lambda _: None)
+    legacy_runner.import_prelive_canary(legacy, attestation)
+    assert legacy_runner.ledger["provider_operations"] == 4
+
+
+print("P59 multi-source round-robin deterministic tests passed (RR1-RR50).")
