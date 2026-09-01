@@ -1,0 +1,30 @@
+{
+  "schema": "ku2d.source-lab-lifecycle.v1",
+  "source_completion_queue": "SOURCE_QUEUE_ID",
+  "queue_purpose_summary": "Describe the bounded source capability and closure target before work starts.",
+  "phases": [
+    "technique_library_reuse",
+    "explore",
+    "deep_audit",
+    "minimum_trusted_connection",
+    "integration",
+    "closure"
+  ],
+  "human_gates": [
+    "legal_or_policy_ambiguity",
+    "restricted_or_personal_data",
+    "material_scope_or_quota_expansion",
+    "new_spending",
+    "production_write",
+    "elevated_authority"
+  ],
+  "testing": {
+    "level_1": ["unit_test", "adapter_specific_fixture"],
+    "level_2": ["source_level_integration", "evidence_validation"],
+    "level_3": ["full_deterministic_corpus_exact_head"]
+  },
+  "boundaries": {
+    "production_authorized": false,
+    "scheduler_action": null
+  }
+}

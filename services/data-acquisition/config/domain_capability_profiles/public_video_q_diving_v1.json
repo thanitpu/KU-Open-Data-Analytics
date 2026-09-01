@@ -1,0 +1,48 @@
+{
+  "schema": "ku2d.domain-capability-profile.v1",
+  "profile_id": "public-video-q-diving.v1",
+  "version": "1.0",
+  "domain": "public_video_q_diving",
+  "capabilities": [
+    {
+      "capability_id": "video_metadata",
+      "state": "available",
+      "required_for_mtc": true,
+      "reason": "Ten public-video identity records are reproducible from the sanitized P50 closure packet.",
+      "evidence_refs": ["KU2D-R-000050", "KU2D-AI-000001", "KU2D-YT-QDIVING-CANDIDATES-000001"]
+    },
+    {
+      "capability_id": "channel_identity",
+      "state": "available",
+      "required_for_mtc": true,
+      "reason": "Every accepted P50 candidate preserves an attributable public channel identity.",
+      "evidence_refs": ["KU2D-R-000050", "KU2D-AI-000001"]
+    },
+    {
+      "capability_id": "comments",
+      "state": "blocked",
+      "required_for_mtc": false,
+      "reason": "Comments are prohibited by the current KU2D YouTube policy and are not required for v1 closure.",
+      "evidence_refs": ["config:youtube_api_policy.json"]
+    },
+    {
+      "capability_id": "captions",
+      "state": "blocked",
+      "required_for_mtc": false,
+      "reason": "Caption retrieval is outside the authorized public-metadata boundary.",
+      "evidence_refs": ["config:youtube_api_policy.json"]
+    },
+    {
+      "capability_id": "transcripts",
+      "state": "blocked",
+      "required_for_mtc": false,
+      "reason": "Arbitrary transcripts are prohibited and are not required for v1 closure.",
+      "evidence_refs": ["config:youtube_api_policy.json"]
+    }
+  ],
+  "semantic_quality_owner": "analysis",
+  "boundaries": {
+    "production_approved": false,
+    "scheduler_action": null
+  }
+}

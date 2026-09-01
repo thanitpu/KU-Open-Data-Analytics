@@ -8,6 +8,8 @@ Explore/Audit observations are preserved as evidence; approved scheduled acquisi
 
 GitHub-mediated Codex/assistant/human coordination uses the storage-neutral [Agent Handoff Protocol v1](docs/AGENT_HANDOFF_PROTOCOL.md). Coordination records are separate from Learning Memory, production authorization, and scheduler state; normal acquisition does not emit them automatically.
 
+[Data Acquisition v1 Source Completion](docs/DATA_ACQUISITION_V1_SOURCE_COMPLETION.md) defines the reusable Connector Kit, domain capability, Source Lab, MTC and one-queue operating model. YouTube Q-Diving is the fixture-only reference connector; semantic quality remains Analysis-owned.
+
 Shopee Commerce Pulse is a separate, non-production marketplace-observation domain. Its public-signal semantics and now-paused public unauthenticated access checkpoint are documented in [docs/SHOPEE_COMMERCE_PULSE.md](docs/SHOPEE_COMMERCE_PULSE.md). Lazada reuses the generic observation contracts while keeping platform-specific access and interpretation explicit in [docs/LAZADA_COMMERCE_PULSE.md](docs/LAZADA_COMMERCE_PULSE.md).
 
 ## Live validation status semantics

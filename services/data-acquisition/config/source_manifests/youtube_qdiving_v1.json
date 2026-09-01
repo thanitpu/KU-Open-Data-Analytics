@@ -1,0 +1,42 @@
+{
+  "schema": "ku2d.source-manifest.v1",
+  "manifest_id": "KU2D-SM-YOUTUBE-QDIVING-000001",
+  "source_id": "youtube-data-api-v3-q-diving",
+  "provider": "YouTube Data API v3",
+  "domain_profile_id": "public-video-q-diving.v1",
+  "adapter": "youtube_qdiving_connector.YouTubeQDivingAdapter",
+  "parser": "youtube_qdiving_connector.YouTubeQDivingCandidateParser",
+  "mapper": "youtube_qdiving_connector.PublicVideoQDivingMapper",
+  "access_surface": "official YouTube Data API v3 public metadata; deterministic v1 replay uses sanitized committed evidence only",
+  "capabilities": [
+    {"capability_id": "video_metadata", "state": "available"},
+    {"capability_id": "channel_identity", "state": "available"},
+    {"capability_id": "comments", "state": "blocked"},
+    {"capability_id": "captions", "state": "blocked"},
+    {"capability_id": "transcripts", "state": "blocked"}
+  ],
+  "known_limitations": [
+    "v1 replay proves only the bounded P50 Q-Diving candidate packet",
+    "semantic relevance, quality, ranking, grouping and final inclusion remain Analysis-owned",
+    "comments, captions and transcripts are outside the authorized boundary",
+    "MTC closure does not authorize production storage, scheduling or Human Approve"
+  ],
+  "fixture_sets": [
+    "knowledge/v1/candidate-closure-packets/KU2D-YT-QDIVING-CANDIDATES-000001.json"
+  ],
+  "evidence_refs": [
+    "KU2D-R-000050",
+    "KU2D-R-000051",
+    "KU2D-AI-000001",
+    "KU2D-X-000002",
+    "artifact:9786568183"
+  ],
+  "integration_status": "closed_v1",
+  "boundaries": {
+    "provider_requests_performed": 0,
+    "documented_quota_units": 0,
+    "production_store": false,
+    "production_approved": false,
+    "scheduler_action": null
+  }
+}
