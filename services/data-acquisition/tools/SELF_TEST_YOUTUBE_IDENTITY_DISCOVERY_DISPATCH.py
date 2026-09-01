@@ -1,6 +1,6 @@
 """Static and offline contract tests for the manual H12 dispatch harness."""
 from __future__ import annotations
-import json, os, shutil, sys
+import json, os, shutil, subprocess, sys
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
@@ -115,6 +115,58 @@ assert run_block.index("set +e") < run_block.index("python tools/LIVE_YOUTUBE") 
 assert "if [ \"$code\" = 2 ]; then" in run_block and "exit 0" in run_block
 assert "outcome=technical-failure" in run_block and 'exit "$code"' in run_block
 assert "Upload sanitized identity evidence" in workflow and "if: always()" in workflow
+evidence_step = workflow[
+    workflow.index("      - name: Check sanitized evidence"):
+    workflow.index("      - name: Upload sanitized identity evidence")
+]
+expected_evidence_shell = """if [[ -f "$KU2D_EVIDENCE_PATH" ]]; then
+  echo "exists=true" >> "$GITHUB_OUTPUT"
+else
+  echo "exists=false" >> "$GITHUB_OUTPUT"
+fi
+"""
+assert "        if: always()" in evidence_step
+assert "        run: |\n" in evidence_step
+evidence_shell = "\n".join(
+    line[10:] if line.startswith("          ") else line
+    for line in evidence_step.split("        run: |\n", 1)[1].rstrip("\n").splitlines()
+) + "\n"
+assert evidence_shell == expected_evidence_shell
+
+bash = shutil.which("bash")
+if not bash and os.name == "nt":
+    git_bash = Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "Git/bin/bash.exe"
+    if git_bash.is_file():
+        bash = str(git_bash)
+assert bash, "Bash is required to execute the workflow shell contract"
+with TemporaryDirectory() as temp:
+    shell_root = Path(temp)
+    existing = shell_root / "evidence.json"
+    spaced = shell_root / "evidence path with spaces.json"
+    missing = shell_root / "missing.json"
+    existing.write_text("{}", encoding="utf-8")
+    spaced.write_text("{}", encoding="utf-8")
+    for index, (evidence_path, expected) in enumerate(((existing, "true"), (missing, "false"), (spaced, "true"))):
+        github_output = shell_root / f"github-output-{index}.txt"
+        environment = dict(os.environ, KU2D_EVIDENCE_PATH=str(evidence_path), GITHUB_OUTPUT=str(github_output))
+        completed = subprocess.run(
+            [bash, "-c", evidence_shell], env=environment, check=False,
+            capture_output=True, text=True,
+        )
+        assert completed.returncode == 0, completed.stderr
+        assert completed.stdout == "" and completed.stderr == ""
+        assert github_output.read_text(encoding="utf-8").splitlines() == [f"exists={expected}"]
+
+upload_step = workflow[workflow.index("      - name: Upload sanitized identity evidence"):]
+assert "        if: always() && steps.evidence.outputs.exists == 'true'" in upload_step
+assert "          path: ${{ env.KU2D_EVIDENCE_PATH }}" in upload_step
+path_step = workflow[workflow.index("Initialize sanitized evidence paths"):workflow.index("Run exact bounded public discovery")]
+assert "KU2D_EVIDENCE_PATH=${RUNNER_TEMP}/" in path_step
+for accepted_code in (0, 2):
+    assert classify_exit_code(accepted_code)["step_success"] is True
+    assert "      - name: Write sanitized Step Summary\n        if: always()" in workflow
+    assert "      - name: Check sanitized evidence\n        id: evidence\n        if: always()" in workflow
+    assert "        if: always() && steps.evidence.outputs.exists == 'true'" in upload_step
 anchor_block = workflow[workflow.index("Validate immutable launcher trust anchors"):workflow.index("Checkout immutable authorization record revision")]
 assert "^[0-9a-f]{40}$" in anchor_block
 assert "^KU2D-H-[0-9]{6}$" in anchor_block
@@ -139,4 +191,4 @@ assert '--authorization-record "${KU2D_STAGED_AUTHORIZATION_RECORD}"' in run_blo
 assert "coordination/v1/human-decisions/${KU2D_AUTHORIZATION_ID}.json" not in run_block
 assert "${{ runner.temp }}" not in workflow
 
-print("YouTube H12 two-checkout dispatch deterministic tests passed (YIDW1-YIDW72).")
+print("YouTube H12 two-checkout dispatch deterministic tests passed (YIDW1-YIDW80).")
