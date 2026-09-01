@@ -1,0 +1,268 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000052",
+  "created_at": "2026-09-01T12:50:00.000+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+  "objective": "Implement the KU2D Data Acquisition v1 target architecture and faster Source Completion operating model in one queue, migrate YouTube Q-Diving into the new contracts as the first reference connector using existing sanitized evidence and fixtures only, and close YouTube at the Minimum Trusted Connection boundary.",
+  "queue_purpose_summary": "สร้างสถาปัตยกรรมกลางที่ใช้ซ้ำได้ ลดโค้ดและรอบ Queue ต่อ source และใช้ YouTube พิสูจน์ว่า Connector Kit, capability profile, thin adapter, source parser และ Analysis handoff ทำงานครบโดยไม่เรียก provider ซ้ำ",
+  "architecture_target": {
+    "formula": "Shared Connector Kit + Domain Capability Profile + Thin Source Adapter + Source-specific Parser + Analysis-owned Semantic Quality",
+    "principles": [
+      "develop each source in an isolated Source Lab before platform integration",
+      "reuse proven Technique Library patterns before exploring a new access method",
+      "share discovery orchestration, policy, request accounting, evidence, provenance, logging, validation and replay",
+      "keep only source-specific access differences in a thin adapter",
+      "keep source payload interpretation in a separate source-specific parser",
+      "normalize through domain records rather than one universal global source schema",
+      "allow different domains and sources to expose different capability sets",
+      "promote at Minimum Trusted Connection rather than full capability completeness",
+      "hand every technically accepted record to Analysis; Acquisition does not perform semantic selection"
+    ]
+  },
+  "required_deliverables": [
+    {
+      "component": "Shared Connector Kit v1",
+      "requirements": [
+        "inspect and reuse existing acquisition modules before adding parallel controllers",
+        "define stable contracts for lifecycle coordination, request plans, response envelopes, evidence/provenance, request and quota ledger, sanitized logging, error classification and fixture replay",
+        "keep provider transport injectable so deterministic fixtures can exercise the complete source path without network access",
+        "do not embed source selectors, endpoints, payload parsing or domain semantic quality in the shared kit"
+      ]
+    },
+    {
+      "component": "Domain Capability Profile v1",
+      "requirements": [
+        "create a versioned schema and validator for domain-defined capabilities",
+        "support capability states available, partial, unverified, blocked, unsupported and not_applicable with reason and evidence references",
+        "do not require Product, Price, Promotion or any universal capability set across domains",
+        "define the minimum public-video/Q-Diving profile needed by the YouTube reference source",
+        "separate required-for-MTC capabilities from optional capabilities"
+      ]
+    },
+    {
+      "component": "Source Manifest and Minimum Trusted Connection v1",
+      "requirements": [
+        "create versioned source manifest and MTC assessment contracts",
+        "record provider, domain profile, adapter, parser, supported capability states, access surface, known limitations, fixture set, evidence and integration status",
+        "MTC requires at least one useful reproducible capability, schema-valid output, provenance, failure classification, sanitized evidence, fixture replay and known limitations",
+        "full source capability completeness is not required"
+      ]
+    },
+    {
+      "component": "Thin Source Adapter contract v1",
+      "requirements": [
+        "adapter declares where and how to access a source, request parameters, pagination interpretation, parser selection and capability declaration",
+        "Connector Kit owns execution, secret injection boundary, timeout, retry policy, request/quota accounting, evidence, logging, validation and scheduling boundary",
+        "adapter must not write production data, decide semantic quality, create queues, persist secrets or implement a parallel evidence/logging system",
+        "thinness is responsibility separation, not an arbitrary line-count limit"
+      ]
+    },
+    {
+      "component": "Source-specific Parser contract v1",
+      "requirements": [
+        "parser converts provider responses or fixtures into source-specific records",
+        "a separate domain mapper converts source records into domain-normalized records",
+        "preserve source-specific fields and provenance without forcing direct conversion to one global schema",
+        "parser errors must use shared error classification and evidence contracts"
+      ]
+    },
+    {
+      "component": "Source Lab lifecycle v1",
+      "requirements": [
+        "formalize Technique Library reuse -> Explore -> Deep Audit -> Minimum Trusted Connection -> Integration -> Closure",
+        "Explore compares existing proven techniques first and uses bounded samples",
+        "Deep Audit validates stability, pagination, variants, failure modes, policy, provenance and repeatability of the selected technique",
+        "when known techniques fail, permit bounded discovery of a new access method and capture the outcome for later reuse",
+        "one Source Completion Queue contains all phases and returns one final Result unless a material Human Gate is reached"
+      ]
+    },
+    {
+      "component": "Acquisition-to-Analysis boundary",
+      "requirements": [
+        "reuse KU2D-KP-000003 and acquisition-analysis-handoff.v1 from P51 as authoritative",
+        "Acquisition checks technical validity, authority, policy, provenance and sanitization",
+        "Analysis owns semantic relevance, quality, ranking, analytical deduplication/grouping and final inclusion",
+        "no per-record Human semantic gate exists in Acquisition"
+      ]
+    },
+    {
+      "component": "Chat-to-Codex operating protocol",
+      "requirements": [
+        "document one Source Completion Queue per source with internal phases and one closure Result",
+        "Codex self-corrects technical issues inside the queue and does not return for syntax, fixture, parser, schema, evidence or CI issues that remain within scope",
+        "Assistant reviews the final Result and material evidence rather than every internal checkpoint",
+        "Human confirmation remains only for legal/policy ambiguity, restricted or personal data, material scope/quota expansion, new spending, production write or elevated authority",
+        "record a short queue-purpose summary whenever a new Queue is opened",
+        "preserve the commands Continue from KU2D queue and ต่อครับ as the standard handoff"
+      ]
+    }
+  ],
+  "testing_policy": {
+    "level_1_self_correction": {
+      "tests": [
+        "unit_test",
+        "adapter_specific_fixture"
+      ],
+      "frequency": "after each material correction affecting the relevant component",
+      "full_corpus_required": false
+    },
+    "level_2_before_pr": {
+      "tests": [
+        "source_level_integration",
+        "evidence_validation"
+      ],
+      "requirement": "must pass for every affected reference source before PR creation"
+    },
+    "level_3_before_merge_or_closure": {
+      "tests": [
+        "full_deterministic_corpus"
+      ],
+      "requirement": "run once on the exact PR head after all code and journal commit references are final",
+      "rerun_condition": "any code, schema, fixture, policy or test input changes after the exact-head run",
+      "reuse_condition": "the merge tree is proven identical to the exact tested PR-head tree"
+    },
+    "prohibit_full_corpus_in_every_development_loop": true
+  },
+  "technical_correction_policy": {
+    "journal_id": "KU2D-CJ-000002",
+    "next_event_id": "KU2D-TC-000004",
+    "multiple_corrections_per_queue": true,
+    "pr_per_correction": false,
+    "queue_or_result_per_correction": false,
+    "aggregate_into_one_coherent_pr": true,
+    "capture_timing": "immediately after each materially distinct correction in a local sanitized journal",
+    "required_event_fields": [
+      "observed_symptom",
+      "evidence_supported_root_cause_or_unknown",
+      "correction_action_and_components",
+      "confirming_fixture_or_test",
+      "schema_impact",
+      "quality_impact",
+      "provider_request_and_quota_impact",
+      "related_commit_or_pending_commit",
+      "resolution_status",
+      "reusable_lesson_and_future_prevention"
+    ],
+    "commit_rule": "pending_commit is allowed during correction but every event must reference the final related commit before PR creation or queue closure",
+    "noise_exclusions": [
+      "unchanged reruns",
+      "routine commands",
+      "duplicate symptoms of one root cause",
+      "format-only actions with no material technical effect"
+    ]
+  },
+  "youtube_reference_migration": {
+    "source": "YouTube Data API v3",
+    "domain": "public_video_q_diving",
+    "immutable_inputs": [
+      "KU2D-R-000050",
+      "KU2D-AI-000001",
+      "KU2D-X-000002",
+      "KU2D-CJ-000001",
+      "KU2D-YT-QDIVING-CANDIDATES-000001",
+      "artifact:9786568183"
+    ],
+    "live_provider_requests_allowed": 0,
+    "replay_p50_or_p51": false,
+    "required_capabilities": {
+      "video_metadata": "available",
+      "channel_identity": "available"
+    },
+    "optional_or_out_of_scope_capabilities": {
+      "comments": "blocked",
+      "captions": "blocked",
+      "transcripts": "blocked"
+    },
+    "instructions": [
+      "wrap or migrate the existing validated YouTube discovery implementation into the new adapter/parser/domain contracts without rewriting immutable evidence",
+      "derive deterministic adapter and parser fixtures only from already sanitized committed evidence; do not retrieve raw provider payloads or workflow logs",
+      "prove the existing ten candidates remain retrievable through KU2D-AI-000001",
+      "produce a YouTube source manifest, public-video domain capability profile and MTC assessment",
+      "close YouTube v1 when video_metadata and channel_identity meet MTC; do not hold closure for comments, captions, transcripts, semantic quality or production scheduling"
+    ]
+  },
+  "implementation_and_merge": {
+    "integration_baseline": "78505d041bd9f491b6fa4ba9bb98c2d0e3644b4a",
+    "target_branch": "integration/data-acquisition-platform",
+    "one_coherent_pr": true,
+    "exact_head_required": true,
+    "technically_green_merge_authorized": true,
+    "assistant_intermediate_review_required": false,
+    "main_modification_authorized": false,
+    "provider_dispatch_authorized": false,
+    "production_write_authorized": false
+  },
+  "tiktok_readiness_boundary": {
+    "execute_tiktok_in_p52": false,
+    "prepare_reusable_template_only": true,
+    "future_topics": [
+      "Diving lesson",
+      "Diving equipment"
+    ],
+    "do_not_assume_access_surface_or_capabilities": true,
+    "expected_followup": "After Assistant accepts R52 and YouTube v1 is closed, create a separate TikTok Source Completion Queue using the new operating model."
+  },
+  "instructions": [
+    "Inspect the current integration implementation and existing technique, experience, evidence, logging, validation and correction modules before editing. Extend authoritative modules rather than creating competing wrappers.",
+    "Implement the smallest coherent v1 foundation needed for the next source; do not attempt production-complete infrastructure or speculative capabilities.",
+    "Keep all changes inside P52. Do not create P53, intermediate Prompt/Result/Review records, or separate PRs for corrections.",
+    "Use targeted level-1 tests during self-correction, level-2 source integration and evidence validation before PR, and one exact-head level-3 full deterministic corpus before merge/closure.",
+    "Create and finalize KU2D-CJ-000002. If no material correction occurs, submit a valid zero-event journal rather than inventing events.",
+    "Create one Ready PR to integration/data-acquisition-platform after level-2 passes. Require clean scope, exact head and applicable CI, then merge under H21 when technically green.",
+    "Verify the merge tree is identical to the tested exact PR-head tree or rerun the full corpus on the final tree.",
+    "Submit only KU2D-R-000052 with architecture deliverables, changed files, correction journal, test evidence by level, PR/CI/merge metadata, provider request/quota counts, YouTube MTC assessment and explicit YouTube closure status."
+  ],
+  "stop_conditions": [
+    "implementation requires a provider request, P50/P51 replay or additional quota",
+    "implementation requires raw provider payload retrieval, workflow log retrieval, comments, captions, transcripts, restricted or personal data",
+    "implementation requires production write, scheduling, new spending or elevated authority",
+    "a capability or adapter contract would discard immutable candidate records or provenance",
+    "the architecture cannot be implemented without rewriting immutable historical records",
+    "repository permission or protected-branch policy blocks the authorized integration merge",
+    "a material scope change beyond the agreed v1 architecture is necessary"
+  ],
+  "definition_of_done": [
+    "Shared Connector Kit v1 contracts and reusable deterministic fixture path exist",
+    "Domain Capability Profile, Source Manifest and MTC schemas/validators exist",
+    "Thin Adapter, Source Parser and domain mapper responsibilities are enforced by contracts and tests",
+    "Source Lab and Chat-to-Codex operating procedures are documented and validated where deterministic validation is applicable",
+    "three-tier testing policy is documented and followed in R52 evidence",
+    "KU2D-CJ-000002 preserves every material correction without PR-per-correction",
+    "one coherent exact-head PR is merged to integration/data-acquisition-platform",
+    "full deterministic corpus passes on the exact final tree",
+    "YouTube video_metadata and channel_identity pass MTC using existing sanitized evidence and fixtures only",
+    "all ten YouTube candidates remain retrievable and Analysis-owned semantic fields remain unassessed",
+    "YouTube v1 is closed without comments, captions, transcripts, provider replay, production write or scheduling",
+    "TikTok is not executed and is ready to start later as a separate Source Completion Queue",
+    "KU2D-R-000052 is submitted for Assistant review"
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000052",
+    "next_actor": "assistant",
+    "closure_target": "architecture_transition_and_youtube_v1_mtc",
+    "technical_correction_journal": "KU2D-CJ-000002",
+    "provider_requests_allowed": 0
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_prompt": "KU2D-P-000051",
+    "depends_on_result": "KU2D-R-000051",
+    "depends_on_review": "KU2D-V-000051",
+    "depends_on_human_decision": "KU2D-H-000021",
+    "integration_baseline": "78505d041bd9f491b6fa4ba9bb98c2d0e3644b4a",
+    "boundary_policy": "KU2D-KP-000003",
+    "analysis_manifest": "KU2D-AI-000001"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
