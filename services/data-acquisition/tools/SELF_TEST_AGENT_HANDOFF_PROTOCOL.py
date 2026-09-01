@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import sys
 from copy import deepcopy
 from pathlib import Path
@@ -11,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "acquisition") not in sys.path:
     sys.path.insert(0, str(ROOT / "acquisition"))
 
+import agent_handoff_protocol as handoff_protocol
 from agent_handoff_protocol import (
     ASSISTANT_REVIEW_SCHEMA,
     BRANCH_HANDOFF_SCHEMA,
@@ -32,6 +34,17 @@ from agent_handoff_protocol import (
     validate_queue_state,
     validate_result_record,
 )
+
+
+EXTENDED_HISTORY_SUPPORTED = all(
+    hasattr(handoff_protocol, name)
+    for name in ("HISTORICAL_MIGRATION_SCHEMA", "validate_historical_migration_manifest")
+)
+if EXTENDED_HISTORY_SUPPORTED:
+    HISTORICAL_MIGRATION_SCHEMA = handoff_protocol.HISTORICAL_MIGRATION_SCHEMA
+    validate_historical_migration_manifest = (
+        handoff_protocol.validate_historical_migration_manifest
+    )
 
 
 NOW = "2026-08-31T02:00:00+00:00"
@@ -324,41 +337,150 @@ repository_queue = json.loads(queue_path.read_text(encoding="utf-8"))
 def records_in(folder):
     return [json.loads(path.read_text(encoding="utf-8")) for path in sorted(folder.glob("*.json"))]
 
+def records_and_blobs(folder, id_key):
+    records, blobs = [], {}
+    for path in sorted(folder.glob("*.json")):
+        payload = path.read_bytes().replace(b"\r\n", b"\n")
+        record = json.loads(payload.decode("utf-8"))
+        records.append(record)
+        blobs[record[id_key]] = payload
+    return records, blobs
+
 repository_prompts = records_in(ROOT / "coordination" / "v1" / "prompts")
 repository_results = records_in(ROOT / "coordination" / "v1" / "results")
-repository_reviews = records_in(ROOT / "coordination" / "v1" / "reviews")
+repository_reviews, review_blobs = records_and_blobs(
+    ROOT / "coordination" / "v1" / "reviews", "review_id",
+)
 human_folder = ROOT / "coordination" / "v1" / "human-decisions"
-repository_humans = records_in(human_folder) if human_folder.is_dir() else []
+repository_humans, human_blobs = (
+    records_and_blobs(human_folder, "human_decision_id")
+    if human_folder.is_dir() else ([], {})
+)
 handoff_folder = ROOT / "coordination" / "v1" / "branch-handoffs"
 repository_handoffs = records_in(handoff_folder) if handoff_folder.is_dir() else []
+migration_folder = ROOT / "coordination" / "v1" / "migrations"
+repository_migrations = records_in(migration_folder) if migration_folder.is_dir() else []
+repository_kwargs = {"branch_handoff_records": repository_handoffs}
+if EXTENDED_HISTORY_SUPPORTED:
+    repository_kwargs.update({
+        "historical_migration_records": repository_migrations,
+        "record_blobs": {**review_blobs, **human_blobs},
+    })
 repository_bundle = validate_agent_handoff_bundle(
     repository_prompts, repository_results, repository_reviews, repository_humans,
-    repository_queue, branch_handoff_records=repository_handoffs,
+    repository_queue, **repository_kwargs,
 )
 assert repository_bundle["queue_state"]["next_action"]["actor"] in {"codex", "assistant", "human", "none"}
 if repository_bundle["queue_state"]["next_action"]["actor"] == "assistant":
     assert repository_bundle["queue_state"]["latest_result"] == repository_bundle["queue_state"]["next_action"]["result_id"]
-assert set(repository_bundle["human_decision_records"]) == {
+
+# Repository discovery is exact and append-only-aware. Stable anchors prevent
+# historical deletion; equality with discovered non-historical records prevents
+# the validator from silently omitting a newly appended, valid decision.
+stable_human_decision_anchors = {
     "KU2D-H-000001", "KU2D-H-000002", "KU2D-H-000004", "KU2D-H-000005",
     "KU2D-H-000006", "KU2D-H-000007", "KU2D-H-000008", "KU2D-H-000009",
     "KU2D-H-000010", "KU2D-H-000011", "KU2D-H-000012", "KU2D-H-000013",
 }
-assert repository_bundle["human_decision_records"]["KU2D-H-000001"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000002"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000004"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000005"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000006"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000007"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000008"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000009"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000010"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000011"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000012"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000013"]["decision"] == "confirmed"
+if EXTENDED_HISTORY_SUPPORTED:
+    stable_human_decision_anchors.update({
+        "KU2D-H-000014", "KU2D-H-000015", "KU2D-H-000016", "KU2D-H-000018",
+        "KU2D-H-000019", "KU2D-H-000020", "KU2D-H-000021", "KU2D-H-000022",
+    })
+historical_human_ids = {
+    record_id for record_id in repository_bundle.get("historical_records", {})
+    if record_id.startswith("KU2D-H-")
+}
+discovered_human_ids = {record["human_decision_id"] for record in repository_humans}
+active_human_ids = set(repository_bundle["human_decision_records"])
+assert stable_human_decision_anchors <= active_human_ids
+assert active_human_ids == discovered_human_ids - historical_human_ids
+for human_id, human in repository_bundle["human_decision_records"].items():
+    assert human["decision"] == "confirmed"
+    assert human["provenance"]["decision_source"] == "explicit_human_input"
+    review_record = repository_bundle["assistant_review_records"][human["review_id"]]
+    result_record = repository_bundle["result_records"][human["result_id"]]
+    assert review_record["result_id"] == result_record["result_id"]
+    assert {human["prompt_id"]} == {
+        review_record["prompt_id"], result_record["prompt_id"],
+    }
+if EXTENDED_HISTORY_SUPPORTED:
+    assert set(repository_bundle["historical_records"]) == {"KU2D-V-000047", "KU2D-H-000017"}
+    assert all(
+        record["active_authority"] is False
+        for record in repository_bundle["historical_records"].values()
+    )
 assert validate_authoritative_branch(
     repository_prompts[-1], repository_queue, repository_queue["authoritative_branch"],
     repository_handoffs[-1] if repository_handoffs else None,
 ) == repository_queue["authoritative_branch"]
+
+# P56-A: a future append-only Human Decision passes only with one complete,
+# internally consistent Prompt/Result/Review/Decision chain.
+FP, FR, FV, FH = (
+    "KU2D-P-900001", "KU2D-R-900001", "KU2D-V-900001", "KU2D-H-900001",
+)
+future_prompt = prompt(FP)
+future_result = result(FR, FP)
+future_review = review(FV, FP, FR, require_human=True)
+future_human = human_decision()
+future_human.update({
+    "human_decision_id": FH, "prompt_id": FP, "result_id": FR, "review_id": FV,
+})
+future_queue = queue("completed", "none")
+future_queue.update({
+    "latest_prompt": FP,
+    "latest_result": FR,
+    "latest_review": FV,
+    "latest_human_decision": FH,
+    "prompt_states": {FP: "completed"},
+    "completed_prompt_ids": [FP],
+})
+future_bundle = validate_agent_handoff_bundle(
+    [future_prompt], [future_result], [future_review], [future_human], future_queue,
+)
+assert set(future_bundle["human_decision_records"]) == {FH}
+
+# P56-B: duplicate future Human Decision IDs still fail closed.
+try:
+    validate_agent_handoff_bundle(
+        [future_prompt], [future_result], [future_review],
+        [future_human, deepcopy(future_human)], future_queue,
+    )
+    raise AssertionError("duplicate future Human Decision validated")
+except ValueError:
+    pass
+
+# P56-C: malformed future Human Decision IDs still fail closed.
+malformed_future_human = deepcopy(future_human)
+malformed_future_human["human_decision_id"] = "KU2D-H-FUTURE"
+try:
+    validate_human_decision_record(malformed_future_human)
+    raise AssertionError("malformed future Human Decision validated")
+except ValueError:
+    pass
+
+# P56-D: a future Human Decision without its Review remains an orphan.
+try:
+    validate_agent_handoff_bundle(
+        [future_prompt], [future_result], [], [future_human], future_queue,
+    )
+    raise AssertionError("orphan future Human Decision validated")
+except ValueError:
+    pass
+
+# P56-E: an unrelated Prompt cannot be substituted into the future chain.
+unrelated_prompt = prompt("KU2D-P-900002")
+unrelated_future_human = deepcopy(future_human)
+unrelated_future_human["prompt_id"] = unrelated_prompt["prompt_id"]
+try:
+    validate_agent_handoff_bundle(
+        [future_prompt, unrelated_prompt], [future_result], [future_review],
+        [unrelated_future_human], future_queue,
+    )
+    raise AssertionError("unrelated future Human Decision chain validated")
+except ValueError:
+    pass
 
 # AH19: new branch-authority metadata accepts only the exact checked-out branch.
 branch_prompt = prompt()
@@ -524,4 +646,343 @@ try:
 except ValueError:
     pass
 
-print("Agent Handoff Protocol deterministic tests passed (AH1-AH31).")
+if not EXTENDED_HISTORY_SUPPORTED:
+    print(
+        "Agent Handoff Protocol deterministic tests passed "
+        "(AH1-AH31 plus P56 append-only fixture cases A-E)."
+    )
+    raise SystemExit(0)
+
+# AH32: the repository migration is exact, visible, and non-authoritative.
+discovered_migration_ids = {record["migration_id"] for record in repository_migrations}
+assert {"KU2D-M-000001", "KU2D-M-000002", "KU2D-M-000003", "KU2D-M-000004"} <= (
+    discovered_migration_ids
+)
+assert set(repository_bundle["historical_migration_records"]) == discovered_migration_ids
+assert validate_historical_migration_manifest(repository_migrations[0])["migration_id"] == (
+    "KU2D-M-000001"
+)
+assert set(repository_bundle["historical_records"]) == {"KU2D-V-000047", "KU2D-H-000017"}
+assert all(
+    item["active_authority"] is False
+    for item in repository_bundle["historical_records"].values()
+)
+discovered_proactive_human_ids = {
+    item["human_decision_id"]
+    for migration in repository_migrations
+    for item in migration.get("proactive_human_decisions", [])
+}
+assert {
+    "KU2D-H-000018", "KU2D-H-000019", "KU2D-H-000021", "KU2D-H-000022",
+} <= discovered_proactive_human_ids
+assert set(repository_bundle["proactive_human_decision_ids"]) == (
+    discovered_proactive_human_ids
+)
+assert repository_bundle["review_flag_compatibility_ids"] == ["KU2D-V-000050"]
+
+def repository_validation(*, migrations=None, reviews=None, humans=None, blobs=None, queue_state=None):
+    return validate_agent_handoff_bundle(
+        repository_prompts, repository_results,
+        repository_reviews if reviews is None else reviews,
+        repository_humans if humans is None else humans,
+        repository_queue if queue_state is None else queue_state,
+        branch_handoff_records=repository_handoffs,
+        historical_migration_records=(
+            repository_migrations if migrations is None else migrations
+        ),
+        record_blobs={**review_blobs, **human_blobs} if blobs is None else blobs,
+    )
+
+def json_blob(record):
+    payload = (json.dumps(record, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+    digest = hashlib.sha1(f"blob {len(payload)}\0".encode("ascii") + payload).hexdigest()
+    return payload, digest
+
+# AH33: an unlisted invalid historical record still fails closed.
+try:
+    repository_validation(migrations=[])
+    raise AssertionError("unlisted invalid record validated")
+except ValueError:
+    pass
+
+# AH34: any historical or replacement hash mismatch fails closed.
+bad_hash = deepcopy(repository_migrations)
+bad_hash[0]["entries"][0]["historical_blob_sha"] = "0" * 40
+try:
+    repository_validation(migrations=bad_hash)
+    raise AssertionError("mismatched historical blob hash validated")
+except ValueError:
+    pass
+bad_replacement_hash = deepcopy(repository_migrations)
+bad_replacement_hash[0]["entries"][0]["replacement_blob_sha"] = "0" * 40
+try:
+    repository_validation(migrations=bad_replacement_hash)
+    raise AssertionError("mismatched replacement blob hash validated")
+except ValueError:
+    pass
+
+# AH35: a missing canonical replacement fails closed.
+missing_replacement = [
+    item for item in repository_reviews if item["review_id"] != "KU2D-V-000048"
+]
+try:
+    repository_validation(reviews=missing_replacement)
+    raise AssertionError("missing canonical replacement validated")
+except ValueError:
+    pass
+
+# AH36: an exact-hash replacement that does not validate still fails closed.
+invalid_replacement_reviews = deepcopy(repository_reviews)
+invalid_replacement = next(
+    item for item in invalid_replacement_reviews if item["review_id"] == "KU2D-V-000048"
+)
+invalid_replacement["review_result"] = "invalid"
+invalid_blob, invalid_sha = json_blob(invalid_replacement)
+invalid_manifest = deepcopy(repository_migrations)
+invalid_manifest[0]["entries"][0]["replacement_blob_sha"] = invalid_sha
+invalid_blobs = {**review_blobs, **human_blobs, "KU2D-V-000048": invalid_blob}
+try:
+    repository_validation(
+        migrations=invalid_manifest, reviews=invalid_replacement_reviews, blobs=invalid_blobs,
+    )
+    raise AssertionError("invalid canonical replacement validated")
+except ValueError:
+    pass
+
+# AH37: raw bytes are mandatory proof for each pinned record.
+missing_blob = {**review_blobs, **human_blobs}
+missing_blob.pop("KU2D-H-000017")
+try:
+    repository_validation(blobs=missing_blob)
+    raise AssertionError("migration without raw historical bytes validated")
+except ValueError:
+    pass
+
+# AH38: a migrated historical record cannot be a current Queue authority pointer.
+historical_authority_queue = deepcopy(repository_queue)
+historical_authority_queue["latest_review"] = "KU2D-V-000047"
+try:
+    repository_validation(queue_state=historical_authority_queue)
+    raise AssertionError("historical review acted as current authority")
+except ValueError:
+    pass
+
+# AH39: circular or superseded replacement mappings fail at manifest validation.
+circular_manifest = deepcopy(repository_migrations[0])
+circular_manifest["entries"].append({
+    "record_kind": "assistant_review",
+    "historical_record_id": "KU2D-V-000048",
+    "historical_blob_sha": "afba89a6d66014840d833f0fc03f72b89f5e9e76",
+    "replacement_record_id": "KU2D-V-000047",
+    "replacement_blob_sha": "702bda7d0b7822ef7b34257a5a177cfe5deb4820",
+})
+try:
+    validate_historical_migration_manifest(circular_manifest)
+    raise AssertionError("circular historical migration validated")
+except ValueError:
+    pass
+
+# AH40: a manifest cannot suppress an already valid active record.
+valid_as_historical = deepcopy(repository_migrations)
+valid_as_historical[0]["entries"][0] = {
+    "record_kind": "assistant_review",
+    "historical_record_id": "KU2D-V-000048",
+    "historical_blob_sha": "afba89a6d66014840d833f0fc03f72b89f5e9e76",
+    "replacement_record_id": "KU2D-V-000049",
+    "replacement_blob_sha": hashlib.sha1(
+        f"blob {len(review_blobs['KU2D-V-000049'])}\0".encode("ascii")
+        + review_blobs["KU2D-V-000049"]
+    ).hexdigest(),
+}
+try:
+    repository_validation(migrations=valid_as_historical)
+    raise AssertionError("valid active review was suppressed as historical")
+except ValueError:
+    pass
+
+# AH41: proactive Human Decisions remain rejected unless exact-pinned.
+unpinned_proactive = deepcopy(repository_migrations)
+unpinned_proactive[0]["proactive_human_decisions"] = []
+try:
+    repository_validation(migrations=unpinned_proactive)
+    raise AssertionError("unlisted proactive Human Decision validated")
+except ValueError:
+    pass
+
+# AH42: a proactive Human Decision or Review hash mismatch fails closed.
+bad_proactive_human_hash = deepcopy(repository_migrations)
+bad_proactive_human_hash[0]["proactive_human_decisions"][0][
+    "human_decision_blob_sha"
+] = "0" * 40
+try:
+    repository_validation(migrations=bad_proactive_human_hash)
+    raise AssertionError("mismatched proactive Human Decision hash validated")
+except ValueError:
+    pass
+bad_proactive_review_hash = deepcopy(repository_migrations)
+bad_proactive_review_hash[0]["proactive_human_decisions"][0][
+    "assistant_review_blob_sha"
+] = "0" * 40
+try:
+    repository_validation(migrations=bad_proactive_review_hash)
+    raise AssertionError("mismatched proactive Assistant Review hash validated")
+except ValueError:
+    pass
+
+# AH43: duplicate proactive decision/review pins fail closed.
+duplicate_proactive = deepcopy(repository_migrations[0])
+duplicate_proactive["proactive_human_decisions"].append(
+    deepcopy(duplicate_proactive["proactive_human_decisions"][0])
+)
+try:
+    validate_historical_migration_manifest(duplicate_proactive)
+    raise AssertionError("duplicate proactive authority pin validated")
+except ValueError:
+    pass
+
+# AH44: normal unrequested Human Decisions remain rejected without migrations.
+try:
+    validate_agent_handoff_bundle(
+        [prompt()], [result()], [review()], [human_decision()], queue("completed", "none"),
+    )
+    raise AssertionError("general unrequested Human Decision bypassed the queue gate")
+except ValueError:
+    pass
+
+# AH45: the exact V50 bytes remain immutable while bundle interpretation is canonical.
+raw_v50 = next(item for item in repository_reviews if item["review_id"] == "KU2D-V-000050")
+assert raw_v50["review_result"] == "accepted" and raw_v50["requires_human_decision"] is True
+assert repository_bundle["assistant_review_records"]["KU2D-V-000050"]["review_result"] == "human_decision_required"
+try:
+    validate_assistant_review_record(raw_v50)
+    raise AssertionError("contradictory raw V50 validated without exact compatibility")
+except ValueError:
+    pass
+
+# AH46: omitting the exact compatibility migration exposes the invalid record.
+try:
+    repository_validation(migrations=[repository_migrations[0]])
+    raise AssertionError("V50 validated without compatibility manifest")
+except ValueError:
+    pass
+
+# AH47: either review or Human Decision hash drift fails closed.
+bad_flag_review_hash = deepcopy(repository_migrations)
+bad_flag_review_hash[1]["review_flag_compatibility"][0]["assistant_review_blob_sha"] = "0" * 40
+try:
+    repository_validation(migrations=bad_flag_review_hash)
+    raise AssertionError("review flag compatibility accepted a mismatched review hash")
+except ValueError:
+    pass
+bad_flag_human_hash = deepcopy(repository_migrations)
+bad_flag_human_hash[1]["review_flag_compatibility"][0]["human_decision_blob_sha"] = "0" * 40
+try:
+    repository_validation(migrations=bad_flag_human_hash)
+    raise AssertionError("review flag compatibility accepted a mismatched Human Decision hash")
+except ValueError:
+    pass
+
+# AH48: only accepted -> human_decision_required is a valid compatibility meaning.
+bad_flag_semantics = deepcopy(repository_migrations[1])
+bad_flag_semantics["review_flag_compatibility"][0]["canonical_review_result"] = "accepted"
+try:
+    validate_historical_migration_manifest(bad_flag_semantics)
+    raise AssertionError("invalid review flag compatibility semantics validated")
+except ValueError:
+    pass
+
+# AH49: duplicate compatibility pins fail closed.
+duplicate_flag_pin = deepcopy(repository_migrations[1])
+duplicate_flag_pin["review_flag_compatibility"].append(
+    deepcopy(duplicate_flag_pin["review_flag_compatibility"][0])
+)
+try:
+    validate_historical_migration_manifest(duplicate_flag_pin)
+    raise AssertionError("duplicate review flag compatibility pin validated")
+except ValueError:
+    pass
+
+# AH50: an empty migration without any exact-pinned action is invalid.
+empty_migration = deepcopy(repository_migrations[1])
+empty_migration["review_flag_compatibility"] = []
+try:
+    validate_historical_migration_manifest(empty_migration)
+    raise AssertionError("empty compatibility migration validated")
+except ValueError:
+    pass
+
+# AH51: one correction-required review returns the same Prompt to Codex.
+correction_review = review()
+correction_review["review_result"] = "correction_required"
+correction_review["reason_code"] = "deterministic-correction"
+correction_queue = queue("correction_required", "codex")
+correction_queue["latest_review"] = V1
+assert validate_prompt_state_transition(
+    "result_submitted", "correction_required",
+) == "correction_required"
+correction_bundle = validate_agent_handoff_bundle(
+    [prompt()], [result()], [correction_review], [], correction_queue,
+    previous_queue_state=submitted_queue,
+)
+assert correction_bundle["queue_state"]["next_action"]["actor"] == "codex"
+
+# AH52: a new Result may resubmit the same Prompt only by superseding the reviewed Result.
+R2 = "KU2D-R-000102"
+resubmission = result(R2)
+resubmission["supersedes_result_id"] = R1
+resubmitted_queue = queue("result_submitted", "assistant")
+resubmitted_queue["latest_result"] = R2
+resubmitted_queue["latest_review"] = V1
+resubmitted_queue["next_action"]["result_id"] = R2
+assert validate_prompt_state_transition(
+    "correction_required", "result_submitted",
+) == "result_submitted"
+resubmitted_bundle = validate_agent_handoff_bundle(
+    [prompt()], [result(), resubmission], [correction_review], [], resubmitted_queue,
+    previous_queue_state=correction_queue,
+)
+assert set(resubmitted_bundle["result_records"]) == {R1, R2}
+
+# AH53: two same-Prompt Results without an explicit supersession chain fail closed.
+unlinked = result(R2)
+try:
+    validate_agent_handoff_bundle(
+        [prompt()], [result(), unlinked], [correction_review], [], resubmitted_queue,
+    )
+    raise AssertionError("unlinked Result resubmission validated")
+except ValueError:
+    pass
+
+# AH54: a Result cannot supersede a missing or cross-Prompt Result.
+missing_supersession = deepcopy(resubmission)
+missing_supersession["supersedes_result_id"] = "KU2D-R-000103"
+try:
+    validate_agent_handoff_bundle(
+        [prompt()], [result(), missing_supersession], [correction_review], [], resubmitted_queue,
+    )
+    raise AssertionError("missing Result supersession validated")
+except ValueError:
+    pass
+
+# AH55: resubmission requires the exact correction review and the new Result stays unreviewed.
+try:
+    validate_agent_handoff_bundle(
+        [prompt()], [result(), resubmission], [], [], resubmitted_queue,
+    )
+    raise AssertionError("Result resubmission without correction review validated")
+except ValueError:
+    pass
+reviewed_resubmission = review("KU2D-V-000102", result_id=R2)
+try:
+    validate_agent_handoff_bundle(
+        [prompt()], [result(), resubmission], [correction_review, reviewed_resubmission], [],
+        resubmitted_queue,
+    )
+    raise AssertionError("already-reviewed current resubmission validated")
+except ValueError:
+    pass
+
+print(
+    "Agent Handoff Protocol deterministic tests passed "
+    "(AH1-AH55 plus P56 append-only fixture cases A-E)."
+)
