@@ -1,11 +1,11 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T12:03:40.147+07:00",
+  "updated_at": "2026-09-01T12:16:00.000+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
-  "latest_prompt": "KU2D-P-000050",
+  "latest_prompt": "KU2D-P-000051",
   "latest_result": "KU2D-R-000050",
   "latest_review": "KU2D-V-000050",
-  "latest_human_decision": "KU2D-H-000019",
+  "latest_human_decision": "KU2D-H-000020",
   "prompt_states": {
     "KU2D-P-000001": "completed",
     "KU2D-P-000002": "completed",
@@ -55,7 +55,8 @@
     "KU2D-P-000047": "reviewed",
     "KU2D-P-000048": "reviewed",
     "KU2D-P-000049": "reviewed",
-    "KU2D-P-000050": "reviewed"
+    "KU2D-P-000050": "reviewed",
+    "KU2D-P-000051": "ready_for_codex"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -90,11 +91,11 @@
     "KU2D-P-000044"
   ],
   "next_action": {
-    "actor": "human",
-    "prompt_id": "KU2D-P-000050",
-    "result_id": "KU2D-R-000050",
-    "review_id": "KU2D-V-000050",
-    "human_decision_id": null,
+    "actor": "codex",
+    "prompt_id": "KU2D-P-000051",
+    "result_id": null,
+    "review_id": null,
+    "human_decision_id": "KU2D-H-000020",
     "replay_requested": false
   },
   "branch_handoff": {
@@ -111,5 +112,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "P50 YouTube Source Completion is technically accepted and closed at the bounded public candidate-discovery boundary. V50 independently verified PR #68, main merge 502ac05042a214add17fd4223387187ef05aa605, successful run 33471158167, artifact 9786568183, exact ten-candidate packet, KU2D-X-000002, KU2D-CJ-000001 and the hash-pinned migration. Human semantic review may select up to two candidates; this is not a new Codex queue. No automatic replay, production write or scheduling is authorized."
+  "notes": "P51 is ready. Objective: remove semantic Human candidate selection from Acquisition, preserve all ten P50 YouTube candidates, create a versioned Analysis intake handoff, and assign relevance/quality/ranking/final inclusion to Analysis. H20 accepts all ten only for Analysis intake, not as quality- or production-approved. P51 permits no provider request or quota and must preserve immutable P50 evidence."
 }
