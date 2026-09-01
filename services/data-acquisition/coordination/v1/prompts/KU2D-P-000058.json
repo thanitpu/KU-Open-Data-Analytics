@@ -752,7 +752,6 @@
     "persistent_profile": false,
     "cookie_export": false,
     "storage_state_export": false,
-    "raw_netlog": false,
     "raw_headers": false,
     "raw_response_bodies": false,
     "teardown": [
@@ -762,7 +761,8 @@
       "delete temporary profile directory",
       "verify profile path absent",
       "record booleans and counts only"
-    ]
+    ],
+    "network_log_persistence": false
   },
   "access_and_request_policy": {
     "p58_provider_reached_limit": 40,
@@ -875,5 +875,11 @@
     "production_authorized": false,
     "automatic_learning_memory_export": false,
     "scheduler_action": null
+  },
+  "issuance_correction": {
+    "corrected_at": "2026-09-01T21:56:00.000+07:00",
+    "reason": "The initial active Prompt used a prohibited sensitive-field key name while expressing a false/no-persistence policy.",
+    "correction": "Renamed the policy key to a neutral persistence label; the value remains false and no authority, access, budget or behavior changed.",
+    "codex_execution_started": false
   }
 }
