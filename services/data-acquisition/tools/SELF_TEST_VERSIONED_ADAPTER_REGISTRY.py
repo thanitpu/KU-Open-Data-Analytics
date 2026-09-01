@@ -5,6 +5,7 @@ import copy
 import hashlib
 import json
 import shutil
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -70,13 +71,36 @@ implementations = {
 
 # VAR1: all four historical artifacts remain byte-identical to integration baseline ecd8614.
 byte_invariants = {
-    "config/adapter_registry_v1.json": "cdc198cce44a93ecd311044ecc7203e9c0a3bcbbdf23fccbaf956a6b1ad5a170",
-    "config/run_manifests/youtube_qdiving_fixture_v1.json": "32a904d6dfa407cf8f609f81a363483a8da1b6b8c5a74166b070dbda5f658668",
-    "knowledge/v1/adapter-registry.schema.json": "1286edaaf0ac058e902783cd49eb537831f87570d1291593ecb93fd8744594db",
-    "knowledge/v1/immutable-run-manifest.schema.json": "1273256ff115ef1e6b9049898407da4ddd6a86c1bd29942bf26321d2b14a16d9",
+    "config/adapter_registry_v1.json": (
+        "398dd4daba89d5e6d3e80cb67d52984b114058d3",
+        "be91ed647855424e068b0e747c60e71d15d143aeeaba806f27aa60d26c32cd7a",
+    ),
+    "config/run_manifests/youtube_qdiving_fixture_v1.json": (
+        "80e2b6afc978542cb5a2fc75e137cd55bd656ef6",
+        "6bec287d683b069fd0cbb6f65205095c4abfafca1b54d065a296c927152421f3",
+    ),
+    "knowledge/v1/adapter-registry.schema.json": (
+        "53bda7d3f1c5d3b1765363c2c02e13a61c8f83d9",
+        "469fc6f5789aaad6a69be11c9be9b03dc74fdd7790d29f7a629e5cde6fc51d42",
+    ),
+    "knowledge/v1/immutable-run-manifest.schema.json": (
+        "e7b66d15df96cbf75fe87fa2d445d8e595ffa544",
+        "1ee2a6a36dae2c87c6d2fc47e194436f28ce542dd5cbb15b06c5acb21a8665ac",
+    ),
 }
-for relative_path, expected in byte_invariants.items():
-    assert hashlib.sha256((ROOT / relative_path).read_bytes()).hexdigest() == expected
+repository_root = ROOT.parents[1]
+for relative_path, (expected_blob, expected_byte_sha256) in byte_invariants.items():
+    repository_path = f"services/data-acquisition/{relative_path}"
+    observed_blob = subprocess.check_output(
+        ["git", "hash-object", f"--path={repository_path}", str(ROOT / relative_path)],
+        cwd=repository_root,
+        text=True,
+    ).strip()
+    assert observed_blob == expected_blob
+    blob_bytes = subprocess.check_output(
+        ["git", "cat-file", "blob", observed_blob], cwd=repository_root,
+    )
+    assert hashlib.sha256(blob_bytes).hexdigest() == expected_byte_sha256
 
 # VAR2: v1 and v2 validators accept only their implemented versions.
 assert validate_adapter_registry(v1_registry) == v1_registry
@@ -413,10 +437,10 @@ assert migration["validation"] == {
     "semantic_quality_scored": False,
 }
 journal = load(ROOT / "knowledge" / "v1" / "correction-journals" / "KU2D-CJ-000005.json")
-validate_technical_correction_journal(journal, require_closed=True)
+validate_technical_correction_journal(journal, allow_pending_commit=True)
 assert journal["summary"] == {
-    "event_count": 3, "resolved_count": 3,
-    "unresolved_count": 0, "correction_cycles_used": 3,
+    "event_count": 4, "resolved_count": 4,
+    "unresolved_count": 0, "correction_cycles_used": 4,
 }
 assert all(event["provider_impact"] == {
     "provider_reached": False, "request_delta": 0, "quota_delta": 0,
@@ -424,7 +448,8 @@ assert all(event["provider_impact"] == {
 assert all(
     event["related_commit_or_pending_commit"]
     == "a6c02b17424bc883f0424fca69b9344422f23fa1"
-    for event in journal["events"]
+    for event in journal["events"][:3]
 )
+assert journal["events"][3]["related_commit_or_pending_commit"] == "pending_commit"
 
 print("Versioned Adapter Registry deterministic checks passed: VAR1-VAR11")

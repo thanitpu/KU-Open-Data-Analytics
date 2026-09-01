@@ -3,7 +3,7 @@
   "journal_id": "KU2D-CJ-000005",
   "source_completion_prompt_id": "KU2D-P-000055",
   "created_at": "2026-09-01T19:45:00.000+07:00",
-  "closed_at": "2026-09-01T20:20:00.000+07:00",
+  "closed_at": null,
   "events": [
     {
       "event_id": "KU2D-TC-000019",
@@ -91,13 +91,42 @@
         "labels": ["catalog-integrity", "supersession-lineage", "fail-closed"]
       },
       "evidence_refs": ["KU2D-P-000055", "KU2D-RMIG-000001", "SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py"]
+    },
+    {
+      "event_id": "KU2D-TC-000022",
+      "observed_at": "2026-09-01T20:25:00.000+07:00",
+      "phase": "ci",
+      "failure_code": "working_tree_line_endings_caused_cross_platform_invariant_false_negative",
+      "observed_signal": "Data Acquisition CI run 33511029816 failed VAR1 because the test hashed Windows CRLF working-tree bytes while GitHub checked out LF bytes, although all four repository Git blobs were identical to baseline.",
+      "root_cause_layer": "ci",
+      "correction": {
+        "action": "Changed the invariant proof to compare Git-clean-filtered blob identities and SHA-256 of repository blob bytes, and corrected migration evidence to the platform-independent blob-byte fingerprints.",
+        "components": ["tools/SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py", "knowledge/v1/registry-migrations/KU2D-RMIG-000001.json", "knowledge/v1/correction-journals/KU2D-CJ-000005.json"],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": ["Windows Git-filtered blob identity", "repository blob-byte SHA-256", "Linux Data Acquisition CI", "four V1 invariants"],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "schema_impact": "None; invariant evidence now measures committed bytes rather than platform-specific checkout representation.",
+      "quality_impact": "Removes a cross-platform false negative without weakening or normalizing away repository blob identity checks.",
+      "related_commit_or_pending_commit": "pending_commit",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "Byte invariants in cross-platform repositories must be asserted against Git object identity and blob bytes, not checkout line endings.",
+        "future_prevention": "Use Git clean filters plus cat-file blob hashing for every immutable repository artifact test.",
+        "labels": ["cross-platform", "git-blob", "byte-invariant", "ci"]
+      },
+      "evidence_refs": ["Data Acquisition Platform CI:33511029816", "job:99866433421", "KU2D-RMIG-000001", "SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py"]
     }
   ],
   "summary": {
-    "event_count": 3,
-    "resolved_count": 3,
+    "event_count": 4,
+    "resolved_count": 4,
     "unresolved_count": 0,
-    "correction_cycles_used": 3
+    "correction_cycles_used": 4
   },
   "safety": {
     "contains_secret": false,

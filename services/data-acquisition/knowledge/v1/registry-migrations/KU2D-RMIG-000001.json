@@ -6,10 +6,10 @@
   "created_at": "2026-09-01T19:45:00.000+07:00",
   "integration_baseline": "ecd8614c6be78b662d637b1f2caa954fdb1b7dca",
   "historical_invariants": [
-    {"path": "config/adapter_registry_v1.json", "git_blob": "398dd4daba89d5e6d3e80cb67d52984b114058d3", "byte_sha256": "cdc198cce44a93ecd311044ecc7203e9c0a3bcbbdf23fccbaf956a6b1ad5a170", "mutation_allowed": false},
-    {"path": "config/run_manifests/youtube_qdiving_fixture_v1.json", "git_blob": "80e2b6afc978542cb5a2fc75e137cd55bd656ef6", "byte_sha256": "32a904d6dfa407cf8f609f81a363483a8da1b6b8c5a74166b070dbda5f658668", "mutation_allowed": false},
-    {"path": "knowledge/v1/adapter-registry.schema.json", "git_blob": "53bda7d3f1c5d3b1765363c2c02e13a61c8f83d9", "byte_sha256": "1286edaaf0ac058e902783cd49eb537831f87570d1291593ecb93fd8744594db", "mutation_allowed": false},
-    {"path": "knowledge/v1/immutable-run-manifest.schema.json", "git_blob": "e7b66d15df96cbf75fe87fa2d445d8e595ffa544", "byte_sha256": "1273256ff115ef1e6b9049898407da4ddd6a86c1bd29942bf26321d2b14a16d9", "mutation_allowed": false}
+    {"path": "config/adapter_registry_v1.json", "git_blob": "398dd4daba89d5e6d3e80cb67d52984b114058d3", "byte_sha256": "be91ed647855424e068b0e747c60e71d15d143aeeaba806f27aa60d26c32cd7a", "mutation_allowed": false},
+    {"path": "config/run_manifests/youtube_qdiving_fixture_v1.json", "git_blob": "80e2b6afc978542cb5a2fc75e137cd55bd656ef6", "byte_sha256": "6bec287d683b069fd0cbb6f65205095c4abfafca1b54d065a296c927152421f3", "mutation_allowed": false},
+    {"path": "knowledge/v1/adapter-registry.schema.json", "git_blob": "53bda7d3f1c5d3b1765363c2c02e13a61c8f83d9", "byte_sha256": "469fc6f5789aaad6a69be11c9be9b03dc74fdd7790d29f7a629e5cde6fc51d42", "mutation_allowed": false},
+    {"path": "knowledge/v1/immutable-run-manifest.schema.json", "git_blob": "e7b66d15df96cbf75fe87fa2d445d8e595ffa544", "byte_sha256": "1ee2a6a36dae2c87c6d2fc47e194436f28ce542dd5cbb15b06c5acb21a8665ac", "mutation_allowed": false}
   ],
   "registry_migration": {
     "catalog_id": "KU2D-ADAPTER-REGISTRY-CATALOG-000001",
