@@ -1,0 +1,82 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000027",
+  "prompt_id": "KU2D-P-000057",
+  "result_id": "KU2D-R-000058",
+  "review_id": "KU2D-V-000058",
+  "decided_at": "2026-09-01T21:53:11.000+07:00",
+  "decided_by": {
+    "actor": "human",
+    "actor_id": "project_owner"
+  },
+  "decision": "confirmed",
+  "reason_note": "The project owner explicitly authorizes P58 — TikTok Ephemeral Browser Discovery Recovery: use a temporary public browser context with only first-party session cookies, no login/credentials/account authorization/CAPTCHA or anti-bot bypass, destroy the context and cookies after the run, preflight the network before any batch, cap new P58 provider-reached operations at 40 and preconnect failures at 10, acquire Diving lesson and Diving equipment with at most five valid records per topic, verify every URL twice on official TikTok public surfaces, and create the adapter, Registry V3, fixture and MTC only after two successful live rounds. One Queue, one PR and KU2D-CJ-000008; no production, recurring scheduling or main modification.",
+  "authorized_scope": {
+    "operation": "open_and_execute_p58_tiktok_ephemeral_browser_discovery_recovery",
+    "target_prompt": "KU2D-P-000058",
+    "topics": [
+      "Diving lesson",
+      "Diving equipment"
+    ],
+    "browser_context": "fresh temporary profile per round",
+    "first_party_session_cookies_allowed": true,
+    "third_party_cookie_storage_allowed": false,
+    "cookie_persistence_allowed": false,
+    "login_or_account_authorization_allowed": false,
+    "captcha_or_antibot_bypass_allowed": false,
+    "network_preflight_required": true,
+    "maximum_new_p58_provider_reached_operations": 40,
+    "maximum_new_p58_preconnect_failures": 10,
+    "maximum_retained_records_per_topic": 5,
+    "required_independent_live_rounds": 2,
+    "every_retained_url_officially_verified": true,
+    "context_destroyed_between_rounds": true,
+    "one_queue": true,
+    "one_pull_request": true,
+    "correction_journal": "KU2D-CJ-000008",
+    "immutable_registry_snapshot_required": "V3",
+    "merge_target": "integration/data-acquisition-platform",
+    "production_store": false,
+    "scheduler_action": null,
+    "main_modification": false
+  },
+  "phase_package_scope_policy": {
+    "required_for_every_phase_and_package": true,
+    "required_fields": [
+      "domain",
+      "source",
+      "capability",
+      "acquisition_technique",
+      "authorized_files_or_modules",
+      "explicit_out_of_scope",
+      "validation_profile"
+    ],
+    "current_declaration": "KU2D-SCOPE-000005",
+    "enforcement": "Every P58 phase must declare all seven fields and may narrow but never widen authority."
+  },
+  "workflow_authority": {
+    "create_prompt": "KU2D-P-000058",
+    "next_actor": "codex",
+    "assistant_intermediate_review_required": false,
+    "one_pull_request": true,
+    "technically_green_squash_merge_to_integration_authorized": true,
+    "p57_evidence_may_be_carried_forward_read_only": true,
+    "v1_v2_registry_and_historical_manifests_must_not_be_rewritten": true
+  },
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_context": "Project owner approved the exact P58 browser, cookie, request, verification, persistence and publication boundaries after reviewing the P57 blocker.",
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_review": "KU2D-V-000058",
+    "depends_on_result": "KU2D-R-000058",
+    "p57_implementation_head": "6eecaa4208b67aea29781d90d87ecf12ddb55868",
+    "integration_baseline": "fc611d408146830b47f9220ae85d04645512d4da"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
