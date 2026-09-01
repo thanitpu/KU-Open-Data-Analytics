@@ -1,0 +1,69 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000025",
+  "prompt_id": "KU2D-P-000055",
+  "result_id": "KU2D-R-000056",
+  "review_id": "KU2D-V-000056",
+  "decided_at": "2026-09-01T20:35:29.000+07:00",
+  "decided_by": {
+    "actor": "human",
+    "actor_id": "project_owner"
+  },
+  "decision": "confirmed",
+  "reason_note": "The project owner explicitly authorizes P56 — Coordination Protocol Fixture Maintenance to make the static Agent Handoff self-test append-only-aware, with no acquisition runtime, provider, production, scheduling or main changes, using one Queue, one PR and exact-head CI.",
+  "authorized_scope": {
+    "operation": "open_and_execute_p56_coordination_protocol_fixture_maintenance",
+    "target_prompt": "KU2D-P-000056",
+    "defect": "Static repository-history assertion enumerates a terminal Human Decision ID set and becomes stale when valid append-only decisions are added.",
+    "required_behavior": "Discover and validate the complete append-only coordination history without hard-coding the latest Human Decision ID, while retaining duplicate, malformed, orphan-chain and queue-transition failures.",
+    "provider_requests": 0,
+    "one_queue": true,
+    "one_pull_request": true,
+    "correction_journal": "KU2D-CJ-000006",
+    "exact_head_ci_required": true,
+    "merge_target": "integration/data-acquisition-platform",
+    "exact_test_blob_sync_to_authoritative_coordination_branch": true,
+    "acquisition_runtime_change": false,
+    "production_store": false,
+    "scheduler_action": null,
+    "main_modification": false
+  },
+  "phase_package_scope_policy": {
+    "required_for_every_phase_and_package": true,
+    "required_fields": [
+      "domain",
+      "source",
+      "capability",
+      "acquisition_technique",
+      "authorized_files_or_modules",
+      "explicit_out_of_scope",
+      "validation_profile"
+    ],
+    "current_declaration": "KU2D-SCOPE-000003",
+    "enforcement": "Every P56 phase must declare all seven fields and may narrow but never widen authority."
+  },
+  "workflow_authority": {
+    "create_prompt": "KU2D-P-000056",
+    "next_actor": "codex",
+    "assistant_intermediate_review_required": false,
+    "one_pull_request": true,
+    "technically_green_squash_merge_to_integration_authorized": true,
+    "post_merge_exact_blob_sync_to_coordination_branch_authorized": true,
+    "immutable_historical_coordination_records_must_not_be_rewritten": true
+  },
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_context": "Project owner supplied the exact P56 maintenance boundaries.",
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_review": "KU2D-V-000056",
+    "depends_on_result": "KU2D-R-000056",
+    "integration_baseline": "d79100e6b78895c72d161e3dcc3787d94a81c0fd"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
