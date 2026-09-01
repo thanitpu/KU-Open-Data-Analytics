@@ -3,7 +3,7 @@
   "journal_id": "KU2D-CJ-000005",
   "source_completion_prompt_id": "KU2D-P-000055",
   "created_at": "2026-09-01T19:45:00.000+07:00",
-  "closed_at": null,
+  "closed_at": "2026-09-01T20:35:00.000+07:00",
   "events": [
     {
       "event_id": "KU2D-TC-000019",
@@ -112,7 +112,7 @@
       "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
       "schema_impact": "None; invariant evidence now measures committed bytes rather than platform-specific checkout representation.",
       "quality_impact": "Removes a cross-platform false negative without weakening or normalizing away repository blob identity checks.",
-      "related_commit_or_pending_commit": "pending_commit",
+      "related_commit_or_pending_commit": "3cd96eb30499b9bae62c56990d0b6472c4f1dac7",
       "effort_minutes": null,
       "learning": {
         "reusable_lesson": "Byte invariants in cross-platform repositories must be asserted against Git object identity and blob bytes, not checkout line endings.",

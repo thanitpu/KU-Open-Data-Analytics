@@ -437,7 +437,7 @@ assert migration["validation"] == {
     "semantic_quality_scored": False,
 }
 journal = load(ROOT / "knowledge" / "v1" / "correction-journals" / "KU2D-CJ-000005.json")
-validate_technical_correction_journal(journal, allow_pending_commit=True)
+validate_technical_correction_journal(journal, require_closed=True)
 assert journal["summary"] == {
     "event_count": 4, "resolved_count": 4,
     "unresolved_count": 0, "correction_cycles_used": 4,
@@ -450,6 +450,9 @@ assert all(
     == "a6c02b17424bc883f0424fca69b9344422f23fa1"
     for event in journal["events"][:3]
 )
-assert journal["events"][3]["related_commit_or_pending_commit"] == "pending_commit"
+assert (
+    journal["events"][3]["related_commit_or_pending_commit"]
+    == "3cd96eb30499b9bae62c56990d0b6472c4f1dac7"
+)
 
 print("Versioned Adapter Registry deterministic checks passed: VAR1-VAR11")
