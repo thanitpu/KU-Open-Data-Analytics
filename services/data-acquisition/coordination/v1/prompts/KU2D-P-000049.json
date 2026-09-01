@@ -1,0 +1,49 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000049",
+  "created_at": "2026-09-01T11:12:00.000+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+  "objective": "Final recovery and closure: validate the protocol-valid H18 path, promote only the new immutable launcher anchors, exact-head merge, dispatch YouTube Q-Diving once, retrieve sanitized evidence, and export one normalized ML-ready Acquisition Experience Record.",
+  "instructions": [
+    "Treat KU2D-H-000018, KU2D-V-000048 and knowledge policy KU2D-KP-000001 as the complete authority. Do not rewrite V47, H17, P48 or R48; they remain append-only failure evidence.",
+    "Use integration execution commit cac243aedaa3c83c188e4e90481e4b752fe8bd2b and authorization-record revision 335d7773b475e3fd9062e37434f24389c281afcc containing KU2D-H-000018.",
+    "Before remote mutation or dispatch, validate all coordination JSON and YAML, Agent Handoff v1 including canonical V48 review_result and H18 explicit_human_input provenance, the complete deterministic corpus, and the immutable acquisition validator against staged H18. Prove H18 authorized_scope exactly equals AUTH_SCOPE.",
+    "Create a fresh branch from exact current main 769149377b9a7886ae2fc6457c7fe815a09d5cd6. Modify exactly .github/workflows/youtube-qdiving-identity-discovery.yml and only the immutable decision and authorization-record anchors required to bind KU2D-H-000018; execution revision remains cac243aedaa3c83c188e4e90481e4b752fe8bd2b.",
+    "Preserve workflow_dispatch-only, contents:read, both persist-credentials:false checkouts, the single runtime reference to KU2D_YOUTUBE_API_KEY, corrected explicit evidence if/else, conditional sanitized artifact upload, validation order, two-checkout lifecycle, H12 bounds, evidence schema and exit semantics.",
+    "Run YAML parse, exact authorization validation, launcher/static/artifact-guard tests, full deterministic corpus and git diff check. Open a Ready one-file PR to main, wait for all applicable exact-head checks, and merge with an expected-head guard in this queue only when every guard is green.",
+    "Verify the registered main launcher exact H18 anchors, then dispatch exactly once with continuation_authorization_id=KU2D-H-000018, execution_revision=cac243aedaa3c83c188e4e90481e4b752fe8bd2b and authorization_record_revision=335d7773b475e3fd9062e37434f24389c281afcc.",
+    "Do not retry automatically or issue a second dispatch for any outcome. Monitor only the created run.",
+    "Retrieve the sanitized Step Summary and sanitized evidence artifact. Never print, persist, upload or commit the API key, raw provider payloads, request URLs or page tokens. Do not acquire comments, captions, transcripts, OAuth-protected or personal data.",
+    "Create a sanitized candidate closure packet with profile, public video/channel identifiers, allowed display metadata, dates/statistics already present in the approved evidence schema, deterministic eligibility flags, provenance and withheld reasons. Do not approve candidates or write production data.",
+    "Create exactly one ML-ready record at services/data-acquisition/knowledge/v1/experiences/KU2D-X-000001.json conforming to acquisition-experience-record.schema.json. Derive it only from sanitized R43/R47/R48/R49 evidence and accepted reviews; represent pre-provider failures accurately, keep unknown quality values null, and include reusable lessons for artifact guards, offline authorization validation and protocol-valid provenance.",
+    "Keep Operational Control, Audit Evidence and Acquisition Experience separate. Do not copy Queue narrative, Prompt instructions, Human Decision text, secrets, raw payloads or personal data into KU2D-X-000001.",
+    "Submit KU2D-R-000049 with PR/head/merge, CI, run/job/artifact, request/quota, candidate counts, evidence integrity, experience-record validation, security boundaries and a closure recommendation. Set next actor to Assistant; do not open another implementation queue."
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000049",
+    "next_actor": "assistant",
+    "closure_target": "youtube_identity_discovery_and_ml_experience_v1"
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_prompt": "KU2D-P-000048",
+    "depends_on_result": "KU2D-R-000048",
+    "depends_on_review": "KU2D-V-000048",
+    "depends_on_human_decision": "KU2D-H-000018",
+    "reviewed_execution_revision": "cac243aedaa3c83c188e4e90481e4b752fe8bd2b",
+    "authorization_record_revision": "335d7773b475e3fd9062e37434f24389c281afcc",
+    "knowledge_policy_revision": "261386dcb6ab5a445969d1bb48e6afec4e24ef4d"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
