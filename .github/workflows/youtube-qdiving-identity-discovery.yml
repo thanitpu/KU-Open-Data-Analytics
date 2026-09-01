@@ -7,6 +7,14 @@ on:
         description: 'Confirmed Human Decision ID with the exact H12 continuation scope'
         required: true
         type: string
+      execution_revision:
+        description: 'Immutable reviewed integration commit SHA authorized by the continuation decision'
+        required: true
+        type: string
+      authorization_record_revision:
+        description: 'Immutable integration commit SHA containing the confirmed continuation decision'
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -20,13 +28,49 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
+      # A separate reviewed one-file promotion to main must replace both
+      # placeholders. Until then the launcher fails before checkout.
+      KU2D_AUTHORIZED_DECISION_ID: REPLACE_WITH_REVIEWED_HUMAN_DECISION_ID
+      KU2D_AUTHORIZED_EXECUTION_REVISION: REPLACE_WITH_REVIEWED_40_CHAR_INTEGRATION_SHA
+      KU2D_AUTHORIZATION_RECORD_REVISION: REPLACE_WITH_40_CHAR_DECISION_RECORD_SHA
       KU2D_EVIDENCE_PATH: ${{ runner.temp }}/ku2d-youtube-qdiving-${{ github.run_id }}.json
       KU2D_ARTIFACT_NAME: youtube-qdiving-identity-discovery-${{ github.run_id }}
     steps:
-      - name: Checkout reviewed integration branch
+      - name: Validate immutable launcher trust anchors
+        env:
+          KU2D_REQUESTED_AUTHORIZATION_ID: ${{ inputs.continuation_authorization_id }}
+          KU2D_REQUESTED_EXECUTION_REVISION: ${{ inputs.execution_revision }}
+          KU2D_REQUESTED_AUTHORIZATION_RECORD_REVISION: ${{ inputs.authorization_record_revision }}
+        run: |
+          if [[ ! "$KU2D_AUTHORIZED_EXECUTION_REVISION" =~ ^[0-9a-f]{40}$ ]]; then
+            echo 'Launcher execution revision has not been bound by a reviewed promotion.' >&2
+            exit 1
+          fi
+          if [[ "$KU2D_AUTHORIZED_DECISION_ID" == REPLACE_* ]]; then
+            echo 'Launcher decision ID has not been bound by a reviewed promotion.' >&2
+            exit 1
+          fi
+          if [[ ! "$KU2D_AUTHORIZATION_RECORD_REVISION" =~ ^[0-9a-f]{40}$ ]]; then
+            echo 'Launcher authorization-record revision has not been bound by a reviewed promotion.' >&2
+            exit 1
+          fi
+          if [[ "$KU2D_REQUESTED_EXECUTION_REVISION" != "$KU2D_AUTHORIZED_EXECUTION_REVISION" ]]; then
+            echo 'Requested execution revision is not the reviewed launcher revision.' >&2
+            exit 1
+          fi
+          if [[ "$KU2D_REQUESTED_AUTHORIZATION_ID" != "$KU2D_AUTHORIZED_DECISION_ID" ]]; then
+            echo 'Requested authorization ID is not the reviewed launcher decision.' >&2
+            exit 1
+          fi
+          if [[ "$KU2D_REQUESTED_AUTHORIZATION_RECORD_REVISION" != "$KU2D_AUTHORIZATION_RECORD_REVISION" ]]; then
+            echo 'Requested authorization-record revision is not the reviewed launcher revision.' >&2
+            exit 1
+          fi
+
+      - name: Checkout immutable authorization record revision
         uses: actions/checkout@v4
         with:
-          ref: integration/data-acquisition-platform
+          ref: ${{ env.KU2D_AUTHORIZATION_RECORD_REVISION }}
           persist-credentials: false
 
       - name: Set up Python
@@ -42,9 +86,22 @@ jobs:
         working-directory: services/data-acquisition
         env:
           PYTHONPATH: .
-          KU2D_AUTHORIZATION_ID: ${{ inputs.continuation_authorization_id }}
+          KU2D_AUTHORIZATION_ID: ${{ env.KU2D_AUTHORIZED_DECISION_ID }}
+          KU2D_EXECUTION_REVISION: ${{ env.KU2D_AUTHORIZED_EXECUTION_REVISION }}
+          KU2D_AUTHORIZATION_REVISION: ${{ env.KU2D_AUTHORIZATION_RECORD_REVISION }}
         run: |
-          python -c "from pathlib import Path; from tools.LIVE_YOUTUBE_QDIVING_IDENTITY_DISCOVERY import authorization; import os; p=Path('coordination/v1/human-decisions') / f'{os.environ[\"KU2D_AUTHORIZATION_ID\"]}.json'; authorization(p, os.environ['KU2D_AUTHORIZATION_ID']); print('Exact continuation authorization: confirmed')"
+          python -c "from pathlib import Path; from tools.LIVE_YOUTUBE_QDIVING_IDENTITY_DISCOVERY import authorization; import os; revision=os.environ['KU2D_EXECUTION_REVISION']; p=Path('coordination/v1/human-decisions') / f'{os.environ[\"KU2D_AUTHORIZATION_ID\"]}.json'; authorization(p, os.environ['KU2D_AUTHORIZATION_ID'], revision); assert os.popen('git rev-parse HEAD').read().strip() == os.environ['KU2D_AUTHORIZATION_REVISION']; print('Exact continuation authorization and immutable revisions: confirmed')"
+
+      - name: Checkout immutable reviewed execution revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.KU2D_AUTHORIZED_EXECUTION_REVISION }}
+          persist-credentials: false
+
+      - name: Verify immutable execution checkout
+        env:
+          KU2D_EXECUTION_REVISION: ${{ env.KU2D_AUTHORIZED_EXECUTION_REVISION }}
+        run: test "$(git rev-parse HEAD)" = "$KU2D_EXECUTION_REVISION"
 
       - name: Run exact bounded public discovery
         id: discovery
@@ -52,13 +109,17 @@ jobs:
         env:
           PYTHONPATH: .
           KU2D_YOUTUBE_API_KEY: ${{ secrets.KU2D_YOUTUBE_API_KEY }}
-          KU2D_AUTHORIZATION_ID: ${{ inputs.continuation_authorization_id }}
+          KU2D_AUTHORIZATION_ID: ${{ env.KU2D_AUTHORIZED_DECISION_ID }}
+          KU2D_EXECUTION_REVISION: ${{ env.KU2D_AUTHORIZED_EXECUTION_REVISION }}
         run: |
+          set +e
           python tools/LIVE_YOUTUBE_QDIVING_IDENTITY_DISCOVERY.py \
             --authorization-record "coordination/v1/human-decisions/${KU2D_AUTHORIZATION_ID}.json" \
             --authorization-id "${KU2D_AUTHORIZATION_ID}" \
+            --execution-revision "${KU2D_EXECUTION_REVISION}" \
             --output "${KU2D_EVIDENCE_PATH}"
           code=$?
+          set -e
           echo "exit_code=$code" >> "$GITHUB_OUTPUT"
           if [ "$code" = 0 ]; then echo 'outcome=candidate-evidence-obtained' >> "$GITHUB_OUTPUT"; exit 0; fi
           if [ "$code" = 2 ]; then echo 'outcome=evidence-withheld' >> "$GITHUB_OUTPUT"; exit 0; fi

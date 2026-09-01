@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 import copy
 import json
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -38,19 +39,34 @@ AUTH_SCOPE = {
     "production_store": False,
     "scheduler_action": None,
 }
+SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 
 
 def now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def authorization(path: Path, decision_id: str) -> dict:
+def authorization(path: Path, decision_id: str, execution_revision: str) -> dict:
     record = json.loads(path.read_text(encoding="utf-8"))
     if record.get("human_decision_id") != decision_id or record.get("decision") != "confirmed":
         raise ValueError("continuation authorization is absent or not confirmed")
     if record.get("authorized_scope") != AUTH_SCOPE:
         raise ValueError("continuation authorization does not match the exact H12 discovery scope")
+    if SHA_RE.fullmatch(execution_revision or "") is None:
+        raise ValueError("execution revision must be an immutable 40-character Git SHA")
+    if record.get("authorized_execution_revision") != execution_revision:
+        raise ValueError("continuation authorization does not bind the requested execution revision")
+    if record.get("authorized_execution_branch") != "integration/data-acquisition-platform":
+        raise ValueError("continuation authorization is not scoped to the integration implementation branch")
     return record
+
+
+def classify_exit_code(exit_code: int) -> dict[str, object]:
+    if exit_code == 0:
+        return {"outcome": "candidate-evidence-obtained", "step_success": True}
+    if exit_code == 2:
+        return {"outcome": "evidence-withheld", "step_success": True}
+    return {"outcome": "technical-failure", "step_success": False}
 
 
 def sanitized_ledger(provider: YouTubeDataAPI) -> list[dict]:
@@ -80,8 +96,8 @@ def write(path: Path, evidence: dict) -> None:
     path.write_text(json.dumps(evidence, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
-def run(output: Path, decision_path: Path, decision_id: str) -> int:
-    authorization(decision_path, decision_id)
+def run(output: Path, decision_path: Path, decision_id: str, execution_revision: str) -> int:
+    authorization(decision_path, decision_id, execution_revision)
     status = api_status()
     if not status["configured"]:
         evidence = base_evidence(decision_id, classification="evidence_withheld", exit_code=2,
@@ -144,9 +160,10 @@ def main(argv=None) -> int:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--authorization-record", type=Path, required=True)
     parser.add_argument("--authorization-id", required=True)
+    parser.add_argument("--execution-revision", required=True)
     args = parser.parse_args(argv)
     try:
-        return run(args.output, args.authorization_record, args.authorization_id)
+        return run(args.output, args.authorization_record, args.authorization_id, args.execution_revision)
     except (OSError, ValueError, json.JSONDecodeError):
         return 1
 
