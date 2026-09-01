@@ -93,8 +93,8 @@ assert blocker["boundaries"]["production_approved"] is False
 assert blocker["boundaries"]["scheduler_action"] is None
 journal = json.loads((ROOT / "knowledge" / "v1" / "correction-journals" / "KU2D-CJ-000004.json").read_text(encoding="utf-8"))
 validate_technical_correction_journal(journal, require_closed=True)
-assert journal["summary"] == {"event_count": 4, "resolved_count": 3, "unresolved_count": 1, "correction_cycles_used": 4}
-assert all(event["related_commit_or_pending_commit"] == "9e1b5e5151eef40c4dca18bef484b99846cc4d54" for event in journal["events"])
+assert journal["summary"] == {"event_count": 5, "resolved_count": 4, "unresolved_count": 1, "correction_cycles_used": 5}
+assert all(event["related_commit_or_pending_commit"] in {"9e1b5e5151eef40c4dca18bef484b99846cc4d54", "245de1ad12e0a915800318efe52558591f54bff9"} for event in journal["events"])
 assert sum(event["provider_impact"]["request_delta"] for event in journal["events"]) == 1
 
 print("TikTok Source Completion checks passed: scope_positive=4 scope_negative=7 requests=5 blockers=2")

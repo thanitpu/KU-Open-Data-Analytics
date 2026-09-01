@@ -3,7 +3,7 @@
   "journal_id": "KU2D-CJ-000004",
   "source_completion_prompt_id": "KU2D-P-000054",
   "created_at": "2026-09-01T18:51:02.7028328+07:00",
-  "closed_at": "2026-09-01T19:10:00.0000000+07:00",
+  "closed_at": "2026-09-01T19:16:00.0000000+07:00",
   "events": [
     {
       "event_id": "KU2D-TC-000014",
@@ -98,8 +98,26 @@
       "effort_minutes": null,
       "learning": {"reusable_lesson": "A deterministic corpus result is authoritative only under the service runtime with its declared dependencies.", "future_prevention": "Resolve and verify the isolated service interpreter before running the first corpus test.", "labels": ["test-harness", "python-runtime", "dependency"]},
       "evidence_refs": ["KU2D-P-000054", "full-corpus:56-of-56"]
+    },
+    {
+      "event_id": "KU2D-TC-000018",
+      "observed_at": "2026-09-01T19:15:00.0000000+07:00",
+      "phase": "closure",
+      "failure_code": "r55_missing_required_verification_object",
+      "observed_signal": "The first R55 coordination validation rejected the draft Result because Agent Handoff Result v1 requires a verification object with deterministic_tests_passed and live_request_count.",
+      "root_cause_layer": "coordination_protocol",
+      "correction": {"action": "Added the required fail-closed verification object to R55 and scheduled complete bundle validation before submission.", "components": ["services/data-acquisition/coordination/v1/results/KU2D-R-000055.json", "services/data-acquisition/coordination/queue.json"], "scope_changed": false},
+      "validation": {"checks": ["validate_result_record", "validate_queue_state", "complete Agent Handoff bundle"], "result": "passed"},
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "schema_impact": "No protocol schema changed; the Result now supplies the existing required verification fields.",
+      "quality_impact": "Prevents submission of an incomplete closure Result while preserving the blocked outcome and exact provider accounting.",
+      "related_commit_or_pending_commit": "245de1ad12e0a915800318efe52558591f54bff9",
+      "effort_minutes": null,
+      "learning": {"reusable_lesson": "A rich Result still must satisfy the small mandatory Agent Handoff core before bundle validation.", "future_prevention": "Run validate_result_record and validate_queue_state before closing the correction journal and preparing the final coordination commit.", "labels": ["coordination-protocol", "result-validation", "closure"]},
+      "evidence_refs": ["KU2D-R-000055", "SELF_TEST_AGENT_HANDOFF_PROTOCOL.py"]
     }
   ],
-  "summary": {"event_count": 4, "resolved_count": 3, "unresolved_count": 1, "correction_cycles_used": 4},
+  "summary": {"event_count": 5, "resolved_count": 4, "unresolved_count": 1, "correction_cycles_used": 5},
   "safety": {"contains_secret": false, "contains_raw_payload": false, "contains_request_url": false, "contains_personal_data": false}
 }
