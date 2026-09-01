@@ -1,0 +1,223 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000056",
+  "prompt_id": "KU2D-P-000055",
+  "submitted_at": "2026-09-01T20:15:38.955+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "P55 completed the authorized source-neutral foundation migration without provider access. Adapter Registry V1 and the executed YouTube V001 manifest remain byte-identical and replay 10/10. A closed version catalog, immutable V2 registry, and V002 manifest now resolve exact pinned snapshots with explicit supersession and no default-to-latest or dynamic import path. Synthetic additive composition, fail-closed integrity negatives, scope validation, all 56 deterministic scripts, exact-head CI, squash integration, and post-merge CI passed. KU2D-CJ-000005 is closed with four resolved corrections and finalized commit links; provider requests and quota delta are zero.",
+  "evidence_references": [
+    "KU2D-P-000055",
+    "KU2D-H-000024",
+    "KU2D-SCOPE-000002",
+    "KU2D-RMIG-000001",
+    "KU2D-CJ-000005",
+    "PR:72",
+    "implementation-head:4505737a7a657275bc63c5bb5f6192df4906c320",
+    "implementation-tree:ca5ada15df296cd64a1678aedf76518aa62daa4a",
+    "integration-squash:d79100e6b78895c72d161e3dcc3787d94a81c0fd",
+    "data-acquisition-ci:33511416062",
+    "post-merge-data-acquisition-ci:33511988743",
+    "complete-deterministic-corpus:56/56"
+  ],
+  "changed_files": [
+    "services/data-acquisition/acquisition/adapter_registry.py",
+    "services/data-acquisition/acquisition/run_manifest.py",
+    "services/data-acquisition/acquisition/source_runner.py",
+    "services/data-acquisition/config/adapter_registry_catalog_v1.json",
+    "services/data-acquisition/config/adapter_registry_v2.json",
+    "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+    "services/data-acquisition/docs/ADAPTER_REGISTRY_VERSIONING_AND_MANIFEST_MIGRATION.md",
+    "services/data-acquisition/knowledge/v1/adapter-registry-catalog.schema.json",
+    "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+    "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000005.json",
+    "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+    "services/data-acquisition/knowledge/v1/registry-migrations/KU2D-RMIG-000001.json",
+    "services/data-acquisition/knowledge/v1/registry-migrations/KU2D-SCOPE-000002.json",
+    "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py",
+    "services/data-acquisition/tools/SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py"
+  ],
+  "scope_declaration": {
+    "declaration_id": "KU2D-SCOPE-000002",
+    "entered_phases": ["P55-01", "P55-02", "P55-03", "P55-04"],
+    "required_fields": [
+      "domain",
+      "source",
+      "capability",
+      "acquisition_technique",
+      "authorized_files_or_modules",
+      "explicit_out_of_scope",
+      "validation_profile"
+    ],
+    "declared_scope_equals_actual_scope": true,
+    "scope_deviations": []
+  },
+  "registry_versioning": {
+    "catalog_id": "KU2D-ADAPTER-REGISTRY-CATALOG-000001",
+    "catalog_version": "1.0.0",
+    "catalog_sha256": "790e28d6763f523584d62f396a685dc595623439aa50e98b9ed6bf4d0a93c24b",
+    "v1_registry_id": "KU2D-ADAPTER-REGISTRY-V1",
+    "v1_registry_version": "1.0.0",
+    "v1_registry_sha256": "960af6301b52b029bb26d1b3ad08159d261734e51ae6dd382dad7bbc3ec7e6e0",
+    "v2_registry_id": "KU2D-ADAPTER-REGISTRY-V2",
+    "v2_registry_version": "2.0.0",
+    "v2_registry_sha256": "a9b1204297c2df3c61c74b550391c5fe340864c88312079c833ae86c043f219c",
+    "resolution": "exact registry_id plus registry_version",
+    "default_to_latest": false,
+    "dynamic_imports": false,
+    "synthetic_additive_composition": "passed"
+  },
+  "manifest_migration": {
+    "historical_manifest_id": "KU2D-RM-000001-V001",
+    "superseding_manifest_id": "KU2D-RM-000001-V002",
+    "supersedes_manifest_id": "KU2D-RM-000001-V001",
+    "historical_manifest_mutated": false,
+    "historical_manifest_retargeted": false,
+    "v1_replay": "10/10",
+    "v2_replay": "10/10",
+    "output_parity": "10/10",
+    "provider_requests": 0,
+    "quota_delta": 0
+  },
+  "invariant_proof": {
+    "integration_baseline": "ecd8614c6be78b662d637b1f2caa954fdb1b7dca",
+    "byte_identical": true,
+    "proof_method": "Git blob identity and SHA-256 of Git blob bytes",
+    "files": {
+      "services/data-acquisition/config/adapter_registry_v1.json": "398dd4daba89d5e6d3e80cb67d52984b114058d3",
+      "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json": "80e2b6afc978542cb5a2fc75e137cd55bd656ef6",
+      "services/data-acquisition/knowledge/v1/adapter-registry.schema.json": "53bda7d3f1c5d3b1765363c2c02e13a61c8f83d9",
+      "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json": "e7b66d15df96cbf75fe87fa2d445d8e595ffa544"
+    }
+  },
+  "technical_correction_journal": {
+    "journal_id": "KU2D-CJ-000005",
+    "status": "closed",
+    "event_range": "KU2D-TC-000019..KU2D-TC-000022",
+    "event_count": 4,
+    "resolved_count": 4,
+    "unresolved_count": 0,
+    "correction_cycles_used": 4,
+    "pending_commit_count": 0,
+    "related_commits": [
+      "a6c02b17424bc883f0424fca69b9344422f23fa1",
+      "3cd96eb30499b9bae62c56990d0b6472c4f1dac7"
+    ],
+    "provider_request_delta": 0,
+    "quota_delta": 0,
+    "sanitized": true
+  },
+  "testing": {
+    "level_1": {
+      "status": "passed",
+      "versioned_registry_cases": "VAR1-VAR11",
+      "catalog_and_lineage_negatives": "passed",
+      "scope_audit": "passed"
+    },
+    "level_2": {
+      "status": "passed",
+      "source_runner_v1": "SR1-SR10",
+      "foundation_consolidation": "FC1-FC7",
+      "v1_v2_youtube_parity": "10/10",
+      "synthetic_additive_composition": "passed",
+      "provider_requests": 0,
+      "quota_delta": 0
+    },
+    "level_3": {
+      "status": "passed",
+      "exact_head": "4505737a7a657275bc63c5bb5f6192df4906c320",
+      "exact_tree": "ca5ada15df296cd64a1678aedf76518aa62daa4a",
+      "complete_deterministic_corpus": "56/56",
+      "python_compilation": "acquisition, api, repository, control_plane, service and tools",
+      "synthetic_merge_commit": "86aae471e600808ef8fb9898a745d1514cec32ef",
+      "synthetic_merge_tree": "ca5ada15df296cd64a1678aedf76518aa62daa4a",
+      "exact_tree_reuse_valid": true
+    }
+  },
+  "continuous_integration": {
+    "initial_cross_platform_failure": {
+      "data_acquisition_run_id": 33511029816,
+      "classification": "working-tree line-ending invariant false negative",
+      "corrected_in_commit": "3cd96eb30499b9bae62c56990d0b6472c4f1dac7"
+    },
+    "exact_head_checks": {
+      "data_acquisition_platform_ci": {"run_id": 33511416062, "run_number": 392, "conclusion": "success"},
+      "frontend_ci": {"run_id": 33511416104, "run_number": 1478, "conclusion": "success"},
+      "pr_browser_preview": {"run_id": 33511416141, "run_number": 291, "conclusion": "success"}
+    },
+    "post_merge_checks": {
+      "data_acquisition_platform_ci": {"run_id": 33511988743, "run_number": 393, "conclusion": "success"},
+      "frontend_ci": {"run_id": 33511988884, "run_number": 1479, "conclusion": "success"}
+    }
+  },
+  "publication": {
+    "implementation_branch": "codex/ku2d-versioned-adapter-registry-migration-v1",
+    "pull_request": 72,
+    "ready_for_review": true,
+    "merge_method": "squash",
+    "merge_target": "integration/data-acquisition-platform",
+    "integration_commit": "d79100e6b78895c72d161e3dcc3787d94a81c0fd",
+    "integration_tree": "ca5ada15df296cd64a1678aedf76518aa62daa4a",
+    "tested_tree_equals_merged_tree": true,
+    "main_modified": false
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "live_request_count": 0,
+    "provider_requests": 0,
+    "documented_quota_units": 0,
+    "quota_delta": 0,
+    "live_smoke": "not_executed",
+    "git_diff_check": "passed",
+    "exact_tree_reuse_valid": true
+  },
+  "coordination_validation": {
+    "result_record_validator": "passed",
+    "queue_state_validator": "passed",
+    "queue_transition_validator": "passed: ready_for_codex to result_submitted",
+    "complete_bundle_validator": "passed with latest Result KU2D-R-000056 and next actor assistant",
+    "static_self_test": "failed at the pre-existing exact Human Decision set fixture, which enumerates only through KU2D-H-000022 while append-only H23 and H24 are already present",
+    "fixture_sync_performed": false,
+    "reason_not_corrected": "SELF_TEST_AGENT_HANDOFF_PROTOCOL.py is outside the strict P55 authorized-file allowlist; editing it during P55 closure would widen scope."
+  },
+  "remaining_limitations": [
+    "This is a source-neutral foundation migration and does not add a TikTok adapter or call any provider.",
+    "Every future registry evolution must add a new immutable snapshot and pin it from a new manifest identity; default-to-latest remains forbidden.",
+    "No semantic-quality authority, production approval, production write, scheduling authority or main-branch modification was introduced.",
+    "The authoritative coordination branch static Agent Handoff self-test fixture omits existing H23 and H24; direct Result, queue, transition and complete-bundle validation pass, but the out-of-scope fixture was not edited."
+  ],
+  "security_and_boundaries": {
+    "official_public_surfaces_accessed": false,
+    "provider_credentials_used": false,
+    "contains_secret": false,
+    "contains_raw_payload": false,
+    "contains_request_url": false,
+    "contains_personal_data": false,
+    "production_store": false,
+    "production_approved": false,
+    "scheduler_action": null,
+    "main_modified": false
+  },
+  "closure": {
+    "completed": true,
+    "closure_target": "versioned_adapter_registry_and_non_rewriting_manifest_migration",
+    "recommended_next_step": "Assistant reviews KU2D-R-000056. Do not replay P55 automatically or widen provider, production, scheduling or main authority."
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "implementation_branch": "codex/ku2d-versioned-adapter-registry-migration-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000055.json",
+    "human_authority": "KU2D-H-000024",
+    "integration_baseline": "ecd8614c6be78b662d637b1f2caa954fdb1b7dca"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
