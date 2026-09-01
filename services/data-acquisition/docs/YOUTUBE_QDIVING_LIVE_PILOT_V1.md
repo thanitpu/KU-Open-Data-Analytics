@@ -51,3 +51,6 @@ Independent review must decide whether to add a separately governed, durable,
 non-sanitized Human Review record containing exactly two canonical YouTube
 video IDs. This result does not authorize searching for candidates, inventing
 IDs, broadening H11, or running a pilot automatically.
+# Historical contract note
+
+This v1 pilot document preserves its execution-time two-record Human Review contract. P51 supersedes that contract only for active Acquisition completion: all technically accepted sanitized records now hand off to Analysis, while production and monitoring authority remain separate.

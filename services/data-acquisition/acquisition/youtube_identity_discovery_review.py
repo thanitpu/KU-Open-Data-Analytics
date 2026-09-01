@@ -55,14 +55,20 @@ def retain_candidates(search_rows: list[dict[str, Any]], metadata_rows: list[dic
                              {"query_profile_id": row.get("query_profile_id"), "query_text": row.get("query_text")}
                              for row in evidence], "observed_at": meta.get("observed_at"),
                          "public_availability_state": "public", "suggested_match_reason": "returned by an existing Q-Diving query profile and resolved by public metadata",
-                         "commercial_context_caveat": "not adjudicated", "uncertainty": "Human Review required",
-                         "human_review_status": "pending", "usable_for_live_acquisition": False})
+                         "commercial_context_caveat": "not assessed by Acquisition",
+                         "uncertainty": "semantic relevance and quality pending Analysis",
+                         "acquisition_acceptance": "accepted_for_analysis",
+                         "analysis_handoff_status": "pending_manifest",
+                         "semantic_relevance": None, "quality": None, "analytical_rank": None,
+                         "analytical_deduplication": None, "final_inclusion": None,
+                         "production_ready": False})
     return {"retained": retained[:limit], "excluded": excluded,
             "duplicate_cross_profile_count": sum(len(rows) - 1 for rows in grouped.values()),
             "truncated": len(retained) > limit}
 
 
 def build_review_package(candidates: list[dict[str, Any]]) -> dict[str, Any]:
+    """Build the historical v1 Human Review package for backward reading only."""
     if any(row.get("human_review_status") != "pending" or row.get("usable_for_live_acquisition") is not False
            for row in candidates):
         raise ValueError("candidate package attempted authority promotion")
@@ -70,6 +76,42 @@ def build_review_package(candidates: list[dict[str, Any]]) -> dict[str, Any]:
             "candidate_count": len(candidates), "candidates": candidates,
             "suggestions_are_non_authoritative": True, "human_adjudication_required": True,
             "production_approved": False, "scheduler_action": None}
+
+
+def build_analysis_handoff_summary(candidates: list[dict[str, Any]]) -> dict[str, Any]:
+    """Stage every technically accepted candidate for a durable Analysis manifest."""
+    if not candidates:
+        return {
+            "acquisition_acceptance": {
+                "status": "no_records_to_handoff", "accepted_record_count": 0,
+                "semantic_quality_claimed": False,
+            },
+            "analysis_handoff": {
+                "status": "not_ready", "record_count": 0,
+                "pending_decisions": ["semantic_relevance", "quality", "analytical_rank",
+                                      "analytical_deduplication", "final_inclusion"],
+            },
+        }
+    required_nulls = ("semantic_relevance", "quality", "analytical_rank",
+                      "analytical_deduplication", "final_inclusion")
+    for row in candidates:
+        if row.get("acquisition_acceptance") != "accepted_for_analysis":
+            raise ValueError("candidate is not technically accepted for Analysis")
+        if row.get("analysis_handoff_status") != "pending_manifest":
+            raise ValueError("candidate Analysis handoff status is invalid")
+        if row.get("production_ready") is not False or any(row.get(field, object()) is not None for field in required_nulls):
+            raise ValueError("candidate attempted semantic or production promotion")
+    return {
+        "acquisition_acceptance": {
+            "status": "accepted_for_analysis", "accepted_record_count": len(candidates),
+            "semantic_quality_claimed": False,
+        },
+        "analysis_handoff": {
+            "status": "ready_for_analysis", "record_count": len(candidates),
+            "pending_decisions": ["semantic_relevance", "quality", "analytical_rank",
+                                  "analytical_deduplication", "final_inclusion"],
+        },
+    }
 
 
 def validate_discovery_evidence(record: dict[str, Any]) -> dict[str, Any]:
@@ -88,12 +130,45 @@ def validate_discovery_evidence(record: dict[str, Any]) -> dict[str, Any]:
         if record.get("withheld_reason") == "api_credential_not_configured" and (requests or quota):
             raise ValueError("credential preflight must precede every request")
     elif record.get("classification") == "candidate_evidence_obtained":
-        if record.get("exit_classification") != 0 or record.get("candidate_count", 0) < 2:
-            raise ValueError("successful discovery requires at least two candidates")
+        if record.get("exit_classification") != 0 or record.get("candidate_count", 0) < 1:
+            raise ValueError("successful discovery requires at least one technically accepted candidate")
+        retained = record.get("retained_candidates")
+        if not isinstance(retained, list) or len(retained) != record["candidate_count"]:
+            raise ValueError("successful discovery candidate count is inconsistent")
     else:
         raise ValueError("discovery classification is invalid")
-    if record.get("usable_reviewed_identity_count") != 0 or record.get("human_review_completed") is not False:
-        raise ValueError("discovery evidence promoted Human Review authority")
+    # Historical evidence remains readable, but its Human Review fields do not
+    # act as the current Acquisition completion gate or grant current authority.
+    if "usable_reviewed_identity_count" in record and record.get("usable_reviewed_identity_count") != 0:
+        raise ValueError("historical discovery evidence promoted Human Review authority")
+    if "human_review_completed" in record and record.get("human_review_completed") is not False:
+        raise ValueError("historical discovery evidence promoted Human Review authority")
+    acceptance = record.get("acquisition_acceptance")
+    handoff = record.get("analysis_handoff")
+    if acceptance is not None or handoff is not None:
+        if not isinstance(acceptance, dict) or not isinstance(handoff, dict):
+            raise ValueError("active Acquisition-to-Analysis status is invalid")
+        count = record.get("candidate_count", 0)
+        if record.get("classification") == "candidate_evidence_obtained":
+            if acceptance != {"status": "accepted_for_analysis", "accepted_record_count": count,
+                              "semantic_quality_claimed": False}:
+                raise ValueError("active Acquisition acceptance is invalid")
+            if handoff.get("status") != "ready_for_analysis" or handoff.get("record_count") != count:
+                raise ValueError("active Analysis handoff is invalid")
+            pending = {"semantic_relevance", "quality", "analytical_rank",
+                       "analytical_deduplication", "final_inclusion"}
+            if set(handoff.get("pending_decisions") or []) != pending:
+                raise ValueError("active Analysis ownership is incomplete")
+            for candidate in record["retained_candidates"]:
+                if candidate.get("acquisition_acceptance") != "accepted_for_analysis":
+                    raise ValueError("active candidate was not accepted for Analysis")
+                if candidate.get("production_ready") is not False:
+                    raise ValueError("active candidate attempted production promotion")
+        else:
+            if acceptance.get("status") != "no_records_to_handoff" or acceptance.get("accepted_record_count") != 0:
+                raise ValueError("withheld evidence cannot accept records for Analysis")
+            if handoff.get("status") != "not_ready" or handoff.get("record_count") != 0:
+                raise ValueError("withheld evidence cannot be ready for Analysis")
     boundaries = record.get("boundaries") or {}
     for field in ("comments_acquired", "captions_called", "transcript_text_acquired", "oauth_used",
                   "production_store", "production_approved", "authority_promoted"):

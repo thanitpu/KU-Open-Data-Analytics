@@ -1,6 +1,8 @@
 # YouTube Source Foundation for Q-Diving
 
-Status: metadata-only foundation; Human Review required; production scheduling disabled.
+Status: metadata-only foundation; accepted records hand off to Analysis; production scheduling disabled.
+
+P51 boundary note: semantic relevance/quality selection now belongs to Analysis and is not an Acquisition completion gate. Human authority remains required for production, monitoring/scheduling, elevated scope and the other governance boundaries listed in `ACQUISITION_ANALYSIS_HANDOFF_V1.md`. Historical review fixtures remain readable evidence only.
 
 This foundation turns the legacy Q-004 and Q-005 YouTube search-page references into traceable query profiles for four Q-Diving research collections. Learning-to-dive research includes beginner training, Open Water skills, safety procedures, brief/debrief practice, and common mistakes. Equipment research covers masks, fins, exposure protection, BCDs, regulators, computers, tanks, underwater cameras, and rent/buy/maintenance decisions. Destination research covers Thailand (including Koh Tao, Similan, Richelieu Rock, Phuket, Phi Phi, Krabi, Chumphon, and Koh Lipe) and international regions such as Southeast Asia, Maldives, Raja Ampat, Komodo, Sipadan, Palau, Red Sea, and Great Barrier Reef. It does not make YouTube content authoritative and does not approve or store candidates automatically.
 
@@ -10,7 +12,7 @@ YouTube metadata follows the KU2D lifecycle:
 
 `Discover → Explore → Deep Audit → Human Approve → Scheduled Acquire`
 
-This checkpoint stops at Human Review staging. It uses only official public metadata returned by documented YouTube Data API v3 methods:
+This checkpoint stops at sanitized Analysis-intake staging. It uses only official public metadata returned by documented YouTube Data API v3 methods:
 
 - `search.list` for bounded query-profile discovery;
 - `videos.list` and `channels.list` to hydrate stable identities and metadata;
@@ -60,6 +62,6 @@ Non-authorized API data is refreshed or deleted within 30 days. Normalized candi
 
 ## Foundation quality gates
 
-A review batch requires at least five public videos, 100% video identity, at least 95% channel identity, at least 95% titles, at least 90% publication times, 100% canonical URL/provenance/refresh-due fields, no more than 5% duplicates, and no unauthorized transcript text. Restricted/private items never count as publicly usable. Views and likes are observations, not quality or authority gates.
+Batch-level identity/completeness rates remain diagnostics for Analysis and operational planning; they do not discard an otherwise technically valid per-record handoff. Every accepted record still requires canonical video identity, source provenance, sanitization and policy compliance. Restricted/private items are not accepted public records. Views and likes are observations, not quality or authority gates.
 
-Authority, influencer status, safety, trust, audience, sentiment, monetization, and rankings are not calculated. The separated manual fields may classify a reviewed source as `training_authority`, `equipment_manufacturer`, `dive_operator`, `independent_instructor`, `equipment_reviewer`, `travel_dive_creator`, or `community_creator`, with a human note, research collection, approver, and approval time. These values are KU2D annotations, never YouTube metadata. Candidate metadata is staged for Human Review and cannot trigger approval, repository storage, or scheduling.
+Authority, influencer status, safety, trust, audience, sentiment, monetization, and rankings are not calculated by Acquisition. Source classification and semantic inclusion are downstream Analysis annotations, never YouTube metadata. Candidate metadata is staged as `accepted_for_analysis` and cannot trigger production approval, production storage or scheduling.
