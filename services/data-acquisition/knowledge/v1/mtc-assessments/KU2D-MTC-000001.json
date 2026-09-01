@@ -1,0 +1,30 @@
+{
+  "schema": "ku2d.minimum-trusted-connection-assessment.v1",
+  "assessment_id": "KU2D-MTC-000001",
+  "source_manifest_id": "KU2D-SM-YOUTUBE-QDIVING-000001",
+  "assessed_at": "2026-09-01T13:00:00+07:00",
+  "status": "passed",
+  "useful_capabilities": ["video_metadata", "channel_identity"],
+  "criteria": {
+    "useful_reproducible_capability": true,
+    "schema_valid_output": true,
+    "provenance": true,
+    "failure_classification": true,
+    "sanitized_evidence": true,
+    "fixture_replay": true,
+    "known_limitations": true
+  },
+  "record_count": 10,
+  "known_limitations": [
+    "semantic decisions remain unassessed and Analysis-owned",
+    "comments, captions and transcripts remain blocked",
+    "production storage, approval and scheduling remain disabled"
+  ],
+  "closure_status": "closed_v1",
+  "boundaries": {
+    "semantic_quality_claimed": false,
+    "production_store": false,
+    "production_approved": false,
+    "scheduler_action": null
+  }
+}

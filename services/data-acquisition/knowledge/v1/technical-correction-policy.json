@@ -1,0 +1,54 @@
+{
+  "schema": "ku2d.technical-correction-policy.v1",
+  "policy_id": "KU2D-KP-000002",
+  "effective_at": "2026-09-01T11:30:00.000+07:00",
+  "purpose": "Capture useful technical corrections during a Source Completion Queue as low-noise ML-ready experience without creating extra coordination queues or commits per event.",
+  "capture": {
+    "timing": "record_in_local_journal_immediately_after_each_material_correction",
+    "persistence": "validate_and_commit_one_sanitized_journal_at_source_queue_closure",
+    "granularity": "one event per materially distinct root cause and correction",
+    "do_not_capture": [
+      "every shell command",
+      "unchanged test reruns",
+      "duplicate symptoms of the same unresolved cause",
+      "secrets",
+      "raw provider payloads",
+      "request URLs",
+      "page tokens",
+      "personal data"
+    ]
+  },
+  "required_learning_fields": [
+    "failure_code",
+    "phase",
+    "observed_signal",
+    "root_cause_layer",
+    "correction_action",
+    "validation_result",
+    "outcome",
+    "provider_request_and_quota_delta",
+    "reusable_lesson",
+    "future_prevention"
+  ],
+  "linkage": {
+    "operational_record": "final Result references journal ID and counts",
+    "ml_experience": "Acquisition Experience Record references journal and summarizes patterns",
+    "queue": "Queue stores no event bodies"
+  },
+  "quality_rules": [
+    "do not infer a root cause before evidence supports it; use unknown when necessary",
+    "record quality and effort as null when not observed",
+    "merge duplicate symptoms into one event",
+    "separate pre-provider correction from provider/data-quality failure",
+    "a corrected event must cite the validation that proved resolution"
+  ],
+  "approval": {
+    "human_decision": "KU2D-H-000019",
+    "explicit_user_instruction": "ให้ codex บันทึก technical correction เก็บไว้เป็นข้อมูลสำหรับการพัฒนา ML ระหว่างรันได้หรือไม่ครับ"
+  },
+  "boundaries": {
+    "automatic_model_training": false,
+    "production_authorized": false,
+    "scheduler_action": null
+  }
+}
