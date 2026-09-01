@@ -33,6 +33,7 @@
     "merged": true
   },
   "verification": {
+    "deterministic_tests_passed": true,
     "expected_head_guard_used": true,
     "exact_head_ci": {
       "data_acquisition_platform_ci": {
