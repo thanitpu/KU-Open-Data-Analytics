@@ -238,7 +238,25 @@ class EphemeralBrowser:
                 if message.get("error"):
                     raise RuntimeError(f"CDP {method} failed: {message['error'].get('message', 'unknown error')}")
                 return message
+            if message.get("method") == "Fetch.requestPaused":
+                self._answer_fetch_pause(message)
+                continue
             self.pending.append(message)
+
+    def _answer_fetch_pause(self, message: dict[str, Any]) -> None:
+        params = message.get("params") or {}
+        request = params.get("request") or {}
+        host = urlparse(str(request.get("url") or "")).hostname
+        request_id = params.get("requestId")
+        self.sequence += 1
+        if is_tiktok_host(host):
+            method = "Fetch.continueRequest"
+            command_params = {"requestId": request_id}
+        else:
+            self.third_party_requests_blocked += 1
+            method = "Fetch.failRequest"
+            command_params = {"requestId": request_id, "errorReason": "BlockedByClient"}
+        self.connection.send(json.dumps({"id": self.sequence, "method": method, "params": command_params}))
 
     def start(self) -> None:
         if self.process is not None:
@@ -274,14 +292,7 @@ class EphemeralBrowser:
         method = message.get("method")
         params = message.get("params") or {}
         if method == "Fetch.requestPaused":
-            request = params.get("request") or {}
-            host = urlparse(str(request.get("url") or "")).hostname
-            request_id = params.get("requestId")
-            if is_tiktok_host(host):
-                self._command("Fetch.continueRequest", {"requestId": request_id})
-            else:
-                self.third_party_requests_blocked += 1
-                self._command("Fetch.failRequest", {"requestId": request_id, "errorReason": "BlockedByClient"})
+            self._answer_fetch_pause(message)
             return False, None, None
         if method == "Network.responseReceived":
             response = params.get("response") or {}

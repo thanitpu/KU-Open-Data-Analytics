@@ -94,6 +94,44 @@ assert any(value == "--user-data-dir=temporary-profile" for value in command)
 assert not any("proxy" in value.casefold() or "login" in value.casefold() for value in command)
 
 
+class FakeCDPConnection:
+    def __init__(self, messages: list[dict]) -> None:
+        self.messages = [json.dumps(row) for row in messages]
+        self.sent: list[dict] = []
+
+    def send(self, value: str) -> None:
+        self.sent.append(json.loads(value))
+
+    def recv(self, timeout: int) -> str:
+        assert timeout == 10
+        return self.messages.pop(0)
+
+
+cdp_session = browser.EphemeralBrowser(binary=Path("browser.exe"))
+cdp_session.connection = FakeCDPConnection([
+    {
+        "method": "Fetch.requestPaused",
+        "params": {"requestId": "paused-1", "request": {"url": "https://www.tiktok.com/"}},
+    },
+    {"id": 1, "result": {}},
+])
+assert cdp_session._command("Page.navigate", {"url": "https://www.tiktok.com/"}) == {"id": 1, "result": {}}
+assert cdp_session.connection.sent[1]["method"] == "Fetch.continueRequest"
+assert cdp_session.third_party_requests_blocked == 0
+
+cdp_session = browser.EphemeralBrowser(binary=Path("browser.exe"))
+cdp_session.connection = FakeCDPConnection([
+    {
+        "method": "Fetch.requestPaused",
+        "params": {"requestId": "paused-2", "request": {"url": "https://tracker.example/pixel"}},
+    },
+    {"id": 1, "result": {}},
+])
+cdp_session._command("Page.navigate", {"url": "https://www.tiktok.com/"})
+assert cdp_session.connection.sent[1]["method"] == "Fetch.failRequest"
+assert cdp_session.third_party_requests_blocked == 1
+
+
 class FakeProcess:
     def __init__(self) -> None:
         self.stopped = False
@@ -252,6 +290,18 @@ with tempfile.TemporaryDirectory(prefix="ku2d-p58-preflight-") as temporary:
     assert result["stop_condition"] == "network_preflight_failed"
     assert result["operation_accounting"]["preconnect_failures"] == 1
     assert output.is_file()
+    counter = iter((0, 1, 2))
+    code, result = live.run_campaign(
+        output,
+        browser_factory=lambda: FakeLiveBrowser(next(counter)),  # type: ignore[arg-type]
+        verifier=fake_verifier,
+        resume=True,
+    )
+    assert code == live.EXIT_SUCCESS
+    assert result["operation_accounting"]["provider_reached"] == 25
+    assert result["operation_accounting"]["preconnect_failures"] == 1
+    assert [row["provider_reached"] for row in result["network_preflight_history"]] == [False, True]
+    assert result["operation_ledger"][1]["operation"] == "network_preflight_diagnostic"
 
 with tempfile.TemporaryDirectory(prefix="ku2d-p58-reproduction-") as temporary:
     output = Path(temporary) / "evidence.json"
@@ -266,4 +316,4 @@ with tempfile.TemporaryDirectory(prefix="ku2d-p58-reproduction-") as temporary:
     assert result["success"] is False
     assert output.is_file()
 
-print("TikTok P58 ephemeral-browser checks passed: scope=2 identity=4 ledger=3 teardown=9 campaigns=3")
+print("TikTok P58 ephemeral-browser checks passed: scope=2 identity=4 ledger=3 cdp=2 teardown=9 campaigns=4")
