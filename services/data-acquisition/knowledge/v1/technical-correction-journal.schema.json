@@ -1,0 +1,285 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ku2d.local/schemas/technical-correction-journal.v1.schema.json",
+  "title": "KU2D Technical Correction Journal v1",
+  "description": "Sanitized chronological technical corrections captured inside one Source Completion Queue and committed once at closure.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "journal_id",
+    "source_completion_prompt_id",
+    "created_at",
+    "closed_at",
+    "events",
+    "summary",
+    "safety"
+  ],
+  "properties": {
+    "schema": {
+      "const": "ku2d.technical-correction-journal.v1"
+    },
+    "journal_id": {
+      "type": "string",
+      "pattern": "^KU2D-CJ-[0-9]{6}$"
+    },
+    "source_completion_prompt_id": {
+      "type": "string",
+      "pattern": "^KU2D-P-[0-9]{6}$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "closed_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "event_id",
+          "observed_at",
+          "phase",
+          "failure_code",
+          "observed_signal",
+          "root_cause_layer",
+          "correction",
+          "validation",
+          "outcome",
+          "provider_impact",
+          "learning"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "pattern": "^KU2D-TC-[0-9]{6}$"
+          },
+          "observed_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "phase": {
+            "enum": [
+              "protocol_migration",
+              "preflight",
+              "implementation",
+              "test",
+              "ci",
+              "merge",
+              "authorization",
+              "dispatch",
+              "acquisition",
+              "artifact",
+              "evidence",
+              "closure"
+            ]
+          },
+          "failure_code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "observed_signal": {
+            "type": "string",
+            "minLength": 1
+          },
+          "root_cause_layer": {
+            "enum": [
+              "coordination_protocol",
+              "authorization_schema",
+              "workflow",
+              "runtime_code",
+              "dependency",
+              "provider_access",
+              "data_quality",
+              "artifact",
+              "ci",
+              "git",
+              "environment",
+              "unknown"
+            ]
+          },
+          "correction": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "action",
+              "components",
+              "scope_changed"
+            ],
+            "properties": {
+              "action": {
+                "type": "string",
+                "minLength": 1
+              },
+              "components": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              },
+              "scope_changed": {
+                "const": false
+              }
+            }
+          },
+          "validation": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "checks",
+              "result"
+            ],
+            "properties": {
+              "checks": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "result": {
+                "enum": [
+                  "passed",
+                  "failed",
+                  "partial",
+                  "not_run"
+                ]
+              }
+            }
+          },
+          "outcome": {
+            "enum": [
+              "resolved",
+              "partially_resolved",
+              "unresolved",
+              "superseded"
+            ]
+          },
+          "provider_impact": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "provider_reached",
+              "request_delta",
+              "quota_delta"
+            ],
+            "properties": {
+              "provider_reached": {
+                "type": "boolean"
+              },
+              "request_delta": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "quota_delta": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          },
+          "effort_minutes": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "learning": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "reusable_lesson",
+              "future_prevention",
+              "labels"
+            ],
+            "properties": {
+              "reusable_lesson": {
+                "type": "string",
+                "minLength": 1
+              },
+              "future_prevention": {
+                "type": "string",
+                "minLength": 1
+              },
+              "labels": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              }
+            }
+          },
+          "evidence_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_count",
+        "resolved_count",
+        "unresolved_count",
+        "correction_cycles_used"
+      ],
+      "properties": {
+        "event_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "resolved_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unresolved_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "correction_cycles_used": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contains_secret",
+        "contains_raw_payload",
+        "contains_request_url",
+        "contains_personal_data"
+      ],
+      "properties": {
+        "contains_secret": {
+          "const": false
+        },
+        "contains_raw_payload": {
+          "const": false
+        },
+        "contains_request_url": {
+          "const": false
+        },
+        "contains_personal_data": {
+          "const": false
+        }
+      }
+    }
+  }
+}
