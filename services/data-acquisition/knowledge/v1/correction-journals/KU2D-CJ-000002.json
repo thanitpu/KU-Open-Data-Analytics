@@ -25,7 +25,7 @@
       "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
       "schema_impact": "No schema change; the queue now conforms to the existing fail-closed actor linkage.",
       "quality_impact": "Restores authoritative queue readability without changing acquisition evidence or candidate quality.",
-      "related_commit_or_pending_commit": "pending_commit",
+      "related_commit_or_pending_commit": "87235386dfa79539572465648ab504bea00fe1cb",
       "effort_minutes": null,
       "learning": {
         "reusable_lesson": "Standing Human authority belongs in latest/provenance fields; a Codex action must not carry a downstream decision pointer.",
@@ -57,7 +57,7 @@
       "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
       "schema_impact": "Uses the existing exact-pinned proactive-human compatibility contract; no general authority rule changed.",
       "quality_impact": "Preserves genuine Human scope authority while preventing unrelated proactive decisions from becoming executable authority.",
-      "related_commit_or_pending_commit": "pending_commit",
+      "related_commit_or_pending_commit": "87235386dfa79539572465648ab504bea00fe1cb",
       "effort_minutes": null,
       "learning": {
         "reusable_lesson": "A proactive continuation can remain auditable only through exact record and blob pins, never a generalized authority relaxation.",
@@ -90,7 +90,7 @@
       "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
       "schema_impact": "Adds optional properties only, so immutable earlier journals remain compatible; the P52 validator enforces the stronger current contract.",
       "quality_impact": "Correction evidence now distinguishes schema and quality effects and is traceable to an implementation commit.",
-      "related_commit_or_pending_commit": "pending_commit",
+      "related_commit_or_pending_commit": "87235386dfa79539572465648ab504bea00fe1cb",
       "effort_minutes": null,
       "learning": {
         "reusable_lesson": "Prompt-level evidence requirements must be representable in the durable schema before a journal can be finalized honestly.",

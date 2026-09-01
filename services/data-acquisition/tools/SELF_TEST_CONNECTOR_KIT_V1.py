@@ -211,12 +211,15 @@ assert profile["semantic_quality_owner"] == "analysis"
 
 # CK11: P52 corrections carry the stronger fields and must finalize commit links.
 journal = load(journal_path)
-validate_technical_correction_journal(journal, allow_pending_commit=True)
+validate_technical_correction_journal(journal)
+pending_journal = copy.deepcopy(journal)
+pending_journal["events"][0]["related_commit_or_pending_commit"] = "pending_commit"
 try:
-    validate_technical_correction_journal(journal)
+    validate_technical_correction_journal(pending_journal)
     raise AssertionError("pending correction commits were accepted for closure")
 except ValueError as exc:
     assert "finalized" in str(exc)
+validate_technical_correction_journal(pending_journal, allow_pending_commit=True)
 legacy_journal = load(ROOT / "knowledge" / "v1" / "correction-journals" / "KU2D-CJ-000001.json")
 assert legacy_journal["schema"] == journal["schema"]
 
