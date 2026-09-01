@@ -1,0 +1,49 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000048",
+  "created_at": "2026-09-01T10:48:00.000+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+  "objective": "Final YouTube queue: perform the schema-compatible H17 launcher anchor correction, validate and exact-head merge it to main, dispatch exactly once, retrieve sanitized identity evidence, and return a complete closure packet without opening another implementation queue.",
+  "instructions": [
+    "Treat KU2D-H-000017 and KU2D-V-000047 as the complete authority. This is the final bounded YouTube identity-discovery execution queue; do not broaden scope.",
+    "Use integration commit cac243aedaa3c83c188e4e90481e4b752fe8bd2b as the immutable reviewed execution revision and authorization-record revision a0f230a64a2d0480d996cbd08ccf03adbb0ac8cf containing KU2D-H-000017.",
+    "Before any main mutation or dispatch, execute the immutable reviewed validator offline against the staged H17 record and prove authorized_scope exact equality with AUTH_SCOPE. Fail closed without dispatch if this compatibility test does not pass.",
+    "Create a fresh branch from current main 769149377b9a7886ae2fc6457c7fe815a09d5cd6. Change only .github/workflows/youtube-qdiving-identity-discovery.yml so its immutable anchors are decision KU2D-H-000017, execution cac243aedaa3c83c188e4e90481e4b752fe8bd2b and authorization record a0f230a64a2d0480d996cbd08ccf03adbb0ac8cf.",
+    "Preserve the corrected explicit evidence-file if/else, conditional sanitized artifact upload, workflow_dispatch-only trigger, contents:read, both persist-credentials:false checkouts, single runtime secret reference, two-checkout lifecycle, validation order, H12 request/result/page/quota bounds, sanitized evidence schema and exit semantics.",
+    "Run YAML/JSON parsing, exact staged authorization validation, launcher contract tests, corrected artifact-guard execution test, deterministic repository corpus, git diff check and any applicable CI.",
+    "Open a Ready PR targeting main. Require exactly one changed file, expected exact head, clean mergeability and all applicable exact-head checks green. Under H16/H17 standing technical authority, merge it with an expected-head guard in this same queue; fail closed if any guard differs.",
+    "After verifying the registered main workflow and exact H17 anchors, dispatch exactly once with continuation_authorization_id=KU2D-H-000017, execution_revision=cac243aedaa3c83c188e4e90481e4b752fe8bd2b and authorization_record_revision=a0f230a64a2d0480d996cbd08ccf03adbb0ac8cf.",
+    "Do not automatically retry or issue a second dispatch for any outcome. Monitor only the created run.",
+    "Retrieve the sanitized Step Summary and sanitized evidence artifact. Do not print, persist, upload or commit the API key, request URLs, page tokens or raw provider payloads.",
+    "Produce a sanitized candidate review packet containing profile, public video ID, public channel ID, title/channel display metadata allowed by the existing evidence schema, published date, duration/statistics if already included, deterministic eligibility flags, query/profile provenance and withheld reasons. Do not acquire comments, captions or transcripts.",
+    "Report exact PR/head/merge SHA, CI, workflow/run/job/artifact identifiers, exit classification, technical completion, candidate counts by profile, request counts, documented quota units, ledger events, evidence integrity/hash if available, and all security boundaries.",
+    "Submit KU2D-R-000048 and mark the YouTube identity-discovery execution track ready for Assistant closure review. Do not approve candidates, write production data, schedule work or promote authority."
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000048",
+    "next_actor": "assistant",
+    "closure_target": "youtube_identity_discovery_execution_track"
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_prompt": "KU2D-P-000047",
+    "depends_on_result": "KU2D-R-000047",
+    "depends_on_review": "KU2D-V-000047",
+    "depends_on_human_decision": "KU2D-H-000017",
+    "failed_preprovider_run": 33467010248,
+    "reviewed_execution_revision": "cac243aedaa3c83c188e4e90481e4b752fe8bd2b",
+    "authorization_record_revision": "a0f230a64a2d0480d996cbd08ccf03adbb0ac8cf"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
