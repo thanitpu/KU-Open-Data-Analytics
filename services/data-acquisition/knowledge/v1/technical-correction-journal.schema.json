@@ -186,6 +186,18 @@
               }
             }
           },
+          "schema_impact": {
+            "type": "string",
+            "minLength": 1
+          },
+          "quality_impact": {
+            "type": "string",
+            "minLength": 1
+          },
+          "related_commit_or_pending_commit": {
+            "type": "string",
+            "minLength": 1
+          },
           "effort_minutes": {
             "type": [
               "number",

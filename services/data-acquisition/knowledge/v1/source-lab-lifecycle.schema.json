@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ku2d.local/schemas/source-lab-lifecycle.v1.schema.json",
+  "title": "KU2D Source Lab Lifecycle v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "source_completion_queue", "queue_purpose_summary", "phases", "human_gates", "testing", "boundaries"],
+  "properties": {
+    "schema": {"const": "ku2d.source-lab-lifecycle.v1"},
+    "source_completion_queue": {"type": "string", "minLength": 1},
+    "queue_purpose_summary": {"type": "string", "minLength": 1},
+    "phases": {
+      "const": ["technique_library_reuse", "explore", "deep_audit", "minimum_trusted_connection", "integration", "closure"]
+    },
+    "human_gates": {
+      "const": ["legal_or_policy_ambiguity", "restricted_or_personal_data", "material_scope_or_quota_expansion", "new_spending", "production_write", "elevated_authority"]
+    },
+    "testing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level_1", "level_2", "level_3"],
+      "properties": {
+        "level_1": {"const": ["unit_test", "adapter_specific_fixture"]},
+        "level_2": {"const": ["source_level_integration", "evidence_validation"]},
+        "level_3": {"const": ["full_deterministic_corpus_exact_head"]}
+      }
+    },
+    "boundaries": {"const": {"production_authorized": false, "scheduler_action": null}}
+  }
+}

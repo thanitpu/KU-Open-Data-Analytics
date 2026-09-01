@@ -96,7 +96,7 @@
     "prompt_id": "KU2D-P-000052",
     "result_id": null,
     "review_id": null,
-    "human_decision_id": "KU2D-H-000021",
+    "human_decision_id": null,
     "replay_requested": false
   },
   "branch_handoff": {

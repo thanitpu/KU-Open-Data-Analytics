@@ -1,5 +1,7 @@
 # KU2D Adaptive Data Acquisition — North Star
 
+The v1 source-onboarding formula is **Shared Connector Kit + Domain Capability Profile + Thin Source Adapter + Source-specific Parser + Analysis-owned Semantic Quality**. Sources progress through Technique Library reuse → Explore → Deep Audit → Minimum Trusted Connection → Integration → Closure in one Source Completion Queue. Minimum Trusted Connection promotes useful reproducible capabilities with provenance and known limitations; it does not require universal capability completeness or grant production approval.
+
 ## Mission
 KU2D Data Acquisition is an adaptive, evidence-preserving acquisition platform for studying changing online domains and sources. It should discover useful sources, learn suitable public-access acquisition techniques, validate them, approve trusted profiles, acquire on schedule, detect drift, and re-enter Explore when a previously valid profile degrades.
 

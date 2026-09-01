@@ -1,0 +1,115 @@
+{
+  "schema": "ku2d.technical-correction-journal.v1",
+  "journal_id": "KU2D-CJ-000002",
+  "source_completion_prompt_id": "KU2D-P-000052",
+  "created_at": "2026-09-01T12:55:00.000+07:00",
+  "closed_at": "2026-09-01T13:15:00.000+07:00",
+  "events": [
+    {
+      "event_id": "KU2D-TC-000004",
+      "observed_at": "2026-09-01T12:55:00.000+07:00",
+      "phase": "preflight",
+      "failure_code": "codex_queue_carried_downstream_human_pointer",
+      "observed_signal": "The repository Agent Handoff test rejected P52 because a Codex next_action retained human_decision_id KU2D-H-000021.",
+      "root_cause_layer": "coordination_protocol",
+      "correction": {
+        "action": "Kept H21 as latest human authority and P52 provenance while clearing the downstream Human Decision pointer from the Codex next_action.",
+        "components": ["services/data-acquisition/coordination/queue.json"],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": ["Agent Handoff bundle validation", "Codex next_action has no downstream record pointer"],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "schema_impact": "No schema change; the queue now conforms to the existing fail-closed actor linkage.",
+      "quality_impact": "Restores authoritative queue readability without changing acquisition evidence or candidate quality.",
+      "related_commit_or_pending_commit": "pending_commit",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "Standing Human authority belongs in latest/provenance fields; a Codex action must not carry a downstream decision pointer.",
+        "future_prevention": "Validate the complete coordination bundle immediately after advancing a queue to Codex.",
+        "labels": ["coordination", "actor-linkage", "fail-closed"]
+      },
+      "evidence_refs": ["KU2D-P-000052", "KU2D-H-000021", "SELF_TEST_AGENT_HANDOFF_PROTOCOL.py"]
+    },
+    {
+      "event_id": "KU2D-TC-000005",
+      "observed_at": "2026-09-01T13:05:00.000+07:00",
+      "phase": "protocol_migration",
+      "failure_code": "proactive_h21_not_exact_pinned",
+      "observed_signal": "After queue linkage was corrected, bundle validation rejected proactive H21 because accepted V51 did not request a Human Decision.",
+      "root_cause_layer": "authorization_schema",
+      "correction": {
+        "action": "Added migration KU2D-M-000003 with exact committed Git-blob pins for V51 and H21 and extended repository fixture expectations for only that pair.",
+        "components": [
+          "services/data-acquisition/coordination/v1/migrations/KU2D-M-000003.json",
+          "services/data-acquisition/tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": ["Exact V51 and H21 blob validation", "Default proactive Human Decision rejection remains active", "Agent Handoff cases AH1-AH50"],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "schema_impact": "Uses the existing exact-pinned proactive-human compatibility contract; no general authority rule changed.",
+      "quality_impact": "Preserves genuine Human scope authority while preventing unrelated proactive decisions from becoming executable authority.",
+      "related_commit_or_pending_commit": "pending_commit",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "A proactive continuation can remain auditable only through exact record and blob pins, never a generalized authority relaxation.",
+        "future_prevention": "When an accepted review is followed by explicit Human continuation, add the exact compatibility proof in the same queue-advance commit.",
+        "labels": ["authorization", "exact-pin", "historical-compatibility"]
+      },
+      "evidence_refs": ["KU2D-M-000003", "KU2D-V-000051", "KU2D-H-000021"]
+    },
+    {
+      "event_id": "KU2D-TC-000006",
+      "observed_at": "2026-09-01T13:12:00.000+07:00",
+      "phase": "implementation",
+      "failure_code": "p52_required_correction_fields_absent_from_schema",
+      "observed_signal": "P52 requires schema impact, quality impact and final commit linkage per correction, but the closed v1 schema forbade those fields.",
+      "root_cause_layer": "authorization_schema",
+      "correction": {
+        "action": "Added backward-compatible optional schema properties and a fail-closed validator that requires them for P52 journals and rejects pending commit links at PR/closure.",
+        "components": [
+          "services/data-acquisition/knowledge/v1/technical-correction-journal.schema.json",
+          "services/data-acquisition/acquisition/technical_correction_journal.py",
+          "services/data-acquisition/tools/SELF_TEST_CONNECTOR_KIT_V1.py"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": ["P52 journal field validation", "Pending commit rejection at closure", "Immutable KU2D-CJ-000001 remains readable"],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "schema_impact": "Adds optional properties only, so immutable earlier journals remain compatible; the P52 validator enforces the stronger current contract.",
+      "quality_impact": "Correction evidence now distinguishes schema and quality effects and is traceable to an implementation commit.",
+      "related_commit_or_pending_commit": "pending_commit",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "Prompt-level evidence requirements must be representable in the durable schema before a journal can be finalized honestly.",
+        "future_prevention": "Compare each new correction-policy field against the active schema before implementation begins.",
+        "labels": ["schema-evolution", "correction-journal", "backward-compatible"]
+      },
+      "evidence_refs": ["KU2D-P-000052", "technical-correction-journal.schema.json"]
+    }
+  ],
+  "summary": {
+    "event_count": 3,
+    "resolved_count": 3,
+    "unresolved_count": 0,
+    "correction_cycles_used": 3
+  },
+  "safety": {
+    "contains_secret": false,
+    "contains_raw_payload": false,
+    "contains_request_url": false,
+    "contains_personal_data": false
+  }
+}
