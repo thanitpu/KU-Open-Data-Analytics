@@ -1,0 +1,172 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000046",
+  "prompt_id": "KU2D-P-000046",
+  "submitted_at": "2026-09-01T10:32:15.6300721+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "Prepared the one-file main launcher promotion for the H16-authorized corrected Q-Diving rerun without merging or dispatching it. Created codex/promote-youtube-qdiving-corrected-launcher-v1 from current main commit 4ee155edb560b3845c66aeb118bb506a89c649a0, copied the reviewed corrected launcher from integration commit cac243aedaa3c83c188e4e90481e4b752fe8bd2b and replaced only its three fail-closed trust-anchor placeholders with KU2D-H-000016, the exact execution revision and authorization-record revision bd53a3d8378703e017e2aa7c97d9486c30e44a5b. Ready PR #67 targets main at exact head 0398fb3e4ac229e5f1d97e45fc6cca373fef8c3a, changes exactly one file, is cleanly mergeable and all applicable exact-head checks pass. No merge, workflow dispatch, secret access, YouTube request or quota use occurred.",
+  "evidence_references": [
+    "KU2D-P-000046",
+    "KU2D-V-000045",
+    "KU2D-H-000016",
+    "integration-source:cac243aedaa3c83c188e4e90481e4b752fe8bd2b",
+    "authorization-record:bd53a3d8378703e017e2aa7c97d9486c30e44a5b",
+    "promotion-commit:0398fb3e4ac229e5f1d97e45fc6cca373fef8c3a",
+    "PR:#67",
+    "coordination-test-compatibility:KU2D-H-000016",
+    "workflow:Frontend CI#1403",
+    "workflow:Frontend CI#1404",
+    "workflow:PR Browser Preview Link#284"
+  ],
+  "promotion_repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "base_branch": "main",
+    "base_sha": "4ee155edb560b3845c66aeb118bb506a89c649a0",
+    "promotion_branch": "codex/promote-youtube-qdiving-corrected-launcher-v1",
+    "promotion_head_sha": "0398fb3e4ac229e5f1d97e45fc6cca373fef8c3a",
+    "pull_request_number": 67,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/67",
+    "pull_request_state": "open",
+    "ready": true,
+    "draft": false,
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "merged": false
+  },
+  "one_file_promotion": {
+    "changed_file_count": 1,
+    "changed_files": [
+      ".github/workflows/youtube-qdiving-identity-discovery.yml"
+    ],
+    "source_revision": "cac243aedaa3c83c188e4e90481e4b752fe8bd2b",
+    "source_equivalence": "equal to the reviewed corrected integration launcher after exactly three placeholder replacements",
+    "additions": 9,
+    "deletions": 4,
+    "other_main_files_promoted": false
+  },
+  "embedded_trust_anchors": {
+    "decision_id": "KU2D-H-000016",
+    "execution_revision": "cac243aedaa3c83c188e4e90481e4b752fe8bd2b",
+    "authorization_record_revision": "bd53a3d8378703e017e2aa7c97d9486c30e44a5b",
+    "placeholder_count_remaining": 0,
+    "exact_equality_verified": true
+  },
+  "launcher_contract": {
+    "trigger": "workflow_dispatch only",
+    "permissions": {
+      "contents": "read"
+    },
+    "concurrency_changed": false,
+    "timeout_changed": false,
+    "checkout_count": 2,
+    "persist_credentials_false_count": 2,
+    "secret_name": "KU2D_YOUTUBE_API_KEY",
+    "secret_reference_count": 1,
+    "secret_reference_location": "runtime discovery step after staged authorization validation",
+    "two_checkout_lifecycle_changed": false,
+    "validation_order_changed": false,
+    "sanitized_evidence_schema_changed": false,
+    "exit_semantics_changed": false,
+    "corrected_artifact_guard_present": true,
+    "evidence_check": "explicit correctly quoted Bash if/else",
+    "evidence_outputs": [
+      "exists=true",
+      "exists=false"
+    ],
+    "artifact_upload_condition": "always() && steps.evidence.outputs.exists == 'true'",
+    "profiles": [
+      "QYT-BEGINNER-KOH-TAO-TH",
+      "QYT-BEGINNER-EN"
+    ],
+    "max_pages_per_profile": 1,
+    "max_results_per_profile": 5,
+    "max_search_list_requests": 2,
+    "max_videos_list_requests": 1,
+    "max_additional_documented_quota_units": 201
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "live_request_count": 0,
+    "git_diff_check": "passed",
+    "yaml_parse": "passed",
+    "launcher_static_contract": "passed",
+    "source_plus_three_anchors_equivalence": "passed",
+    "corrected_artifact_guard_contract": "passed",
+    "one_file_branch_diff": "passed",
+    "agent_handoff_h16_compatibility": "added KU2D-H-000016 to the deterministic repository-history expected set and confirmed its decision is confirmed",
+    "agent_handoff_protocol": "AH1-AH31 passed",
+    "workflow_registration": "clean; no invalid-workflow or manual-dispatch run at the exact promotion head",
+    "exact_head_ci": {
+      "head_sha": "0398fb3e4ac229e5f1d97e45fc6cca373fef8c3a",
+      "frontend_ci": [
+        {
+          "run_number": 1403,
+          "run_id": 33466377821,
+          "event": "push",
+          "conclusion": "success"
+        },
+        {
+          "run_number": 1404,
+          "run_id": 33466401162,
+          "event": "pull_request",
+          "conclusion": "success"
+        }
+      ],
+      "pr_browser_preview": {
+        "run_number": 284,
+        "run_id": 33466401167,
+        "conclusion": "success"
+      },
+      "data_acquisition_platform_ci": "not_triggered_for_main_one_file_workflow_promotion"
+    }
+  },
+  "security_and_boundaries": {
+    "promotion_pr_opened": true,
+    "promotion_pr_merged": false,
+    "main_modified": false,
+    "integration_modified": false,
+    "workflow_dispatched": false,
+    "qdiving_workflow_dispatch_total": 1,
+    "historical_dispatch_run_id": 33463297483,
+    "github_secret_read": false,
+    "secret_value_printed_persisted_uploaded_or_committed": false,
+    "youtube_requests": 0,
+    "documented_quota_units": 0,
+    "comments_acquired": false,
+    "captions_acquired": false,
+    "transcripts_acquired": false,
+    "human_review_conducted": false,
+    "candidates_approved": false,
+    "production_store": false,
+    "production_approved": false,
+    "authority_promoted": false,
+    "scheduler_action": null
+  },
+  "completed_queue_summary": {
+    "work_completed": "Created, validated, pushed and opened Ready one-file corrected launcher promotion PR #67 with the exact H16 trust anchors, and minimally extended the coordination-history test to recognize the newly recorded H16 decision.",
+    "key_findings_results": "The promoted workflow equals the reviewed corrected integration launcher after only the three authorized substitutions. PR #67 is open, Ready, cleanly mergeable and green.",
+    "repo_knowledge_state_changes": "Added no acquisition evidence or authority. The promotion branch contains only a default-branch launcher candidate; main remains unchanged until a separately reviewed merge.",
+    "important_out_of_scope_actions_not_performed": "No PR merge, workflow dispatch, secret access, YouTube request/quota, comments, captions, transcripts, Human Review, candidate approval, production write, scheduling or authority promotion.",
+    "remaining_blockers_risks": "The corrected H16 launcher is not active on main until PR #67 is separately reviewed and merged. P46 does not authorize merge or dispatch.",
+    "recommended_next_step": "Assistant reviews R46 and PR #67 exact head. Do not merge or dispatch until the coordination queue explicitly authorizes the next action."
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000046.json",
+    "depends_on_result": "KU2D-R-000045",
+    "depends_on_review": "KU2D-V-000045",
+    "depends_on_human_decision": "KU2D-H-000016",
+    "target_pr": 67
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
