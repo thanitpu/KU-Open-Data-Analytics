@@ -85,6 +85,25 @@ Both detached Queue snapshots are stored in the append-only Branch Handoff recor
 
 The queue is a mutable pointer/index, while Prompt, Result, Assistant Review, and Human Decision records preserve append-only history.
 
+## Append-only repository fixture maintenance
+
+The deterministic repository-history fixture discovers every coordination record
+present on disk. It does not treat a fixed set, count, or terminal Human Decision
+identifier as the current history. Stable historical anchors must remain present,
+and the bundle's active Human Decision index must exactly equal discovered Human
+Decision records after subtracting only exact-pinned, non-authoritative historical
+records. Every active decision must retain explicit-human provenance and one
+consistent Prompt/Result/Review chain.
+
+The fixture also constructs a synthetic future Human Decision. That record passes
+only with a complete human-gated chain; duplicate IDs, malformed IDs, orphaned
+reviews, unrelated prompts, and invalid queue transitions continue to fail closed.
+The same test blob may run against the baseline protocol and an extended
+historical-migration implementation: common identity, provenance, chain, replay,
+branch, and queue checks always run, while migration-specific checks run only when
+that runtime contract exists. This compatibility does not make migration records
+optional for an extended runtime or weaken `validate_agent_handoff_bundle`.
+
 ## Bootstrap migration for PR #44
 
 `coordination/prompts/KU2D-P-000001.json` remains the immutable `bootstrap.v0` input. Its validated v1 projection lives separately at `coordination/v1/prompts/KU2D-P-000001.json` and cites the bootstrap source plus the independent review comment. This prevents migration from silently rewriting history.
