@@ -38,6 +38,15 @@ assert SEVEN_FIELDS.issubset(root)
 assert validate_scope_declaration(root, allowed_root_files=root["authorized_files_or_modules"]) == root
 assert validate_scope_declaration(p01, parent=root) == p01
 assert validate_scope_declaration(p02, parent=root) == p02
+
+p58_root = load(TIKTOK / "KU2D-SCOPE-000005.json")
+p58_p01 = load(TIKTOK / "KU2D-SCOPE-000005-P01.json")
+p58_p02 = load(TIKTOK / "KU2D-SCOPE-000005-P02.json")
+assert validate_scope_declaration(
+    p58_root, allowed_root_files=p58_root["authorized_files_or_modules"],
+) == p58_root
+assert validate_scope_declaration(p58_p01, parent=p58_root) == p58_p01
+assert validate_scope_declaration(p58_p02, parent=p58_root) == p58_p02
 case = copy.deepcopy(p02)
 case["capability"].append("private_account_data")
 rejected(case, parent=root)
@@ -75,6 +84,40 @@ assert evidence["phase_outcome"] == {
 }
 assert evidence["boundaries"]["production_approved"] is False
 assert evidence["boundaries"]["scheduler_action"] is None
+
+p58_evidence = load(TIKTOK / "KU2D-TIKTOK-EPHEMERAL-BROWSER-EVIDENCE-000003.json")
+assert p58_evidence["status"] == "evidence_withheld"
+assert p58_evidence["technical_completion"] is True
+assert p58_evidence["success"] is False
+assert p58_evidence["operation_accounting"] == {
+    "provider_reached": 17,
+    "provider_limit": 40,
+    "preconnect_failures": 2,
+    "preconnect_limit": 10,
+    "quota_delta": 0,
+}
+assert p58_evidence["budget_feasibility"] == {
+    "provider_reached": 17,
+    "provider_limit": 40,
+    "provider_remaining": 23,
+    "preconnect_failures": 2,
+    "preconnect_limit": 10,
+    "minimum_provider_operations_for_two_complete_rounds": 24,
+    "success_contract_still_feasible": False,
+}
+assert p58_evidence["phase_outcome"] == {
+    "entered_phases": ["P58-01", "P58-02"],
+    "unentered_phases": ["P58-03", "P58-04", "P58-05"],
+    "status": "blocked",
+    "acquisition_technique_frozen": False,
+    "adapter_or_registry_artifacts_created": False,
+}
+assert p58_evidence["final_records"] == {"Diving lesson": [], "Diving equipment": []}
+assert all(row["status"] != "started" for row in p58_evidence["operation_ledger"])
+assert all(proof["profile_absent_after_teardown"] for proof in p58_evidence["context_destruction_proofs"])
+assert all(not proof["cookie_values_persisted"] for proof in p58_evidence["context_destruction_proofs"])
+assert p58_evidence["boundaries"]["production_approved"] is False
+assert p58_evidence["boundaries"]["scheduler_action"] is None
 
 for absent in (
     ROOT / "acquisition" / "tiktok_diving_connector.py",

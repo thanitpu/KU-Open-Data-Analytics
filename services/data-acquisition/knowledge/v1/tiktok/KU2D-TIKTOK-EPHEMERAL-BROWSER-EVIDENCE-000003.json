@@ -1,0 +1,733 @@
+{
+  "schema": "ku2d.tiktok-ephemeral-browser-evidence.v1",
+  "evidence_id": "KU2D-TIKTOK-LIVE-EVIDENCE-000003",
+  "prompt_id": "KU2D-P-000058",
+  "human_authority_id": "KU2D-H-000027",
+  "started_at": "2026-09-01T15:17:10.622775+00:00",
+  "updated_at": "2026-09-01T15:42:15.995578+00:00",
+  "status": "evidence_withheld",
+  "technical_completion": true,
+  "success": false,
+  "selected_technique": "fresh Chrome/Edge CDP context -> public rendered TikTok discovery -> canonical URL extraction -> official TikTok oEmbed/public-page verification -> destroy context -> repeat in a new context",
+  "topics": [
+    "Diving lesson",
+    "Diving equipment"
+  ],
+  "target_records_per_topic": 5,
+  "entered_phases": [
+    "P58-01",
+    "P58-02"
+  ],
+  "operation_ledger": [
+    {
+      "sequence": 1,
+      "started_at": "2026-09-01T15:17:10.624757+00:00",
+      "completed_at": "2026-09-01T15:17:22.021782+00:00",
+      "phase": "P58-01",
+      "round_id": "preflight",
+      "operation": "network_preflight",
+      "topic": null,
+      "public_identity": null,
+      "status": "preconnect_failure",
+      "provider_reached": false,
+      "response_status": null,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "failure_code": "preconnect_TimeoutError",
+      "quota_delta": 0
+    },
+    {
+      "sequence": 2,
+      "started_at": "2026-09-01T15:19:53.422755+00:00",
+      "completed_at": "2026-09-01T15:20:03.651205+00:00",
+      "phase": "P58-01",
+      "round_id": "preflight",
+      "operation": "network_preflight_diagnostic",
+      "topic": null,
+      "public_identity": null,
+      "status": "provider_reached",
+      "provider_reached": true,
+      "response_status": 200,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "failure_code": null,
+      "quota_delta": 0
+    },
+    {
+      "sequence": 3,
+      "started_at": "2026-09-01T15:20:04.020433+00:00",
+      "completed_at": "2026-09-01T15:20:12.127521+00:00",
+      "phase": "P58-02",
+      "round_id": "round-1",
+      "operation": "public_topic_discovery",
+      "topic": "Diving lesson",
+      "public_identity": null,
+      "status": "provider_reached",
+      "provider_reached": true,
+      "response_status": 200,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "failure_code": null,
+      "quota_delta": 0
+    },
+    {
+      "sequence": 4,
+      "started_at": "2026-09-01T15:20:12.129517+00:00",
+      "completed_at": "2026-09-01T15:20:20.400209+00:00",
+      "phase": "P58-02",
+      "round_id": "round-1",
+      "operation": "public_topic_discovery",
+      "topic": "Diving equipment",
+      "public_identity": null,
+      "status": "provider_reached",
+      "provider_reached": true,
+      "response_status": 200,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "failure_code": null,
+      "quota_delta": 0
+    },
+    {
+      "sequence": 5,
+      "started_at": "2026-09-01T15:23:23.768891+00:00",
+      "completed_at": "2026-09-01T15:23:32.959588+00:00",
+      "phase": "P58-02",
+      "round_id": "round-1-recovery",
+      "operation": "public_topic_discovery",
+      "topic": "Diving lesson",
+      "public_identity": null,
+      "status": "provider_reached",
+      "provider_reached": true,
+      "response_status": 200,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "failure_code": null,
+      "quota_delta": 0
+    },
+    {
+      "sequence": 6,
+      "started_at": "2026-09-01T15:23:32.961593+00:00",
+      "completed_at": "2026-09-01T15:23:40.218958+00:00",
+      "phase": "P58-02",
+      "round_id": "round-1-recovery",
+      "operation": "public_topic_discovery",
+      "topic": "Diving equipment",
+      "public_identity": null,
+      "status": "provider_reached",
+      "provider_reached": true,
+      "response_status": 200,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "failure_code": null,
+      "quota_delta": 0
+    },
+    {
+      "sequence": 7,
+      "started_at": "2026-09-01T15:26:25.573776+00:00",
+      "completed_at": "2026-09-01T15:26:35.292177+00:00",
+      "phase": "P58-02",
+      "round_id": "round-1-recovery-2",
+      "operation": "public_topic_discovery",
+      "topic": "Diving lesson",
+      "public_identity": null,
+      "status": "provider_reached",
+      "provider_reached": true,
+      "response_status": 200,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "failure_code": null,
+      "quota_delta": 0
+    },
+    {
+      "sequence": 8,
+      "started_at": "2026-09-01T15:26:35.296175+00:00",
+      "completed_at": "2026-09-01T15:26:42.786848+00:00",
+      "phase": "P58-02",
+      "round_id": "round-1-recovery-2",
+      "operation": "public_topic_discovery",
+      "topic": "Diving equipment",
+      "public_identity": null,
+      "status": "provider_reached",
+      "provider_reached": true,
+      "response_status": 200,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "failure_code": null,
+      "quota_delta": 0
+    },
+    {
+      "sequence": 9,
+      "started_at": "2026-09-01T15:29:01.765239+00:00",
+      "completed_at": "2026-09-01T15:29:11.400846+00:00",
+      "phase": "P58-02",
+      "round_id": "round-1-recovery-3",
+      "operation": "public_topic_discovery",
+      "topic": "Diving lesson",
+      "public_identity": null,
+      "status": "provider_reached",
+      "provider_reached": true,
+      "response_status": 200,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "failure_code": null,
+      "quota_delta": 0
+    },
+    {
+      "sequence": 10,
+      "started_at": "2026-09-01T15:29:11.402845+00:00",
+      "completed_at": "2026-09-01T15:29:18.761926+00:00",
+      "phase": "P58-02",
+      "round_id": "round-1-recovery-3",
+      "operation": "public_topic_discovery",
+      "topic": "Diving equipment",
+      "public_identity": null,
+      "status": "provider_reached",
+      "provider_reached": true,
+      "response_status": 200,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "failure_code": null,
+      "quota_delta": 0
+    },
+    {
+      "sequence": 11,
+      "started_at": "2026-09-01T15:31:05.153189+00:00",
+      "completed_at": "2026-09-01T15:31:18.899678+00:00",
+      "phase": "P58-02",
+      "round_id": "round-1-recovery-4",
+      "operation": "public_topic_discovery",
+      "topic": "Diving lesson",
+      "public_identity": null,
+      "status": "provider_reached",
+      "provider_reached": true,
+      "response_status": 200,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "tiktok_response_count": 251,
+      "third_party_requests_blocked": 0,
+      "public_json_responses_inspected": 19,
+      "failure_code": null,
+      "quota_delta": 0
+    },
+    {
+      "sequence": 12,
+      "started_at": "2026-09-01T15:31:18.902681+00:00",
+      "completed_at": "2026-09-01T15:31:31.042966+00:00",
+      "phase": "P58-02",
+      "round_id": "round-1-recovery-4",
+      "operation": "public_topic_discovery",
+      "topic": "Diving equipment",
+      "public_identity": null,
+      "status": "provider_reached",
+      "provider_reached": true,
+      "response_status": 200,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "tiktok_response_count": 491,
+      "third_party_requests_blocked": 0,
+      "public_json_responses_inspected": 18,
+      "failure_code": null,
+      "quota_delta": 0
+    },
+    {
+      "sequence": 13,
+      "started_at": "2026-09-01T15:33:14.863260+00:00",
+      "completed_at": "2026-09-01T15:33:28.816573+00:00",
+      "phase": "P58-02",
+      "round_id": "round-1-recovery-5",
+      "operation": "public_topic_discovery",
+      "topic": "Diving lesson",
+      "public_identity": null,
+      "status": "provider_reached",
+      "provider_reached": true,
+      "response_status": 200,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "tiktok_response_count": 259,
+      "third_party_requests_blocked": 0,
+      "public_json_responses_inspected": 18,
+      "failure_code": null,
+      "quota_delta": 0
+    },
+    {
+      "sequence": 14,
+      "started_at": "2026-09-01T15:33:28.818560+00:00",
+      "completed_at": "2026-09-01T15:33:40.113411+00:00",
+      "phase": "P58-02",
+      "round_id": "round-1-recovery-5",
+      "operation": "public_topic_discovery",
+      "topic": "Diving equipment",
+      "public_identity": null,
+      "status": "provider_reached",
+      "provider_reached": true,
+      "response_status": 200,
+      "candidate_count": 12,
+      "retained_count": 0,
+      "tiktok_response_count": 609,
+      "third_party_requests_blocked": 0,
+      "public_json_responses_inspected": 18,
+      "failure_code": null,
+      "quota_delta": 0
+    },
+    {
+      "sequence": 15,
+      "started_at": "2026-09-01T15:35:20.905449+00:00",
+      "completed_at": "2026-09-01T15:35:36.037663+00:00",
+      "phase": "P58-02",
+      "round_id": "round-1-recovery-6",
+      "operation": "public_topic_discovery",
+      "topic": "Diving lesson",
+      "public_identity": null,
+      "status": "provider_reached",
+      "provider_reached": true,
+      "response_status": 200,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "tiktok_response_count": 243,
+      "third_party_requests_blocked": 0,
+      "public_json_responses_inspected": 17,
+      "failure_code": null,
+      "quota_delta": 0
+    },
+    {
+      "sequence": 16,
+      "started_at": "2026-09-01T15:35:36.039662+00:00",
+      "completed_at": "2026-09-01T15:35:48.137212+00:00",
+      "phase": "P58-02",
+      "round_id": "round-1-recovery-6",
+      "operation": "public_topic_discovery",
+      "topic": "Diving equipment",
+      "public_identity": null,
+      "status": "provider_reached",
+      "provider_reached": true,
+      "response_status": 200,
+      "candidate_count": 14,
+      "retained_count": 0,
+      "tiktok_response_count": 553,
+      "third_party_requests_blocked": 0,
+      "public_json_responses_inspected": 20,
+      "failure_code": null,
+      "quota_delta": 0
+    },
+    {
+      "sequence": 17,
+      "started_at": "2026-09-01T15:38:46.468515+00:00",
+      "completed_at": "2026-09-01T15:39:00.015608+00:00",
+      "phase": "P58-02",
+      "round_id": "round-1-recovery-7",
+      "operation": "public_render_warmup",
+      "topic": null,
+      "public_identity": null,
+      "status": "preconnect_failure",
+      "provider_reached": false,
+      "response_status": null,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "tiktok_response_count": 0,
+      "third_party_requests_blocked": 0,
+      "public_json_responses_inspected": 0,
+      "failure_code": "preconnect_ConnectionClosedError",
+      "quota_delta": 0
+    },
+    {
+      "sequence": 18,
+      "started_at": "2026-09-01T15:41:47.481402+00:00",
+      "completed_at": "2026-09-01T15:42:03.375270+00:00",
+      "phase": "P58-02",
+      "round_id": "round-1-recovery-8",
+      "operation": "public_render_warmup",
+      "topic": null,
+      "public_identity": null,
+      "status": "provider_reached",
+      "provider_reached": true,
+      "response_status": 200,
+      "candidate_count": 0,
+      "retained_count": 0,
+      "tiktok_response_count": 258,
+      "third_party_requests_blocked": 0,
+      "public_json_responses_inspected": 17,
+      "failure_code": null,
+      "quota_delta": 0
+    },
+    {
+      "sequence": 19,
+      "started_at": "2026-09-01T15:42:03.378292+00:00",
+      "completed_at": "2026-09-01T15:42:15.494214+00:00",
+      "phase": "P58-02",
+      "round_id": "round-1-recovery-8",
+      "operation": "public_topic_discovery",
+      "topic": null,
+      "public_identity": null,
+      "status": "provider_reached",
+      "provider_reached": true,
+      "response_status": 200,
+      "candidate_count": 12,
+      "retained_count": 0,
+      "tiktok_response_count": 574,
+      "third_party_requests_blocked": 0,
+      "public_json_responses_inspected": 16,
+      "failure_code": null,
+      "quota_delta": 0
+    }
+  ],
+  "operation_accounting": {
+    "provider_reached": 17,
+    "provider_limit": 40,
+    "preconnect_failures": 2,
+    "preconnect_limit": 10,
+    "quota_delta": 0
+  },
+  "network_preflight": {
+    "provider_reached": true,
+    "response_status": 200,
+    "failure_code": null
+  },
+  "rounds": [
+    {
+      "round_id": "round-1",
+      "phase": "P58-02",
+      "started_at": "2026-09-01T15:20:04.020433+00:00",
+      "discovery_counts": {
+        "Diving lesson": 0,
+        "Diving equipment": 0
+      },
+      "records": {
+        "Diving lesson": [],
+        "Diving equipment": []
+      },
+      "completed_at": null
+    },
+    {
+      "round_id": "round-1-recovery",
+      "phase": "P58-02",
+      "started_at": "2026-09-01T15:23:23.768891+00:00",
+      "discovery_counts": {
+        "Diving lesson": 0,
+        "Diving equipment": 0
+      },
+      "records": {
+        "Diving lesson": [],
+        "Diving equipment": []
+      },
+      "completed_at": null
+    },
+    {
+      "round_id": "round-1-recovery-2",
+      "phase": "P58-02",
+      "started_at": "2026-09-01T15:26:25.573776+00:00",
+      "discovery_counts": {
+        "Diving lesson": 0,
+        "Diving equipment": 0
+      },
+      "records": {
+        "Diving lesson": [],
+        "Diving equipment": []
+      },
+      "completed_at": null
+    },
+    {
+      "round_id": "round-1-recovery-3",
+      "phase": "P58-02",
+      "started_at": "2026-09-01T15:29:01.765239+00:00",
+      "discovery_counts": {
+        "Diving lesson": 0,
+        "Diving equipment": 0
+      },
+      "records": {
+        "Diving lesson": [],
+        "Diving equipment": []
+      },
+      "completed_at": null
+    },
+    {
+      "round_id": "round-1-recovery-4",
+      "phase": "P58-02",
+      "started_at": "2026-09-01T15:31:05.153189+00:00",
+      "discovery_counts": {
+        "Diving lesson": 0,
+        "Diving equipment": 0
+      },
+      "records": {
+        "Diving lesson": [],
+        "Diving equipment": []
+      },
+      "completed_at": null
+    },
+    {
+      "round_id": "round-1-recovery-5",
+      "phase": "P58-02",
+      "started_at": "2026-09-01T15:33:14.863260+00:00",
+      "discovery_counts": {
+        "Diving lesson": 0,
+        "Diving equipment": 12
+      },
+      "records": {
+        "Diving lesson": [],
+        "Diving equipment": []
+      },
+      "completed_at": null
+    },
+    {
+      "round_id": "round-1-recovery-6",
+      "phase": "P58-02",
+      "started_at": "2026-09-01T15:35:20.905449+00:00",
+      "discovery_counts": {
+        "Diving lesson": 0,
+        "Diving equipment": 14
+      },
+      "records": {
+        "Diving lesson": [],
+        "Diving equipment": []
+      },
+      "completed_at": null
+    },
+    {
+      "round_id": "round-1-recovery-7",
+      "phase": "P58-02",
+      "started_at": "2026-09-01T15:38:46.468515+00:00",
+      "discovery_counts": {},
+      "records": {
+        "Diving lesson": [],
+        "Diving equipment": []
+      },
+      "completed_at": null
+    },
+    {
+      "round_id": "round-1-recovery-8",
+      "phase": "P58-02",
+      "started_at": "2026-09-01T15:41:47.481402+00:00",
+      "discovery_counts": {
+        "Diving lesson": 0,
+        "Diving equipment": 0
+      },
+      "records": {
+        "Diving lesson": [],
+        "Diving equipment": []
+      },
+      "completed_at": null
+    }
+  ],
+  "final_records": {
+    "Diving lesson": [],
+    "Diving equipment": []
+  },
+  "context_destruction_proofs": [
+    {
+      "process_stopped": true,
+      "profile_existed_before_teardown": true,
+      "profile_absent_after_teardown": true,
+      "first_party_cookie_count": 0,
+      "third_party_requests_blocked": 0,
+      "cookie_values_read": false,
+      "cookie_values_persisted": false,
+      "storage_state_persisted": false,
+      "browser_profile_persisted": false,
+      "raw_network_log_persisted": false,
+      "context_id": "preflight",
+      "destroyed_at": "2026-09-01T15:17:22.262840+00:00"
+    },
+    {
+      "process_stopped": true,
+      "profile_existed_before_teardown": true,
+      "profile_absent_after_teardown": true,
+      "first_party_cookie_count": 0,
+      "third_party_requests_blocked": 63,
+      "cookie_values_read": false,
+      "cookie_values_persisted": false,
+      "storage_state_persisted": false,
+      "browser_profile_persisted": false,
+      "raw_network_log_persisted": false,
+      "context_id": "preflight",
+      "destroyed_at": "2026-09-01T15:20:04.017897+00:00"
+    },
+    {
+      "process_stopped": true,
+      "profile_existed_before_teardown": true,
+      "profile_absent_after_teardown": true,
+      "first_party_cookie_count": 0,
+      "third_party_requests_blocked": 44,
+      "cookie_values_read": false,
+      "cookie_values_persisted": false,
+      "storage_state_persisted": false,
+      "browser_profile_persisted": false,
+      "raw_network_log_persisted": false,
+      "context_id": "round-1",
+      "destroyed_at": "2026-09-01T15:20:20.657745+00:00"
+    },
+    {
+      "process_stopped": true,
+      "profile_existed_before_teardown": true,
+      "profile_absent_after_teardown": true,
+      "first_party_cookie_count": 6,
+      "third_party_requests_blocked": 0,
+      "cookie_values_read": false,
+      "cookie_values_persisted": false,
+      "storage_state_persisted": false,
+      "browser_profile_persisted": false,
+      "raw_network_log_persisted": false,
+      "context_id": "round-1-recovery",
+      "destroyed_at": "2026-09-01T15:23:40.605213+00:00"
+    },
+    {
+      "process_stopped": true,
+      "profile_existed_before_teardown": true,
+      "profile_absent_after_teardown": true,
+      "first_party_cookie_count": 6,
+      "third_party_requests_blocked": 0,
+      "cookie_values_read": false,
+      "cookie_values_persisted": false,
+      "storage_state_persisted": false,
+      "browser_profile_persisted": false,
+      "raw_network_log_persisted": false,
+      "context_id": "round-1-recovery-2",
+      "destroyed_at": "2026-09-01T15:26:43.234973+00:00"
+    },
+    {
+      "process_stopped": true,
+      "profile_existed_before_teardown": true,
+      "profile_absent_after_teardown": true,
+      "first_party_cookie_count": 6,
+      "third_party_requests_blocked": 0,
+      "cookie_values_read": false,
+      "cookie_values_persisted": false,
+      "storage_state_persisted": false,
+      "browser_profile_persisted": false,
+      "raw_network_log_persisted": false,
+      "context_id": "round-1-recovery-3",
+      "destroyed_at": "2026-09-01T15:29:19.195431+00:00"
+    },
+    {
+      "process_stopped": true,
+      "profile_existed_before_teardown": true,
+      "profile_absent_after_teardown": true,
+      "first_party_cookie_count": 6,
+      "third_party_requests_blocked": 0,
+      "cookie_values_read": false,
+      "cookie_values_persisted": false,
+      "storage_state_persisted": false,
+      "browser_profile_persisted": false,
+      "raw_network_log_persisted": false,
+      "context_id": "round-1-recovery-4",
+      "destroyed_at": "2026-09-01T15:31:31.428103+00:00"
+    },
+    {
+      "process_stopped": true,
+      "profile_existed_before_teardown": true,
+      "profile_absent_after_teardown": true,
+      "first_party_cookie_count": 6,
+      "third_party_requests_blocked": 0,
+      "cookie_values_read": false,
+      "cookie_values_persisted": false,
+      "storage_state_persisted": false,
+      "browser_profile_persisted": false,
+      "raw_network_log_persisted": false,
+      "context_id": "round-1-recovery-5",
+      "destroyed_at": "2026-09-01T15:33:40.573100+00:00"
+    },
+    {
+      "process_stopped": true,
+      "profile_existed_before_teardown": true,
+      "profile_absent_after_teardown": true,
+      "first_party_cookie_count": 6,
+      "third_party_requests_blocked": 0,
+      "cookie_values_read": false,
+      "cookie_values_persisted": false,
+      "storage_state_persisted": false,
+      "browser_profile_persisted": false,
+      "raw_network_log_persisted": false,
+      "context_id": "round-1-recovery-6",
+      "destroyed_at": "2026-09-01T15:35:48.632886+00:00"
+    },
+    {
+      "process_stopped": true,
+      "profile_existed_before_teardown": true,
+      "profile_absent_after_teardown": true,
+      "first_party_cookie_count": 0,
+      "third_party_requests_blocked": 0,
+      "cookie_values_read": false,
+      "cookie_values_persisted": false,
+      "storage_state_persisted": false,
+      "browser_profile_persisted": false,
+      "raw_network_log_persisted": false,
+      "context_id": "round-1-recovery-7",
+      "destroyed_at": "2026-09-01T15:39:00.463112+00:00"
+    },
+    {
+      "process_stopped": true,
+      "profile_existed_before_teardown": true,
+      "profile_absent_after_teardown": true,
+      "first_party_cookie_count": 6,
+      "third_party_requests_blocked": 0,
+      "cookie_values_read": false,
+      "cookie_values_persisted": false,
+      "storage_state_persisted": false,
+      "browser_profile_persisted": false,
+      "raw_network_log_persisted": false,
+      "context_id": "round-1-recovery-8",
+      "destroyed_at": "2026-09-01T15:42:15.992578+00:00"
+    }
+  ],
+  "stop_condition": "insufficient_topic_records:Diving lesson",
+  "technical_failure": null,
+  "minimum_trusted_connection": null,
+  "analysis_handoff": null,
+  "phase_outcome": {
+    "entered_phases": [
+      "P58-01",
+      "P58-02"
+    ],
+    "unentered_phases": [
+      "P58-03",
+      "P58-04",
+      "P58-05"
+    ],
+    "status": "blocked",
+    "acquisition_technique_frozen": false,
+    "adapter_or_registry_artifacts_created": false
+  },
+  "budget_feasibility": {
+    "provider_reached": 17,
+    "provider_limit": 40,
+    "provider_remaining": 23,
+    "preconnect_failures": 2,
+    "preconnect_limit": 10,
+    "minimum_provider_operations_for_two_complete_rounds": 24,
+    "success_contract_still_feasible": false
+  },
+  "conclusion": "The disposable browser lifecycle reached public TikTok and produced 12-14 stable Diving equipment candidates after a same-context warm-up, but no Diving lesson candidates. Seventeen provider-reached operations and two preconnect failures were finalized without retaining records. Completing two fresh-context rounds now requires at least twenty-four provider operations while only twenty-three remain, so P58 stops without verification, adapter, Registry V3, fixture, MTC, Analysis handoff, PR or merge.",
+  "boundaries": {
+    "official_public_surfaces_only": true,
+    "first_party_session_cookies_allowed_only_in_temporary_context": true,
+    "third_party_cookie_storage_blocked": true,
+    "cookie_values_read": false,
+    "cookie_values_persisted": false,
+    "storage_state_persisted": false,
+    "browser_profile_persisted": false,
+    "raw_network_log_persisted": false,
+    "login_used": false,
+    "credentials_used": false,
+    "captcha_or_bypass_attempted": false,
+    "provider_quota_delta": 0,
+    "production_store": false,
+    "production_approved": false,
+    "scheduler_action": null
+  },
+  "network_preflight_history": [
+    {
+      "provider_reached": false,
+      "response_status": null,
+      "failure_code": "preconnect_TimeoutError"
+    },
+    {
+      "provider_reached": true,
+      "response_status": 200,
+      "failure_code": null
+    }
+  ],
+  "technical_failure_history": [
+    {
+      "type": "ConnectionClosedError",
+      "message": "sent 1009 (message too big) frame with 1230407 bytes exceeds limit of 1048576 bytes; no close frame received"
+    }
+  ]
+}

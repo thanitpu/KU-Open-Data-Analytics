@@ -104,3 +104,7 @@ print("Foundation Consolidation integration checks passed: FC1-FC7")
 
 # P57's bounded TikTok closure is registered without changing the CI workflow.
 runpy.run_path(str(ROOT / "tools" / "SELF_TEST_TIKTOK_SOURCE_COMPLETION.py"), run_name="__main__")
+
+# P58's ephemeral browser lifecycle and blocked-boundary closure are registered
+# without adding a live trigger to CI.
+runpy.run_path(str(ROOT / "tools" / "SELF_TEST_TIKTOK_EPHEMERAL_BROWSER.py"), run_name="__main__")
