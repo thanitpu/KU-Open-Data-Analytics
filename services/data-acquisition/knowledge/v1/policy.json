@@ -1,0 +1,100 @@
+{
+  "schema": "ku2d.acquisition-knowledge-policy.v1",
+  "policy_id": "KU2D-KP-000001",
+  "effective_at": "2026-09-01T11:10:00.000+07:00",
+  "objective": "Reduce coordination overhead while preserving auditability and producing clean ML-ready experience data for future source-strategy learning.",
+  "layers": {
+    "operational_control": {
+      "purpose": "Route current work and enforce execution authority.",
+      "records": [
+        "queue",
+        "prompt",
+        "result",
+        "assistant_review",
+        "human_decision"
+      ],
+      "retention": "append_only_audit",
+      "ml_training_input": false
+    },
+    "audit_evidence": {
+      "purpose": "Preserve sanitized provenance, execution evidence, quality metrics, failures and immutable references.",
+      "records": [
+        "sanitized_artifact",
+        "ledger",
+        "run_summary",
+        "ci_and_commit_references"
+      ],
+      "retention": "append_only_audit",
+      "ml_training_input": "indirect_via_normalization"
+    },
+    "acquisition_experience": {
+      "purpose": "Provide compact normalized examples for future ML source-method selection, failure prediction and monitoring recommendations.",
+      "records": [
+        "ku2d.acquisition-experience.v1"
+      ],
+      "retention": "versioned_dataset",
+      "ml_training_input": true
+    }
+  },
+  "generation_rules": {
+    "trigger": [
+      "materially_distinct_acquisition_attempt",
+      "source_or_method_closure",
+      "material_access_or_quality_failure"
+    ],
+    "maximum_records_per_attempt": 1,
+    "derive_from": [
+      "sanitized_result",
+      "sanitized_audit_evidence",
+      "accepted_review"
+    ],
+    "exclude": [
+      "queue_narrative",
+      "prompt_instructions",
+      "secret_values",
+      "raw_provider_payloads",
+      "request_urls",
+      "page_tokens",
+      "personal_data"
+    ],
+    "validation": [
+      "schema_valid",
+      "evidence_references_resolve",
+      "no_secret_or_raw_payload",
+      "failure_stage_and_provider_reached_are_consistent",
+      "quality_values_are_null_when_not_observed",
+      "record_is_deterministically_reproducible_from_sanitized_sources"
+    ]
+  },
+  "queue_simplification": {
+    "queue_role": "pointer_and_actor_status_only",
+    "required_summary_fields": [
+      "queue_objective",
+      "next_actor",
+      "prompt_id",
+      "result_id",
+      "review_id",
+      "human_decision_id"
+    ],
+    "forbidden_role": "ml_training_record",
+    "no_reconfirmation_policy": "Apply KU2D-H-000016 standing authority; request a new Human Gate only for material scope, privacy, production, spending or authority expansion."
+  },
+  "ml_targets": [
+    "recommend likely access methods for a new source",
+    "rank reusable acquisition patterns",
+    "predict failure stage and access risk",
+    "estimate effort class",
+    "recommend validation and monitoring checks",
+    "detect when re-exploration is needed"
+  ],
+  "approval": {
+    "human_decision": "KU2D-H-000018",
+    "explicit_user_instruction": "ปรับเลยครับ"
+  },
+  "boundaries": {
+    "production_authorized": false,
+    "automatic_model_training": false,
+    "automatic_authority_promotion": false,
+    "scheduler_action": null
+  }
+}
