@@ -49,6 +49,12 @@ def _walk_safe(value: Any, path: str = "record") -> None:
             _walk_safe(child, f"{path}[{index}]")
 
 
+def validate_sanitized(value: Any, *, path: str = "record") -> Any:
+    """Fail closed on credential/session material and return a safe copy."""
+    _walk_safe(value, path)
+    return copy.deepcopy(value)
+
+
 class ErrorClass(str, Enum):
     POLICY = "policy"
     AUTHENTICATION = "authentication"

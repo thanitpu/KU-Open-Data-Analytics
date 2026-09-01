@@ -1,0 +1,32 @@
+{
+  "schema": "ku2d.adapter-registry.v1",
+  "registry_id": "KU2D-ADAPTER-REGISTRY-V1",
+  "registry_version": "1.0.0",
+  "connector_contract_version": "1.0.0",
+  "registrations": [
+    {
+      "source_id": "youtube-data-api-v3-q-diving",
+      "source_manifest_id": "KU2D-SM-YOUTUBE-QDIVING-000001",
+      "adapter_id": "youtube-qdiving-reference-adapter",
+      "adapter_version": "1.0.0",
+      "parser_id": "youtube-qdiving-sanitized-candidate-parser.v1",
+      "parser_version": "1.0.0",
+      "mapper_id": "public-video-q-diving-mapper.v1",
+      "mapper_version": "1.0.0",
+      "connector_contract_version": "1.0.0",
+      "implementation_key": "youtube_qdiving_reference_v1",
+      "manifest_bindings": {
+        "adapter": "youtube_qdiving_connector.YouTubeQDivingAdapter",
+        "parser": "youtube_qdiving_connector.YouTubeQDivingCandidateParser",
+        "mapper": "youtube_qdiving_connector.PublicVideoQDivingMapper"
+      },
+      "supported_capabilities": ["video_metadata", "channel_identity"],
+      "transport_modes": ["fixture_replay"]
+    }
+  ],
+  "boundaries": {
+    "dynamic_imports": false,
+    "production_approved": false,
+    "scheduler_action": null
+  }
+}

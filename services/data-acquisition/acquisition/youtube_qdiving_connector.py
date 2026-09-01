@@ -18,6 +18,9 @@ class YouTubeQDivingAdapter:
     """Declare fixture access; execution mechanics remain in ConnectorKit."""
 
     source_id = "youtube-data-api-v3-q-diving"
+    adapter_id = "youtube-qdiving-reference-adapter"
+    adapter_version = "1.0.0"
+    connector_contract_version = "1.0.0"
     parser_id = "youtube-qdiving-sanitized-candidate-parser.v1"
     domain_profile_id = "public-video-q-diving.v1"
     mapper_id = "public-video-q-diving-mapper.v1"
@@ -51,6 +54,7 @@ class YouTubeQDivingCandidateParser:
     """Parse the sanitized P50 closure packet into source-specific records."""
 
     parser_id = YouTubeQDivingAdapter.parser_id
+    parser_version = "1.0.0"
 
     def parse(self, envelope: ResponseEnvelope) -> list[dict[str, Any]]:
         payload = envelope.payload
@@ -82,6 +86,7 @@ class PublicVideoQDivingMapper:
     """Map source records while leaving semantic decisions to Analysis."""
 
     mapper_id = YouTubeQDivingAdapter.mapper_id
+    mapper_version = "1.0.0"
 
     def map_record(self, source_record: dict[str, Any]) -> dict[str, Any]:
         return {

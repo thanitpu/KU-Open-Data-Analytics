@@ -69,6 +69,8 @@ jobs:
           python tools/SELF_TEST_YOUTUBE_IDENTITY_DISCOVERY_REVIEW.py
           python tools/SELF_TEST_YOUTUBE_IDENTITY_DISCOVERY_DISPATCH.py
           python tools/SELF_TEST_CONNECTOR_KIT_V1.py
+          python tools/SELF_TEST_SOURCE_RUNNER_V1.py
+          python tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py
           python tools/SELF_TEST_SHOPEE_COMMERCE_PULSE.py
           python tools/SELF_TEST_SHOPEE_EDGE_ACCESS_DIAGNOSTIC.py
           python tools/SELF_TEST_SHOPEE_EDGE_WORKFLOW.py
