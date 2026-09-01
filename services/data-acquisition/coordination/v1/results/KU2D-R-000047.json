@@ -1,0 +1,217 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000047",
+  "prompt_id": "KU2D-P-000047",
+  "submitted_at": "2026-09-01T10:42:02.6283177+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "partial",
+  "summary": "Merged exact-head PR #67 to main with an expected-head guard and dispatched the corrected H16-bound Q-Diving Identity Discovery workflow exactly once. Main merge 769149377b9a7886ae2fc6457c7fe815a09d5cd6 contains the reviewed one-file launcher and its fail-closed artifact guard. Run 33467010248 failed during staged continuation-authorization validation, before evidence-path initialization or the runtime discovery step, because immutable execution cac243aedaa3c83c188e4e90481e4b752fe8bd2b requires exact equality with its original AUTH_SCOPE while H16 intentionally records a corrective-rerun scope with different operation and quota field names. Consequently exit classification is technical failure 1, technical completion is false, no provider request or quota use occurred, and no Step Summary or artifact was available. No retry or second dispatch occurred.",
+  "evidence_references": [
+    "KU2D-P-000047",
+    "KU2D-V-000046",
+    "KU2D-H-000016",
+    "PR:#67",
+    "promotion-head:0398fb3e4ac229e5f1d97e45fc6cca373fef8c3a",
+    "main-merge:769149377b9a7886ae2fc6457c7fe815a09d5cd6",
+    "integration-execution:cac243aedaa3c83c188e4e90481e4b752fe8bd2b",
+    "authorization-record:bd53a3d8378703e017e2aa7c97d9486c30e44a5b",
+    "workflow-run:33467010248",
+    "workflow-job:99728856187",
+    "workflow:Frontend CI:33466966538",
+    "workflow:Pages:33466965926"
+  ],
+  "merge_outcome": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "pull_request_number": 67,
+    "base_branch": "main",
+    "head_branch": "codex/promote-youtube-qdiving-corrected-launcher-v1",
+    "expected_head_sha": "0398fb3e4ac229e5f1d97e45fc6cca373fef8c3a",
+    "expected_head_guard_used": true,
+    "premerge_state": "open_ready_cleanly_mergeable_unmerged",
+    "changed_file_count": 1,
+    "changed_files": [
+      ".github/workflows/youtube-qdiving-identity-discovery.yml"
+    ],
+    "applicable_exact_head_check_count": 3,
+    "applicable_exact_head_checks_successful": true,
+    "merge_method": "squash",
+    "merged": true,
+    "merge_commit_sha": "769149377b9a7886ae2fc6457c7fe815a09d5cd6",
+    "postmerge_pr_state": "closed",
+    "remote_main_head": "769149377b9a7886ae2fc6457c7fe815a09d5cd6"
+  },
+  "registered_main_launcher": {
+    "workflow_id": 347084304,
+    "workflow_name": "KU2D Q-Diving Identity Discovery",
+    "workflow_path": ".github/workflows/youtube-qdiving-identity-discovery.yml",
+    "state": "active",
+    "trigger": "workflow_dispatch only",
+    "automatic_triggers_present": false,
+    "permissions": "contents: read",
+    "decision_id": "KU2D-H-000016",
+    "execution_revision": "cac243aedaa3c83c188e4e90481e4b752fe8bd2b",
+    "authorization_record_revision": "bd53a3d8378703e017e2aa7c97d9486c30e44a5b",
+    "corrected_explicit_evidence_if_else_present": true,
+    "evidence_outputs_present": [
+      "exists=true",
+      "exists=false"
+    ],
+    "secret_reference_count": 1,
+    "secret_reference_scope": "runtime discovery step after staged authorization validation",
+    "persist_credentials_false_count": 2,
+    "postmerge_static_guard_passed": true
+  },
+  "single_dispatch_proof": {
+    "dispatch_post_attempt_count": 1,
+    "dispatch_http_status": 204,
+    "automatic_retry_count": 0,
+    "additional_dispatch_count": 0,
+    "workflow_dispatch_run_count_before": 1,
+    "workflow_dispatch_run_count_after": 2,
+    "target_run_count": 1,
+    "run_id": 33467010248,
+    "run_number": 7,
+    "event": "workflow_dispatch",
+    "head_branch": "main",
+    "head_sha": "769149377b9a7886ae2fc6457c7fe815a09d5cd6",
+    "status": "completed",
+    "conclusion": "failure",
+    "job_id": 99728856187,
+    "job_name": "bounded-discovery",
+    "job_conclusion": "failure",
+    "failed_step": "Validate staged continuation authorization with reviewed execution code",
+    "runtime_discovery_step_conclusion": "skipped"
+  },
+  "sanitized_execution_outcome": {
+    "exit_classification": 1,
+    "classification": "technical_failure",
+    "technical_completion": false,
+    "candidate_count": null,
+    "usable_reviewed_identity_count": 0,
+    "usable_reviewed_identity_count_basis": "provider execution never began and no candidate passed Human Review",
+    "withheld_reason": "continuation_authorization_scope_mismatch_before_runtime",
+    "request_counts_by_endpoint": {
+      "search.list": 0,
+      "videos.list": 0
+    },
+    "additional_documented_quota_units": 0,
+    "historical_run_documented_quota_units": null,
+    "cumulative_documented_quota_units": null,
+    "cumulative_documented_quota_units_note": "The current run used zero units. The historical run's actual units remain unavailable because its sanitized artifact was not uploaded, so a cumulative actual value must not be inferred.",
+    "authorized_cumulative_upper_bound": 402,
+    "sanitized_ledger_events": [],
+    "human_review_completed": false,
+    "candidate_evidence_usable_for_acquisition": false
+  },
+  "sanitized_evidence_availability": {
+    "evidence_path_initialization_step": "skipped",
+    "step_summary_write_step_conclusion": "failure",
+    "step_summary_retrieved": false,
+    "step_summary_available": false,
+    "expected_artifact_name": "youtube-qdiving-identity-discovery-33467010248",
+    "artifact_count": 0,
+    "artifact_available": false,
+    "artifact_upload_step": "skipped",
+    "raw_job_log_retrieved": false,
+    "raw_provider_payload_retrieved": false
+  },
+  "technical_failure_diagnosis": {
+    "classification": "authorization_record_validator_schema_mismatch",
+    "failure_stage": "pre-provider staged continuation authorization validation",
+    "exception_contract": "immutable validator raises ValueError when authorized_scope is not exactly equal to AUTH_SCOPE",
+    "execution_scope_operation": "youtube_qdiving_identity_discovery",
+    "authorization_scope_operation": "youtube_qdiving_identity_discovery_corrective_rerun",
+    "execution_quota_field": "max_documented_quota_units",
+    "authorization_quota_fields": [
+      "max_additional_documented_quota_units",
+      "max_cumulative_documented_quota_units_including_historical_run"
+    ],
+    "authorization_additional_field": "dispatches",
+    "exact_scope_equality_satisfied": false,
+    "failure_message_contract": "continuation authorization does not match the exact H12 discovery scope",
+    "provider_reached": false,
+    "evidence_values_reconstructed_or_guessed": false,
+    "code_fixed_in_this_prompt": false,
+    "rerun_performed": false
+  },
+  "postmerge_checks": {
+    "head_sha": "769149377b9a7886ae2fc6457c7fe815a09d5cd6",
+    "bounded_discovery": {
+      "run_id": 33467010248,
+      "job_id": 99728856187,
+      "conclusion": "failure"
+    },
+    "frontend_ci": {
+      "run_id": 33466966538,
+      "conclusion": "success"
+    },
+    "pages": {
+      "run_id": 33466965926,
+      "conclusion": "success"
+    }
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "live_request_count": 1,
+    "live_request_count_semantics": "exact authorized live workflow dispatch count; provider endpoint request count is zero because authorization validation failed before runtime discovery",
+    "premerge_remote_guard": "passed",
+    "source_plus_three_anchors_equivalence": "passed",
+    "postmerge_main_launcher_guard": "passed",
+    "single_dispatch_guard": "passed",
+    "artifact_api_check": "zero artifacts",
+    "json_parse": "passed",
+    "git_diff_check": "passed",
+    "agent_handoff_protocol": "AH1-AH31 passed"
+  },
+  "security_and_boundaries": {
+    "main_modified_by_authorized_merge": true,
+    "integration_modified": false,
+    "workflow_dispatch_count": 1,
+    "automatic_or_additional_dispatch_count": 0,
+    "github_secret_value_accessed_by_codex": false,
+    "runtime_secret_step_executed": false,
+    "secret_value_printed_persisted_uploaded_or_committed": false,
+    "youtube_requests": 0,
+    "documented_quota_units": 0,
+    "raw_job_log_retrieved": false,
+    "raw_provider_data_retrieved": false,
+    "comments_acquired": false,
+    "captions_acquired": false,
+    "transcripts_acquired": false,
+    "oauth_used": false,
+    "browser_automation_or_scraping_used_for_youtube": false,
+    "human_review_conducted": false,
+    "candidates_approved": false,
+    "production_store": false,
+    "production_approved": false,
+    "authority_promoted": false,
+    "scheduler_action": null
+  },
+  "completed_queue_summary": {
+    "work_completed": "Reverified and squash-merged exact-head PR #67 to main, verified the corrected immutable launcher, dispatched it exactly once under H16, monitored only run 33467010248 and recorded its fail-closed technical outcome.",
+    "key_findings_results": "The one authorized run failed before provider execution because H16's corrective-rerun authorized_scope is not exactly equal to the immutable execution validator's original AUTH_SCOPE. No API request, quota use or runtime evidence occurred.",
+    "repo_knowledge_state_changes": "Main now contains only the reviewed corrected launcher promotion. No discovered candidate, Human Review, acquisition authority or production knowledge was added.",
+    "important_out_of_scope_actions_not_performed": "No retry or second dispatch, code correction, raw job-log retrieval, secret read, provider payload retrieval, comments, captions, transcripts, OAuth, YouTube browser automation or scraping, candidate approval, Human Review completion, production write, scheduling, scope broadening or authority promotion.",
+    "remaining_blockers_risks": "The authorization record and immutable execution validator use incompatible exact-scope schemas, so the approved corrective run cannot reach the provider. H16's single dispatch has been consumed. Evidence-writing cannot occur when validation fails before evidence paths are initialized.",
+    "recommended_next_step": "Assistant reviews R47. Do not rerun automatically. Any validator/authorization compatibility correction and any additional live dispatch must be authorized through a new queued Prompt under the applicable continuation policy."
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000047.json",
+    "depends_on_result": "KU2D-R-000046",
+    "depends_on_review": "KU2D-V-000046",
+    "depends_on_human_decision": "KU2D-H-000016",
+    "target_pr": 67,
+    "target_run_id": 33467010248
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
