@@ -41,7 +41,9 @@ def parser() -> argparse.ArgumentParser:
     value.add_argument("--output", type=Path, required=True)
     value.add_argument("--execute-authorized-live", action="store_true")
     value.add_argument("--no-production-store", action="store_true")
-    value.add_argument("--resume-after-preconnect-correction", action="store_true")
+    resume = value.add_mutually_exclusive_group()
+    resume.add_argument("--resume-after-preconnect-correction", action="store_true")
+    resume.add_argument("--resume-after-render-correction", action="store_true")
     return value
 
 
@@ -53,10 +55,11 @@ def validate_args(args: argparse.Namespace) -> Path:
     output = args.output.resolve()
     if not output.is_relative_to(ALLOWED_OUTPUT_ROOT):
         raise ValueError("evidence output must remain under knowledge/v1/tiktok")
-    if output.exists() and not args.resume_after_preconnect_correction:
+    resuming = args.resume_after_preconnect_correction or args.resume_after_render_correction
+    if output.exists() and not resuming:
         raise ValueError("live evidence already exists; automatic replay is prohibited")
-    if args.resume_after_preconnect_correction and not output.is_file():
-        raise ValueError("preconnect correction resume requires existing evidence")
+    if resuming and not output.is_file():
+        raise ValueError("correction resume requires existing evidence")
     return output
 
 
@@ -195,29 +198,33 @@ def _discovery_url(query: str) -> str:
 
 def run_campaign(
     output: Path, *, browser_factory: Callable[[], EphemeralBrowser] = EphemeralBrowser,
-    verifier: Callable[[str], dict[str, Any]] = verify_oembed, resume: bool = False,
+    verifier: Callable[[str], dict[str, Any]] = verify_oembed,
+    resume_mode: str | None = None,
 ) -> tuple[int, dict[str, Any]]:
-    if resume:
+    if resume_mode not in {None, "preconnect", "render"}:
+        raise ValueError("invalid correction resume mode")
+    if resume_mode:
         evidence = json.loads(output.read_text(encoding="utf-8"))
         if not isinstance(evidence, dict) or evidence.get("evidence_id") != EVIDENCE_ID:
             raise ValueError("existing evidence identity is invalid")
-        if (
-            evidence.get("status") != "evidence_withheld"
-            or evidence.get("stop_condition") != "network_preflight_failed"
-            or evidence.get("success") is not False
-            or evidence.get("rounds")
-        ):
-            raise ValueError("existing evidence is not resumable after a preconnect correction")
+        expected_stop = "network_preflight_failed" if resume_mode == "preconnect" else "insufficient_topic_records:Diving lesson"
+        if evidence.get("status") != "evidence_withheld" or evidence.get("stop_condition") != expected_stop or evidence.get("success") is not False:
+            raise ValueError("existing evidence is not resumable for the declared correction")
+        if resume_mode == "preconnect" and evidence.get("rounds"):
+            raise ValueError("preconnect correction cannot follow a candidate batch")
         rows = evidence.get("operation_ledger")
         if not isinstance(rows, list) or not rows or any(row.get("status") == "started" for row in rows):
             raise ValueError("existing operation ledger is incomplete")
         ledger = OperationLedger(rows=copy.deepcopy(rows))
-        if ledger.provider_reached != 0 or ledger.preconnect_failures >= ledger.preconnect_limit:
+        if resume_mode == "preconnect" and ledger.provider_reached != 0:
+            raise ValueError("preconnect correction cannot follow provider-reached work")
+        if ledger.provider_reached >= ledger.provider_limit or ledger.preconnect_failures >= ledger.preconnect_limit:
             raise ValueError("existing evidence is outside the authorized diagnostic boundary")
-        prior = copy.deepcopy(evidence.get("network_preflight"))
-        history = evidence.setdefault("network_preflight_history", [])
-        if prior and not history:
-            history.append(prior)
+        if resume_mode == "preconnect":
+            prior = copy.deepcopy(evidence.get("network_preflight"))
+            history = evidence.setdefault("network_preflight_history", [])
+            if prior and not history:
+                history.append(prior)
         evidence.update({
             "status": "in_progress", "technical_completion": False, "success": False,
             "stop_condition": None, "technical_failure": None,
@@ -228,44 +235,46 @@ def run_campaign(
         write_evidence(output, evidence, ledger)
     session: EphemeralBrowser | None = None
     try:
-        session = browser_factory()
-        preflight_row = ledger.begin(
-            phase="P58-01", round_id="preflight",
-            operation="network_preflight_diagnostic" if resume else "network_preflight",
-        )
-        write_evidence(output, evidence, ledger)
-        try:
-            session.start()
-            preflight = session.navigate("https://www.tiktok.com/")
-            ledger.finish(
-                preflight_row, provider_reached=bool(preflight["provider_reached"]),
-                response_status=preflight.get("response_status"),
-                failure_code=preflight.get("failure_code"),
+        if resume_mode != "render":
+            session = browser_factory()
+            preflight_row = ledger.begin(
+                phase="P58-01", round_id="preflight",
+                operation="network_preflight_diagnostic" if resume_mode == "preconnect" else "network_preflight",
             )
-        except Exception as exc:
-            ledger.finish(preflight_row, provider_reached=False, failure_code=f"preconnect_{type(exc).__name__}")
-            preflight = {"provider_reached": False, "response_status": None, "failure_code": f"preconnect_{type(exc).__name__}"}
-        evidence["network_preflight"] = {
-            "provider_reached": bool(preflight["provider_reached"]),
-            "response_status": preflight.get("response_status"),
-            "failure_code": preflight.get("failure_code"),
-        }
-        evidence["network_preflight_history"].append(copy.deepcopy(evidence["network_preflight"]))
-        write_evidence(output, evidence, ledger)
-        _teardown(session, evidence, context_id="preflight")
-        session = None
-        write_evidence(output, evidence, ledger)
-        if not preflight["provider_reached"] or preflight.get("failure_code"):
-            evidence.update({"status": "evidence_withheld", "technical_completion": True,
-                             "stop_condition": "network_preflight_failed"})
             write_evidence(output, evidence, ledger)
-            return EXIT_EVIDENCE_WITHHELD, evidence
+            try:
+                session.start()
+                preflight = session.navigate("https://www.tiktok.com/")
+                ledger.finish(
+                    preflight_row, provider_reached=bool(preflight["provider_reached"]),
+                    response_status=preflight.get("response_status"),
+                    failure_code=preflight.get("failure_code"),
+                )
+            except Exception as exc:
+                ledger.finish(preflight_row, provider_reached=False, failure_code=f"preconnect_{type(exc).__name__}")
+                preflight = {"provider_reached": False, "response_status": None, "failure_code": f"preconnect_{type(exc).__name__}"}
+            evidence["network_preflight"] = {
+                "provider_reached": bool(preflight["provider_reached"]),
+                "response_status": preflight.get("response_status"),
+                "failure_code": preflight.get("failure_code"),
+            }
+            evidence["network_preflight_history"].append(copy.deepcopy(evidence["network_preflight"]))
+            write_evidence(output, evidence, ledger)
+            _teardown(session, evidence, context_id="preflight")
+            session = None
+            write_evidence(output, evidence, ledger)
+            if not preflight["provider_reached"] or preflight.get("failure_code"):
+                evidence.update({"status": "evidence_withheld", "technical_completion": True,
+                                 "stop_condition": "network_preflight_failed"})
+                write_evidence(output, evidence, ledger)
+                return EXIT_EVIDENCE_WITHHELD, evidence
 
         round_one_records: dict[str, list[dict[str, Any]]] = {topic: [] for topic in TOPICS}
         for round_number in (1, 2):
-            round_id = f"round-{round_number}"
+            round_id = f"round-{round_number}-recovery" if resume_mode == "render" else f"round-{round_number}"
             phase = f"P58-0{round_number + 1}"
-            evidence["entered_phases"].append(phase)
+            if phase not in evidence["entered_phases"]:
+                evidence["entered_phases"].append(phase)
             session = browser_factory()
             discovered: dict[str, list[dict[str, str]]] = {}
             round_summary: dict[str, Any] = {
@@ -403,7 +412,8 @@ def main(argv=None) -> int:
         print(f"TikTok P58 argument validation failed: {exc}", file=sys.stderr)
         return EXIT_TECHNICAL_FAILURE
     try:
-        exit_code, evidence = run_campaign(output, resume=args.resume_after_preconnect_correction)
+        resume_mode = "preconnect" if args.resume_after_preconnect_correction else "render" if args.resume_after_render_correction else None
+        exit_code, evidence = run_campaign(output, resume_mode=resume_mode)
     except Exception as exc:
         print(f"TikTok P58 evidence writing failed: {exc}", file=sys.stderr)
         return EXIT_TECHNICAL_FAILURE

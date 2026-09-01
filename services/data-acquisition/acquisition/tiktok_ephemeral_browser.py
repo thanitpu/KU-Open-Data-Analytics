@@ -28,6 +28,9 @@ PROVIDER_LIMIT = 40
 PRECONNECT_LIMIT = 10
 MAX_RECORDS_PER_TOPIC = 5
 MAX_OEMBED_BYTES = 200_000
+TIKTOK_PUBLIC_DELIVERY_SUFFIXES = (
+    "tiktokcdn.com", "tiktokcdn-us.com", "tiktokv.com", "ttwstatic.com",
+)
 CANONICAL_VIDEO = re.compile(
     r"^https://(?:www\.)?tiktok\.com/@(?P<creator>[A-Za-z0-9._-]+)/video/(?P<video_id>[0-9]+)$",
     re.IGNORECASE,
@@ -41,6 +44,14 @@ def observed_at() -> str:
 def is_tiktok_host(value: str | None) -> bool:
     host = str(value or "").rstrip(".").casefold()
     return host == "tiktok.com" or host.endswith(".tiktok.com")
+
+
+def is_allowed_tiktok_resource_host(value: str | None) -> bool:
+    host = str(value or "").rstrip(".").casefold()
+    return is_tiktok_host(host) or any(
+        host == suffix or host.endswith("." + suffix)
+        for suffix in TIKTOK_PUBLIC_DELIVERY_SUFFIXES
+    )
 
 
 def canonical_video_url(value: Any) -> str | None:
@@ -249,7 +260,7 @@ class EphemeralBrowser:
         host = urlparse(str(request.get("url") or "")).hostname
         request_id = params.get("requestId")
         self.sequence += 1
-        if is_tiktok_host(host):
+        if is_allowed_tiktok_resource_host(host):
             method = "Fetch.continueRequest"
             command_params = {"requestId": request_id}
         else:
@@ -297,9 +308,9 @@ class EphemeralBrowser:
         if method == "Network.responseReceived":
             response = params.get("response") or {}
             host = urlparse(str(response.get("url") or "")).hostname
-            if is_tiktok_host(host):
+            if is_allowed_tiktok_resource_host(host):
                 self.allowed_subresource_responses += 1
-                if str(params.get("type") or "").casefold() == "document":
+                if is_tiktok_host(host) and str(params.get("type") or "").casefold() == "document":
                     return True, int(response.get("status") or 0) or None, None
         if method == "Page.frameNavigated":
             frame = params.get("frame") or {}

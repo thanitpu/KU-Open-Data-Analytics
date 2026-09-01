@@ -69,6 +69,10 @@ assert browser.topic_qualified("Diving lesson", "เรียนดำน้ำ 
 assert browser.topic_qualified("Diving equipment", "รีวิวอุปกรณ์ดำน้ำ regulator BCD")
 assert not browser.topic_qualified("Diving lesson", "snorkeling beach holiday")
 assert not browser.topic_qualified("Diving equipment", "เรียนดำน้ำ Open Water")
+assert browser.is_allowed_tiktok_resource_host("www.tiktok.com")
+assert browser.is_allowed_tiktok_resource_host("sf16-webcast.tiktokcdn.com")
+assert browser.is_allowed_tiktok_resource_host("lf16-tiktok-web.ttwstatic.com")
+assert not browser.is_allowed_tiktok_resource_host("tracker.example")
 
 ledger = browser.OperationLedger(provider_limit=2, preconnect_limit=1)
 first = ledger.begin(phase="preflight", round_id="preflight", operation="navigate")
@@ -295,7 +299,7 @@ with tempfile.TemporaryDirectory(prefix="ku2d-p58-preflight-") as temporary:
         output,
         browser_factory=lambda: FakeLiveBrowser(next(counter)),  # type: ignore[arg-type]
         verifier=fake_verifier,
-        resume=True,
+        resume_mode="preconnect",
     )
     assert code == live.EXIT_SUCCESS
     assert result["operation_accounting"]["provider_reached"] == 25
@@ -316,4 +320,28 @@ with tempfile.TemporaryDirectory(prefix="ku2d-p58-reproduction-") as temporary:
     assert result["success"] is False
     assert output.is_file()
 
-print("TikTok P58 ephemeral-browser checks passed: scope=2 identity=4 ledger=3 cdp=2 teardown=9 campaigns=4")
+with tempfile.TemporaryDirectory(prefix="ku2d-p58-render-correction-") as temporary:
+    output = Path(temporary) / "evidence.json"
+    counter = iter((0, 1))
+    code, result = live.run_campaign(
+        output,
+        browser_factory=lambda: FakeLiveBrowser(next(counter)),  # type: ignore[arg-type]
+        verifier=lambda url: {
+            "provider_reached": True, "response_status": 200, "verified": False,
+            "failure_code": "official_identity_incomplete", "video_id": browser.video_identity(url)[0],
+        },
+    )
+    assert code == live.EXIT_EVIDENCE_WITHHELD
+    assert result["stop_condition"] == "insufficient_topic_records:Diving lesson"
+    counter = iter((1, 2))
+    code, result = live.run_campaign(
+        output,
+        browser_factory=lambda: FakeLiveBrowser(next(counter)),  # type: ignore[arg-type]
+        verifier=fake_verifier,
+        resume_mode="render",
+    )
+    assert code == live.EXIT_SUCCESS
+    assert result["operation_accounting"]["provider_reached"] > 25
+    assert [row["round_id"] for row in result["rounds"][-2:]] == ["round-1-recovery", "round-2-recovery"]
+
+print("TikTok P58 ephemeral-browser checks passed: scope=2 identity=8 ledger=3 cdp=2 teardown=9 campaigns=5")
