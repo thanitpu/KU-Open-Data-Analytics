@@ -237,7 +237,7 @@ class FakeLiveBrowser:
                 "failure_code": None if not self.preflight_failure else "preconnect_timeout",
                 "candidates": [],
             }
-        lesson = "course" in url
+        lesson = "gear" not in url
         base = 100 if lesson else 200
         if self.mismatch and self.round_number == 2:
             base += 1000

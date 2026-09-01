@@ -30,7 +30,7 @@ EXIT_TECHNICAL_FAILURE = 1
 EXIT_EVIDENCE_WITHHELD = 2
 EVIDENCE_ID = "KU2D-TIKTOK-LIVE-EVIDENCE-000003"
 TOPICS = {
-    "Diving lesson": "เรียนดำน้ำ scuba course",
+    "Diving lesson": "เรียนดำน้ำ",
     "Diving equipment": "อุปกรณ์ดำน้ำ scuba gear",
 }
 ALLOWED_OUTPUT_ROOT = (ROOT / "knowledge" / "v1" / "tiktok").resolve()
@@ -339,6 +339,18 @@ def run_campaign(
                             raise StopIteration
                         candidates = [found[row["video_id"]] for row in round_one_records[topic]]
                     for candidate in candidates:
+                        needed_in_current_round = sum(
+                            MAX_RECORDS_PER_TOPIC - len(round_summary["records"][name])
+                            for name in TOPICS
+                        )
+                        needed_in_future_round = (
+                            len(TOPICS) + MAX_RECORDS_PER_TOPIC * len(TOPICS)
+                            if round_number == 1 else 0
+                        )
+                        provider_remaining = ledger.provider_limit - ledger.provider_reached
+                        if provider_remaining < needed_in_current_round + needed_in_future_round:
+                            evidence["stop_condition"] = "provider_budget_reserved_for_success_contract"
+                            raise StopIteration
                         verified = _verification_operation(
                             ledger=ledger, evidence=evidence, output=output, round_id=round_id,
                             topic=topic, candidate=candidate, verifier=verifier,
