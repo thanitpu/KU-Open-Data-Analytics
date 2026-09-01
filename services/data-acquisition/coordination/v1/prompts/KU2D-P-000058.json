@@ -1,0 +1,879 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000058",
+  "created_at": "2026-09-01T21:53:11.000+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+  "objective": "Recover TikTok topic discovery through two isolated ephemeral public-browser rounds, obtaining and officially verifying five valid records each for Diving lesson and Diving equipment before creating the thin adapter, immutable Registry V3, sanitized fixture and Minimum Trusted Connection.",
+  "queue_purpose_summary": "ใช้ browser profile ชั่วคราวเพื่อให้หน้า TikTok สาธารณะ render ได้จริง อนุญาตเฉพาะ first-party session cookies ระหว่างรอบ ลบทิ้งทั้งหมดหลังจบ และต้องทำซ้ำใน context ใหม่ก่อนถือว่าใช้งานได้.",
+  "phase_package_scope_declaration": {
+    "declaration_id": "KU2D-SCOPE-000005",
+    "package_id": "KU2D-P-000058",
+    "package_name": "TikTok Ephemeral Browser Discovery Recovery",
+    "domain": {
+      "id": "social.public_short_video",
+      "label": "Social — Public Short Video"
+    },
+    "source": {
+      "id": "tiktok",
+      "label": "TikTok",
+      "topics": [
+        "Diving lesson",
+        "Diving equipment"
+      ]
+    },
+    "capability": [
+      "public_browser_topic_discovery",
+      "public_video_metadata",
+      "creator_identity",
+      "public_stable_video_identity",
+      "canonical_public_url",
+      "observation_timestamp",
+      "ephemeral_context_destruction_proof",
+      "analysis_handoff"
+    ],
+    "acquisition_technique": {
+      "status": "authorized",
+      "selected_technique": "fresh Chrome/Edge CDP context -> public rendered TikTok discovery -> canonical URL extraction -> official TikTok oEmbed/public-page verification -> destroy context -> repeat in a new context",
+      "browser_policy": {
+        "fresh_temporary_profile": true,
+        "first_party_session_cookies_allowed": true,
+        "third_party_cookie_storage_blocked": true,
+        "no_cookie_values_persisted": true,
+        "no_storage_state_persisted": true,
+        "no_browser_profile_persisted": true,
+        "context_destroyed_between_rounds": true
+      },
+      "operation_counting": {
+        "provider_reached_operation": "One deliberate top-level TikTok navigation or explicit official verification call that receives a TikTok response.",
+        "preconnect_failure": "One deliberate acquisition operation that fails before any TikTok response.",
+        "browser_subresources": "Automatically page-initiated subresources are summarized as navigation telemetry, not separately initiated budget operations; their URLs, headers, cookies and bodies are not persisted or replayed.",
+        "maximum_provider_reached": 40,
+        "maximum_preconnect_failures": 10
+      },
+      "freeze_rule": "Do not freeze the technique or create downstream adapter artifacts until two independent fresh-context rounds reproduce the final official record set."
+    },
+    "authorized_files_or_modules": [
+      "services/data-acquisition/acquisition/tiktok_ephemeral_browser.py",
+      "services/data-acquisition/acquisition/tiktok_diving_connector.py",
+      "services/data-acquisition/tools/LIVE_TIKTOK_EPHEMERAL_BROWSER.py",
+      "services/data-acquisition/tools/SELF_TEST_TIKTOK_EPHEMERAL_BROWSER.py",
+      "services/data-acquisition/tools/SELF_TEST_TIKTOK_SOURCE_COMPLETION.py",
+      "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test registration/aggregation only)",
+      "services/data-acquisition/config/domain_capability_profiles/tiktok_public_short_video_v1.json",
+      "services/data-acquisition/config/source_manifests/tiktok_diving_v1.json",
+      "services/data-acquisition/config/run_manifests/tiktok_diving_fixture_v1.json",
+      "services/data-acquisition/config/adapter_registry_v3.json",
+      "services/data-acquisition/config/adapter_registry_catalog_v1.json (append-only V3 registration metadata only)",
+      "services/data-acquisition/knowledge/v1/tiktok/**",
+      "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000008.json",
+      "services/data-acquisition/docs/TIKTOK_SOURCE_COMPLETION.md",
+      "services/data-acquisition/coordination/v1/** and coordination/queue.json (append-only P58 handoff records only)"
+    ],
+    "inherited_p57_pr_paths_read_only": [
+      "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000007.json",
+      "services/data-acquisition/knowledge/v1/tiktok/KU2D-SCOPE-000004.json",
+      "services/data-acquisition/knowledge/v1/tiktok/KU2D-SCOPE-000004-P01.json",
+      "services/data-acquisition/knowledge/v1/tiktok/KU2D-SCOPE-000004-P02.json",
+      "services/data-acquisition/knowledge/v1/tiktok/KU2D-TIKTOK-LIVE-EVIDENCE-000002.json"
+    ],
+    "explicit_out_of_scope": [
+      "services/data-acquisition/acquisition/source_runner.py",
+      "services/data-acquisition/acquisition/connector_kit.py",
+      "services/data-acquisition/acquisition/run_manifest.py",
+      "services/data-acquisition/acquisition/adapter_registry.py",
+      "services/data-acquisition/requirements.txt",
+      "services/data-acquisition/config/adapter_registry_v1.json",
+      "services/data-acquisition/config/adapter_registry_v2.json",
+      "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json",
+      "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+      "services/data-acquisition/knowledge/v1/adapter-registry.schema.json",
+      "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+      "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json",
+      "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+      ".github/workflows/**",
+      "login, credentials, account authorization or authenticated/private data",
+      "CAPTCHA solving, anti-bot bypass, signature emulation, proxy rotation or access-control bypass",
+      "persistent cookies, cookie values, browser profiles, storage state, cache, raw netlogs, raw headers or raw response bodies",
+      "direct replay of undocumented/private endpoints discovered from browser traffic",
+      "third-party cookie storage",
+      "comments, captions, transcripts or follower enrichment",
+      "paid scraping/proxy services or new spending",
+      "production write, recurring scheduling or main modification"
+    ],
+    "validation_profile": [
+      "seven-field scope and declared-versus-actual validation",
+      "P57 evidence continuity and inherited-artifact byte identity",
+      "single-operation network preflight before any batch",
+      "fresh-profile and cookie-boundary lifecycle tests",
+      "provider-reached and preconnect ledgers with separate hard limits",
+      "sanitized rendered-DOM/first-party public-response extraction without raw sensitive persistence",
+      "five valid records per topic with stable IDs and canonical URLs",
+      "official verification of every retained URL in two independent fresh contexts",
+      "context close, temporary profile deletion and zero persisted cookie/storage-state proof",
+      "fixture replay through unchanged Generic Runner",
+      "MTC, early acquisition quality gate and Analysis handoff",
+      "V1/V2 byte invariants plus immutable V3 lineage and exact resolution",
+      "targeted tests, exact-head full corpus, Data Acquisition CI, one PR, squash merge and post-merge verification"
+    ]
+  },
+  "phase_declaration_requirements": {
+    "required_fields": [
+      "domain",
+      "source",
+      "capability",
+      "acquisition_technique",
+      "authorized_files_or_modules",
+      "explicit_out_of_scope",
+      "validation_profile"
+    ],
+    "phases": [
+      {
+        "phase_id": "P58-01",
+        "phase": "browser_contract_and_network_preflight",
+        "declaration": {
+          "domain": {
+            "id": "social.public_short_video",
+            "label": "Social — Public Short Video"
+          },
+          "source": {
+            "id": "tiktok",
+            "label": "TikTok",
+            "topics": [
+              "Diving lesson",
+              "Diving equipment"
+            ]
+          },
+          "capability": [
+            "ephemeral_context_destruction_proof"
+          ],
+          "acquisition_technique": {
+            "status": "authorized",
+            "selected_technique": "fresh Chrome/Edge CDP context -> public rendered TikTok discovery -> canonical URL extraction -> official TikTok oEmbed/public-page verification -> destroy context -> repeat in a new context",
+            "browser_policy": {
+              "fresh_temporary_profile": true,
+              "first_party_session_cookies_allowed": true,
+              "third_party_cookie_storage_blocked": true,
+              "no_cookie_values_persisted": true,
+              "no_storage_state_persisted": true,
+              "no_browser_profile_persisted": true,
+              "context_destroyed_between_rounds": true
+            },
+            "operation_counting": {
+              "provider_reached_operation": "One deliberate top-level TikTok navigation or explicit official verification call that receives a TikTok response.",
+              "preconnect_failure": "One deliberate acquisition operation that fails before any TikTok response.",
+              "browser_subresources": "Automatically page-initiated subresources are summarized as navigation telemetry, not separately initiated budget operations; their URLs, headers, cookies and bodies are not persisted or replayed.",
+              "maximum_provider_reached": 40,
+              "maximum_preconnect_failures": 10
+            },
+            "freeze_rule": "Do not freeze the technique or create downstream adapter artifacts until two independent fresh-context rounds reproduce the final official record set."
+          },
+          "authorized_files_or_modules": [
+            "services/data-acquisition/acquisition/tiktok_ephemeral_browser.py",
+            "services/data-acquisition/acquisition/tiktok_diving_connector.py",
+            "services/data-acquisition/tools/LIVE_TIKTOK_EPHEMERAL_BROWSER.py",
+            "services/data-acquisition/tools/SELF_TEST_TIKTOK_EPHEMERAL_BROWSER.py",
+            "services/data-acquisition/tools/SELF_TEST_TIKTOK_SOURCE_COMPLETION.py",
+            "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test registration/aggregation only)",
+            "services/data-acquisition/config/domain_capability_profiles/tiktok_public_short_video_v1.json",
+            "services/data-acquisition/config/source_manifests/tiktok_diving_v1.json",
+            "services/data-acquisition/config/run_manifests/tiktok_diving_fixture_v1.json",
+            "services/data-acquisition/config/adapter_registry_v3.json",
+            "services/data-acquisition/config/adapter_registry_catalog_v1.json (append-only V3 registration metadata only)",
+            "services/data-acquisition/knowledge/v1/tiktok/**",
+            "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000008.json",
+            "services/data-acquisition/docs/TIKTOK_SOURCE_COMPLETION.md",
+            "services/data-acquisition/coordination/v1/** and coordination/queue.json (append-only P58 handoff records only)"
+          ],
+          "explicit_out_of_scope": [
+            "services/data-acquisition/acquisition/source_runner.py",
+            "services/data-acquisition/acquisition/connector_kit.py",
+            "services/data-acquisition/acquisition/run_manifest.py",
+            "services/data-acquisition/acquisition/adapter_registry.py",
+            "services/data-acquisition/requirements.txt",
+            "services/data-acquisition/config/adapter_registry_v1.json",
+            "services/data-acquisition/config/adapter_registry_v2.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry.schema.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+            ".github/workflows/**",
+            "login, credentials, account authorization or authenticated/private data",
+            "CAPTCHA solving, anti-bot bypass, signature emulation, proxy rotation or access-control bypass",
+            "persistent cookies, cookie values, browser profiles, storage state, cache, raw netlogs, raw headers or raw response bodies",
+            "direct replay of undocumented/private endpoints discovered from browser traffic",
+            "third-party cookie storage",
+            "comments, captions, transcripts or follower enrichment",
+            "paid scraping/proxy services or new spending",
+            "production write, recurring scheduling or main modification"
+          ],
+          "validation_profile": [
+            "seven-field scope and declared-versus-actual validation",
+            "P57 evidence continuity and inherited-artifact byte identity",
+            "single-operation network preflight before any batch",
+            "fresh-profile and cookie-boundary lifecycle tests",
+            "provider-reached and preconnect ledgers with separate hard limits",
+            "sanitized rendered-DOM/first-party public-response extraction without raw sensitive persistence",
+            "five valid records per topic with stable IDs and canonical URLs",
+            "official verification of every retained URL in two independent fresh contexts",
+            "context close, temporary profile deletion and zero persisted cookie/storage-state proof",
+            "fixture replay through unchanged Generic Runner",
+            "MTC, early acquisition quality gate and Analysis handoff",
+            "V1/V2 byte invariants plus immutable V3 lineage and exact resolution",
+            "targeted tests, exact-head full corpus, Data Acquisition CI, one PR, squash merge and post-merge verification"
+          ]
+        },
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow the package declaration but may not omit a field, retain sensitive browser state, increase either request limit, edit protected foundation, or add production/scheduling/main authority.",
+        "completion_evidence": "Persist the phase declaration, exact operation-ledger delta, sanitized outcome and context-destruction proof before entering the next phase."
+      },
+      {
+        "phase_id": "P58-02",
+        "phase": "fresh_context_round_one_discovery_and_verification",
+        "declaration": {
+          "domain": {
+            "id": "social.public_short_video",
+            "label": "Social — Public Short Video"
+          },
+          "source": {
+            "id": "tiktok",
+            "label": "TikTok",
+            "topics": [
+              "Diving lesson",
+              "Diving equipment"
+            ]
+          },
+          "capability": [
+            "public_browser_topic_discovery",
+            "public_video_metadata",
+            "creator_identity",
+            "public_stable_video_identity",
+            "canonical_public_url"
+          ],
+          "acquisition_technique": {
+            "status": "authorized",
+            "selected_technique": "fresh Chrome/Edge CDP context -> public rendered TikTok discovery -> canonical URL extraction -> official TikTok oEmbed/public-page verification -> destroy context -> repeat in a new context",
+            "browser_policy": {
+              "fresh_temporary_profile": true,
+              "first_party_session_cookies_allowed": true,
+              "third_party_cookie_storage_blocked": true,
+              "no_cookie_values_persisted": true,
+              "no_storage_state_persisted": true,
+              "no_browser_profile_persisted": true,
+              "context_destroyed_between_rounds": true
+            },
+            "operation_counting": {
+              "provider_reached_operation": "One deliberate top-level TikTok navigation or explicit official verification call that receives a TikTok response.",
+              "preconnect_failure": "One deliberate acquisition operation that fails before any TikTok response.",
+              "browser_subresources": "Automatically page-initiated subresources are summarized as navigation telemetry, not separately initiated budget operations; their URLs, headers, cookies and bodies are not persisted or replayed.",
+              "maximum_provider_reached": 40,
+              "maximum_preconnect_failures": 10
+            },
+            "freeze_rule": "Do not freeze the technique or create downstream adapter artifacts until two independent fresh-context rounds reproduce the final official record set."
+          },
+          "authorized_files_or_modules": [
+            "services/data-acquisition/acquisition/tiktok_ephemeral_browser.py",
+            "services/data-acquisition/acquisition/tiktok_diving_connector.py",
+            "services/data-acquisition/tools/LIVE_TIKTOK_EPHEMERAL_BROWSER.py",
+            "services/data-acquisition/tools/SELF_TEST_TIKTOK_EPHEMERAL_BROWSER.py",
+            "services/data-acquisition/tools/SELF_TEST_TIKTOK_SOURCE_COMPLETION.py",
+            "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test registration/aggregation only)",
+            "services/data-acquisition/config/domain_capability_profiles/tiktok_public_short_video_v1.json",
+            "services/data-acquisition/config/source_manifests/tiktok_diving_v1.json",
+            "services/data-acquisition/config/run_manifests/tiktok_diving_fixture_v1.json",
+            "services/data-acquisition/config/adapter_registry_v3.json",
+            "services/data-acquisition/config/adapter_registry_catalog_v1.json (append-only V3 registration metadata only)",
+            "services/data-acquisition/knowledge/v1/tiktok/**",
+            "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000008.json",
+            "services/data-acquisition/docs/TIKTOK_SOURCE_COMPLETION.md",
+            "services/data-acquisition/coordination/v1/** and coordination/queue.json (append-only P58 handoff records only)"
+          ],
+          "explicit_out_of_scope": [
+            "services/data-acquisition/acquisition/source_runner.py",
+            "services/data-acquisition/acquisition/connector_kit.py",
+            "services/data-acquisition/acquisition/run_manifest.py",
+            "services/data-acquisition/acquisition/adapter_registry.py",
+            "services/data-acquisition/requirements.txt",
+            "services/data-acquisition/config/adapter_registry_v1.json",
+            "services/data-acquisition/config/adapter_registry_v2.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry.schema.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+            ".github/workflows/**",
+            "login, credentials, account authorization or authenticated/private data",
+            "CAPTCHA solving, anti-bot bypass, signature emulation, proxy rotation or access-control bypass",
+            "persistent cookies, cookie values, browser profiles, storage state, cache, raw netlogs, raw headers or raw response bodies",
+            "direct replay of undocumented/private endpoints discovered from browser traffic",
+            "third-party cookie storage",
+            "comments, captions, transcripts or follower enrichment",
+            "paid scraping/proxy services or new spending",
+            "production write, recurring scheduling or main modification"
+          ],
+          "validation_profile": [
+            "seven-field scope and declared-versus-actual validation",
+            "P57 evidence continuity and inherited-artifact byte identity",
+            "single-operation network preflight before any batch",
+            "fresh-profile and cookie-boundary lifecycle tests",
+            "provider-reached and preconnect ledgers with separate hard limits",
+            "sanitized rendered-DOM/first-party public-response extraction without raw sensitive persistence",
+            "five valid records per topic with stable IDs and canonical URLs",
+            "official verification of every retained URL in two independent fresh contexts",
+            "context close, temporary profile deletion and zero persisted cookie/storage-state proof",
+            "fixture replay through unchanged Generic Runner",
+            "MTC, early acquisition quality gate and Analysis handoff",
+            "V1/V2 byte invariants plus immutable V3 lineage and exact resolution",
+            "targeted tests, exact-head full corpus, Data Acquisition CI, one PR, squash merge and post-merge verification"
+          ]
+        },
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow the package declaration but may not omit a field, retain sensitive browser state, increase either request limit, edit protected foundation, or add production/scheduling/main authority.",
+        "completion_evidence": "Persist the phase declaration, exact operation-ledger delta, sanitized outcome and context-destruction proof before entering the next phase."
+      },
+      {
+        "phase_id": "P58-03",
+        "phase": "fresh_context_round_two_reproduction",
+        "declaration": {
+          "domain": {
+            "id": "social.public_short_video",
+            "label": "Social — Public Short Video"
+          },
+          "source": {
+            "id": "tiktok",
+            "label": "TikTok",
+            "topics": [
+              "Diving lesson",
+              "Diving equipment"
+            ]
+          },
+          "capability": [
+            "public_video_metadata",
+            "creator_identity",
+            "public_stable_video_identity",
+            "canonical_public_url",
+            "ephemeral_context_destruction_proof"
+          ],
+          "acquisition_technique": {
+            "status": "authorized",
+            "selected_technique": "fresh Chrome/Edge CDP context -> public rendered TikTok discovery -> canonical URL extraction -> official TikTok oEmbed/public-page verification -> destroy context -> repeat in a new context",
+            "browser_policy": {
+              "fresh_temporary_profile": true,
+              "first_party_session_cookies_allowed": true,
+              "third_party_cookie_storage_blocked": true,
+              "no_cookie_values_persisted": true,
+              "no_storage_state_persisted": true,
+              "no_browser_profile_persisted": true,
+              "context_destroyed_between_rounds": true
+            },
+            "operation_counting": {
+              "provider_reached_operation": "One deliberate top-level TikTok navigation or explicit official verification call that receives a TikTok response.",
+              "preconnect_failure": "One deliberate acquisition operation that fails before any TikTok response.",
+              "browser_subresources": "Automatically page-initiated subresources are summarized as navigation telemetry, not separately initiated budget operations; their URLs, headers, cookies and bodies are not persisted or replayed.",
+              "maximum_provider_reached": 40,
+              "maximum_preconnect_failures": 10
+            },
+            "freeze_rule": "Do not freeze the technique or create downstream adapter artifacts until two independent fresh-context rounds reproduce the final official record set."
+          },
+          "authorized_files_or_modules": [
+            "services/data-acquisition/acquisition/tiktok_ephemeral_browser.py",
+            "services/data-acquisition/acquisition/tiktok_diving_connector.py",
+            "services/data-acquisition/tools/LIVE_TIKTOK_EPHEMERAL_BROWSER.py",
+            "services/data-acquisition/tools/SELF_TEST_TIKTOK_EPHEMERAL_BROWSER.py",
+            "services/data-acquisition/tools/SELF_TEST_TIKTOK_SOURCE_COMPLETION.py",
+            "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test registration/aggregation only)",
+            "services/data-acquisition/config/domain_capability_profiles/tiktok_public_short_video_v1.json",
+            "services/data-acquisition/config/source_manifests/tiktok_diving_v1.json",
+            "services/data-acquisition/config/run_manifests/tiktok_diving_fixture_v1.json",
+            "services/data-acquisition/config/adapter_registry_v3.json",
+            "services/data-acquisition/config/adapter_registry_catalog_v1.json (append-only V3 registration metadata only)",
+            "services/data-acquisition/knowledge/v1/tiktok/**",
+            "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000008.json",
+            "services/data-acquisition/docs/TIKTOK_SOURCE_COMPLETION.md",
+            "services/data-acquisition/coordination/v1/** and coordination/queue.json (append-only P58 handoff records only)"
+          ],
+          "explicit_out_of_scope": [
+            "services/data-acquisition/acquisition/source_runner.py",
+            "services/data-acquisition/acquisition/connector_kit.py",
+            "services/data-acquisition/acquisition/run_manifest.py",
+            "services/data-acquisition/acquisition/adapter_registry.py",
+            "services/data-acquisition/requirements.txt",
+            "services/data-acquisition/config/adapter_registry_v1.json",
+            "services/data-acquisition/config/adapter_registry_v2.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry.schema.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+            ".github/workflows/**",
+            "login, credentials, account authorization or authenticated/private data",
+            "CAPTCHA solving, anti-bot bypass, signature emulation, proxy rotation or access-control bypass",
+            "persistent cookies, cookie values, browser profiles, storage state, cache, raw netlogs, raw headers or raw response bodies",
+            "direct replay of undocumented/private endpoints discovered from browser traffic",
+            "third-party cookie storage",
+            "comments, captions, transcripts or follower enrichment",
+            "paid scraping/proxy services or new spending",
+            "production write, recurring scheduling or main modification"
+          ],
+          "validation_profile": [
+            "seven-field scope and declared-versus-actual validation",
+            "P57 evidence continuity and inherited-artifact byte identity",
+            "single-operation network preflight before any batch",
+            "fresh-profile and cookie-boundary lifecycle tests",
+            "provider-reached and preconnect ledgers with separate hard limits",
+            "sanitized rendered-DOM/first-party public-response extraction without raw sensitive persistence",
+            "five valid records per topic with stable IDs and canonical URLs",
+            "official verification of every retained URL in two independent fresh contexts",
+            "context close, temporary profile deletion and zero persisted cookie/storage-state proof",
+            "fixture replay through unchanged Generic Runner",
+            "MTC, early acquisition quality gate and Analysis handoff",
+            "V1/V2 byte invariants plus immutable V3 lineage and exact resolution",
+            "targeted tests, exact-head full corpus, Data Acquisition CI, one PR, squash merge and post-merge verification"
+          ]
+        },
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow the package declaration but may not omit a field, retain sensitive browser state, increase either request limit, edit protected foundation, or add production/scheduling/main authority.",
+        "completion_evidence": "Persist the phase declaration, exact operation-ledger delta, sanitized outcome and context-destruction proof before entering the next phase."
+      },
+      {
+        "phase_id": "P58-04",
+        "phase": "adapter_registry_v3_fixture_mtc_and_analysis_handoff",
+        "declaration": {
+          "domain": {
+            "id": "social.public_short_video",
+            "label": "Social — Public Short Video"
+          },
+          "source": {
+            "id": "tiktok",
+            "label": "TikTok",
+            "topics": [
+              "Diving lesson",
+              "Diving equipment"
+            ]
+          },
+          "capability": [
+            "public_browser_topic_discovery",
+            "public_video_metadata",
+            "creator_identity",
+            "public_stable_video_identity",
+            "canonical_public_url",
+            "observation_timestamp",
+            "ephemeral_context_destruction_proof",
+            "analysis_handoff"
+          ],
+          "acquisition_technique": {
+            "status": "authorized",
+            "selected_technique": "fresh Chrome/Edge CDP context -> public rendered TikTok discovery -> canonical URL extraction -> official TikTok oEmbed/public-page verification -> destroy context -> repeat in a new context",
+            "browser_policy": {
+              "fresh_temporary_profile": true,
+              "first_party_session_cookies_allowed": true,
+              "third_party_cookie_storage_blocked": true,
+              "no_cookie_values_persisted": true,
+              "no_storage_state_persisted": true,
+              "no_browser_profile_persisted": true,
+              "context_destroyed_between_rounds": true
+            },
+            "operation_counting": {
+              "provider_reached_operation": "One deliberate top-level TikTok navigation or explicit official verification call that receives a TikTok response.",
+              "preconnect_failure": "One deliberate acquisition operation that fails before any TikTok response.",
+              "browser_subresources": "Automatically page-initiated subresources are summarized as navigation telemetry, not separately initiated budget operations; their URLs, headers, cookies and bodies are not persisted or replayed.",
+              "maximum_provider_reached": 40,
+              "maximum_preconnect_failures": 10
+            },
+            "freeze_rule": "Do not freeze the technique or create downstream adapter artifacts until two independent fresh-context rounds reproduce the final official record set."
+          },
+          "authorized_files_or_modules": [
+            "services/data-acquisition/acquisition/tiktok_ephemeral_browser.py",
+            "services/data-acquisition/acquisition/tiktok_diving_connector.py",
+            "services/data-acquisition/tools/LIVE_TIKTOK_EPHEMERAL_BROWSER.py",
+            "services/data-acquisition/tools/SELF_TEST_TIKTOK_EPHEMERAL_BROWSER.py",
+            "services/data-acquisition/tools/SELF_TEST_TIKTOK_SOURCE_COMPLETION.py",
+            "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test registration/aggregation only)",
+            "services/data-acquisition/config/domain_capability_profiles/tiktok_public_short_video_v1.json",
+            "services/data-acquisition/config/source_manifests/tiktok_diving_v1.json",
+            "services/data-acquisition/config/run_manifests/tiktok_diving_fixture_v1.json",
+            "services/data-acquisition/config/adapter_registry_v3.json",
+            "services/data-acquisition/config/adapter_registry_catalog_v1.json (append-only V3 registration metadata only)",
+            "services/data-acquisition/knowledge/v1/tiktok/**",
+            "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000008.json",
+            "services/data-acquisition/docs/TIKTOK_SOURCE_COMPLETION.md",
+            "services/data-acquisition/coordination/v1/** and coordination/queue.json (append-only P58 handoff records only)"
+          ],
+          "explicit_out_of_scope": [
+            "services/data-acquisition/acquisition/source_runner.py",
+            "services/data-acquisition/acquisition/connector_kit.py",
+            "services/data-acquisition/acquisition/run_manifest.py",
+            "services/data-acquisition/acquisition/adapter_registry.py",
+            "services/data-acquisition/requirements.txt",
+            "services/data-acquisition/config/adapter_registry_v1.json",
+            "services/data-acquisition/config/adapter_registry_v2.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry.schema.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+            ".github/workflows/**",
+            "login, credentials, account authorization or authenticated/private data",
+            "CAPTCHA solving, anti-bot bypass, signature emulation, proxy rotation or access-control bypass",
+            "persistent cookies, cookie values, browser profiles, storage state, cache, raw netlogs, raw headers or raw response bodies",
+            "direct replay of undocumented/private endpoints discovered from browser traffic",
+            "third-party cookie storage",
+            "comments, captions, transcripts or follower enrichment",
+            "paid scraping/proxy services or new spending",
+            "production write, recurring scheduling or main modification"
+          ],
+          "validation_profile": [
+            "seven-field scope and declared-versus-actual validation",
+            "P57 evidence continuity and inherited-artifact byte identity",
+            "single-operation network preflight before any batch",
+            "fresh-profile and cookie-boundary lifecycle tests",
+            "provider-reached and preconnect ledgers with separate hard limits",
+            "sanitized rendered-DOM/first-party public-response extraction without raw sensitive persistence",
+            "five valid records per topic with stable IDs and canonical URLs",
+            "official verification of every retained URL in two independent fresh contexts",
+            "context close, temporary profile deletion and zero persisted cookie/storage-state proof",
+            "fixture replay through unchanged Generic Runner",
+            "MTC, early acquisition quality gate and Analysis handoff",
+            "V1/V2 byte invariants plus immutable V3 lineage and exact resolution",
+            "targeted tests, exact-head full corpus, Data Acquisition CI, one PR, squash merge and post-merge verification"
+          ]
+        },
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow the package declaration but may not omit a field, retain sensitive browser state, increase either request limit, edit protected foundation, or add production/scheduling/main authority.",
+        "completion_evidence": "Persist the phase declaration, exact operation-ledger delta, sanitized outcome and context-destruction proof before entering the next phase."
+      },
+      {
+        "phase_id": "P58-05",
+        "phase": "exact_head_ci_pr_merge_and_closure",
+        "declaration": {
+          "domain": {
+            "id": "social.public_short_video",
+            "label": "Social — Public Short Video"
+          },
+          "source": {
+            "id": "tiktok",
+            "label": "TikTok",
+            "topics": [
+              "Diving lesson",
+              "Diving equipment"
+            ]
+          },
+          "capability": [
+            "public_browser_topic_discovery",
+            "public_video_metadata",
+            "creator_identity",
+            "public_stable_video_identity",
+            "canonical_public_url",
+            "observation_timestamp",
+            "ephemeral_context_destruction_proof",
+            "analysis_handoff"
+          ],
+          "acquisition_technique": {
+            "status": "authorized",
+            "selected_technique": "fresh Chrome/Edge CDP context -> public rendered TikTok discovery -> canonical URL extraction -> official TikTok oEmbed/public-page verification -> destroy context -> repeat in a new context",
+            "browser_policy": {
+              "fresh_temporary_profile": true,
+              "first_party_session_cookies_allowed": true,
+              "third_party_cookie_storage_blocked": true,
+              "no_cookie_values_persisted": true,
+              "no_storage_state_persisted": true,
+              "no_browser_profile_persisted": true,
+              "context_destroyed_between_rounds": true
+            },
+            "operation_counting": {
+              "provider_reached_operation": "One deliberate top-level TikTok navigation or explicit official verification call that receives a TikTok response.",
+              "preconnect_failure": "One deliberate acquisition operation that fails before any TikTok response.",
+              "browser_subresources": "Automatically page-initiated subresources are summarized as navigation telemetry, not separately initiated budget operations; their URLs, headers, cookies and bodies are not persisted or replayed.",
+              "maximum_provider_reached": 40,
+              "maximum_preconnect_failures": 10
+            },
+            "freeze_rule": "Do not freeze the technique or create downstream adapter artifacts until two independent fresh-context rounds reproduce the final official record set."
+          },
+          "authorized_files_or_modules": [
+            "services/data-acquisition/acquisition/tiktok_ephemeral_browser.py",
+            "services/data-acquisition/acquisition/tiktok_diving_connector.py",
+            "services/data-acquisition/tools/LIVE_TIKTOK_EPHEMERAL_BROWSER.py",
+            "services/data-acquisition/tools/SELF_TEST_TIKTOK_EPHEMERAL_BROWSER.py",
+            "services/data-acquisition/tools/SELF_TEST_TIKTOK_SOURCE_COMPLETION.py",
+            "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test registration/aggregation only)",
+            "services/data-acquisition/config/domain_capability_profiles/tiktok_public_short_video_v1.json",
+            "services/data-acquisition/config/source_manifests/tiktok_diving_v1.json",
+            "services/data-acquisition/config/run_manifests/tiktok_diving_fixture_v1.json",
+            "services/data-acquisition/config/adapter_registry_v3.json",
+            "services/data-acquisition/config/adapter_registry_catalog_v1.json (append-only V3 registration metadata only)",
+            "services/data-acquisition/knowledge/v1/tiktok/**",
+            "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000008.json",
+            "services/data-acquisition/docs/TIKTOK_SOURCE_COMPLETION.md",
+            "services/data-acquisition/coordination/v1/** and coordination/queue.json (append-only P58 handoff records only)"
+          ],
+          "explicit_out_of_scope": [
+            "services/data-acquisition/acquisition/source_runner.py",
+            "services/data-acquisition/acquisition/connector_kit.py",
+            "services/data-acquisition/acquisition/run_manifest.py",
+            "services/data-acquisition/acquisition/adapter_registry.py",
+            "services/data-acquisition/requirements.txt",
+            "services/data-acquisition/config/adapter_registry_v1.json",
+            "services/data-acquisition/config/adapter_registry_v2.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry.schema.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+            ".github/workflows/**",
+            "login, credentials, account authorization or authenticated/private data",
+            "CAPTCHA solving, anti-bot bypass, signature emulation, proxy rotation or access-control bypass",
+            "persistent cookies, cookie values, browser profiles, storage state, cache, raw netlogs, raw headers or raw response bodies",
+            "direct replay of undocumented/private endpoints discovered from browser traffic",
+            "third-party cookie storage",
+            "comments, captions, transcripts or follower enrichment",
+            "paid scraping/proxy services or new spending",
+            "production write, recurring scheduling or main modification"
+          ],
+          "validation_profile": [
+            "seven-field scope and declared-versus-actual validation",
+            "P57 evidence continuity and inherited-artifact byte identity",
+            "single-operation network preflight before any batch",
+            "fresh-profile and cookie-boundary lifecycle tests",
+            "provider-reached and preconnect ledgers with separate hard limits",
+            "sanitized rendered-DOM/first-party public-response extraction without raw sensitive persistence",
+            "five valid records per topic with stable IDs and canonical URLs",
+            "official verification of every retained URL in two independent fresh contexts",
+            "context close, temporary profile deletion and zero persisted cookie/storage-state proof",
+            "fixture replay through unchanged Generic Runner",
+            "MTC, early acquisition quality gate and Analysis handoff",
+            "V1/V2 byte invariants plus immutable V3 lineage and exact resolution",
+            "targeted tests, exact-head full corpus, Data Acquisition CI, one PR, squash merge and post-merge verification"
+          ]
+        },
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow the package declaration but may not omit a field, retain sensitive browser state, increase either request limit, edit protected foundation, or add production/scheduling/main authority.",
+        "completion_evidence": "Persist the phase declaration, exact operation-ledger delta, sanitized outcome and context-destruction proof before entering the next phase."
+      }
+    ],
+    "rules": [
+      "Validate all seven fields before every phase; child phases may only narrow.",
+      "Start from P57 exact head 6eecaa4208b67aea29781d90d87ecf12ddb55868 so blocked evidence remains immutable and visible in the eventual PR.",
+      "Run exactly one network preflight before launching a candidate batch.",
+      "Do not launch a batch when preflight fails; diagnose within the ten-preconnect-failure ceiling.",
+      "Use a unique temporary browser profile for each live round and destroy it before the next round.",
+      "Allow only first-party TikTok session cookies required for public rendering; never read, log, export, persist or replay cookie values.",
+      "Do not store browser cache, storage state, raw netlog, request/response headers or raw response bodies.",
+      "Every retained record requires stable video ID, canonical public URL, topic qualification and official TikTok verification.",
+      "Round two must use a fresh context and reproduce the final record identities before any adapter, registry, manifest or fixture is created.",
+      "A challenge, login wall, CAPTCHA or anti-bot control is a hard stop; do not interact with or bypass it.",
+      "Any scope widening requires a new Human Decision."
+    ]
+  },
+  "resume_checkpoint": {
+    "p57_prompt": "KU2D-P-000057",
+    "p57_result": "KU2D-R-000058",
+    "p57_review": "KU2D-V-000058",
+    "p57_implementation_head": "6eecaa4208b67aea29781d90d87ecf12ddb55868",
+    "p57_requests": {
+      "historical": 5,
+      "new_outbound_attempts": 27,
+      "provider_reached": 11,
+      "preconnect_failures": 16
+    },
+    "p57_records": {
+      "diving_lesson": 0,
+      "diving_equipment": 0
+    },
+    "reusable_evidence": [
+      "Official TikTok oEmbed is a viable per-known-URL verifier.",
+      "Public HTTP application shells are not valid topic discovery.",
+      "P57 evidence and CJ7 remain immutable."
+    ],
+    "new_p58_budgets_start_at_zero": true
+  },
+  "browser_security_contract": {
+    "allowed_domains": [
+      "tiktok.com and TikTok-owned public subdomains required by the rendered page"
+    ],
+    "top_level_navigation": "public HTTPS TikTok surfaces only",
+    "first_party_session_cookies": "allowed only inside the current temporary context",
+    "third_party_cookie_storage": "blocked",
+    "login": false,
+    "credentials": false,
+    "account_authorization": false,
+    "captcha_interaction": false,
+    "antibot_bypass": false,
+    "proxy_rotation": false,
+    "persistent_profile": false,
+    "cookie_export": false,
+    "storage_state_export": false,
+    "raw_netlog": false,
+    "raw_headers": false,
+    "raw_response_bodies": false,
+    "teardown": [
+      "close all pages",
+      "close browser context",
+      "terminate browser process",
+      "delete temporary profile directory",
+      "verify profile path absent",
+      "record booleans and counts only"
+    ]
+  },
+  "access_and_request_policy": {
+    "p58_provider_reached_limit": 40,
+    "p58_preconnect_failure_limit": 10,
+    "maximum_retained_records_per_topic": 5,
+    "target_records_per_topic": 5,
+    "required_independent_live_rounds": 2,
+    "operation_counting": {
+      "provider_reached_operation": "One deliberate top-level TikTok navigation or explicit official verification call that receives a TikTok response.",
+      "preconnect_failure": "One deliberate acquisition operation that fails before any TikTok response.",
+      "browser_subresources": "Automatically page-initiated subresources are summarized as navigation telemetry, not separately initiated budget operations; their URLs, headers, cookies and bodies are not persisted or replayed.",
+      "maximum_provider_reached": 40,
+      "maximum_preconnect_failures": 10
+    },
+    "every_operation_finalized_before_next": true,
+    "quota_limit": 0,
+    "new_spending": false
+  },
+  "success_contract": {
+    "records_per_topic": 5,
+    "stable_video_id_required": true,
+    "canonical_public_url_required": true,
+    "creator_and_metadata_required": true,
+    "observation_timestamp_required": true,
+    "official_verification_each_round": true,
+    "independent_fresh_contexts": 2,
+    "context_destroyed_between_rounds": true,
+    "zero_persisted_sensitive_browser_state": true,
+    "adapter_after_round_two_only": true,
+    "registry_snapshot": "V3",
+    "fixture_replay_required": true,
+    "minimum_trusted_connection_required": true,
+    "analysis_handoff_required": true
+  },
+  "technical_correction_policy": {
+    "journal_id": "KU2D-CJ-000008",
+    "next_event_id": "KU2D-TC-000031",
+    "multiple_corrections_per_queue": true,
+    "one_pr": true,
+    "pr_or_queue_per_correction": false,
+    "finalize_all_commit_links_before_pr_or_closure": true
+  },
+  "implementation_and_merge": {
+    "implementation_branch": "codex/ku2d-tiktok-ephemeral-browser-recovery-v1",
+    "implementation_start_head": "6eecaa4208b67aea29781d90d87ecf12ddb55868",
+    "target_branch": "integration/data-acquisition-platform",
+    "integration_baseline": "fc611d408146830b47f9220ae85d04645512d4da",
+    "one_coherent_pr": true,
+    "exact_head_required": true,
+    "data_acquisition_ci_required": true,
+    "technically_green_squash_merge_authorized": true,
+    "assistant_intermediate_review_required": false,
+    "post_merge_verification_required": true,
+    "main_modification_authorized": false
+  },
+  "instructions": [
+    "Validate KU2D-SCOPE-000005 and P58-01 before editing or making a live operation.",
+    "Create source-specific browser lifecycle code by reusing established fresh-profile/CDP patterns without modifying shared runtime or dependencies.",
+    "Run one exact-environment preflight and record whether TikTok was reached before any batch.",
+    "Execute Round 1 in one temporary context, retain up to five topic-qualified canonical records per topic, officially verify each, then destroy the entire context.",
+    "Execute Round 2 in a new temporary context and reproduce/verify the same final record identities; destroy that context independently.",
+    "Persist only sanitized metadata, operation summaries, stable public IDs/URLs and boolean destruction proof.",
+    "Only after both rounds pass, create the thin adapter/parser/mapper, immutable Registry V3, source/capability/run manifests, sanitized fixture, MTC and Analysis handoff.",
+    "Run fixture, lifecycle, security-negative, registry-lineage, invariant, exact-head corpus and CI checks.",
+    "Use one PR to integration, squash merge only when technically green, verify the merged tree, close CJ8 and submit KU2D-R-000059."
+  ],
+  "stop_conditions": [
+    "network preflight cannot reach TikTok within the preconnect ceiling",
+    "provider-reached operations would exceed 40 or preconnect failures would exceed 10",
+    "login, credentials, account authorization, CAPTCHA interaction or anti-bot/access-control bypass is required",
+    "first-party cookie values, browser profile, storage state, cache, raw netlog, headers or raw bodies would be persisted",
+    "round two cannot reproduce the final official record set in a fresh context",
+    "a protected shared runner, validator, dependency, V1/V2 registry/manifest/schema or CI workflow must change",
+    "production write, recurring scheduling or main modification is required",
+    "scope must widen beyond KU2D-SCOPE-000005"
+  ],
+  "definition_of_done": [
+    "all five entered phases have valid seven-field declarations",
+    "network preflight passes before any batch",
+    "five valid records per topic are obtained with stable IDs, canonical URLs, creators, metadata and timestamps",
+    "every retained record is officially verified in two independent fresh contexts",
+    "each browser context is destroyed with zero persisted cookie/profile/storage-state evidence",
+    "provider-reached and preconnect ledgers remain within separate limits",
+    "thin TikTok adapter, capability/source/run manifests, immutable Registry V3, sanitized fixture, MTC and Analysis handoff are complete",
+    "P57 inherited evidence remains byte-identical and V1/V2/shared foundation invariants do not drift",
+    "targeted tests, exact-head 56-test corpus and Data Acquisition CI pass",
+    "KU2D-CJ-000008 closes with no pending links",
+    "one green PR squash-merges to integration and post-merge verification passes",
+    "KU2D-R-000059 is submitted"
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000059",
+    "next_actor": "assistant",
+    "closure_target": "tiktok_ephemeral_browser_discovery_adapter_registry_v3_and_mtc",
+    "provider_reached_limit": 40,
+    "preconnect_failure_limit": 10
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_prompt": "KU2D-P-000057",
+    "depends_on_result": "KU2D-R-000058",
+    "depends_on_review": "KU2D-V-000058",
+    "depends_on_human_decision": "KU2D-H-000027",
+    "implementation_start_head": "6eecaa4208b67aea29781d90d87ecf12ddb55868",
+    "integration_baseline": "fc611d408146830b47f9220ae85d04645512d4da"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
