@@ -6,6 +6,7 @@ returned or persisted.
 """
 from __future__ import annotations
 
+import base64
 import json
 import os
 import re
@@ -28,6 +29,7 @@ PROVIDER_LIMIT = 40
 PRECONNECT_LIMIT = 10
 MAX_RECORDS_PER_TOPIC = 5
 MAX_OEMBED_BYTES = 200_000
+MAX_PUBLIC_JSON_BYTES = 2_000_000
 TIKTOK_PUBLIC_DELIVERY_SUFFIXES = (
     "tiktokcdn.com", "tiktokcdn-us.com", "tiktokv.com", "ttwstatic.com",
 )
@@ -100,6 +102,44 @@ def sanitize_discovery_candidates(rows: Any, *, maximum: int = 20) -> list[dict[
         if len(result) >= maximum:
             break
     return result
+
+
+def sanitize_public_response_candidates(payload: Any, *, maximum: int = 40) -> list[dict[str, str]]:
+    """Extract only stable public video identities from an in-memory JSON value."""
+    rows: list[dict[str, str]] = []
+    seen_objects: set[int] = set()
+    visited = 0
+
+    def walk(value: Any) -> None:
+        nonlocal visited
+        if len(rows) >= maximum or visited >= 100_000:
+            return
+        visited += 1
+        if isinstance(value, list):
+            for child in value:
+                walk(child)
+            return
+        if not isinstance(value, dict) or id(value) in seen_objects:
+            return
+        seen_objects.add(id(value))
+        author = value.get("author") or value.get("authorInfo") or value.get("author_info") or {}
+        if not isinstance(author, dict):
+            author = {}
+        creator = str(
+            author.get("uniqueId") or author.get("unique_id")
+            or value.get("authorUniqueId") or ""
+        )
+        video_id = str(value.get("id") or value.get("itemId") or value.get("aweme_id") or "")
+        if re.fullmatch(r"[A-Za-z0-9._-]+", creator) and re.fullmatch(r"[0-9]{10,}", video_id):
+            rows.append({
+                "href": f"https://www.tiktok.com/@{creator}/video/{video_id}",
+                "text": str(value.get("desc") or value.get("description") or "")[:300],
+            })
+        for child in value.values():
+            walk(child)
+
+    walk(payload)
+    return sanitize_discovery_candidates(rows, maximum=maximum)
 
 
 def topic_qualified(topic: str, *values: Any) -> bool:
@@ -238,6 +278,7 @@ class EphemeralBrowser:
         self.third_party_requests_blocked = 0
         self.allowed_subresource_responses = 0
         self.first_party_cookie_count = 0
+        self.public_json_responses: dict[str, dict[str, Any]] = {}
 
     def _command(self, method: str, params: dict[str, Any] | None = None) -> dict[str, Any]:
         self.sequence += 1
@@ -296,7 +337,10 @@ class EphemeralBrowser:
         self.connection = connect(websocket_url, origin="http://localhost", open_timeout=5, close_timeout=2)
         self._command("Page.enable")
         self._command("Runtime.enable")
-        self._command("Network.enable")
+        self._command("Network.enable", {
+            "maxTotalBufferSize": MAX_PUBLIC_JSON_BYTES * 5,
+            "maxResourceBufferSize": MAX_PUBLIC_JSON_BYTES,
+        })
         self._command("Fetch.enable", {"patterns": [{"urlPattern": "*", "requestStage": "Request"}]})
 
     def _handle_event(self, message: dict[str, Any]) -> tuple[bool, int | None, str | None]:
@@ -312,6 +356,20 @@ class EphemeralBrowser:
                 self.allowed_subresource_responses += 1
                 if is_tiktok_host(host) and str(params.get("type") or "").casefold() == "document":
                     return True, int(response.get("status") or 0) or None, None
+                mime = str(response.get("mimeType") or "").casefold()
+                resource_type = str(params.get("type") or "").casefold()
+                request_id = str(params.get("requestId") or "")
+                if is_tiktok_host(host) and request_id and resource_type in {"xhr", "fetch"} and "json" in mime:
+                    self.public_json_responses[request_id] = {"loaded": False, "encoded_size": 0}
+        if method == "Network.loadingFinished":
+            request_id = str(params.get("requestId") or "")
+            if request_id in self.public_json_responses:
+                self.public_json_responses[request_id] = {
+                    "loaded": True,
+                    "encoded_size": int(params.get("encodedDataLength") or 0),
+                }
+        if method == "Network.loadingFailed":
+            self.public_json_responses.pop(str(params.get("requestId") or ""), None)
         if method == "Page.frameNavigated":
             frame = params.get("frame") or {}
             if not frame.get("parentId"):
@@ -328,6 +386,7 @@ class EphemeralBrowser:
         parsed = urlparse(url)
         if parsed.scheme != "https" or not is_tiktok_host(parsed.hostname) or parsed.username or parsed.password:
             raise ValueError("only public HTTPS TikTok navigation is allowed")
+        self.public_json_responses = {}
         self._command("Page.navigate", {"url": url})
         provider_reached = False
         response_status: int | None = None
@@ -383,6 +442,32 @@ class EphemeralBrowser:
             failure_code = failure_code or "top_level_left_tiktok"
         if value.get("challenge") or value.get("login"):
             failure_code = failure_code or "challenge_or_login_wall"
+        candidates = sanitize_discovery_candidates(value.get("anchors"), maximum=40)
+        inspected_public_responses = 0
+        response_candidates: list[dict[str, str]] = []
+        for request_id, metadata in list(self.public_json_responses.items())[:20]:
+            if not metadata.get("loaded") or int(metadata.get("encoded_size") or 0) > MAX_PUBLIC_JSON_BYTES:
+                continue
+            try:
+                response = self._command("Network.getResponseBody", {"requestId": request_id})
+                result = response.get("result") or {}
+                body = result.get("body")
+                if not isinstance(body, str):
+                    continue
+                if result.get("base64Encoded"):
+                    body = base64.b64decode(body, validate=True).decode("utf-8")
+                if len(body.encode("utf-8")) > MAX_PUBLIC_JSON_BYTES:
+                    continue
+                payload = json.loads(body)
+                inspected_public_responses += 1
+                response_candidates.extend(sanitize_public_response_candidates(payload))
+            except (ValueError, UnicodeDecodeError, json.JSONDecodeError, RuntimeError):
+                continue
+        combined_rows = [
+            {"href": row["canonical_url"], "text": row["visible_context"]}
+            for row in candidates + response_candidates
+        ]
+        candidates = sanitize_discovery_candidates(combined_rows, maximum=40)
         cookie_evaluation = self._command("Runtime.evaluate", {
             "expression": "document.cookie ? document.cookie.split(';').filter(Boolean).length : 0",
             "returnByValue": True,
@@ -395,12 +480,13 @@ class EphemeralBrowser:
             "page_load_event_observed": loaded_at is not None,
             "failure_code": failure_code,
             "title": " ".join(str(value.get("title") or "").split())[:300],
-            "candidates": sanitize_discovery_candidates(value.get("anchors")),
+            "candidates": candidates,
             "telemetry": {
                 "tiktok_response_count": self.allowed_subresource_responses,
                 "third_party_requests_blocked": self.third_party_requests_blocked,
                 "first_party_cookie_count": self.first_party_cookie_count,
-                "sanitized_candidate_count": len(sanitize_discovery_candidates(value.get("anchors"))),
+                "sanitized_candidate_count": len(candidates),
+                "public_json_responses_inspected": inspected_public_responses,
             },
         }
 

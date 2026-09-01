@@ -65,6 +65,19 @@ assert rows == [{
     "canonical_url": "https://www.tiktok.com/@dive.school/video/7461234567890123456",
     "visible_context": "เรียนดำน้ำ Open Water",
 }]
+response_rows = browser.sanitize_public_response_candidates({
+    "item_list": [
+        {"id": "7461234567890123456", "desc": "เรียนดำน้ำ Open Water", "author": {"uniqueId": "dive.school"}},
+        {"id": "short", "desc": "reject", "author": {"uniqueId": "dive.school"}},
+        {"id": "7461234567890123999", "desc": "reject", "author": {"uniqueId": "bad handle"}},
+    ]
+})
+assert response_rows == [{
+    "video_id": "7461234567890123456",
+    "creator_handle": "dive.school",
+    "canonical_url": "https://www.tiktok.com/@dive.school/video/7461234567890123456",
+    "visible_context": "เรียนดำน้ำ Open Water",
+}]
 assert browser.topic_qualified("Diving lesson", "เรียนดำน้ำ Open Water course")
 assert browser.topic_qualified("Diving equipment", "รีวิวอุปกรณ์ดำน้ำ regulator BCD")
 assert not browser.topic_qualified("Diving lesson", "snorkeling beach holiday")
@@ -344,4 +357,4 @@ with tempfile.TemporaryDirectory(prefix="ku2d-p58-render-correction-") as tempor
     assert result["operation_accounting"]["provider_reached"] > 25
     assert [row["round_id"] for row in result["rounds"][-2:]] == ["round-1-recovery-1", "round-2-recovery-1"]
 
-print("TikTok P58 ephemeral-browser checks passed: scope=2 identity=8 ledger=3 cdp=2 teardown=9 campaigns=5")
+print("TikTok P58 ephemeral-browser checks passed: scope=2 identity=9 ledger=3 cdp=2 teardown=9 campaigns=5")
