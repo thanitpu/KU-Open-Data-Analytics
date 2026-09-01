@@ -30,9 +30,9 @@ jobs:
     env:
       # A separate reviewed one-file promotion to main must replace all three
       # placeholders. Until then the launcher fails before checkout.
-      KU2D_AUTHORIZED_DECISION_ID: KU2D-H-000016
+      KU2D_AUTHORIZED_DECISION_ID: KU2D-H-000019
       KU2D_AUTHORIZED_EXECUTION_REVISION: cac243aedaa3c83c188e4e90481e4b752fe8bd2b
-      KU2D_AUTHORIZATION_RECORD_REVISION: bd53a3d8378703e017e2aa7c97d9486c30e44a5b
+      KU2D_AUTHORIZATION_RECORD_REVISION: e7a8d6fb3453cb52f3162d35c0811b05b65f6489
     steps:
       - name: Validate immutable launcher trust anchors
         env:
