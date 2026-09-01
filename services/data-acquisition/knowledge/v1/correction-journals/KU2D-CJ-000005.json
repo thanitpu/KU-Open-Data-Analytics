@@ -3,7 +3,7 @@
   "journal_id": "KU2D-CJ-000005",
   "source_completion_prompt_id": "KU2D-P-000055",
   "created_at": "2026-09-01T19:45:00.000+07:00",
-  "closed_at": null,
+  "closed_at": "2026-09-01T20:20:00.000+07:00",
   "events": [
     {
       "event_id": "KU2D-TC-000019",
@@ -25,7 +25,7 @@
       "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
       "schema_impact": "Adds independent V2 registry, catalog and immutable-manifest schemas without modifying either V1 schema.",
       "quality_impact": "Prevents false historical integrity drift while preserving the existing technical quality gate and Analysis ownership.",
-      "related_commit_or_pending_commit": "pending_commit",
+      "related_commit_or_pending_commit": "a6c02b17424bc883f0424fca69b9344422f23fa1",
       "effort_minutes": null,
       "learning": {
         "reusable_lesson": "An executed manifest must pin an immutable registry snapshot; additive registration belongs in a new snapshot and a superseding manifest identity.",
@@ -54,7 +54,7 @@
       "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
       "schema_impact": "None; this correction aligns the deterministic fixture with the existing Connector Kit identity contract.",
       "quality_impact": "Ensures the additive proof exercises exact adapter/parser/mapper composition rather than bypassing identity validation.",
-      "related_commit_or_pending_commit": "pending_commit",
+      "related_commit_or_pending_commit": "a6c02b17424bc883f0424fca69b9344422f23fa1",
       "effort_minutes": null,
       "learning": {
         "reusable_lesson": "Synthetic implementations must satisfy the same declared component identities as production-facing registry composition.",
@@ -83,7 +83,7 @@
       "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
       "schema_impact": "No shape change; runtime validation now enforces the lineage already represented by the V2 schema and catalog.",
       "quality_impact": "Prevents a catalog and loaded snapshot from presenting inconsistent migration provenance while otherwise producing valid records.",
-      "related_commit_or_pending_commit": "pending_commit",
+      "related_commit_or_pending_commit": "a6c02b17424bc883f0424fca69b9344422f23fa1",
       "effort_minutes": null,
       "learning": {
         "reusable_lesson": "A version catalog must validate both graph integrity and agreement with the immutable artifact it indexes.",
