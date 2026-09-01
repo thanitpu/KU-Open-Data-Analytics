@@ -1,11 +1,11 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T23:30:20+07:00",
+  "updated_at": "2026-09-01T23:45:05+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
-  "latest_prompt": "KU2D-P-000058",
+  "latest_prompt": "KU2D-P-000059",
   "latest_result": "KU2D-R-000059",
   "latest_review": "KU2D-V-000059",
-  "latest_human_decision": "KU2D-H-000027",
+  "latest_human_decision": "KU2D-H-000028",
   "prompt_states": {
     "KU2D-P-000001": "completed",
     "KU2D-P-000002": "completed",
@@ -63,7 +63,8 @@
     "KU2D-P-000055": "completed",
     "KU2D-P-000056": "completed",
     "KU2D-P-000057": "completed",
-    "KU2D-P-000058": "human_decision_required"
+    "KU2D-P-000058": "completed",
+    "KU2D-P-000059": "ready_for_codex"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -99,13 +100,14 @@
     "KU2D-P-000054",
     "KU2D-P-000055",
     "KU2D-P-000056",
-    "KU2D-P-000057"
+    "KU2D-P-000057",
+    "KU2D-P-000058"
   ],
   "next_action": {
-    "actor": "human",
-    "prompt_id": "KU2D-P-000058",
-    "result_id": "KU2D-R-000059",
-    "review_id": "KU2D-V-000059",
+    "actor": "codex",
+    "prompt_id": "KU2D-P-000059",
+    "result_id": null,
+    "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
   },
@@ -123,5 +125,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "KU2D-V-000059 accepts R59 as an accurate fail-closed blocked result, not a successful TikTok completion. Independent exact-head verification confirmed 17/40 provider-reached operations, 2/10 preconnect failures, zero quota, zero retained records, no Diving lesson candidates, 12-14 observed Diving equipment candidates, zero verification rounds, and no adapter, Registry V3, fixture, MTC, PR or merge. All 12 changed paths are authorized, protected blobs are unchanged 7/7, browser teardown and non-persistence evidence passed, and exact-head deterministic corpus passed 56/56. P58 is human-gated; do not replay or start a multi-source live run without a new Human Decision."
+  "notes": "KU2D-H-000028 closes P58 as blocked and authorizes P59. P59 is a one-time non-TikTok multi-source round-robin campaign with X=100 accepted unique records per source visit, deterministic serial fairness, terminal to_be_skipped states, immutable source budgets, global ceilings of 50,000 unique records, 5,000 provider operations and 12 hours, followed by a sealed-live transition, zero-provider fixture replay for every source, and a downloadable domain-separated CSV/JSONL/XLSX ZIP with manifest and failure report. Registry-only seeds without reviewed executable techniques are preflight-skipped. Live records and ZIP must remain outside Git. Expected Result is KU2D-R-000060; next actor is Codex."
 }
