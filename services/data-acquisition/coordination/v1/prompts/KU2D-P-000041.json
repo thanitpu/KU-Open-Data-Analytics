@@ -1,0 +1,40 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000041",
+  "created_at": "2026-09-01T09:05:30.000+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+  "objective": "Execute the explicitly authorized exact-head merge of PR #64 into integration/data-acquisition-platform, record the resulting immutable integration SHA, and perform no live acquisition or launcher promotion.",
+  "instructions": [
+    "Treat KU2D-H-000013 as the complete authority for this operation and KU2D-V-000040 as the accepted technical review.",
+    "Preserve all implementation files at accepted implementation commit 651969cd67b9f7e88cce1b6464136fdb24df5f29 unchanged. Only append coordination records required by P41 before merge.",
+    "Require PR #64 to remain Ready, open, mergeable, unmerged, targeted to integration/data-acquisition-platform, and to have exact-head CI green before merging.",
+    "Merge PR #64 using the exact current head SHA; fail closed if the head changes or any required check is not successful.",
+    "Record the resulting immutable integration merge SHA, merge method, PR state, and exact-head CI evidence in KU2D-R-000041.",
+    "Do not modify main, replace launcher trust anchors, dispatch any workflow, read the GitHub secret, issue a YouTube request, consume quota, acquire comments/captions/transcripts, conduct Human Review, approve candidates, write production data, schedule work, or promote authority."
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000041",
+    "next_actor": "assistant"
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_prompt": "KU2D-P-000040",
+    "depends_on_result": "KU2D-R-000040",
+    "depends_on_review": "KU2D-V-000040",
+    "depends_on_human_decision": "KU2D-H-000013",
+    "target_pr": 64,
+    "accepted_implementation_commit": "651969cd67b9f7e88cce1b6464136fdb24df5f29"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
