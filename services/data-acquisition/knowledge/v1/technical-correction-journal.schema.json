@@ -196,7 +196,7 @@
           },
           "related_commit_or_pending_commit": {
             "type": "string",
-            "minLength": 1
+            "pattern": "^(pending_commit|[0-9a-f]{40})$"
           },
           "effort_minutes": {
             "type": [
@@ -293,5 +293,28 @@
         }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "source_completion_prompt_id": {"const": "KU2D-P-000052"}
+        },
+        "required": ["source_completion_prompt_id"]
+      },
+      "then": {
+        "properties": {
+          "events": {
+            "items": {
+              "required": [
+                "schema_impact",
+                "quality_impact",
+                "related_commit_or_pending_commit"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
 }

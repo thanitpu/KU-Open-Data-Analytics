@@ -211,6 +211,10 @@ assert profile["semantic_quality_owner"] == "analysis"
 # CK11: correction journals carry the stronger fields and finalize commit links.
 journal = {
     "schema": "ku2d.technical-correction-journal.v1",
+    "journal_id": "KU2D-CJ-999999",
+    "source_completion_prompt_id": "KU2D-P-000052",
+    "created_at": "2026-09-01T00:00:00+00:00",
+    "closed_at": "2026-09-01T00:05:00+00:00",
     "events": [{
         "event_id": "KU2D-TC-999999",
         "observed_at": "2026-09-01T00:00:00+00:00",
@@ -230,7 +234,86 @@ journal = {
     "summary": {"event_count": 1, "resolved_count": 1, "unresolved_count": 0, "correction_cycles_used": 1},
     "safety": {"contains_secret": False, "contains_raw_payload": False, "contains_request_url": False, "contains_personal_data": False},
 }
-validate_technical_correction_journal(journal)
+validate_technical_correction_journal(journal, require_closed=True)
+
+# CK12: typed journal, Prompt and event identifiers fail closed.
+for field, value in (
+    ("journal_id", "CJ-999999"),
+    ("source_completion_prompt_id", "P-000052"),
+):
+    invalid = copy.deepcopy(journal)
+    invalid[field] = value
+    try:
+        validate_technical_correction_journal(invalid)
+        raise AssertionError(f"invalid {field} was accepted")
+    except ValueError:
+        pass
+invalid_event_id = copy.deepcopy(journal)
+invalid_event_id["events"][0]["event_id"] = "TC-999999"
+try:
+    validate_technical_correction_journal(invalid_event_id)
+    raise AssertionError("invalid event_id was accepted")
+except ValueError:
+    pass
+
+# CK13: lifecycle timestamps require timezone-aware RFC 3339 values and valid order.
+for field, value in (
+    ("created_at", "not-a-date"),
+    ("created_at", "2026-09-01T00:00:00"),
+    ("closed_at", "2026-08-31T23:59:59+00:00"),
+):
+    invalid = copy.deepcopy(journal)
+    invalid[field] = value
+    try:
+        validate_technical_correction_journal(invalid)
+        raise AssertionError(f"invalid {field} was accepted")
+    except ValueError:
+        pass
+open_journal = copy.deepcopy(journal)
+open_journal["closed_at"] = None
+validate_technical_correction_journal(open_journal)
+try:
+    validate_technical_correction_journal(open_journal, require_closed=True)
+    raise AssertionError("open journal was accepted as finalized")
+except ValueError:
+    pass
+
+# CK14: top-level fields are exact; missing and unknown fields are rejected.
+for invalid in (
+    {key: value for key, value in journal.items() if key != "journal_id"},
+    {**journal, "unexpected": True},
+):
+    try:
+        validate_technical_correction_journal(invalid)
+        raise AssertionError("invalid top-level field set was accepted")
+    except ValueError:
+        pass
+
+# CK15: event fields are exact, including the P52-required impact/link fields.
+missing_event_field = copy.deepcopy(journal)
+missing_event_field["events"][0].pop("schema_impact")
+unknown_event_field = copy.deepcopy(journal)
+unknown_event_field["events"][0]["unexpected"] = True
+for invalid in (missing_event_field, unknown_event_field):
+    try:
+        validate_technical_correction_journal(invalid)
+        raise AssertionError("invalid event field set was accepted")
+    except ValueError:
+        pass
+
+# CK16: nested closed objects and event timestamps also reject drift.
+unknown_nested = copy.deepcopy(journal)
+unknown_nested["events"][0]["correction"]["unexpected"] = True
+bad_event_time = copy.deepcopy(journal)
+bad_event_time["events"][0]["observed_at"] = "2026-09-01T00:00:00"
+for invalid in (unknown_nested, bad_event_time):
+    try:
+        validate_technical_correction_journal(invalid)
+        raise AssertionError("invalid nested correction evidence was accepted")
+    except ValueError:
+        pass
+
+# CK17: pending links are accepted only while explicitly building the journal.
 pending_journal = copy.deepcopy(journal)
 pending_journal["events"][0]["related_commit_or_pending_commit"] = "pending_commit"
 try:
@@ -241,5 +324,7 @@ except ValueError as exc:
 validate_technical_correction_journal(pending_journal, allow_pending_commit=True)
 correction_schema = load(ROOT / "knowledge" / "v1" / "technical-correction-journal.schema.json")
 assert "related_commit_or_pending_commit" in correction_schema["properties"]["events"]["items"]["properties"]
+assert correction_schema["additionalProperties"] is False
+assert correction_schema["properties"]["events"]["items"]["additionalProperties"] is False
 
-print("Connector Kit v1 deterministic checks passed: CK1-CK11")
+print("Connector Kit v1 deterministic checks passed: CK1-CK17")
