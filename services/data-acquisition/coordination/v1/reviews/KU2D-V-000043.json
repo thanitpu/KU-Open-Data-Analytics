@@ -1,0 +1,49 @@
+{
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
+  "review_id": "KU2D-V-000043",
+  "prompt_id": "KU2D-P-000043",
+  "result_id": "KU2D-R-000043",
+  "reviewed_at": "2026-09-01T09:51:37.232+07:00",
+  "reviewed_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review",
+    "human_authority_claimed": false
+  },
+  "review_result": "correction_required",
+  "requires_human_decision": false,
+  "reason_code": "launcher_artifact_guard_technical_correction_required",
+  "explanation": "Accepted R43 as the authoritative partial result: the authorized main launcher merge and single-dispatch boundary completed, no automatic retry occurred, and the documented safety exclusions were preserved. A blocking technical defect remains in the launcher evidence-existence shell expression: escaped quote characters cause a false missing-file result, so sanitized evidence upload is skipped and the durable evidence needed for review is unavailable. Correct the canonical integration workflow and deterministic contract test without dispatching again, modifying main, or changing acquisition scope. Any future live rerun remains a separate Human Decision after the correction is reviewed.",
+  "evidence_references": [
+    "KU2D-R-000043",
+    "KU2D-P-000043",
+    "KU2D-V-000042",
+    "KU2D-H-000015",
+    "workflow:.github/workflows/youtube-qdiving-identity-discovery.yml",
+    "test:services/data-acquisition/tools/SELF_TEST_YOUTUBE_IDENTITY_DISCOVERY_DISPATCH.py"
+  ],
+  "required_correction": {
+    "canonical_base_branch": "integration/data-acquisition-platform",
+    "change_scope": [
+      ".github/workflows/youtube-qdiving-identity-discovery.yml",
+      "services/data-acquisition/tools/SELF_TEST_YOUTUBE_IDENTITY_DISCOVERY_DISPATCH.py"
+    ],
+    "requirements": [
+      "replace the fragile command-substitution evidence check with an explicit correctly quoted if/else file test",
+      "prove existing files, missing files and paths containing spaces emit the correct step output",
+      "preserve sanitized summary and upload behavior for both accepted runtime exit classes",
+      "preserve all trust-anchor, secret, request/quota and scope boundaries",
+      "open a correction PR to integration only; do not merge, modify main or dispatch"
+    ]
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "reviewed_result": "KU2D-R-000043"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
