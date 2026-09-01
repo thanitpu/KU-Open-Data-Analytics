@@ -1,0 +1,87 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000021",
+  "prompt_id": "KU2D-P-000051",
+  "result_id": "KU2D-R-000051",
+  "review_id": "KU2D-V-000051",
+  "decided_at": "2026-09-01T12:48:00.000+07:00",
+  "decided_by": {
+    "actor": "human",
+    "actor_id": "project_owner"
+  },
+  "decision": "confirmed",
+  "reason_note": "The project owner explicitly directs KU2D to use P52 to implement the agreed target architecture and faster Chat-to-Codex operating model after accepting P51. The target is Shared Connector Kit plus Domain Capability Profile plus Thin Source Adapter plus Source-specific Parser plus Analysis-owned Semantic Quality. P52 must introduce the Source Lab lifecycle, three-tier testing, multi-correction single-PR journaling, and use YouTube as the reference connector to close any remaining technical work without replaying provider acquisition.",
+  "authorized_scope": {
+    "operation": "ku2d_data_acquisition_architecture_transition",
+    "target_architecture": [
+      "shared_connector_kit",
+      "domain_capability_profile",
+      "thin_source_adapter",
+      "source_specific_parser",
+      "analysis_owned_semantic_quality"
+    ],
+    "lifecycle": [
+      "technique_library_reuse",
+      "explore",
+      "deep_audit",
+      "minimum_trusted_connection",
+      "integration",
+      "closure"
+    ],
+    "reference_source": "YouTube Data API v3 Q-Diving",
+    "provider_requests_authorized": 0,
+    "documented_quota_units_authorized": 0,
+    "production_store": false,
+    "scheduler_action": null
+  },
+  "testing_policy": {
+    "self_correction": "unit tests plus adapter-specific fixtures",
+    "before_pr": "source-level integration plus evidence validation",
+    "before_merge_or_closure": "full deterministic corpus on exact PR head",
+    "full_corpus_each_development_loop": false,
+    "rerun_full_corpus_if_exact_tested_tree_changes": true,
+    "reuse_exact_head_result_when_merge_tree_is_identical": true
+  },
+  "correction_policy": {
+    "multiple_material_corrections_within_one_queue": true,
+    "pr_per_correction": false,
+    "queue_per_correction": false,
+    "aggregate_into_one_coherent_pr": true,
+    "immediate_local_journal_capture": true,
+    "required_fields": [
+      "observed_symptom",
+      "evidence_supported_root_cause_or_unknown",
+      "correction",
+      "confirming_fixture_or_test",
+      "schema_impact",
+      "quality_impact",
+      "provider_request_and_quota_impact",
+      "related_commit_or_pending_commit",
+      "resolution_status"
+    ],
+    "backfill_commit_before_pr_or_closure": true
+  },
+  "workflow_authority": {
+    "create_prompt": "KU2D-P-000052",
+    "assistant_intermediate_review_required": false,
+    "technically_green_merge_to_integration_authorized": true,
+    "immutable_historical_records_must_not_be_rewritten": true,
+    "no_provider_replay": true,
+    "no_tiktok_execution_in_p52": true
+  },
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_context": "Project owner instructed that all agreed architecture and process changes be applied in P52 after Codex completed P51.",
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_review": "KU2D-V-000051",
+    "depends_on_result": "KU2D-R-000051",
+    "integration_baseline": "78505d041bd9f491b6fa4ba9bb98c2d0e3644b4a"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
