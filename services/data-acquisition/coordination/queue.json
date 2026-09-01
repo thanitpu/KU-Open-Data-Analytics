@@ -1,9 +1,9 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T23:45:05+07:00",
+  "updated_at": "2026-09-02T00:41:15+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
   "latest_prompt": "KU2D-P-000059",
-  "latest_result": "KU2D-R-000059",
+  "latest_result": "KU2D-R-000060",
   "latest_review": "KU2D-V-000059",
   "latest_human_decision": "KU2D-H-000028",
   "prompt_states": {
@@ -64,7 +64,7 @@
     "KU2D-P-000056": "completed",
     "KU2D-P-000057": "completed",
     "KU2D-P-000058": "completed",
-    "KU2D-P-000059": "ready_for_codex"
+    "KU2D-P-000059": "result_submitted"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -104,9 +104,9 @@
     "KU2D-P-000058"
   ],
   "next_action": {
-    "actor": "codex",
+    "actor": "assistant",
     "prompt_id": "KU2D-P-000059",
-    "result_id": null,
+    "result_id": "KU2D-R-000060",
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
@@ -125,5 +125,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "KU2D-H-000028 closes P58 as blocked and authorizes P59. P59 is a one-time non-TikTok multi-source round-robin campaign with X=100 accepted unique records per source visit, deterministic serial fairness, terminal to_be_skipped states, immutable source budgets, global ceilings of 50,000 unique records, 5,000 provider operations and 12 hours, followed by a sealed-live transition, zero-provider fixture replay for every source, and a downloadable domain-separated CSV/JSONL/XLSX ZIP with manifest and failure report. Registry-only seeds without reviewed executable techniques are preflight-skipped. Live records and ZIP must remain outside Git. Expected Result is KU2D-R-000060; next actor is Codex."
+  "notes": "KU2D-R-000060 reports successful P59 closure for assistant review. The non-TikTok campaign stopped at empty_active_source_set after 4 rounds, 286 unique records, 305 observations, 107 provider operations and quota 0. Live access is sealed; fixture replay used zero provider operations; the verified 34-member ZIP remains outside Git. PR #74 was squash-merged only to integration/data-acquisition-platform as 60c58ddfc82f2229ea4bda282c7fa8b94ac6c1ad with merge tree equal to the exact PR-head tree. No production approval, scheduler action, main modification or automatic KU2A intake occurred. Next actor is assistant; do not replay P59 automatically."
 }
