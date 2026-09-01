@@ -1,0 +1,68 @@
+{
+  "schema": "ku2d.phase-scope-entry.v1",
+  "scope_declaration_id": "KU2D-SCOPE-000006",
+  "prompt_id": "KU2D-P-000059",
+  "phase_id": "P59-04",
+  "entered_at": "2026-09-02T00:20:00+07:00",
+  "domain": ["Supermarket"],
+  "source": {
+    "active": ["SRC-002", "SRC-004", "SRC-005"],
+    "terminal_before_campaign": ["SRC-001"],
+    "terminal_reason": {"SRC-001": "prelive_canary_http_403_access_boundary"},
+    "all_other_manifest_sources": "preflight_skipped_without_provider_access"
+  },
+  "capability": [
+    "one-time deterministic serial round-robin",
+    "stable-identity deduplication",
+    "atomic evidence-before-next-operation checkpointing",
+    "terminal skip persistence"
+  ],
+  "acquisition_technique": {
+    "SRC-002": ["lotus_catalog_api"],
+    "SRC-004": ["bigc_product_catalog", "generic_sitemap"],
+    "SRC-005": ["makro_pro_catalog"],
+    "scheduler": "one-time in-process only",
+    "concurrency": 1,
+    "record_slice_per_visit": 100,
+    "provider_operations_already_consumed_by_canary": 4,
+    "documented_quota_already_consumed": 0
+  },
+  "authorized_files_or_modules": [
+    "acquisition/round_robin_campaign.py",
+    "acquisition/lotus_multitechnique.py",
+    "acquisition/supermarket_techniques.py",
+    "tools/LIVE_MULTI_SOURCE_ROUND_ROBIN.py",
+    "config/multi_source_round_robin_manifest_v1.json",
+    "knowledge/v1/multi-source/KU2D-P59-CANARY-20260902.json"
+  ],
+  "explicit_out_of_scope": [
+    "TikTok public video and TikTok Shop",
+    "Tops retry after canary HTTP 403",
+    "browser or Edge fallback",
+    "login, challenge handling, CAPTCHA solving, proxying or private endpoints",
+    "production database or KU2A write",
+    "recurring scheduler",
+    "live records or export ZIP in Git"
+  ],
+  "validation_profile": [
+    "exact-head YAML parsing and Python compilation",
+    "exact-head 56-script Data Acquisition deterministic corpus before first campaign request",
+    "sealed canary hash and manifest-fingerprint reconciliation",
+    "source, visit and global provider-operation ceilings",
+    "minimum two-second same-host cadence",
+    "HTTP 401/403/429 terminal source stop",
+    "checkpoint and final ledger reconciliation"
+  ],
+  "prerequisites": {
+    "p59_01_complete": true,
+    "p59_02_targeted_tests": "RR1-RR50 and EX1-EX20 passed",
+    "p59_03_initial_exact_head_corpus": "56/56 passed at 39fbcd16af934dc23ce53ee6b96ddd6ba35640ea",
+    "p59_03_canary": "KU2D-P59-CANARY-20260902",
+    "final_exact_head_corpus_required_before_provider_access": true
+  },
+  "boundaries": {
+    "production_approved": false,
+    "production_store": false,
+    "scheduler_action": null
+  }
+}
