@@ -20,6 +20,7 @@ ASSISTANT_REVIEW_SCHEMA = "ku2d.agent-handoff-assistant-review.v1"
 HUMAN_DECISION_SCHEMA = "ku2d.agent-handoff-human-decision.v1"
 QUEUE_SCHEMA = "ku2d.agent-handoff-queue.v1"
 BRANCH_HANDOFF_SCHEMA = "ku2d.agent-handoff-branch-handoff.v1"
+HISTORICAL_MIGRATION_SCHEMA = "ku2d.agent-handoff-historical-migration.v1"
 
 ACTORS = {"codex", "assistant", "human", "none"}
 PROMPT_STATES = {
@@ -39,6 +40,7 @@ _ID_PATTERNS = {
     "review_id": re.compile(r"^KU2D-V-\d{6}$"),
     "human_decision_id": re.compile(r"^KU2D-H-\d{6}$"),
     "handoff_id": re.compile(r"^KU2D-BH-\d{6}$"),
+    "migration_id": re.compile(r"^KU2D-M-\d{6}$"),
 }
 _COMMIT_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 _BRANCH_RE = re.compile(r"^(?!/)(?!.*(?:\.\.|//))[A-Za-z0-9][A-Za-z0-9._/-]*[A-Za-z0-9]$")
@@ -234,6 +236,70 @@ def validate_human_decision_record(record: dict[str, Any]) -> dict[str, Any]:
     if provenance.get("decision_source") != "explicit_human_input":
         raise ValueError("Human Decision requires explicit human input provenance")
     _nonempty(record.get("reason_note"), "reason_note")
+    _validate_boundaries(record)
+    return validate_safe_json_payload(record)
+
+
+def _git_blob_sha(payload: bytes) -> str:
+    header = f"blob {len(payload)}\0".encode("ascii")
+    return hashlib.sha1(header + payload).hexdigest()
+
+
+def validate_historical_migration_manifest(record: dict[str, Any]) -> dict[str, Any]:
+    """Validate an append-only, exact-blob-pinned historical exception manifest."""
+    if not isinstance(record, dict) or record.get("schema") != HISTORICAL_MIGRATION_SCHEMA:
+        raise ValueError(f"historical migration schema must be {HISTORICAL_MIGRATION_SCHEMA}")
+    _record_id(record, "migration_id")
+    _nonempty(record.get("created_at"), "created_at")
+    entries = record.get("entries")
+    if not isinstance(entries, list) or not entries:
+        raise ValueError("historical migration entries must be a non-empty JSON array")
+    historical_ids: set[str] = set()
+    replacement_ids: set[str] = set()
+    for entry in entries:
+        if not isinstance(entry, dict):
+            raise ValueError("historical migration entry must be a JSON object")
+        kind = entry.get("record_kind")
+        if kind not in {"assistant_review", "human_decision"}:
+            raise ValueError("historical migration record_kind is invalid")
+        id_key = "review_id" if kind == "assistant_review" else "human_decision_id"
+        historical_id = _optional_id(entry.get("historical_record_id"), id_key)
+        replacement_id = _optional_id(entry.get("replacement_record_id"), id_key)
+        if historical_id is None or replacement_id is None or historical_id == replacement_id:
+            raise ValueError("historical migration requires distinct record and replacement IDs")
+        historical_sha = validate_commit_sha(
+            entry.get("historical_blob_sha"), "historical_blob_sha",
+        )
+        replacement_sha = validate_commit_sha(
+            entry.get("replacement_blob_sha"), "replacement_blob_sha",
+        )
+        if historical_sha == replacement_sha:
+            raise ValueError("historical and replacement blob hashes must differ")
+        if historical_id in historical_ids or replacement_id in replacement_ids:
+            raise ValueError("historical migration records and replacements must be one-to-one")
+        historical_ids.add(historical_id)
+        replacement_ids.add(replacement_id)
+    if historical_ids & replacement_ids:
+        raise ValueError("historical migration replacement cannot be circular or superseded")
+    proactive = record.get("proactive_human_decisions", [])
+    if not isinstance(proactive, list):
+        raise ValueError("proactive_human_decisions must be a JSON array")
+    proactive_humans: set[str] = set()
+    proactive_reviews: set[str] = set()
+    for entry in proactive:
+        if not isinstance(entry, dict):
+            raise ValueError("proactive Human Decision pin must be a JSON object")
+        human_id = _optional_id(entry.get("human_decision_id"), "human_decision_id")
+        review_id = _optional_id(entry.get("assistant_review_id"), "review_id")
+        if human_id is None or review_id is None:
+            raise ValueError("proactive Human Decision pin requires decision and review IDs")
+        validate_commit_sha(entry.get("human_decision_blob_sha"), "human_decision_blob_sha")
+        validate_commit_sha(entry.get("assistant_review_blob_sha"), "assistant_review_blob_sha")
+        if human_id in proactive_humans or review_id in proactive_reviews:
+            raise ValueError("proactive Human Decision pins must be one-to-one")
+        proactive_humans.add(human_id)
+        proactive_reviews.add(review_id)
+    _mapping(record, "provenance")
     _validate_boundaries(record)
     return validate_safe_json_payload(record)
 
@@ -498,23 +564,183 @@ def _index(records: list[dict[str, Any]], id_key: str, validator) -> dict[str, d
     return indexed
 
 
+def _raw_index(records: list[dict[str, Any]], id_key: str) -> dict[str, dict[str, Any]]:
+    indexed: dict[str, dict[str, Any]] = {}
+    for record in records:
+        if not isinstance(record, dict):
+            raise ValueError(f"{id_key} record must be a JSON object")
+        record_id = _record_id(record, id_key)
+        if record_id in indexed:
+            raise ValueError(f"duplicate {id_key}: {record_id}")
+        indexed[record_id] = record
+    return indexed
+
+
+def _apply_historical_migrations(
+    assistant_review_records: list[dict[str, Any]],
+    human_decision_records: list[dict[str, Any]],
+    migration_records: list[dict[str, Any]],
+    record_blobs: dict[str, bytes] | None,
+) -> tuple[
+    list[dict[str, Any]], list[dict[str, Any]], dict[str, dict[str, Any]], set[str],
+]:
+    migrations = _index(
+        migration_records, "migration_id", validate_historical_migration_manifest,
+    )
+    if not migrations:
+        return assistant_review_records, human_decision_records, {}, set()
+    if not isinstance(record_blobs, dict):
+        raise ValueError("historical migrations require exact raw record blobs")
+
+    collections = {
+        "assistant_review": (
+            _raw_index(assistant_review_records, "review_id"),
+            validate_assistant_review_record,
+        ),
+        "human_decision": (
+            _raw_index(human_decision_records, "human_decision_id"),
+            validate_human_decision_record,
+        ),
+    }
+    historical: dict[str, dict[str, Any]] = {}
+    replacement_ids: set[str] = set()
+    for migration in migrations.values():
+        for entry in migration["entries"]:
+            records, validator = collections[entry["record_kind"]]
+            historical_id = entry["historical_record_id"]
+            replacement_id = entry["replacement_record_id"]
+            if historical_id in historical or replacement_id in replacement_ids:
+                raise ValueError("historical migration mappings must be globally one-to-one")
+            if historical_id not in records:
+                raise ValueError("historical migration record is missing")
+            if replacement_id not in records:
+                raise ValueError("historical migration canonical replacement is missing")
+            historical_blob = record_blobs.get(historical_id)
+            replacement_blob = record_blobs.get(replacement_id)
+            if not isinstance(historical_blob, bytes) or not isinstance(replacement_blob, bytes):
+                raise ValueError("historical migration raw record blob is missing")
+            try:
+                parsed_historical = json.loads(historical_blob.decode("utf-8"))
+                parsed_replacement = json.loads(replacement_blob.decode("utf-8"))
+            except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+                raise ValueError("historical migration blob is not the supplied JSON record") from exc
+            if parsed_historical != records[historical_id] or parsed_replacement != records[replacement_id]:
+                raise ValueError("historical migration blob content does not match the supplied record")
+            if _git_blob_sha(historical_blob) != entry["historical_blob_sha"]:
+                raise ValueError("historical migration record blob hash mismatch")
+            if _git_blob_sha(replacement_blob) != entry["replacement_blob_sha"]:
+                raise ValueError("historical migration replacement blob hash mismatch")
+            try:
+                validator(records[historical_id])
+            except ValueError:
+                pass
+            else:
+                raise ValueError("historical migration cannot suppress a valid active record")
+            validator(records[replacement_id])
+            historical[historical_id] = {
+                "record": records[historical_id],
+                "record_kind": entry["record_kind"],
+                "blob_sha": entry["historical_blob_sha"],
+                "replacement_record_id": replacement_id,
+                "replacement_blob_sha": entry["replacement_blob_sha"],
+                "migration_id": migration["migration_id"],
+                "active_authority": False,
+            }
+            replacement_ids.add(replacement_id)
+    if set(historical) & replacement_ids:
+        raise ValueError("historical migration replacement cannot be circular or superseded")
+
+    proactive_humans: set[str] = set()
+    review_records, review_validator = collections["assistant_review"]
+    human_records, human_validator = collections["human_decision"]
+    for migration in migrations.values():
+        for entry in migration.get("proactive_human_decisions", []):
+            human_id = entry["human_decision_id"]
+            review_id = entry["assistant_review_id"]
+            if human_id in proactive_humans:
+                raise ValueError("proactive Human Decision pin is duplicated")
+            if human_id in historical or review_id in historical:
+                raise ValueError("historical record cannot grant proactive Human Decision authority")
+            if human_id not in human_records or review_id not in review_records:
+                raise ValueError("proactive Human Decision or Assistant Review is missing")
+            human_blob = record_blobs.get(human_id)
+            review_blob = record_blobs.get(review_id)
+            if not isinstance(human_blob, bytes) or not isinstance(review_blob, bytes):
+                raise ValueError("proactive Human Decision requires exact raw record blobs")
+            try:
+                parsed_human = json.loads(human_blob.decode("utf-8"))
+                parsed_review = json.loads(review_blob.decode("utf-8"))
+            except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+                raise ValueError("proactive Human Decision blob is invalid JSON") from exc
+            if parsed_human != human_records[human_id] or parsed_review != review_records[review_id]:
+                raise ValueError("proactive Human Decision blob content mismatch")
+            if _git_blob_sha(human_blob) != entry["human_decision_blob_sha"]:
+                raise ValueError("proactive Human Decision blob hash mismatch")
+            if _git_blob_sha(review_blob) != entry["assistant_review_blob_sha"]:
+                raise ValueError("proactive Assistant Review blob hash mismatch")
+            human_validator(human_records[human_id])
+            review_validator(review_records[review_id])
+            human = human_records[human_id]
+            review = review_records[review_id]
+            if human["review_id"] != review_id or human["decision"] != "confirmed":
+                raise ValueError("proactive Human Decision chain or decision is invalid")
+            if review["requires_human_decision"]:
+                raise ValueError("requested Human Decision does not need a proactive exception")
+            if (
+                human["prompt_id"] != review["prompt_id"]
+                or human["result_id"] != review["result_id"]
+            ):
+                raise ValueError("proactive Human Decision prompt/result chain is inconsistent")
+            proactive_humans.add(human_id)
+
+    active_reviews = [
+        record for record in assistant_review_records if record["review_id"] not in historical
+    ]
+    active_humans = [
+        record for record in human_decision_records if record["human_decision_id"] not in historical
+    ]
+    return active_reviews, active_humans, historical, proactive_humans
+
+
 def validate_agent_handoff_bundle(
     prompt_records: list[dict[str, Any]], result_records: list[dict[str, Any]],
     assistant_review_records: list[dict[str, Any]], human_decision_records: list[dict[str, Any]],
     queue_state: dict[str, Any], *, previous_queue_state: dict[str, Any] | None = None,
     branch_handoff_records: list[dict[str, Any]] | None = None,
+    historical_migration_records: list[dict[str, Any]] | None = None,
+    record_blobs: dict[str, bytes] | None = None,
 ) -> dict[str, Any]:
     """Fail closed on broken chains, authority, queue state, and replay."""
     prompts = _index(prompt_records, "prompt_id", validate_prompt_record)
     results = _index(result_records, "result_id", validate_result_record)
-    reviews = _index(assistant_review_records, "review_id", validate_assistant_review_record)
-    humans = _index(human_decision_records, "human_decision_id", validate_human_decision_record)
+    active_reviews, active_humans, historical, proactive_human_ids = (
+        _apply_historical_migrations(
+        assistant_review_records, human_decision_records,
+        historical_migration_records or [], record_blobs,
+        )
+    )
+    reviews = _index(active_reviews, "review_id", validate_assistant_review_record)
+    humans = _index(active_humans, "human_decision_id", validate_human_decision_record)
+    migrations = _index(
+        historical_migration_records or [], "migration_id",
+        validate_historical_migration_manifest,
+    )
     handoffs = _index(
         branch_handoff_records or [], "handoff_id", validate_branch_handoff_record,
     )
     queue = validate_queue_state(queue_state)
 
-    all_ids = list(prompts) + list(results) + list(reviews) + list(humans) + list(handoffs)
+    queue_authority_ids = {
+        queue.get("latest_review"), queue.get("latest_human_decision"),
+        queue["next_action"].get("review_id"), queue["next_action"].get("human_decision_id"),
+    }
+    if set(historical) & queue_authority_ids:
+        raise ValueError("historical migrated record cannot act as current authority")
+
+    all_ids = (
+        list(prompts) + list(results) + list(reviews) + list(humans)
+        + list(historical) + list(handoffs) + list(migrations)
+    )
     if len(all_ids) != len(set(all_ids)):
         raise ValueError("coordination record IDs must be globally unique")
     for result in results.values():
@@ -531,7 +757,7 @@ def validate_agent_handoff_bundle(
         result = results.get(human["result_id"])
         if not review or not result or human["prompt_id"] not in prompts:
             raise ValueError("orphan Human Decision chain")
-        if not review["requires_human_decision"]:
+        if not review["requires_human_decision"] and human["human_decision_id"] not in proactive_human_ids:
             raise ValueError("Human Decision answers a review that did not request human authority")
         if {review["prompt_id"], result["prompt_id"]} != {human["prompt_id"]}:
             raise ValueError("Human Decision prompt chain is inconsistent")
@@ -636,6 +862,9 @@ def validate_agent_handoff_bundle(
         "assistant_review_records": reviews,
         "human_decision_records": humans,
         "branch_handoff_records": handoffs,
+        "historical_migration_records": migrations,
+        "historical_records": historical,
+        "proactive_human_decision_ids": sorted(proactive_human_ids),
         "queue_state": queue,
     }
 

@@ -1,0 +1,47 @@
+{
+  "schema": "ku2d.agent-handoff-historical-migration.v1",
+  "migration_id": "KU2D-M-000001",
+  "created_at": "2026-09-01T11:30:00.000+07:00",
+  "entries": [
+    {
+      "record_kind": "assistant_review",
+      "historical_record_id": "KU2D-V-000047",
+      "historical_blob_sha": "702bda7d0b7822ef7b34257a5a177cfe5deb4820",
+      "replacement_record_id": "KU2D-V-000048",
+      "replacement_blob_sha": "afba89a6d66014840d833f0fc03f72b89f5e9e76"
+    },
+    {
+      "record_kind": "human_decision",
+      "historical_record_id": "KU2D-H-000017",
+      "historical_blob_sha": "8e6b4c7c68dd18a305355edcd0c264ce7831f95b",
+      "replacement_record_id": "KU2D-H-000018",
+      "replacement_blob_sha": "549ae13112a8df31171d02482b1f9572a8d84a4f"
+    }
+  ],
+  "proactive_human_decisions": [
+    {
+      "human_decision_id": "KU2D-H-000018",
+      "human_decision_blob_sha": "549ae13112a8df31171d02482b1f9572a8d84a4f",
+      "assistant_review_id": "KU2D-V-000048",
+      "assistant_review_blob_sha": "afba89a6d66014840d833f0fc03f72b89f5e9e76"
+    },
+    {
+      "human_decision_id": "KU2D-H-000019",
+      "human_decision_blob_sha": "1e23a5e3d70fe1c3f6dda5121b1f2a037c0248d8",
+      "assistant_review_id": "KU2D-V-000049",
+      "assistant_review_blob_sha": "adbf4751071351eada7ccdcd2806357426405096"
+    }
+  ],
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "authorizing_prompt": "KU2D-P-000050",
+    "authorizing_human_decision": "KU2D-H-000019",
+    "purpose": "Retain exact invalid historical records for audit without allowing them to act as active v1 authority."
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

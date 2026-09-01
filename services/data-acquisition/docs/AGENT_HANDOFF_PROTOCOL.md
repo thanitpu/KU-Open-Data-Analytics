@@ -85,6 +85,33 @@ Both detached Queue snapshots are stored in the append-only Branch Handoff recor
 
 The queue is a mutable pointer/index, while Prompt, Result, Assistant Review, and Human Decision records preserve append-only history.
 
+## Hash-pinned historical migration
+
+An invalid append-only record is never rewritten or silently accepted. A
+`ku2d.agent-handoff-historical-migration.v1` manifest may retain it as visible,
+non-authoritative history only when the manifest lists the exact historical
+record ID and Git blob SHA together with one distinct, present, individually
+valid canonical replacement and its exact Git blob SHA. Validation requires the
+raw repository bytes for both sides and confirms that those bytes parse to the
+supplied records.
+
+Migrated records are excluded from active Review/Human Decision indexes and are
+returned separately as `historical_records` with `active_authority=false`.
+Unlisted invalid records, missing raw bytes, any content/hash mismatch, missing
+or invalid replacements, duplicate mappings, circular/superseded replacements,
+attempts to suppress a valid record, and Queue pointers to historical records
+all fail closed. The manifest itself remains coordination-only and cannot grant
+acquisition, production, scheduling, or ML-export authority.
+
+The default rule still rejects a Human Decision whose Assistant Review did not
+request human authority. A migration may preserve a genuine proactive human
+continuation only by pinning the exact Human Decision and Assistant Review Git
+blobs. Both records must validate independently, retain one exact
+Prompt/Result/Review chain, carry `explicit_human_input`, and the decision must
+be `confirmed`; an unlisted record, requested-decision case, duplicate pin, or
+any ID/content/hash mismatch fails closed. This narrow allowlist does not alter
+Queue actor rules or allow an assistant to claim human authority.
+
 ## Bootstrap migration for PR #44
 
 `coordination/prompts/KU2D-P-000001.json` remains the immutable `bootstrap.v0` input. Its validated v1 projection lives separately at `coordination/v1/prompts/KU2D-P-000001.json` and cites the bootstrap source plus the independent review comment. This prevents migration from silently rewriting history.

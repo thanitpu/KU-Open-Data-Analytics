@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import sys
 from copy import deepcopy
 from pathlib import Path
@@ -15,6 +16,7 @@ from agent_handoff_protocol import (
     ASSISTANT_REVIEW_SCHEMA,
     BRANCH_HANDOFF_SCHEMA,
     HUMAN_DECISION_SCHEMA,
+    HISTORICAL_MIGRATION_SCHEMA,
     PROMPT_SCHEMA,
     QUEUE_SCHEMA,
     RESULT_SCHEMA,
@@ -27,6 +29,7 @@ from agent_handoff_protocol import (
     validate_assistant_review_record,
     validate_branch_handoff_record,
     validate_human_decision_record,
+    validate_historical_migration_manifest,
     validate_prompt_record,
     validate_prompt_state_transition,
     validate_queue_state,
@@ -324,16 +327,34 @@ repository_queue = json.loads(queue_path.read_text(encoding="utf-8"))
 def records_in(folder):
     return [json.loads(path.read_text(encoding="utf-8")) for path in sorted(folder.glob("*.json"))]
 
+def records_and_blobs(folder, id_key):
+    records, blobs = [], {}
+    for path in sorted(folder.glob("*.json")):
+        payload = path.read_bytes().replace(b"\r\n", b"\n")
+        record = json.loads(payload.decode("utf-8"))
+        records.append(record)
+        blobs[record[id_key]] = payload
+    return records, blobs
+
 repository_prompts = records_in(ROOT / "coordination" / "v1" / "prompts")
 repository_results = records_in(ROOT / "coordination" / "v1" / "results")
-repository_reviews = records_in(ROOT / "coordination" / "v1" / "reviews")
+repository_reviews, review_blobs = records_and_blobs(
+    ROOT / "coordination" / "v1" / "reviews", "review_id",
+)
 human_folder = ROOT / "coordination" / "v1" / "human-decisions"
-repository_humans = records_in(human_folder) if human_folder.is_dir() else []
+repository_humans, human_blobs = (
+    records_and_blobs(human_folder, "human_decision_id")
+    if human_folder.is_dir() else ([], {})
+)
 handoff_folder = ROOT / "coordination" / "v1" / "branch-handoffs"
 repository_handoffs = records_in(handoff_folder) if handoff_folder.is_dir() else []
+migration_folder = ROOT / "coordination" / "v1" / "migrations"
+repository_migrations = records_in(migration_folder) if migration_folder.is_dir() else []
 repository_bundle = validate_agent_handoff_bundle(
     repository_prompts, repository_results, repository_reviews, repository_humans,
     repository_queue, branch_handoff_records=repository_handoffs,
+    historical_migration_records=repository_migrations,
+    record_blobs={**review_blobs, **human_blobs},
 )
 assert repository_bundle["queue_state"]["next_action"]["actor"] in {"codex", "assistant", "human", "none"}
 if repository_bundle["queue_state"]["next_action"]["actor"] == "assistant":
@@ -342,7 +363,7 @@ assert set(repository_bundle["human_decision_records"]) == {
     "KU2D-H-000001", "KU2D-H-000002", "KU2D-H-000004", "KU2D-H-000005",
     "KU2D-H-000006", "KU2D-H-000007", "KU2D-H-000008", "KU2D-H-000009",
     "KU2D-H-000010", "KU2D-H-000011", "KU2D-H-000012", "KU2D-H-000013", "KU2D-H-000014", "KU2D-H-000015",
-    "KU2D-H-000016",
+    "KU2D-H-000016", "KU2D-H-000018", "KU2D-H-000019",
 }
 assert repository_bundle["human_decision_records"]["KU2D-H-000001"]["decision"] == "confirmed"
 assert repository_bundle["human_decision_records"]["KU2D-H-000002"]["decision"] == "confirmed"
@@ -359,6 +380,13 @@ assert repository_bundle["human_decision_records"]["KU2D-H-000013"]["decision"] 
 assert repository_bundle["human_decision_records"]["KU2D-H-000014"]["decision"] == "confirmed"
 assert repository_bundle["human_decision_records"]["KU2D-H-000015"]["decision"] == "confirmed"
 assert repository_bundle["human_decision_records"]["KU2D-H-000016"]["decision"] == "confirmed"
+assert repository_bundle["human_decision_records"]["KU2D-H-000018"]["decision"] == "confirmed"
+assert repository_bundle["human_decision_records"]["KU2D-H-000019"]["decision"] == "confirmed"
+assert set(repository_bundle["historical_records"]) == {"KU2D-V-000047", "KU2D-H-000017"}
+assert all(
+    record["active_authority"] is False
+    for record in repository_bundle["historical_records"].values()
+)
 assert validate_authoritative_branch(
     repository_prompts[-1], repository_queue, repository_queue["authoritative_branch"],
     repository_handoffs[-1] if repository_handoffs else None,
@@ -528,4 +556,187 @@ try:
 except ValueError:
     pass
 
-print("Agent Handoff Protocol deterministic tests passed (AH1-AH31).")
+# AH32: the repository migration is exact, visible, and non-authoritative.
+assert len(repository_migrations) == 1
+assert validate_historical_migration_manifest(repository_migrations[0])["migration_id"] == (
+    "KU2D-M-000001"
+)
+assert set(repository_bundle["historical_records"]) == {"KU2D-V-000047", "KU2D-H-000017"}
+assert all(
+    item["active_authority"] is False
+    for item in repository_bundle["historical_records"].values()
+)
+assert repository_bundle["proactive_human_decision_ids"] == [
+    "KU2D-H-000018", "KU2D-H-000019",
+]
+
+def repository_validation(*, migrations=None, reviews=None, humans=None, blobs=None, queue_state=None):
+    return validate_agent_handoff_bundle(
+        repository_prompts, repository_results,
+        repository_reviews if reviews is None else reviews,
+        repository_humans if humans is None else humans,
+        repository_queue if queue_state is None else queue_state,
+        branch_handoff_records=repository_handoffs,
+        historical_migration_records=(
+            repository_migrations if migrations is None else migrations
+        ),
+        record_blobs={**review_blobs, **human_blobs} if blobs is None else blobs,
+    )
+
+def json_blob(record):
+    payload = (json.dumps(record, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+    digest = hashlib.sha1(f"blob {len(payload)}\0".encode("ascii") + payload).hexdigest()
+    return payload, digest
+
+# AH33: an unlisted invalid historical record still fails closed.
+try:
+    repository_validation(migrations=[])
+    raise AssertionError("unlisted invalid record validated")
+except ValueError:
+    pass
+
+# AH34: any historical or replacement hash mismatch fails closed.
+bad_hash = deepcopy(repository_migrations)
+bad_hash[0]["entries"][0]["historical_blob_sha"] = "0" * 40
+try:
+    repository_validation(migrations=bad_hash)
+    raise AssertionError("mismatched historical blob hash validated")
+except ValueError:
+    pass
+bad_replacement_hash = deepcopy(repository_migrations)
+bad_replacement_hash[0]["entries"][0]["replacement_blob_sha"] = "0" * 40
+try:
+    repository_validation(migrations=bad_replacement_hash)
+    raise AssertionError("mismatched replacement blob hash validated")
+except ValueError:
+    pass
+
+# AH35: a missing canonical replacement fails closed.
+missing_replacement = [
+    item for item in repository_reviews if item["review_id"] != "KU2D-V-000048"
+]
+try:
+    repository_validation(reviews=missing_replacement)
+    raise AssertionError("missing canonical replacement validated")
+except ValueError:
+    pass
+
+# AH36: an exact-hash replacement that does not validate still fails closed.
+invalid_replacement_reviews = deepcopy(repository_reviews)
+invalid_replacement = next(
+    item for item in invalid_replacement_reviews if item["review_id"] == "KU2D-V-000048"
+)
+invalid_replacement["review_result"] = "invalid"
+invalid_blob, invalid_sha = json_blob(invalid_replacement)
+invalid_manifest = deepcopy(repository_migrations)
+invalid_manifest[0]["entries"][0]["replacement_blob_sha"] = invalid_sha
+invalid_blobs = {**review_blobs, **human_blobs, "KU2D-V-000048": invalid_blob}
+try:
+    repository_validation(
+        migrations=invalid_manifest, reviews=invalid_replacement_reviews, blobs=invalid_blobs,
+    )
+    raise AssertionError("invalid canonical replacement validated")
+except ValueError:
+    pass
+
+# AH37: raw bytes are mandatory proof for each pinned record.
+missing_blob = {**review_blobs, **human_blobs}
+missing_blob.pop("KU2D-H-000017")
+try:
+    repository_validation(blobs=missing_blob)
+    raise AssertionError("migration without raw historical bytes validated")
+except ValueError:
+    pass
+
+# AH38: a migrated historical record cannot be a current Queue authority pointer.
+historical_authority_queue = deepcopy(repository_queue)
+historical_authority_queue["latest_review"] = "KU2D-V-000047"
+try:
+    repository_validation(queue_state=historical_authority_queue)
+    raise AssertionError("historical review acted as current authority")
+except ValueError:
+    pass
+
+# AH39: circular or superseded replacement mappings fail at manifest validation.
+circular_manifest = deepcopy(repository_migrations[0])
+circular_manifest["entries"].append({
+    "record_kind": "assistant_review",
+    "historical_record_id": "KU2D-V-000048",
+    "historical_blob_sha": "afba89a6d66014840d833f0fc03f72b89f5e9e76",
+    "replacement_record_id": "KU2D-V-000047",
+    "replacement_blob_sha": "702bda7d0b7822ef7b34257a5a177cfe5deb4820",
+})
+try:
+    validate_historical_migration_manifest(circular_manifest)
+    raise AssertionError("circular historical migration validated")
+except ValueError:
+    pass
+
+# AH40: a manifest cannot suppress an already valid active record.
+valid_as_historical = deepcopy(repository_migrations)
+valid_as_historical[0]["entries"][0] = {
+    "record_kind": "assistant_review",
+    "historical_record_id": "KU2D-V-000048",
+    "historical_blob_sha": "afba89a6d66014840d833f0fc03f72b89f5e9e76",
+    "replacement_record_id": "KU2D-V-000049",
+    "replacement_blob_sha": hashlib.sha1(
+        f"blob {len(review_blobs['KU2D-V-000049'])}\0".encode("ascii")
+        + review_blobs["KU2D-V-000049"]
+    ).hexdigest(),
+}
+try:
+    repository_validation(migrations=valid_as_historical)
+    raise AssertionError("valid active review was suppressed as historical")
+except ValueError:
+    pass
+
+# AH41: proactive Human Decisions remain rejected unless exact-pinned.
+unpinned_proactive = deepcopy(repository_migrations)
+unpinned_proactive[0]["proactive_human_decisions"] = []
+try:
+    repository_validation(migrations=unpinned_proactive)
+    raise AssertionError("unlisted proactive Human Decision validated")
+except ValueError:
+    pass
+
+# AH42: a proactive Human Decision or Review hash mismatch fails closed.
+bad_proactive_human_hash = deepcopy(repository_migrations)
+bad_proactive_human_hash[0]["proactive_human_decisions"][0][
+    "human_decision_blob_sha"
+] = "0" * 40
+try:
+    repository_validation(migrations=bad_proactive_human_hash)
+    raise AssertionError("mismatched proactive Human Decision hash validated")
+except ValueError:
+    pass
+bad_proactive_review_hash = deepcopy(repository_migrations)
+bad_proactive_review_hash[0]["proactive_human_decisions"][0][
+    "assistant_review_blob_sha"
+] = "0" * 40
+try:
+    repository_validation(migrations=bad_proactive_review_hash)
+    raise AssertionError("mismatched proactive Assistant Review hash validated")
+except ValueError:
+    pass
+
+# AH43: duplicate proactive decision/review pins fail closed.
+duplicate_proactive = deepcopy(repository_migrations[0])
+duplicate_proactive["proactive_human_decisions"].append(
+    deepcopy(duplicate_proactive["proactive_human_decisions"][0])
+)
+try:
+    validate_historical_migration_manifest(duplicate_proactive)
+    raise AssertionError("duplicate proactive authority pin validated")
+except ValueError:
+    pass
+
+# AH44: normal unrequested Human Decisions remain rejected without migrations.
+try:
+    validate_agent_handoff_bundle(
+        [prompt()], [result()], [review()], [human_decision()], queue("completed", "none"),
+    )
+    raise AssertionError("general unrequested Human Decision bypassed the queue gate")
+except ValueError:
+    pass
+
+print("Agent Handoff Protocol deterministic tests passed (AH1-AH44).")
