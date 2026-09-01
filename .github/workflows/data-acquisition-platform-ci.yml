@@ -66,6 +66,7 @@ jobs:
           python tools/SELF_TEST_YOUTUBE_CONTENT_ACQUISITION_V2.py
           python tools/SELF_TEST_YOUTUBE_QDIVING_LIVE_PILOT.py
           python tools/SELF_TEST_YOUTUBE_OPERATIONAL_HARDENING.py
+          python tools/SELF_TEST_YOUTUBE_IDENTITY_DISCOVERY_REVIEW.py
           python tools/SELF_TEST_SHOPEE_COMMERCE_PULSE.py
           python tools/SELF_TEST_SHOPEE_EDGE_ACCESS_DIAGNOSTIC.py
           python tools/SELF_TEST_SHOPEE_EDGE_WORKFLOW.py

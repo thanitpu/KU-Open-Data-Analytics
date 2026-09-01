@@ -1,0 +1,20 @@
+{
+  "schema":"ku2d.youtube-identity-discovery-cases.v1",
+  "search_rows":[
+    {"video_id":"SIMVIDEO001","channel_id":"SIM-CHANNEL-A","query_profile_id":"QYT-BEGINNER-KOH-TAO-TH","query_text":"เรียนดำน้ำ เกาะเต่า"},
+    {"video_id":"SIMVIDEO001","channel_id":"SIM-CHANNEL-A","query_profile_id":"QYT-BEGINNER-EN","query_text":"scuba diving beginner Thailand"},
+    {"video_id":"SIMVIDEO002","channel_id":"SIM-CHANNEL-B","query_profile_id":"QYT-BEGINNER-EN","query_text":"scuba diving beginner Thailand"},
+    {"video_id":"SIMVIDEO003","channel_id":"SIM-CHANNEL-C","query_profile_id":"QYT-BEGINNER-EN","query_text":"scuba diving beginner Thailand"},
+    {"video_id":"SIMVIDEO004","channel_id":"SIM-CHANNEL-D","query_profile_id":"QYT-BEGINNER-EN","query_text":"scuba diving beginner Thailand"},
+    {"video_id":"SIMVIDEO004","channel_id":"SIM-CHANNEL-X","query_profile_id":"QYT-BEGINNER-KOH-TAO-TH","query_text":"เรียนดำน้ำ เกาะเต่า"},
+    {"video_id":"SIMVIDEO005","channel_id":"SIM-CHANNEL-E","query_profile_id":"QYT-BEGINNER-KOH-TAO-TH","query_text":"เรียนดำน้ำ เกาะเต่า"}
+  ],
+  "metadata_rows":[
+    {"video_id":"SIMVIDEO001","channel_id":"SIM-CHANNEL-A","channel_title":"Sanitized A","title":"เรียนดำน้ำลึกเบื้องต้น เกาะเต่า","published_at":"2026-01-01T00:00:00Z","default_language":"th","default_audio_language":"th","observed_at":"2026-09-01T00:00:00Z","privacy_status":"public","publicly_usable":true},
+    {"video_id":"SIMVIDEO002","channel_id":"SIM-CHANNEL-B","channel_title":"Sanitized B","title":"Scuba diving beginner Thailand","published_at":"2026-01-02T00:00:00Z","default_language":"en","default_audio_language":"en","observed_at":"2026-09-01T00:00:00Z","privacy_status":"public","publicly_usable":true},
+    {"video_id":"SIMVIDEO003","channel_id":"SIM-CHANNEL-C","title":"Private fixture","observed_at":"2026-09-01T00:00:00Z","privacy_status":"private","publicly_usable":false},
+    {"video_id":"SIMVIDEO004","channel_id":"SIM-CHANNEL-D","title":"Ambiguous fixture","observed_at":"2026-09-01T00:00:00Z","privacy_status":"public","publicly_usable":true}
+  ],
+  "expected":{"retained_ids":["SIMVIDEO001","SIMVIDEO002"],"duplicate_cross_profile_count":2,"excluded_reasons":["private_or_unavailable","ambiguous_channel_linkage","unavailable_or_deleted"]},
+  "zero_result_query":[],"quota_stop":{"planned_quota_units":201,"available_quota_units":200,"request_must_not_start":true}
+}

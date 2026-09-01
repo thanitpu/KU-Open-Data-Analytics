@@ -1,0 +1,11 @@
+{
+  "schema":"ku2d.youtube-qdiving-identity-discovery.v1","discovery_id":"KU2D-YT-QDIVING-IDENTITY-DISCOVERY-000001","observed_at":"2026-09-01T07:22:00+07:00","classification":"evidence_withheld","exit_classification":2,"technical_completion":true,"withheld_reason":"api_credential_not_configured",
+  "authority":{"human_decision_id":"KU2D-H-000012","decision":"confirmed","scope":"bounded public identity discovery only"},
+  "credential_preflight":{"configured":false,"secret_read_or_logged":false},
+  "planned_profiles":["QYT-BEGINNER-KOH-TAO-TH","QYT-BEGINNER-EN"],
+  "budget":{"search_request_cap":2,"metadata_request_cap":1,"request_cap":3,"quota_unit_cap":201,"unit_costs":{"search.list":100,"videos.list":1},"value_origin":"official_documentation_accessed_2026-09-01","max_results_per_profile":5,"max_pages_per_profile":1},
+  "request_quota_ledger":{"request_count":0,"search_list_request_count":0,"videos_list_request_count":0,"page_count":0,"documented_quota_units":0,"events":[],"stop_reason":"credential_preflight_withheld_before_request"},
+  "candidate_count":0,"retained_candidates":[],"excluded_candidates":[],"human_review_package":"fixtures/youtube_identity_discovery/sanitized_human_review_package.json","human_review_completed":false,"usable_reviewed_identity_count":0,
+  "warnings":["No YouTube request was made because KU2D_YOUTUBE_API_KEY was not configured in the execution environment.","Do not broaden query profiles or substitute another surface automatically."],
+  "boundaries":{"comments_acquired":false,"captions_called":false,"transcript_text_acquired":false,"oauth_used":false,"browser_or_scraping_used":false,"production_store":false,"production_approved":false,"authority_promoted":false,"scheduler_action":null}
+}
