@@ -1,10 +1,10 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T10:32:15.6300721+07:00",
+  "updated_at": "2026-09-01T10:37:15.000+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
-  "latest_prompt": "KU2D-P-000046",
+  "latest_prompt": "KU2D-P-000047",
   "latest_result": "KU2D-R-000046",
-  "latest_review": "KU2D-V-000045",
+  "latest_review": "KU2D-V-000046",
   "latest_human_decision": "KU2D-H-000016",
   "prompt_states": {
     "KU2D-P-000001": "completed",
@@ -51,7 +51,8 @@
     "KU2D-P-000043": "reviewed",
     "KU2D-P-000044": "completed",
     "KU2D-P-000045": "reviewed",
-    "KU2D-P-000046": "result_submitted"
+    "KU2D-P-000046": "reviewed",
+    "KU2D-P-000047": "ready_for_codex"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -86,11 +87,11 @@
     "KU2D-P-000044"
   ],
   "next_action": {
-    "actor": "assistant",
-    "prompt_id": "KU2D-P-000046",
-    "result_id": "KU2D-R-000046",
+    "actor": "codex",
+    "prompt_id": "KU2D-P-000047",
+    "result_id": "KU2D-R-000047",
     "review_id": null,
-    "human_decision_id": null,
+    "human_decision_id": "KU2D-H-000016",
     "replay_requested": false
   },
   "branch_handoff": {
@@ -107,5 +108,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "KU2D-R-000046 records the completed one-file corrected launcher promotion preparation. Ready PR #67 targets main at exact head 0398fb3e4ac229e5f1d97e45fc6cca373fef8c3a and contains only .github/workflows/youtube-qdiving-identity-discovery.yml. It equals the corrected integration launcher after exactly three H16-authorized anchor replacements; YAML, static contract, corrected artifact guard, one-file diff and all applicable exact-head checks pass. PR #67 remains open and unmerged. No new dispatch, secret access, YouTube request/quota, Human Review, approval, production write, scheduling or authority promotion occurred. Assistant review is next."
+  "notes": "KU2D-V-000046 accepts R46 and exact-head PR #67 under H16. KU2D-P-000047 is ready for Codex. Queue objective: guarded merge of the corrected one-file launcher PR #67 to main, then exactly one bounded Q-Diving Identity Discovery dispatch using immutable H16 trust anchors, followed by retrieval and reporting of sanitized evidence only. No automatic retry, comments, captions, transcripts, production write, scheduling or authority promotion is permitted."
 }
