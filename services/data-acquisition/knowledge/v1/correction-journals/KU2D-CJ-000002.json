@@ -3,7 +3,7 @@
   "journal_id": "KU2D-CJ-000002",
   "source_completion_prompt_id": "KU2D-P-000052",
   "created_at": "2026-09-01T12:55:00.000+07:00",
-  "closed_at": null,
+  "closed_at": "2026-09-01T13:35:00.000+07:00",
   "events": [
     {
       "event_id": "KU2D-TC-000004",
@@ -112,21 +112,21 @@
         "scope_changed": false
       },
       "validation": {
-        "checks": ["Workflow YAML parse", "Exact-head Data Acquisition Platform CI", "Connector Kit CK1-CK11"],
-        "result": "not_run"
+        "checks": ["Workflow YAML parse", "Workflow corpus registration", "Connector Kit CK1-CK17"],
+        "result": "passed"
       },
-      "outcome": "unresolved",
+      "outcome": "resolved",
       "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
       "schema_impact": "No runtime schema change; the deterministic CI corpus gains one explicitly registered script.",
       "quality_impact": "Prevents Connector Kit contracts from becoming locally tested but CI-unenforced.",
-      "related_commit_or_pending_commit": "pending_commit",
+      "related_commit_or_pending_commit": "632697f0b65b848c30cea3db0433b4c78d4dde24",
       "effort_minutes": null,
       "learning": {
         "reusable_lesson": "A deterministic script is not authoritative regression coverage until the platform workflow executes it.",
         "future_prevention": "Require every new SELF_TEST script to be registered or explicitly classified as non-corpus before PR review.",
         "labels": ["ci-coverage", "connector-kit", "regression"]
       },
-      "evidence_refs": ["KU2D-V-000052", "pull-request:70"]
+      "evidence_refs": ["KU2D-V-000052", "pull-request:70", "commit:632697f0b65b848c30cea3db0433b4c78d4dde24"]
     },
     {
       "event_id": "KU2D-TC-000008",
@@ -145,20 +145,20 @@
       },
       "validation": {
         "checks": ["Exact schema/validator parity cases", "Unknown and missing field rejection", "Finalized commit-link enforcement"],
-        "result": "not_run"
+        "result": "passed"
       },
-      "outcome": "unresolved",
+      "outcome": "resolved",
       "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
       "schema_impact": "No intended document-shape expansion; runtime validation becomes congruent with the closed v1 JSON Schema.",
       "quality_impact": "Prevents malformed or ambiguous correction evidence from being accepted by the Python path.",
-      "related_commit_or_pending_commit": "pending_commit",
+      "related_commit_or_pending_commit": "632697f0b65b848c30cea3db0433b4c78d4dde24",
       "effort_minutes": null,
       "learning": {
         "reusable_lesson": "A closed JSON Schema and its pure runtime validator must reject the same missing and unknown fields.",
         "future_prevention": "Add bidirectional schema-parity negatives whenever a closed evidence schema gains a validator.",
         "labels": ["schema-parity", "fail-closed", "evidence-validation"]
       },
-      "evidence_refs": ["KU2D-V-000052", "technical-correction-journal.schema.json"]
+      "evidence_refs": ["KU2D-V-000052", "technical-correction-journal.schema.json", "commit:632697f0b65b848c30cea3db0433b4c78d4dde24"]
     },
     {
       "event_id": "KU2D-TC-000009",
@@ -185,20 +185,20 @@
       "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
       "schema_impact": "Adds correction_required to queue state and optional supersedes_result_id to later Results; existing records remain valid and unchanged.",
       "quality_impact": "Preserves review history and prevents a corrected Result from silently replacing prior evidence.",
-      "related_commit_or_pending_commit": "pending_commit",
+      "related_commit_or_pending_commit": "a883e997415b28798ca3242eef53c3ed27ea7e70",
       "effort_minutes": null,
       "learning": {
         "reusable_lesson": "Append-only coordination needs an explicit reviewed-Result supersession chain for in-Prompt corrections.",
         "future_prevention": "Serialize correction reviews before implementation and resubmit with a new Result ID that pins the reviewed predecessor.",
         "labels": ["append-only", "result-resubmission", "coordination"]
       },
-      "evidence_refs": ["KU2D-R-000052", "KU2D-V-000052", "SELF_TEST_AGENT_HANDOFF_PROTOCOL.py"]
+      "evidence_refs": ["KU2D-R-000052", "KU2D-V-000052", "SELF_TEST_AGENT_HANDOFF_PROTOCOL.py", "commit:a883e997415b28798ca3242eef53c3ed27ea7e70"]
     }
   ],
   "summary": {
     "event_count": 6,
-    "resolved_count": 4,
-    "unresolved_count": 2,
+    "resolved_count": 6,
+    "unresolved_count": 0,
     "correction_cycles_used": 6
   },
   "safety": {
