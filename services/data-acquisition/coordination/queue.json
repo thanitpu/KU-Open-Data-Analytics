@@ -1,11 +1,11 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T09:14:00.000+07:00",
+  "updated_at": "2026-09-01T09:18:30.000+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
-  "latest_prompt": "KU2D-P-000041",
+  "latest_prompt": "KU2D-P-000042",
   "latest_result": "KU2D-R-000041",
   "latest_review": "KU2D-V-000041",
-  "latest_human_decision": "KU2D-H-000014",
+  "latest_human_decision": "KU2D-H-000015",
   "prompt_states": {
     "KU2D-P-000001": "completed",
     "KU2D-P-000002": "completed",
@@ -46,7 +46,8 @@
     "KU2D-P-000038": "reviewed",
     "KU2D-P-000039": "reviewed",
     "KU2D-P-000040": "completed",
-    "KU2D-P-000041": "completed"
+    "KU2D-P-000041": "completed",
+    "KU2D-P-000042": "ready_for_codex"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -79,10 +80,10 @@
     "KU2D-P-000041"
   ],
   "next_action": {
-    "actor": "human",
-    "prompt_id": "KU2D-P-000041",
-    "result_id": "KU2D-R-000041",
-    "review_id": "KU2D-V-000041",
+    "actor": "codex",
+    "prompt_id": "KU2D-P-000042",
+    "result_id": null,
+    "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
   },
@@ -100,5 +101,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "KU2D-V-000041 accepts the successful integration merge at 453d75ff23e5fdd78e4a8d36f77cd7185db99059. The next gate is a genuine Human Decision on one exact bounded YouTube Data API identity-discovery run: two profiles, one page each, five results each, at most two search.list calls, one videos.list call and 201 documented quota units. If confirmed, coordination may record the exact authorization, prepare and technically review a one-file main launcher promotion, merge it under the delegated technical-review policy, manually dispatch once, and retrieve sanitized evidence. Comments, captions, transcripts, OAuth, scraping, automatic candidate approval, production storage, scheduling, broader scope and authority promotion remain excluded."
+  "notes": "KU2D-H-000015 authorizes one exact bounded YouTube Q-Diving Identity Discovery run bound to integration commit 453d75ff23e5fdd78e4a8d36f77cd7185db99059. Its immutable authorization-record revision is 8295ecb02f9cc593193da4924c0e3f900fd157cc. KU2D-P-000042 directs Codex to prepare, validate and open a Ready one-file launcher-promotion PR to main with only the three trust anchors replaced. P42 does not authorize merging or dispatching. No secret access, API request/quota, comments, captions, transcripts, Human Review, candidate approval, production write, scheduling or authority promotion is permitted."
 }
