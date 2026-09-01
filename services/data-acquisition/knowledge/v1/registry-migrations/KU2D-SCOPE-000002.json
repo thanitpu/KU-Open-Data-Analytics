@@ -1,0 +1,77 @@
+{
+  "schema": "ku2d.phase-package-scope-declaration.v1",
+  "declaration_id": "KU2D-SCOPE-000002",
+  "package_id": "KU2D-P-000055",
+  "package_name": "Versioned Adapter Registry and Historical Manifest Migration",
+  "package_declaration": {
+    "domain": {"id": "acquisition.foundation", "label": "KU2D Data Acquisition Foundation"},
+    "source": {"id": "source_neutral_registry", "label": "Source-neutral; YouTube v1 is the historical compatibility reference"},
+    "capability": ["versioned_adapter_registry_snapshots", "registry_catalog_resolution", "immutable_manifest_backward_replay", "explicit_manifest_supersession", "exact_implementation_composition", "integrity_provenance"],
+    "acquisition_technique": {"status": "selected", "selected_technique": "deterministic additive repository migration plus fixture replay", "provider_requests": 0},
+    "authorized_files_or_modules": ["acquisition/adapter_registry.py", "acquisition/run_manifest.py", "acquisition/source_runner.py", "config/adapter_registry_v1.json (read-only invariant)", "config/adapter_registry_v2.json", "config/adapter_registry_catalog_v1.json", "config/run_manifests/youtube_qdiving_fixture_v1.json (read-only invariant)", "config/run_manifests/youtube_qdiving_fixture_v2.json", "knowledge/v1/adapter-registry.schema.json (read-only invariant)", "knowledge/v1/immutable-run-manifest.schema.json (read-only invariant)", "knowledge/v1/adapter-registry-v2.schema.json", "knowledge/v1/immutable-run-manifest-v2.schema.json", "knowledge/v1/adapter-registry-catalog.schema.json", "knowledge/v1/registry-migrations/**", "knowledge/v1/correction-journals/KU2D-CJ-000005.json", "docs/ADAPTER_REGISTRY_VERSIONING_AND_MANIFEST_MIGRATION.md", "tools/SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py", "tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test aggregation only)"],
+    "explicit_out_of_scope": ["CI workflow changes", "Connector Kit changes", "quality-gate changes", "source-specific connector changes", "mutation of four v1 invariants", "provider access", "credentials", "production writes", "scheduling", "main modification"],
+    "validation_profile": ["seven-field declaration validation", "v1 byte invariants and historical replay", "v2 registry/catalog/manifest positive and negative tests", "explicit supersession lineage", "source-neutral runner integration", "YouTube v1/v2 fixture parity 10/10", "synthetic additive composition", "exact-head full deterministic corpus", "Data Acquisition CI"]
+  },
+  "phase_declarations": [
+    {
+      "phase_id": "P55-01",
+      "phase": "contract_and_versioning_definition",
+      "declaration": {
+        "domain": {"id": "acquisition.foundation", "label": "KU2D Data Acquisition Foundation"},
+        "source": {"id": "source_neutral_registry", "label": "Source-neutral registry"},
+        "capability": ["versioned_adapter_registry_snapshots", "registry_catalog_resolution"],
+        "acquisition_technique": {"status": "selected", "selected_technique": "deterministic additive repository migration plus fixture replay", "provider_requests": 0},
+        "authorized_files_or_modules": ["acquisition/adapter_registry.py", "config/adapter_registry_v2.json", "config/adapter_registry_catalog_v1.json", "knowledge/v1/adapter-registry-v2.schema.json", "knowledge/v1/adapter-registry-catalog.schema.json", "knowledge/v1/registry-migrations/**", "tools/SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py"],
+        "explicit_out_of_scope": ["v1 mutation", "dynamic import", "default-to-latest", "provider access", "production authority"],
+        "validation_profile": ["schema and pure-validator parity", "exact catalog resolution", "negative path/fingerprint/version tests"]
+      }
+    },
+    {
+      "phase_id": "P55-02",
+      "phase": "backward_compatibility_and_historical_replay",
+      "declaration": {
+        "domain": {"id": "acquisition.foundation", "label": "KU2D Data Acquisition Foundation"},
+        "source": {"id": "youtube_v1_fixture_reference", "label": "YouTube v1 historical compatibility reference"},
+        "capability": ["immutable_manifest_backward_replay", "integrity_provenance"],
+        "acquisition_technique": {"status": "selected", "selected_technique": "deterministic fixture replay", "provider_requests": 0},
+        "authorized_files_or_modules": ["acquisition/run_manifest.py", "acquisition/source_runner.py", "config/adapter_registry_v1.json (read-only invariant)", "config/run_manifests/youtube_qdiving_fixture_v1.json (read-only invariant)", "knowledge/v1/adapter-registry.schema.json (read-only invariant)", "knowledge/v1/immutable-run-manifest.schema.json (read-only invariant)", "knowledge/v1/registry-migrations/**", "tools/SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py"],
+        "explicit_out_of_scope": ["historical rewrite", "provider access", "semantic quality", "production write", "scheduling"],
+        "validation_profile": ["four byte invariants", "V1 replay 10/10", "zero provider and quota"]
+      }
+    },
+    {
+      "phase_id": "P55-03",
+      "phase": "non_rewriting_manifest_migration",
+      "declaration": {
+        "domain": {"id": "acquisition.foundation", "label": "KU2D Data Acquisition Foundation"},
+        "source": {"id": "youtube_v2_fixture_reference", "label": "YouTube V002 compatibility proof"},
+        "capability": ["explicit_manifest_supersession", "exact_implementation_composition"],
+        "acquisition_technique": {"status": "selected", "selected_technique": "new immutable manifest plus fixture replay", "provider_requests": 0},
+        "authorized_files_or_modules": ["acquisition/adapter_registry.py", "acquisition/run_manifest.py", "acquisition/source_runner.py", "config/adapter_registry_v2.json", "config/adapter_registry_catalog_v1.json", "config/run_manifests/youtube_qdiving_fixture_v2.json", "knowledge/v1/adapter-registry-v2.schema.json", "knowledge/v1/immutable-run-manifest-v2.schema.json", "knowledge/v1/adapter-registry-catalog.schema.json", "knowledge/v1/registry-migrations/**", "tools/SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py"],
+        "explicit_out_of_scope": ["V001 retargeting", "implicit latest resolution", "dynamic import", "source adapter addition", "provider access"],
+        "validation_profile": ["V002 supersedes V001", "V2 replay 10/10", "cycle and missing-lineage rejection", "synthetic additive composition"]
+      }
+    },
+    {
+      "phase_id": "P55-04",
+      "phase": "integration_validation_and_closure",
+      "declaration": {
+        "domain": {"id": "acquisition.foundation", "label": "KU2D Data Acquisition Foundation"},
+        "source": {"id": "source_neutral_registry", "label": "Source-neutral registry"},
+        "capability": ["versioned_adapter_registry_snapshots", "registry_catalog_resolution", "immutable_manifest_backward_replay", "explicit_manifest_supersession", "exact_implementation_composition", "integrity_provenance"],
+        "acquisition_technique": {"status": "selected", "selected_technique": "deterministic validation and repository integration", "provider_requests": 0},
+        "authorized_files_or_modules": ["all package-authorized P55 files", "knowledge/v1/correction-journals/KU2D-CJ-000005.json", "docs/ADAPTER_REGISTRY_VERSIONING_AND_MANIFEST_MIGRATION.md", "tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test aggregation only)"],
+        "explicit_out_of_scope": ["CI workflow edits", "provider access", "production write", "scheduling", "main modification"],
+        "validation_profile": ["scope audit", "Level 1 and Level 2", "exact-head full deterministic corpus", "Data Acquisition CI", "post-merge tree verification"]
+      }
+    }
+  ],
+  "rules": {
+    "all_seven_fields_required": true,
+    "phase_may_narrow_but_not_widen": true,
+    "v1_invariants_read_only": true,
+    "provider_requests": 0,
+    "production_approved": false,
+    "scheduler_action": null
+  }
+}

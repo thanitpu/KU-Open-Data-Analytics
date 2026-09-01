@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import runpy
 import sys
 from pathlib import Path
 
@@ -96,4 +97,7 @@ assert journal["summary"]["event_count"] == 4
 assert all(event["related_commit_or_pending_commit"] == "4b15cf2d325a94045c73e2e824a97538c3c84da8" for event in journal["events"])
 assert all(event["provider_impact"] == {"provider_reached": False, "request_delta": 0, "quota_delta": 0} for event in journal["events"])
 
-print("Foundation Consolidation integration checks passed: FC1-FC6")
+# FC7: the additive versioning suite is part of the full deterministic CI corpus.
+runpy.run_path(str(ROOT / "tools" / "SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py"), run_name="__main__")
+
+print("Foundation Consolidation integration checks passed: FC1-FC7")

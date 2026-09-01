@@ -1,0 +1,27 @@
+{
+  "schema": "ku2d.adapter-registry-catalog.v1",
+  "catalog_id": "KU2D-ADAPTER-REGISTRY-CATALOG-000001",
+  "catalog_version": "1.0.0",
+  "snapshots": [
+    {
+      "registry_id": "KU2D-ADAPTER-REGISTRY-V1",
+      "registry_version": "1.0.0",
+      "path": "config/adapter_registry_v1.json",
+      "sha256": "960af6301b52b029bb26d1b3ad08159d261734e51ae6dd382dad7bbc3ec7e6e0",
+      "supersedes_registry_id": null
+    },
+    {
+      "registry_id": "KU2D-ADAPTER-REGISTRY-V2",
+      "registry_version": "2.0.0",
+      "path": "config/adapter_registry_v2.json",
+      "sha256": "a9b1204297c2df3c61c74b550391c5fe340864c88312079c833ae86c043f219c",
+      "supersedes_registry_id": "KU2D-ADAPTER-REGISTRY-V1"
+    }
+  ],
+  "boundaries": {
+    "default_to_latest": false,
+    "dynamic_discovery": false,
+    "production_approved": false,
+    "scheduler_action": null
+  }
+}
