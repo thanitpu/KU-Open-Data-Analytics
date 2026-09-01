@@ -30,9 +30,9 @@ jobs:
     env:
       # A separate reviewed one-file promotion to main must replace all three
       # placeholders. Until then the launcher fails before checkout.
-      KU2D_AUTHORIZED_DECISION_ID: KU2D-H-000015
-      KU2D_AUTHORIZED_EXECUTION_REVISION: 453d75ff23e5fdd78e4a8d36f77cd7185db99059
-      KU2D_AUTHORIZATION_RECORD_REVISION: 8295ecb02f9cc593193da4924c0e3f900fd157cc
+      KU2D_AUTHORIZED_DECISION_ID: KU2D-H-000016
+      KU2D_AUTHORIZED_EXECUTION_REVISION: cac243aedaa3c83c188e4e90481e4b752fe8bd2b
+      KU2D_AUTHORIZATION_RECORD_REVISION: bd53a3d8378703e017e2aa7c97d9486c30e44a5b
     steps:
       - name: Validate immutable launcher trust anchors
         env:
@@ -176,7 +176,12 @@ jobs:
       - name: Check sanitized evidence
         id: evidence
         if: always()
-        run: echo "exists=$([[ -f \"$KU2D_EVIDENCE_PATH\" ]] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+        run: |
+          if [[ -f "$KU2D_EVIDENCE_PATH" ]]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Upload sanitized identity evidence
         if: always() && steps.evidence.outputs.exists == 'true'
