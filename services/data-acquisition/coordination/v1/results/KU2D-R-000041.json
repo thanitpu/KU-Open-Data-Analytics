@@ -1,0 +1,102 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000041",
+  "prompt_id": "KU2D-P-000041",
+  "submitted_at": "2026-09-01T09:12:00.000+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "Executed the explicitly authorized exact-head merge of PR #64 into integration/data-acquisition-platform. The merged PR head was 593ddaa54d5eb082ad0f71007f5614e218ed2d16 and the resulting immutable integration merge commit is 453d75ff23e5fdd78e4a8d36f77cd7185db99059. Exact-head Data Acquisition Platform CI #380, Frontend CI #1367 and PR Browser Preview #281 all passed before merge. No workflow was dispatched, no secret was accessed, no YouTube request or quota was used, and main was not modified.",
+  "evidence_references": [
+    "KU2D-P-000041",
+    "KU2D-H-000013",
+    "KU2D-H-000014",
+    "KU2D-V-000040",
+    "PR:#64",
+    "pr-head:593ddaa54d5eb082ad0f71007f5614e218ed2d16",
+    "integration-merge:453d75ff23e5fdd78e4a8d36f77cd7185db99059",
+    "workflow:Data Acquisition Platform CI#380",
+    "workflow:Frontend CI#1367",
+    "workflow:PR Browser Preview Link#281"
+  ],
+  "repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "source_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "target_branch": "integration/data-acquisition-platform",
+    "pull_request_number": 64,
+    "merged_pr_head_sha": "593ddaa54d5eb082ad0f71007f5614e218ed2d16",
+    "integration_merge_commit_sha": "453d75ff23e5fdd78e4a8d36f77cd7185db99059",
+    "merge_method": "merge",
+    "pull_request_state": "closed",
+    "merged": true
+  },
+  "verification": {
+    "expected_head_guard_used": true,
+    "exact_head_ci": {
+      "data_acquisition_platform_ci": {
+        "run_number": 380,
+        "run_id": 33461360626,
+        "conclusion": "success"
+      },
+      "frontend_ci": {
+        "run_number": 1367,
+        "run_id": 33461360624,
+        "conclusion": "success"
+      },
+      "pr_browser_preview": {
+        "run_number": 281,
+        "run_id": 33461360634,
+        "conclusion": "success"
+      }
+    },
+    "implementation_changed_during_merge": false,
+    "workflow_dispatched": false,
+    "live_request_count": 0,
+    "documented_quota_units": 0
+  },
+  "security_and_boundaries": {
+    "main_modified": false,
+    "integration_modified": true,
+    "pr_merged": true,
+    "launcher_trust_anchors_replaced": false,
+    "workflow_dispatched": false,
+    "github_secret_read": false,
+    "youtube_requests": 0,
+    "documented_quota_units": 0,
+    "comments_acquired": false,
+    "captions_acquired": false,
+    "transcripts_acquired": false,
+    "human_review_conducted": false,
+    "production_store": false,
+    "production_approved": false,
+    "authority_promoted": false,
+    "scheduler_action": null
+  },
+  "completed_queue_summary": {
+    "work_completed": "Merged the reviewed and explicitly authorized PR #64 exact head into integration/data-acquisition-platform.",
+    "key_findings_results": "The immutable integration base for the guarded Q-Diving identity-discovery launcher is now 453d75ff23e5fdd78e4a8d36f77cd7185db99059.",
+    "repo_knowledge_state_changes": "Integration now contains the accepted bounded discovery implementation and coordination history through the merged PR head.",
+    "important_out_of_scope_actions_not_performed": "No main promotion, trust-anchor replacement, workflow dispatch, secret access, YouTube request/quota, comments, captions, transcripts, Human Review, candidate approval, production write, scheduling or authority promotion.",
+    "remaining_blockers_risks": "The default-branch launcher remains inoperable until an exact live-acquisition Human Decision is recorded and a separately reviewed one-file main promotion binds the immutable execution SHA, Human Decision ID and decision-record revision.",
+    "recommended_next_step": "Assistant reviews R41, then presents the project owner with the actual live H12 discovery decision bound to integration commit 453d75ff23e5fdd78e4a8d36f77cd7185db99059."
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_prompt": "KU2D-P-000041",
+    "depends_on_review": "KU2D-V-000040",
+    "depends_on_human_decision": [
+      "KU2D-H-000013",
+      "KU2D-H-000014"
+    ],
+    "target_pr": 64
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
