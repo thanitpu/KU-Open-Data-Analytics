@@ -142,13 +142,36 @@
         "labels": ["fixture", "coverage", "zero-provider"]
       },
       "evidence_refs": ["config/multi_source_round_robin_manifest_v1.json"]
+    },
+    {
+      "event_id": "KU2D-TC-000065",
+      "observed_at": "2026-09-02T00:16:00+07:00",
+      "phase": "preflight",
+      "failure_code": "P59_CANARY_STOP_NOT_CARRIED_INTO_CAMPAIGN",
+      "observed_signal": "The sealed canary correctly stopped Tops on HTTP 403, but the first execute path initialized a fresh ledger that would have retried the terminal source and omitted four canary operations from campaign totals.",
+      "root_cause_layer": "runtime_code",
+      "correction": {
+        "action": "Required execute mode to import one exact sealed canary ledger, count all four prior operations, preserve Tops as terminal, and use a sanitized hash attestation without rewriting the original evidence.",
+        "components": ["acquisition/round_robin_campaign.py", "tools/LIVE_MULTI_SOURCE_ROUND_ROBIN.py", "knowledge/v1/multi-source/KU2D-P59-CANARY-20260902.json"],
+        "scope_changed": false
+      },
+      "validation": {"checks": ["exact canary hash attestation", "terminal 403 carry-forward", "no duplicate import", "remaining-source fairness"], "result": "passed"},
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": true, "request_delta": 4, "quota_delta": 0},
+      "related_commit_or_pending_commit": "1641e7b2537326ecd89b02c0c3fd20509eaff070",
+      "learning": {
+        "reusable_lesson": "A pre-live canary is part of the campaign safety ledger, not a disposable connectivity check.",
+        "future_prevention": "Require sealed canary import and budget reconciliation before the first campaign operation, preserving all access stops as terminal.",
+        "labels": ["canary", "budget-accounting", "terminal-stop"]
+      },
+      "evidence_refs": ["KU2D-P59-CANARY-20260902", "tools/SELF_TEST_MULTI_SOURCE_ROUND_ROBIN.py"]
     }
   ],
   "summary": {
-    "event_count": 6,
-    "resolved_count": 6,
+    "event_count": 7,
+    "resolved_count": 7,
     "unresolved_count": 0,
-    "correction_cycles_used": 6
+    "correction_cycles_used": 7
   },
   "safety": {
     "contains_secret": false,
