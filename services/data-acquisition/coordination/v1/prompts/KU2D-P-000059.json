@@ -1,0 +1,281 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000059",
+  "created_at": "2026-09-01T23:45:05+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+  "objective": "Build, test and execute one bounded one-time round-robin live campaign across previously studied non-TikTok KU2D sources, collecting up to 50,000 accepted unique records without allowing one source to monopolize execution, then stop all live access, replay every available fixture, and deliver domain-separated CSV, JSONL and XLSX files in one downloadable ZIP with exact manifest and failure report.",
+  "instructions": [
+    "Read coordination/queue.json, KU2D-H-000028, KU2D-V-000059 and this Prompt from the authoritative coordination branch before doing any work.",
+    "Create implementation branch codex/ku2d-multisource-round-robin-export-v1 from exact integration baseline fc611d408146830b47f9220ae85d04645512d4da; do not branch from P57 or P58 TikTok implementation heads.",
+    "Use one Queue, one implementation branch, one PR, KU2D-CJ-000009 and expected Result KU2D-R-000060.",
+    "Persist KU2D-SCOPE-000006 and one complete seven-field declaration for every entered phase before performing that phase.",
+    "Exclude TikTok public video and TikTok Shop from source selection, provider access, fixtures and exports for this campaign.",
+    "Build the immutable campaign source list from durable reviewed source, readiness, technique and fixture evidence. Registry-only seeds without a reviewed executable technique must be marked preflight_skipped without provider access.",
+    "Use X=100 accepted unique records per source visit. Stop a visit immediately at 100 new unique records, its immutable request/time cap, a policy/access boundary or terminal source outcome, then advance to the next source.",
+    "Use deterministic serial order by domain then stable source ID, concurrency one, no work stealing, and continue rounds until 50,000 accepted unique records or no active source remains.",
+    "Count the 50,000 ceiling by stable normalized identity after cross-round deduplication. Track observation rows separately and never inflate the unique count by collecting the same identity repeatedly.",
+    "Before every provider operation atomically checkpoint the last finalized operation and budget counters; after every operation atomically checkpoint its sanitized outcome before the next provider operation.",
+    "For each source, use only its already-reviewed ordered technique set, permitted execution environment and existing provider-access contract. Do not invent endpoints, rediscover private surfaces or widen a source profile during the campaign.",
+    "Mark a source to_be_skipped for the rest of this campaign only after all permitted techniques are exhausted, an immutable total source budget is exhausted, the source is fixture-only, a login/challenge/CAPTCHA/access-control boundary appears, the source is permanently unavailable, two visits yield no new stable identities, or two separate rounds end in transient technical failure.",
+    "A single transient failure moves the source to retry_next_round and must not block later sources. A to_be_skipped state is terminal for this campaign and must include exact reason, attempted techniques, requests, quota, yields and evidence references.",
+    "Use a maximum of 25 provider operations and 10 wall-clock minutes per source visit, further narrowed by any stricter source profile. Use each source's immutable total campaign cap; a source without an evidenced total cap is not live-eligible.",
+    "Use a global ceiling of 5,000 provider operations, a 12-hour wall-clock ceiling and the sum of stricter source quota ceilings. Reaching any global ceiling stops live access and produces a partial Result; it does not permit automatic continuation.",
+    "Respect provider policy, robots directives, source-specific rate limits and a minimum two-second same-host interval unless the reviewed source profile requires a slower cadence. Stop that source on HTTP 403/429, login, challenge or CAPTCHA; do not bypass.",
+    "Use only task-relevant provider access already configured in the execution environment when an existing reviewed source contract explicitly requires it. Never acquire, display, log or persist access material.",
+    "Retain only public non-personal domain records covered by the reviewed source capability. Exclude reviews, comments, user profiles and other personal or user-generated data unless a separately reviewed source contract already authorizes and sanitizes them; no such expansion is granted by P59.",
+    "Before the first live operation, prove that the final ZIP can be surfaced as a user-downloadable artifact outside Git. If artifact delivery is unavailable, stop before provider access and submit a blocked Result.",
+    "After the live stop, seal the live ledger and prohibit any further live provider access. Then replay every available fixture for every selected, skipped and completed source; fixture replay must use zero provider operations and cannot substitute for live success.",
+    "Export one set per domain: records.csv, records.jsonl and records.xlsx. Each XLSX must contain Records, Source Summary and Failures worksheets. Also export campaign_manifest.json, failure_report.csv, failure_report.json and fixture_report.json.",
+    "Create one ZIP named KU2D_P59_MultiSource_RoundRobin_<run_id>.zip. The manifest must contain exact run code SHA/tree, source list/order, X, start/end, stop reason, unique and observation counts, per-source state/yield/request/quota totals, schemas, row counts, file sizes and SHA-256 for every member and the ZIP.",
+    "Make CSV UTF-8 with a stable header, JSONL one valid object per line, and XLSX standards-compliant. Neutralize CSV/XLSX formula injection, preserve null distinctly from empty text, and use deterministic domain/source/identity ordering.",
+    "Do not commit live records or the export ZIP to Git. Commit only code, schemas, deterministic fixtures/tests, sanitized aggregate evidence, documentation and manifest templates. Return the downloadable artifact link/path and SHA-256 in KU2D-R-000060.",
+    "Run targeted negative tests, artifact round-trip tests, fixture replay, exact-head full deterministic corpus, Data Acquisition CI, changed-path/invariant audit, one PR, squash merge to integration, and post-merge verification. Do not modify main directly.",
+    "If implementation or execution needs authority beyond this Prompt, stop fail-closed, record the exact blocker in KU2D-CJ-000009 and submit KU2D-R-000060 without guessing or widening scope."
+  ],
+  "phase_package_scope_declaration": {
+    "declaration_id": "KU2D-SCOPE-000006",
+    "package_id": "KU2D-P-000059",
+    "package_name": "Multi-source Round-robin Live Campaign and Domain Export",
+    "domain": {
+      "id": "multi_domain.public_data",
+      "included": [
+        "Supermarket",
+        "Cafe",
+        "Beauty",
+        "IT Retail",
+        "Marketplace excluding TikTok Shop",
+        "OTA",
+        "Public Video and Training/Reference excluding TikTok"
+      ]
+    },
+    "source": {
+      "selection": "Previously studied sources with durable reviewed registry, technique, readiness or fixture evidence.",
+      "excluded": [
+        "TikTok public video",
+        "TikTok Shop",
+        "registry-only seeds without reviewed executable technique"
+      ],
+      "readiness_policy": {
+        "tier_a": "live-eligible under exact locked method and budgets",
+        "tier_b": "live-eligible only when its recorded caveat and execution environment are already explicitly approved and available",
+        "tier_c": "canary-eligible only when an existing executable reviewed technique and exact budget exist; otherwise preflight-skipped without provider access"
+      }
+    },
+    "capability": [
+      "one-time serial round-robin acquisition",
+      "stable-identity normalization and cross-round deduplication",
+      "source fairness and durable checkpoint/resume",
+      "per-source terminal skip classification",
+      "public domain record acquisition under existing source contracts",
+      "zero-provider fixture replay after live stop",
+      "domain-separated CSV, JSONL and XLSX export",
+      "ZIP manifest, hashes and failure report"
+    ],
+    "acquisition_technique": {
+      "status": "authorized-with-existing-method-locks-only",
+      "scheduler": "one-time in-process deterministic round-robin; no recurring scheduler",
+      "record_slice_per_visit": 100,
+      "source_order": "domain then stable source ID",
+      "concurrency": 1,
+      "per_visit_provider_ceiling": 25,
+      "per_visit_wall_clock_minutes": 10,
+      "global_unique_record_ceiling": 50000,
+      "global_provider_ceiling": 5000,
+      "global_wall_clock_hours": 12,
+      "same_host_minimum_interval_seconds": 2,
+      "method_policy": "Use only the finite ordered techniques and environments already reviewed for that source; source-specific stricter limits always win.",
+      "counting_policy": "Only a new stable normalized identity counts toward the 50,000 ceiling; all accepted timestamped observations are reported separately.",
+      "live_stop_transition": "Seal the live ledger before fixture replay and export; no provider access is allowed after this transition."
+    },
+    "authorized_files_or_modules": [
+      "services/data-acquisition/acquisition/round_robin_campaign.py",
+      "services/data-acquisition/acquisition/domain_export_bundle.py",
+      "services/data-acquisition/tools/LIVE_MULTI_SOURCE_ROUND_ROBIN.py",
+      "services/data-acquisition/tools/SELF_TEST_MULTI_SOURCE_ROUND_ROBIN.py",
+      "services/data-acquisition/tools/SELF_TEST_DOMAIN_EXPORT_BUNDLE.py",
+      "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test aggregation only)",
+      "services/data-acquisition/config/multi_source_round_robin_manifest_v1.json",
+      "services/data-acquisition/config/multi_source_domain_export_schema_v1.json",
+      "services/data-acquisition/acquisition/lotus_multitechnique.py",
+      "services/data-acquisition/acquisition/supermarket_techniques.py",
+      "services/data-acquisition/acquisition/gourmet_detail_technique.py",
+      "services/data-acquisition/acquisition/retail_detail_catalog.py",
+      "services/data-acquisition/acquisition/retail_detail_transport.py",
+      "services/data-acquisition/acquisition/coffee_techniques.py",
+      "services/data-acquisition/acquisition/coffee_evidence_recovery.py",
+      "services/data-acquisition/acquisition/ota_techniques.py",
+      "services/data-acquisition/acquisition/shopee_edge_access.py",
+      "services/data-acquisition/acquisition/lazada_browser_access.py",
+      "services/data-acquisition/acquisition/youtube_qdiving_connector.py",
+      "services/data-acquisition/acquisition/youtube_content_acquisition_v2.py",
+      "services/data-acquisition/tools/LIVE_SMOKE_SUPERMARKETS.py",
+      "services/data-acquisition/tools/LIVE_GOURMET_LIFECYCLE.py",
+      "services/data-acquisition/tools/LIVE_JIB_RETAIL_LIFECYCLE.py",
+      "services/data-acquisition/tools/LIVE_COFFEE_EVIDENCE_RECOVERY.py",
+      "services/data-acquisition/tools/LIVE_OTA_BOOKING_PROBE.py",
+      "services/data-acquisition/tools/LIVE_YOUTUBE_Q_DIVING_DISCOVERY.py",
+      "services/data-acquisition/requirements.txt (one pinned XLSX-writing dependency only if standard-library XLSX generation is not used)",
+      "services/data-acquisition/knowledge/v1/multi-source/**",
+      "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000009.json",
+      "services/data-acquisition/docs/MULTI_SOURCE_ROUND_ROBIN_EXPORT.md",
+      "services/data-acquisition/coordination/v1/** and coordination/queue.json (append-only P59 handoff records only)"
+    ],
+    "explicit_out_of_scope": [
+      "TikTok public video and TikTok Shop",
+      "new source discovery or adding unstudied providers",
+      "automatic endpoint discovery, private endpoint replay or signature emulation",
+      "login, new provider onboarding or account authorization",
+      "CAPTCHA solving, anti-bot bypass, proxy rotation or paid scraping services",
+      "changing Generic Source Runner, Connector Kit, Run Manifest validator or Adapter Registry core",
+      "changing immutable Adapter Registry V1/V2 or historical YouTube manifests",
+      "modifying existing fixture contents to manufacture a pass",
+      "production database write or KU2A automatic intake",
+      "recurring scheduling, daemonization or unattended continuation beyond the 12-hour one-time envelope",
+      "committing live record exports or ZIP artifacts to Git",
+      "reviews, comments, user profiles, personal data, captions or transcripts",
+      ".github/workflows modifications",
+      "main modification or direct merge to main"
+    ],
+    "validation_profile": [
+      "seven-field package and phase scope validation plus declared-versus-actual diff",
+      "immutable source list, source order, method fingerprints and budget validation before provider access",
+      "downloadable artifact delivery preflight before provider access",
+      "round-robin fairness, per-visit X=100, time and request boundary tests",
+      "checkpoint atomicity, crash resume and no duplicate provider-operation accounting",
+      "stable identity deduplication and separate observation accounting",
+      "terminal to_be_skipped persistence and transient retry-next-round behavior",
+      "policy/access stop and no-bypass negative tests",
+      "global 50,000 unique, 5,000 provider-operation and 12-hour stop tests",
+      "sealed-live-ledger transition followed by zero-provider fixture replay for every source",
+      "CSV, JSONL and XLSX schema, Unicode, null, formula-safety and round-trip tests",
+      "ZIP completeness, per-member SHA-256, overall SHA-256 and manifest reconciliation",
+      "failure report completeness for every non-success source",
+      "protected foundation and immutable artifact byte invariants",
+      "targeted tests, exact-head full corpus, Data Acquisition CI, one PR, squash merge and post-merge verification"
+    ]
+  },
+  "phase_declaration_requirements": {
+    "required_fields": [
+      "domain",
+      "source",
+      "capability",
+      "acquisition_technique",
+      "authorized_files_or_modules",
+      "explicit_out_of_scope",
+      "validation_profile"
+    ],
+    "phases": [
+      "P59-01 inventory, readiness, immutable campaign manifest and artifact-delivery preflight",
+      "P59-02 round-robin runner, checkpoint, skip-state and exporter implementation with deterministic tests",
+      "P59-03 exact-head pre-live corpus and per-source network/capability canary",
+      "P59-04 bounded serial round-robin live campaign",
+      "P59-05 seal live ledger and run zero-provider fixture replay for every source",
+      "P59-06 build and verify domain export ZIP, manifest and failure report",
+      "P59-07 exact-head corpus, PR, CI, squash merge and post-merge verification"
+    ],
+    "inheritance_rule": "Each phase must persist all seven fields, may narrow the package declaration, and may not add a source, technique, environment, file, provider budget, production authority, recurring schedule or Git publication of live records.",
+    "phase_entry_rule": "Persist the phase declaration and validate the prior phase completion evidence before entering the next phase."
+  },
+  "source_state_machine": {
+    "states": [
+      "preflight_pending",
+      "active",
+      "retry_next_round",
+      "completed_slice",
+      "exhausted",
+      "to_be_skipped"
+    ],
+    "terminal_states": [
+      "exhausted",
+      "to_be_skipped"
+    ],
+    "active_set_rule": "A new round contains only active, retry_next_round or completed_slice sources whose total source budget and discovery frontier remain available.",
+    "campaign_stop_rule": "Stop when accepted unique records equal 50,000 or the active set is empty. Global provider or wall-clock ceiling stops partial and requires new Human authority to resume."
+  },
+  "export_contract": {
+    "domain_artifacts": [
+      "records.csv",
+      "records.jsonl",
+      "records.xlsx"
+    ],
+    "xlsx_worksheets": [
+      "Records",
+      "Source Summary",
+      "Failures"
+    ],
+    "root_artifacts": [
+      "campaign_manifest.json",
+      "failure_report.csv",
+      "failure_report.json",
+      "fixture_report.json"
+    ],
+    "record_requirements": [
+      "domain",
+      "source_id",
+      "source_name",
+      "stable_record_id",
+      "record_type",
+      "observed_at",
+      "canonical_public_source",
+      "normalized fields",
+      "technique_id",
+      "provenance reference",
+      "run_id"
+    ],
+    "artifact_rule": "Live exports remain outside Git and must be delivered as one downloadable ZIP with exact SHA-256."
+  },
+  "expected_result": {
+    "result_id": "KU2D-R-000060",
+    "allowed_status": [
+      "succeeded",
+      "partial",
+      "blocked",
+      "failed"
+    ],
+    "must_report": [
+      "exact implementation and final PR head/tree plus merge tree when applicable",
+      "exact selected, preflight-skipped, attempted, completed, exhausted and to_be_skipped source lists",
+      "X, rounds completed, campaign stop reason and total wall-clock duration",
+      "unique record and observation counts globally, by domain and by source",
+      "provider operations, documented quota and failures globally and by source",
+      "techniques attempted and terminal skip reason for every non-success source",
+      "fixture replay status and zero-provider proof for every source",
+      "export member names, row counts, sizes, SHA-256 values, ZIP SHA-256 and downloadable artifact link/path",
+      "CSV/JSONL/XLSX round-trip and manifest reconciliation results",
+      "changed paths, declared-versus-actual scope deviations and protected invariant hashes",
+      "KU2D-CJ-000009 totals and unresolved corrections",
+      "targeted tests, independent exact-head full corpus, PR, CI, merge and post-merge verification"
+    ],
+    "success_condition": "The campaign terminates honestly at 50,000 accepted unique records or an empty active source set, all live operations are sealed, every available fixture replays with zero provider access, every source has a terminal/reportable state, and the verified downloadable domain export ZIP is delivered.",
+    "partial_condition": "A global safety ceiling or non-source-specific infrastructure boundary stops the campaign after durable evidence and a valid export of all safely retained records.",
+    "forbidden_success_claims": [
+      "counting duplicate identities toward 50,000",
+      "claiming fixture replay as live acquisition",
+      "claiming a registry seed without reviewed technique as attempted live",
+      "omitting failed or skipped sources from the failure report",
+      "claiming an export that is unavailable for download or fails hash reconciliation"
+    ]
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "implementation_branch": "codex/ku2d-multisource-round-robin-export-v1",
+    "human_authority": "KU2D-H-000028",
+    "depends_on_review": "KU2D-V-000059",
+    "integration_start_head": "fc611d408146830b47f9220ae85d04645512d4da",
+    "scope_declaration": "KU2D-SCOPE-000006",
+    "correction_journal": "KU2D-CJ-000009",
+    "expected_result": "KU2D-R-000060"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
