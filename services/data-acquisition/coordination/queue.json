@@ -1,11 +1,11 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T11:16:48.0986797+07:00",
+  "updated_at": "2026-09-01T11:27:00.000+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
-  "latest_prompt": "KU2D-P-000049",
+  "latest_prompt": "KU2D-P-000050",
   "latest_result": "KU2D-R-000049",
-  "latest_review": "KU2D-V-000048",
-  "latest_human_decision": "KU2D-H-000018",
+  "latest_review": "KU2D-V-000049",
+  "latest_human_decision": "KU2D-H-000019",
   "prompt_states": {
     "KU2D-P-000001": "completed",
     "KU2D-P-000002": "completed",
@@ -54,7 +54,8 @@
     "KU2D-P-000046": "reviewed",
     "KU2D-P-000047": "reviewed",
     "KU2D-P-000048": "reviewed",
-    "KU2D-P-000049": "result_submitted"
+    "KU2D-P-000049": "reviewed",
+    "KU2D-P-000050": "ready_for_codex"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -89,11 +90,11 @@
     "KU2D-P-000044"
   ],
   "next_action": {
-    "actor": "assistant",
-    "prompt_id": "KU2D-P-000049",
-    "result_id": "KU2D-R-000049",
+    "actor": "codex",
+    "prompt_id": "KU2D-P-000050",
+    "result_id": "KU2D-R-000050",
     "review_id": null,
-    "human_decision_id": null,
+    "human_decision_id": "KU2D-H-000019",
     "replay_requested": false
   },
   "branch_handoff": {
@@ -110,5 +111,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "KU2D-R-000049 stopped fail-closed at the mandatory pre-remote Agent Handoff bundle gate. V48 and H18 validate individually and H18 exactly matches the immutable acquisition scope, but historical append-only V47 remains outside the active v1 review_result enum. P49 forbids rewriting V47/H17, so no promotion branch, remote push, PR, main mutation, merge, dispatch, secret access, YouTube request or quota occurred. Exactly one sanitized ML-ready record, KU2D-X-000001, captures the campaign's reusable artifact, authorization and provenance lessons with unknown quality values null. Assistant review is next; do not replay or dispatch P49."
+  "notes": "Queue objective: complete YouTube as the first Source Completion Queue. P50 must preserve P49/X1, safely migrate exact hash-pinned V47/H17 into non-authoritative history, self-correct technical issues within H19, handle PR/CI/merge and bounded acquisition without intermediate queues, return sanitized closure evidence, and export KU2D-X-000002. Only genuine external, privacy, scope, quota, production, permission or exhausted-envelope conditions may stop the queue."
 }
