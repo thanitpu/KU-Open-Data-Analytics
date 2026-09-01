@@ -264,9 +264,10 @@ def find_browser(environ: dict[str, str] | None = None) -> Path:
 
 def browser_command(binary: Path, profile: Path) -> list[str]:
     return [
-        str(binary), "--headless=new", "--disable-extensions", "--disable-sync",
+        str(binary), "--disable-extensions", "--disable-sync",
         "--disable-background-networking", "--disable-component-update",
         "--disable-default-apps", "--no-first-run", "--block-third-party-cookies",
+        "--window-size=1280,900",
         "--remote-debugging-port=0", "--remote-allow-origins=http://localhost",
         f"--user-data-dir={profile}", "about:blank",
     ]

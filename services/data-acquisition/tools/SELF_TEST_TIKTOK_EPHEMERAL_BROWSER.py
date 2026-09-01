@@ -111,8 +111,10 @@ else:
 command = browser.browser_command(Path("browser.exe"), Path("temporary-profile"))
 assert "--block-third-party-cookies" in command
 assert "--disable-background-networking" in command
+assert "--window-size=1280,900" in command
 assert "--remote-debugging-port=0" in command
 assert any(value == "--user-data-dir=temporary-profile" for value in command)
+assert not any("headless" in value.casefold() for value in command)
 assert not any("proxy" in value.casefold() or "login" in value.casefold() for value in command)
 
 
