@@ -327,4 +327,23 @@ assert "related_commit_or_pending_commit" in correction_schema["properties"]["ev
 assert correction_schema["additionalProperties"] is False
 assert correction_schema["properties"]["events"]["items"]["additionalProperties"] is False
 
-print("Connector Kit v1 deterministic checks passed: CK1-CK17")
+# CK18: the durable P52 journal is closed, fully linked, sanitized, and zero-provider.
+actual_journal = load(
+    ROOT / "knowledge" / "v1" / "correction-journals" / "KU2D-CJ-000002.json"
+)
+validate_technical_correction_journal(actual_journal, require_closed=True)
+assert actual_journal["summary"] == {
+    "event_count": 6,
+    "resolved_count": 6,
+    "unresolved_count": 0,
+    "correction_cycles_used": 6,
+}
+assert all(
+    event["related_commit_or_pending_commit"] != "pending_commit"
+    and event["provider_impact"] == {
+        "provider_reached": False, "request_delta": 0, "quota_delta": 0,
+    }
+    for event in actual_journal["events"]
+)
+
+print("Connector Kit v1 deterministic checks passed: CK1-CK18")
