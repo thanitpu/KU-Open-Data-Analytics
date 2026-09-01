@@ -101,3 +101,6 @@ assert all(event["provider_impact"] == {"provider_reached": False, "request_delt
 runpy.run_path(str(ROOT / "tools" / "SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py"), run_name="__main__")
 
 print("Foundation Consolidation integration checks passed: FC1-FC7")
+
+# P57's bounded TikTok closure is registered without changing the CI workflow.
+runpy.run_path(str(ROOT / "tools" / "SELF_TEST_TIKTOK_SOURCE_COMPLETION.py"), run_name="__main__")

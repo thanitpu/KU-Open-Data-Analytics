@@ -1,0 +1,62 @@
+{
+  "schema": "ku2d.phase-package-scope-declaration.v1",
+  "declaration_id": "KU2D-SCOPE-000004-P01",
+  "declaration_type": "phase",
+  "package_id": "KU2D-P-000057",
+  "package_name": "TikTok Acquisition Breakthrough and Minimum Trusted Connection",
+  "phase_id": "P57-01",
+  "phase_name": "p54_evidence_reuse_and_strategy_ledger",
+  "parent_declaration_id": "KU2D-SCOPE-000004",
+  "human_authority_id": "KU2D-H-000026",
+  "domain": {"id": "social.public_short_video", "label": "Social — Public Short Video"},
+  "source": {"id": "tiktok", "label": "TikTok", "topics": ["Diving lesson", "Diving equipment"]},
+  "capability": ["public_stable_video_identity", "canonical_public_url"],
+  "acquisition_technique": {
+    "status": "strategy_ladder_authorized",
+    "strategy_ladder": [
+      "Public search-index discovery of canonical TikTok video URLs",
+      "Official TikTok oEmbed/embed verification of every discovered URL",
+      "Official public creator-profile/embed video-card discovery",
+      "Clean ephemeral no-cookie public tag/search rendering",
+      "Permitted public structured state or public network response inspection"
+    ],
+    "preferred_path": "public search discovery -> stable TikTok URL/video ID -> official TikTok verification -> metadata parser -> domain mapper -> sanitized fixture -> repeated live smoke",
+    "strategy_switch_rule": "If one method fails, record the failure and move to the next authorized method within the same Queue and correction journal.",
+    "freeze_rule": "Freeze the first reproducible compliant technique only after two live retrieval rounds and MTC evidence.",
+    "selected_technique": null
+  },
+  "authorized_files_or_modules": ["services/data-acquisition/knowledge/v1/tiktok/**"],
+  "explicit_out_of_scope": [
+    "services/data-acquisition/acquisition/source_runner.py",
+    "services/data-acquisition/acquisition/connector_kit.py",
+    "services/data-acquisition/acquisition/run_manifest.py",
+    "services/data-acquisition/acquisition/adapter_registry.py",
+    "services/data-acquisition/config/adapter_registry_v1.json",
+    "services/data-acquisition/config/adapter_registry_v2.json",
+    "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json",
+    "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+    "services/data-acquisition/knowledge/v1/adapter-registry.schema.json",
+    "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+    "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json",
+    "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+    ".github/workflows/**",
+    "comments, captions, transcripts, private account data or follower enrichment",
+    "login, cookies, credentials or user authorization",
+    "CAPTCHA, anti-bot, access-control or policy bypass",
+    "paid scraping/proxy services or new spending",
+    "production write, recurring scheduling or main modification"
+  ],
+  "validation_profile": [
+    "seven-field scope and declared-versus-actual validation",
+    "P54 evidence reuse with no identical request replay",
+    "per-request strategy/surface/topic/outcome ledger",
+    "official verification for every retained canonical URL and video ID",
+    "two independent bounded live retrieval rounds",
+    "at most five retained valid records per topic with deduplication",
+    "sanitized fixture replay through the unchanged Generic Runner",
+    "Minimum Trusted Connection and early acquisition quality gate",
+    "V1/V2 byte invariants plus V3 exact registry resolution and lineage",
+    "targeted tests, integration/evidence tests and exact-head full deterministic corpus",
+    "one PR, Data Acquisition CI, squash merge and post-merge verification"
+  ]
+}
