@@ -1,0 +1,186 @@
+{
+  "schema": "ku2d.multi-source-round-robin-manifest.v1",
+  "campaign_id": "KU2D-P59-MULTISOURCE-V1",
+  "prompt_id": "KU2D-P-000059",
+  "scope_declaration_id": "KU2D-SCOPE-000006",
+  "created_at": "2026-09-02T00:00:00+07:00",
+  "source_order": [
+    "SRC-013", "nana_coffee_roasters", "roots_coffee", "SRC-023", "SRC-024",
+    "marketplace-line-shopping", "SRC-018", "SRC-OTA-AGODA", "SRC-OTA-TRAVELOKA",
+    "Q-003", "qdiving-scubadoo-koh-tao", "qdiving-aquamaster-thailand",
+    "youtube-data-api-v3-q-diving", "SRC-001", "SRC-002", "SRC-003", "SRC-004", "SRC-005"
+  ],
+  "sources": [
+    {
+      "source_id": "SRC-013", "source_name": "Watsons", "domain": "Beauty Retail", "readiness_tier": "C", "preflight_status": "preflight_skipped",
+      "skip_reason": "required_product_price_track_and_domain_deep_audit_missing", "technique_ids": ["pattern_guided_explore_candidate"], "method_lock_fingerprint": null, "environment": "cloud-screening-only",
+      "budgets": {"max_provider_operations": null, "max_records": null, "max_visits": null, "timeout_seconds": null, "quota_ceiling": null},
+      "evidence_references": ["config/acquisition_consolidation_readiness.json#ACR-E007"], "fixture_paths": []
+    },
+    {
+      "source_id": "nana_coffee_roasters", "source_name": "Nana Coffee Roasters", "domain": "Coffee Retail Product", "readiness_tier": "C", "preflight_status": "preflight_skipped",
+      "skip_reason": "single_route_candidate_without_reviewed_total_campaign_cap", "technique_ids": ["source_detail_normalization"], "method_lock_fingerprint": null, "environment": "cloud-public-read-only",
+      "budgets": {"max_provider_operations": null, "max_records": null, "max_visits": null, "timeout_seconds": null, "quota_ceiling": null},
+      "evidence_references": ["config/acquisition_consolidation_readiness.json#ACR-E011"], "fixture_paths": ["fixtures/coffee_evidence_recovery/nana_product.html"]
+    },
+    {
+      "source_id": "roots_coffee", "source_name": "Roots Coffee", "domain": "Coffee Retail Product", "readiness_tier": "C", "preflight_status": "preflight_skipped",
+      "skip_reason": "strict_semantic_normalization_gap_and_no_reviewed_total_campaign_cap", "technique_ids": ["source_detail_normalization"], "method_lock_fingerprint": null, "environment": "cloud-public-read-only",
+      "budgets": {"max_provider_operations": null, "max_records": null, "max_visits": null, "timeout_seconds": null, "quota_ceiling": null},
+      "evidence_references": ["config/acquisition_consolidation_readiness.json#ACR-E012"], "fixture_paths": [
+        "fixtures/coffee_evidence_recovery/roots_product.html",
+        "fixtures/coffee_evidence_recovery/rsd_f01_positive_route.html",
+        "fixtures/coffee_evidence_recovery/rsd_f02_coffee_outside_slug.html",
+        "fixtures/coffee_evidence_recovery/rsd_f02_generic_route.html",
+        "fixtures/coffee_evidence_recovery/rsd_f03_missing_name.html",
+        "fixtures/coffee_evidence_recovery/rsd_f04_missing_price.html",
+        "fixtures/coffee_evidence_recovery/rsd_f05_menu_ambiguity.html",
+        "fixtures/coffee_evidence_recovery/rsd_f06_wrong_host_canonical.html"
+      ]
+    },
+    {
+      "source_id": "marketplace-line-shopping", "source_name": "LINE SHOPPING", "domain": "Commerce Market Observation", "readiness_tier": "C", "preflight_status": "preflight_skipped",
+      "skip_reason": "candidate_only_unmerged_evidence_without_reviewed_executable_cap", "technique_ids": ["rendered_collection_candidate"], "method_lock_fingerprint": null, "environment": "historical-candidate-only",
+      "budgets": {"max_provider_operations": null, "max_records": null, "max_visits": null, "timeout_seconds": null, "quota_ceiling": null},
+      "evidence_references": ["config/acquisition_consolidation_readiness.json#ACR-E013"], "fixture_paths": []
+    },
+    {
+      "source_id": "SRC-023", "source_name": "Shopee Thailand", "domain": "Commerce Market Observation", "readiness_tier": "C", "preflight_status": "preflight_skipped",
+      "skip_reason": "paused_traffic_verification_boundary_no_compliant_public_acquisition_technique", "technique_ids": [], "method_lock_fingerprint": null, "environment": "access-boundary",
+      "budgets": {"max_provider_operations": null, "max_records": null, "max_visits": null, "timeout_seconds": null, "quota_ceiling": null},
+      "evidence_references": ["config/acquisition_consolidation_readiness.json#ACR-E009"], "fixture_paths": [
+        "fixtures/shopee_commerce_pulse/public_structured_response.json",
+        "fixtures/shopee_commerce_pulse/sold_count_cases.json",
+        "fixtures/shopee_edge_access/endpoint_name_only.json",
+        "fixtures/shopee_edge_access/login_required.json",
+        "fixtures/shopee_edge_access/rendered_cards.json",
+        "fixtures/shopee_edge_access/rendered_no_identity.json",
+        "fixtures/shopee_edge_access/traffic_verification.json",
+        "fixtures/shopee_edge_access/validated_network.json"
+      ]
+    },
+    {
+      "source_id": "SRC-024", "source_name": "Lazada Thailand", "domain": "Commerce Market Observation", "readiness_tier": "C", "preflight_status": "preflight_skipped",
+      "skip_reason": "candidate_partial_without_reviewed_total_campaign_cap", "technique_ids": ["bounded_rendered_dom_observation"], "method_lock_fingerprint": null, "environment": "normal-unauthenticated-browser",
+      "budgets": {"max_provider_operations": null, "max_records": null, "max_visits": null, "timeout_seconds": null, "quota_ceiling": null},
+      "evidence_references": ["config/acquisition_consolidation_readiness.json#ACR-E008"], "fixture_paths": [
+        "fixtures/lazada_browser_access/contradictory_identity.json",
+        "fixtures/lazada_browser_access/endpoint_name_only.json",
+        "fixtures/lazada_browser_access/login_required.json",
+        "fixtures/lazada_browser_access/rendered_cards.json",
+        "fixtures/lazada_browser_access/rendered_no_identity.json",
+        "fixtures/lazada_browser_access/traffic_verification.json",
+        "fixtures/lazada_browser_access/validated_network.json",
+        "fixtures/lazada_commerce_pulse/public_structured_response.json",
+        "fixtures/lazada_rendered_dom_audit/audit_package.json"
+      ]
+    },
+    {
+      "source_id": "SRC-018", "source_name": "JIB", "domain": "IT Retail", "readiness_tier": "B", "preflight_status": "preflight_skipped",
+      "skip_reason": "isolated_staging_validation_only_and_no_reviewed_total_campaign_cap", "technique_ids": ["generic_retail_detail_catalog", "generic_app_bundle"], "method_lock_fingerprint": null, "environment": "cloud-isolated-staging-only",
+      "budgets": {"max_provider_operations": null, "max_records": null, "max_visits": null, "timeout_seconds": null, "quota_ceiling": null},
+      "evidence_references": ["config/acquisition_consolidation_readiness.json#ACR-E006"], "fixture_paths": []
+    },
+    {
+      "source_id": "SRC-OTA-AGODA", "source_name": "Agoda", "domain": "OTA", "readiness_tier": "C", "preflight_status": "preflight_skipped",
+      "skip_reason": "candidate_access_boundary_without_positive_reviewed_technique", "technique_ids": [], "method_lock_fingerprint": null, "environment": "historical-public-request",
+      "budgets": {"max_provider_operations": null, "max_records": null, "max_visits": null, "timeout_seconds": null, "quota_ceiling": null},
+      "evidence_references": ["config/acquisition_consolidation_readiness.json#ACR-E014"], "fixture_paths": []
+    },
+    {
+      "source_id": "SRC-OTA-TRAVELOKA", "source_name": "Traveloka", "domain": "OTA", "readiness_tier": "C", "preflight_status": "preflight_skipped",
+      "skip_reason": "http_403_challenge_boundary_without_positive_reviewed_technique", "technique_ids": [], "method_lock_fingerprint": null, "environment": "historical-public-request",
+      "budgets": {"max_provider_operations": null, "max_records": null, "max_visits": null, "timeout_seconds": null, "quota_ceiling": null},
+      "evidence_references": ["config/acquisition_consolidation_readiness.json#ACR-E015"], "fixture_paths": []
+    },
+    {
+      "source_id": "Q-003", "source_name": "SSI Blog", "domain": "Q-Diving Content", "readiness_tier": "C", "preflight_status": "preflight_skipped",
+      "skip_reason": "candidate_only_unmerged_evidence_without_reviewed_executable_cap", "technique_ids": ["structured_article_index_candidate"], "method_lock_fingerprint": null, "environment": "historical-candidate-only",
+      "budgets": {"max_provider_operations": null, "max_records": null, "max_visits": null, "timeout_seconds": null, "quota_ceiling": null},
+      "evidence_references": ["config/acquisition_consolidation_readiness.json#ACR-E016"], "fixture_paths": []
+    },
+    {
+      "source_id": "qdiving-scubadoo-koh-tao", "source_name": "Scubadoo Koh Tao", "domain": "Q-Diving Course Services", "readiness_tier": "C", "preflight_status": "preflight_skipped",
+      "skip_reason": "candidate_only_unmerged_evidence_without_reviewed_executable_cap", "technique_ids": ["service_detail_normalization_candidate"], "method_lock_fingerprint": null, "environment": "historical-candidate-only",
+      "budgets": {"max_provider_operations": null, "max_records": null, "max_visits": null, "timeout_seconds": null, "quota_ceiling": null},
+      "evidence_references": ["config/acquisition_consolidation_readiness.json#ACR-E017"], "fixture_paths": []
+    },
+    {
+      "source_id": "qdiving-aquamaster-thailand", "source_name": "Aquamaster Thailand", "domain": "Q-Diving Retail Equipment", "readiness_tier": "C", "preflight_status": "preflight_skipped",
+      "skip_reason": "candidate_only_unmerged_evidence_without_reviewed_executable_cap", "technique_ids": ["canonical_detail_candidate"], "method_lock_fingerprint": null, "environment": "historical-candidate-only",
+      "budgets": {"max_provider_operations": null, "max_records": null, "max_visits": null, "timeout_seconds": null, "quota_ceiling": null},
+      "evidence_references": ["config/acquisition_consolidation_readiness.json#ACR-E018"], "fixture_paths": []
+    },
+    {
+      "source_id": "youtube-data-api-v3-q-diving", "source_name": "YouTube Q-Diving", "domain": "Q-Diving metadata", "readiness_tier": "C", "preflight_status": "preflight_skipped",
+      "skip_reason": "human_review_dependent_profile_without_p59_specific_query_and_quota_cap", "technique_ids": ["official_api_metadata"], "method_lock_fingerprint": null, "environment": "official-api-credential-governed",
+      "budgets": {"max_provider_operations": null, "max_records": null, "max_visits": null, "timeout_seconds": null, "quota_ceiling": null},
+      "evidence_references": ["config/acquisition_consolidation_readiness.json#ACR-E010"], "fixture_paths": [
+        "fixtures/youtube_content_v2/sanitized_content_bundle.json",
+        "fixtures/youtube_human_review/equipment_pilot_learning_cases.json",
+        "fixtures/youtube_human_review/sanitized_foundation_result.json",
+        "fixtures/youtube_identity_discovery/sanitized_cases.json",
+        "fixtures/youtube_identity_discovery/sanitized_human_review_package.json",
+        "fixtures/youtube_operational_hardening/sanitized_batch_scenarios.json",
+        "fixtures/youtube_operational_hardening/sanitized_ku2a_intake.json",
+        "fixtures/youtube_qdiving_live_pilot/reviewed_identity_cases.json"
+      ]
+    },
+    {
+      "source_id": "SRC-001", "source_name": "Tops", "domain": "Supermarket", "readiness_tier": "A", "preflight_status": "live_eligible",
+      "skip_reason": null, "technique_ids": ["tops_product_catalog", "generic_sitemap"], "method_lock_fingerprint": "aaf37dcac2bdbbf9", "environment": "cloud-hosted-public-read-only",
+      "budgets": {"max_provider_operations": 80, "max_records": 8, "max_visits": 8, "timeout_seconds": 20, "quota_ceiling": 0},
+      "evidence_references": ["config/tier_a_locked_source_batch_manifest.json#SRC-001"], "fixture_paths": []
+    },
+    {
+      "source_id": "SRC-002", "source_name": "Lotus's", "domain": "Supermarket", "readiness_tier": "A", "preflight_status": "live_eligible",
+      "skip_reason": null, "technique_ids": ["lotus_catalog_api"], "method_lock_fingerprint": "0a866155dff28173", "environment": "cloud-hosted-public-read-only",
+      "budgets": {"max_provider_operations": 80, "max_records": 792, "max_visits": 8, "timeout_seconds": 20, "quota_ceiling": 0},
+      "evidence_references": ["config/tier_a_locked_source_batch_manifest.json#SRC-002"], "fixture_paths": []
+    },
+    {
+      "source_id": "SRC-003", "source_name": "Gourmet Market", "domain": "Supermarket", "readiness_tier": "B", "preflight_status": "preflight_skipped",
+      "skip_reason": "thailand_edge_caveat_not_entered_and_no_reviewed_total_campaign_cap", "technique_ids": ["gourmet_rendered_catalog", "gourmet_graphql_catalog"], "method_lock_fingerprint": null, "environment": "approved-thailand-edge-when-cloud-blocked",
+      "budgets": {"max_provider_operations": null, "max_records": null, "max_visits": null, "timeout_seconds": null, "quota_ceiling": null},
+      "evidence_references": ["config/acquisition_consolidation_readiness.json#ACR-E005"], "fixture_paths": []
+    },
+    {
+      "source_id": "SRC-004", "source_name": "Big C", "domain": "Supermarket", "readiness_tier": "A", "preflight_status": "live_eligible",
+      "skip_reason": null, "technique_ids": ["bigc_product_catalog", "generic_sitemap"], "method_lock_fingerprint": "900c37f02bbec7e1", "environment": "cloud-hosted-public-read-only",
+      "budgets": {"max_provider_operations": 80, "max_records": 8, "max_visits": 8, "timeout_seconds": 20, "quota_ceiling": 0},
+      "evidence_references": ["config/tier_a_locked_source_batch_manifest.json#SRC-004"], "fixture_paths": []
+    },
+    {
+      "source_id": "SRC-005", "source_name": "Makro", "domain": "Supermarket", "readiness_tier": "A", "preflight_status": "live_eligible",
+      "skip_reason": null, "technique_ids": ["makro_pro_catalog"], "method_lock_fingerprint": "508d6e080f0d9576", "environment": "cloud-hosted-public-read-only",
+      "budgets": {"max_provider_operations": 24, "max_records": 160, "max_visits": 8, "timeout_seconds": 20, "quota_ceiling": 0},
+      "evidence_references": ["config/tier_a_locked_source_batch_manifest.json#SRC-005"], "fixture_paths": []
+    }
+  ],
+  "limits": {
+    "record_slice_per_visit": 100,
+    "per_visit_provider_operations": 25,
+    "per_visit_seconds": 600,
+    "global_unique_records": 50000,
+    "global_provider_operations": 5000,
+    "global_seconds": 43200,
+    "same_host_minimum_interval_seconds": 2.0,
+    "concurrency": 1
+  },
+  "phase_declarations": [
+    {"phase_id": "P59-01", "entered": true, "domain": ["reviewed non-TikTok domains"], "source": ["durable readiness inventory"], "capability": ["inventory", "artifact delivery preflight"], "acquisition_technique": ["zero-provider preflight"], "authorized_files_or_modules": ["P59 authorized paths"], "explicit_out_of_scope": ["TikTok", "provider access"], "validation_profile": ["manifest and delivery validation"]},
+    {"phase_id": "P59-02", "entered": true, "domain": ["reviewed non-TikTok domains"], "source": ["Tier A live eligible; all others preflight skipped"], "capability": ["serial round robin", "atomic checkpoint", "domain export"], "acquisition_technique": ["existing locked methods only"], "authorized_files_or_modules": ["P59 authorized paths"], "explicit_out_of_scope": ["live access before tests", "method switching"], "validation_profile": ["negative, boundary, replay, round-trip tests"]},
+    {"phase_id": "P59-03", "entered": true, "domain": ["Supermarket"], "source": ["SRC-001", "SRC-002", "SRC-004", "SRC-005"], "capability": ["pre-live exact-head corpus", "bounded canary"], "acquisition_technique": ["reviewed method lock only"], "authorized_files_or_modules": ["P59 authorized paths"], "explicit_out_of_scope": ["campaign before green tests"], "validation_profile": ["exact-head corpus", "network boundary canary"]},
+    {"phase_id": "P59-04", "entered": false, "domain": ["Supermarket"], "source": ["SRC-001", "SRC-002", "SRC-004", "SRC-005"], "capability": ["one-time live round robin"], "acquisition_technique": ["existing locked methods with tracked transport"], "authorized_files_or_modules": ["P59 authorized paths"], "explicit_out_of_scope": ["TikTok", "production store", "recurring schedule"], "validation_profile": ["budgets", "fairness", "access stops", "checkpoint reconciliation"]},
+    {"phase_id": "P59-05", "entered": false, "domain": ["all manifest domains"], "source": ["every selected and skipped source"], "capability": ["sealed ledger", "fixture replay"], "acquisition_technique": ["zero-provider fixture replay"], "authorized_files_or_modules": ["P59 authorized paths"], "explicit_out_of_scope": ["provider access after seal"], "validation_profile": ["zero-provider proof per source"]},
+    {"phase_id": "P59-06", "entered": false, "domain": ["all manifest domains"], "source": ["every manifest source"], "capability": ["CSV", "JSONL", "XLSX", "ZIP"], "acquisition_technique": ["deterministic offline export"], "authorized_files_or_modules": ["P59 authorized paths"], "explicit_out_of_scope": ["Git publication of live records"], "validation_profile": ["round trip", "hash reconciliation", "formula safety"]},
+    {"phase_id": "P59-07", "entered": false, "domain": ["repository integration"], "source": ["P59 implementation and sanitized aggregates"], "capability": ["full corpus", "one PR", "squash merge", "post-merge verification"], "acquisition_technique": ["zero-provider CI"], "authorized_files_or_modules": ["P59 authorized paths"], "explicit_out_of_scope": ["main", "live records in Git"], "validation_profile": ["exact-head corpus", "CI", "tree equality"]}
+  ],
+  "boundaries": {
+    "production_approved": false,
+    "production_store": false,
+    "recurring_schedule": false,
+    "scheduler_action": null,
+    "live_exports_committed_to_git": false
+  }
+}

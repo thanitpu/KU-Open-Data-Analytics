@@ -100,4 +100,8 @@ assert all(event["provider_impact"] == {"provider_reached": False, "request_delt
 # FC7: the additive versioning suite is part of the full deterministic CI corpus.
 runpy.run_path(str(ROOT / "tools" / "SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py"), run_name="__main__")
 
-print("Foundation Consolidation integration checks passed: FC1-FC7")
+# FC8: P59's round-robin and export contracts are part of the full deterministic corpus.
+runpy.run_path(str(ROOT / "tools" / "SELF_TEST_MULTI_SOURCE_ROUND_ROBIN.py"), run_name="__main__")
+runpy.run_path(str(ROOT / "tools" / "SELF_TEST_DOMAIN_EXPORT_BUNDLE.py"), run_name="__main__")
+
+print("Foundation Consolidation integration checks passed: FC1-FC8")
