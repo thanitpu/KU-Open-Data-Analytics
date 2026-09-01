@@ -1,0 +1,162 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000048",
+  "prompt_id": "KU2D-P-000048",
+  "submitted_at": "2026-09-01T11:03:51.7441165+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "blocked",
+  "summary": "P48 stopped fail-closed before any remote promotion or dispatch. The immutable execution validator at cac243aedaa3c83c188e4e90481e4b752fe8bd2b accepted the exact H17 record from authorization revision a0f230a64a2d0480d996cbd08ccf03adbb0ac8cf and proved authorized_scope exact equality with AUTH_SCOPE. A fresh local one-file launcher branch and commit were prepared from exact main 769149377b9a7886ae2fc6457c7fe815a09d5cd6, but the required deterministic corpus then exposed two pre-existing coordination-protocol violations: V47 uses unsupported review_result accepted_with_bounded_corrective_continuation, and H17 uses decision_source standing_explicit_human_authority instead of the required explicit_human_input. Rewriting append-only records or changing the immutable authorization anchor was not authorized. The local promotion branch was not pushed, no PR was opened or merged, main was untouched, no workflow was dispatched, no secret runtime step executed, and no YouTube request or quota use occurred.",
+  "evidence_references": [
+    "KU2D-P-000048",
+    "KU2D-V-000047",
+    "KU2D-H-000017",
+    "KU2D-R-000047",
+    "main-anchor:769149377b9a7886ae2fc6457c7fe815a09d5cd6",
+    "execution-anchor:cac243aedaa3c83c188e4e90481e4b752fe8bd2b",
+    "authorization-record-anchor:a0f230a64a2d0480d996cbd08ccf03adbb0ac8cf",
+    "local-unpublished-promotion-commit:7e1abd84aff03a3a7f4fe8369ddbcbf45503171f",
+    "protocol-error:Assistant Review result is invalid",
+    "protocol-error:Human Decision requires explicit human input provenance"
+  ],
+  "offline_authorization_gate": {
+    "validator_revision": "cac243aedaa3c83c188e4e90481e4b752fe8bd2b",
+    "validator_content_equal_to_current_tested_file": true,
+    "authorization_record_revision": "a0f230a64a2d0480d996cbd08ccf03adbb0ac8cf",
+    "h17_content_equal_to_immutable_record": true,
+    "decision_id": "KU2D-H-000017",
+    "authorized_execution_revision": "cac243aedaa3c83c188e4e90481e4b752fe8bd2b",
+    "authorized_scope_exactly_equals_auth_scope": true,
+    "immutable_validator_result": "passed"
+  },
+  "local_promotion_preparation": {
+    "base_branch": "main",
+    "base_sha": "769149377b9a7886ae2fc6457c7fe815a09d5cd6",
+    "local_branch": "codex/promote-youtube-qdiving-h17-launcher-v1",
+    "local_commit_sha": "7e1abd84aff03a3a7f4fe8369ddbcbf45503171f",
+    "changed_file_count": 1,
+    "changed_files": [
+      ".github/workflows/youtube-qdiving-identity-discovery.yml"
+    ],
+    "changed_anchor_count": 2,
+    "decision_anchor_before": "KU2D-H-000016",
+    "decision_anchor_after": "KU2D-H-000017",
+    "execution_anchor_unchanged": "cac243aedaa3c83c188e4e90481e4b752fe8bd2b",
+    "authorization_record_anchor_before": "bd53a3d8378703e017e2aa7c97d9486c30e44a5b",
+    "authorization_record_anchor_after": "a0f230a64a2d0480d996cbd08ccf03adbb0ac8cf",
+    "yaml_parse": "passed",
+    "two_anchor_only_source_equivalence": "passed",
+    "static_launcher_contract": "passed",
+    "git_diff_check": "passed",
+    "remote_branch_pushed": false,
+    "pull_request_opened": false,
+    "main_modified": false
+  },
+  "coordination_protocol_blockers": {
+    "assistant_review": {
+      "record_id": "KU2D-V-000047",
+      "field": "review_result",
+      "actual": "accepted_with_bounded_corrective_continuation",
+      "allowed_values": [
+        "accepted",
+        "correction_required",
+        "rejected",
+        "insufficient_evidence",
+        "deferred",
+        "human_decision_required"
+      ],
+      "validator_error": "Assistant Review result is invalid"
+    },
+    "human_decision": {
+      "record_id": "KU2D-H-000017",
+      "field": "provenance.decision_source",
+      "actual": "standing_explicit_human_authority",
+      "required": "explicit_human_input",
+      "validator_error": "Human Decision requires explicit human input provenance"
+    },
+    "records_rewritten": false,
+    "validator_weakened": false,
+    "authority_inferred_or_promoted": false,
+    "required_resolution": "Assistant must create a protocol-valid append-only continuation without rewriting V47/H17 or must obtain explicit Human input for any replacement Human Decision and queue exact new immutable anchors."
+  },
+  "verification": {
+    "deterministic_tests_passed": false,
+    "live_request_count": 0,
+    "json_parse": "passed; 256 files",
+    "yaml_parse": "passed; 18 files",
+    "offline_h17_authorization_validation": "passed",
+    "launcher_yaml_and_static_contract": "passed",
+    "corrected_artifact_guard_static_contract": "passed",
+    "complete_deterministic_corpus": "failed closed at SELF_TEST_AGENT_HANDOFF_PROTOCOL.py after 3 preceding scripts passed",
+    "agent_handoff_protocol": "failed: V47 review_result is outside REVIEW_RESULTS; independent H17 validation also fails explicit-human-input provenance",
+    "remaining_tests_not_run_after_fail_closed": true,
+    "git_diff_check": "passed"
+  },
+  "execution_outcome": {
+    "workflow_dispatch_count": 0,
+    "run_id": null,
+    "job_id": null,
+    "exit_classification": null,
+    "technical_completion": false,
+    "candidate_count": 0,
+    "usable_reviewed_identity_count": 0,
+    "request_counts_by_endpoint": {
+      "search.list": 0,
+      "videos.list": 0
+    },
+    "documented_quota_units": 0,
+    "sanitized_ledger_events": [],
+    "step_summary_available": false,
+    "artifact_available": false,
+    "candidate_review_packet_created": false
+  },
+  "security_and_boundaries": {
+    "promotion_branch_pushed": false,
+    "pull_request_opened": false,
+    "pull_request_merged": false,
+    "main_modified": false,
+    "integration_modified": false,
+    "workflow_dispatched": false,
+    "automatic_or_additional_dispatch_count": 0,
+    "github_secret_value_accessed_by_codex": false,
+    "runtime_secret_step_executed": false,
+    "secret_value_printed_persisted_uploaded_or_committed": false,
+    "youtube_requests": 0,
+    "documented_quota_units": 0,
+    "raw_provider_data_retrieved": false,
+    "comments_acquired": false,
+    "captions_acquired": false,
+    "transcripts_acquired": false,
+    "oauth_used": false,
+    "human_review_conducted": false,
+    "candidates_approved": false,
+    "production_store": false,
+    "production_approved": false,
+    "authority_promoted": false,
+    "scheduler_action": null
+  },
+  "completed_queue_summary": {
+    "work_completed": "Pulled the authoritative queue, proved exact H17 compatibility with the immutable acquisition validator, prepared and locally validated the one-file H17 launcher commit, then stopped at the mandatory coordination-protocol gate.",
+    "key_findings_results": "Acquisition-scope compatibility is correct, but V47 and H17 are not valid Agent Handoff v1 records. The full corpus cannot pass and P48 forbids proceeding when any guard differs.",
+    "repo_knowledge_state_changes": "No acquisition evidence or authority state changed. Only this blocked Result and the queue handoff are submitted on the authoritative branch.",
+    "important_out_of_scope_actions_not_performed": "No rewrite of append-only V47/H17, validator weakening, remote promotion push, PR open/merge, main mutation, workflow dispatch, retry, secret access, YouTube request/quota, comments, captions, transcripts, Human Review, candidate approval, production write, scheduling or authority promotion.",
+    "remaining_blockers_risks": "The queue's review and Human Decision records violate Agent Handoff v1. Reusing a corrected copy at the old a0f230 authorization SHA is impossible, while silently relabeling its provenance would misrepresent append-only authority history.",
+    "recommended_next_step": "Assistant reviews R48 and creates a protocol-valid append-only correction path. Do not replay P48 or dispatch until exact new authority/record anchors are queued and the complete deterministic corpus passes."
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000048.json",
+    "depends_on_result": "KU2D-R-000047",
+    "depends_on_review": "KU2D-V-000047",
+    "depends_on_human_decision": "KU2D-H-000017"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
