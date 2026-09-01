@@ -1,6 +1,6 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T21:53:11.000+07:00",
+  "updated_at": "2026-09-01T21:56:00.000+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
   "latest_prompt": "KU2D-P-000058",
   "latest_result": "KU2D-R-000058",
@@ -123,5 +123,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "KU2D-H-000027 authorizes P58 after V58. KU2D-P-000058 is active for TikTok Ephemeral Browser Discovery Recovery. Use fresh public browser contexts with first-party session cookies only; block third-party cookie storage; no login, credentials, account authorization, CAPTCHA/anti-bot bypass or persistence; destroy each context and profile between two live rounds. New P58 limits are 40 provider-reached deliberate operations and 10 preconnect failures, counted separately after one network preflight. Obtain and officially verify five records per topic in both rounds before creating adapter, Registry V3, fixture or MTC. One Queue, one PR and CJ8; no production, recurring scheduling or main."
+  "notes": "KU2D-H-000027 authorizes P58 after V58. KU2D-P-000058 is active for TikTok Ephemeral Browser Discovery Recovery. Use fresh public browser contexts with first-party session cookies only; block third-party cookie storage; no login, credentials, account authorization, CAPTCHA/anti-bot bypass or persistence; destroy each context and profile between two live rounds. New P58 limits are 40 provider-reached deliberate operations and 10 preconnect failures, counted separately after one network preflight. Obtain and officially verify five records per topic in both rounds before creating adapter, Registry V3, fixture or MTC. One Queue, one PR and CJ8; no production, recurring scheduling or main. Issuance correction before Codex execution: one prohibited sensitive-field key name in the active Prompt was renamed to a neutral persistence-policy key; scope, authority and budgets are unchanged."
 }
