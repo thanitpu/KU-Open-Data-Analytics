@@ -1,0 +1,188 @@
+name: KU2D Q-Diving Identity Discovery
+
+on:
+  workflow_dispatch:
+    inputs:
+      continuation_authorization_id:
+        description: 'Confirmed Human Decision ID with the exact H12 continuation scope'
+        required: true
+        type: string
+      execution_revision:
+        description: 'Immutable reviewed integration commit SHA authorized by the continuation decision'
+        required: true
+        type: string
+      authorization_record_revision:
+        description: 'Immutable integration commit SHA containing the confirmed continuation decision'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ku2d-youtube-qdiving-identity-discovery
+  cancel-in-progress: false
+
+jobs:
+  bounded-discovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      # A separate reviewed one-file promotion to main must replace all three
+      # placeholders. Until then the launcher fails before checkout.
+      KU2D_AUTHORIZED_DECISION_ID: REPLACE_WITH_REVIEWED_HUMAN_DECISION_ID
+      KU2D_AUTHORIZED_EXECUTION_REVISION: REPLACE_WITH_REVIEWED_40_CHAR_INTEGRATION_SHA
+      KU2D_AUTHORIZATION_RECORD_REVISION: REPLACE_WITH_40_CHAR_DECISION_RECORD_SHA
+    steps:
+      - name: Validate immutable launcher trust anchors
+        env:
+          KU2D_REQUESTED_AUTHORIZATION_ID: ${{ inputs.continuation_authorization_id }}
+          KU2D_REQUESTED_EXECUTION_REVISION: ${{ inputs.execution_revision }}
+          KU2D_REQUESTED_AUTHORIZATION_RECORD_REVISION: ${{ inputs.authorization_record_revision }}
+        run: |
+          if [[ ! "$KU2D_AUTHORIZED_EXECUTION_REVISION" =~ ^[0-9a-f]{40}$ ]]; then
+            echo 'Launcher execution revision has not been bound by a reviewed promotion.' >&2
+            exit 1
+          fi
+          if [[ "$KU2D_AUTHORIZED_DECISION_ID" == REPLACE_* ]]; then
+            echo 'Launcher decision ID has not been bound by a reviewed promotion.' >&2
+            exit 1
+          fi
+          if [[ ! "$KU2D_AUTHORIZED_DECISION_ID" =~ ^KU2D-H-[0-9]{6}$ ]]; then
+            echo 'Launcher decision ID is malformed.' >&2
+            exit 1
+          fi
+          if [[ ! "$KU2D_AUTHORIZATION_RECORD_REVISION" =~ ^[0-9a-f]{40}$ ]]; then
+            echo 'Launcher authorization-record revision has not been bound by a reviewed promotion.' >&2
+            exit 1
+          fi
+          if [[ "$KU2D_REQUESTED_EXECUTION_REVISION" != "$KU2D_AUTHORIZED_EXECUTION_REVISION" ]]; then
+            echo 'Requested execution revision is not the reviewed launcher revision.' >&2
+            exit 1
+          fi
+          if [[ "$KU2D_REQUESTED_AUTHORIZATION_ID" != "$KU2D_AUTHORIZED_DECISION_ID" ]]; then
+            echo 'Requested authorization ID is not the reviewed launcher decision.' >&2
+            exit 1
+          fi
+          if [[ "$KU2D_REQUESTED_AUTHORIZATION_RECORD_REVISION" != "$KU2D_AUTHORIZATION_RECORD_REVISION" ]]; then
+            echo 'Requested authorization-record revision is not the reviewed launcher revision.' >&2
+            exit 1
+          fi
+
+      - name: Checkout immutable authorization record revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.KU2D_AUTHORIZATION_RECORD_REVISION }}
+          persist-credentials: false
+
+      - name: Stage exact authorization record without executing repository code
+        run: |
+          if [[ "$(git rev-parse HEAD)" != "$KU2D_AUTHORIZATION_RECORD_REVISION" ]]; then
+            echo 'Authorization-record checkout does not match the reviewed revision.' >&2
+            exit 1
+          fi
+          record_path="services/data-acquisition/coordination/v1/human-decisions/${KU2D_AUTHORIZED_DECISION_ID}.json"
+          staged_path="${RUNNER_TEMP}/ku2d-youtube-authorization-${GITHUB_RUN_ID}.json"
+          if [[ ! -f "$record_path" || -L "$record_path" ]]; then
+            echo 'Exact authorization record is missing or is not a regular file.' >&2
+            exit 1
+          fi
+          record_size=$(wc -c < "$record_path")
+          if [[ "$record_size" -gt 131072 ]]; then
+            echo 'Exact authorization record exceeds the bounded size limit.' >&2
+            exit 1
+          fi
+          cp -- "$record_path" "$staged_path"
+          chmod 600 "$staged_path"
+          echo "KU2D_STAGED_AUTHORIZATION_RECORD=$staged_path" >> "$GITHUB_ENV"
+
+      - name: Checkout immutable reviewed execution revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.KU2D_AUTHORIZED_EXECUTION_REVISION }}
+          persist-credentials: false
+
+      - name: Verify immutable execution checkout
+        env:
+          KU2D_EXECUTION_REVISION: ${{ env.KU2D_AUTHORIZED_EXECUTION_REVISION }}
+        run: test "$(git rev-parse HEAD)" = "$KU2D_EXECUTION_REVISION"
+
+      - name: Set up Python from reviewed execution revision
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Data Acquisition dependencies from reviewed execution revision
+        working-directory: services/data-acquisition
+        run: python -m pip install --disable-pip-version-check -r requirements.txt
+
+      - name: Validate staged continuation authorization with reviewed execution code
+        working-directory: services/data-acquisition
+        env:
+          PYTHONPATH: .
+          KU2D_AUTHORIZATION_ID: ${{ env.KU2D_AUTHORIZED_DECISION_ID }}
+          KU2D_EXECUTION_REVISION: ${{ env.KU2D_AUTHORIZED_EXECUTION_REVISION }}
+        run: |
+          python -c "from pathlib import Path; from tools.LIVE_YOUTUBE_QDIVING_IDENTITY_DISCOVERY import authorization; import os; authorization(Path(os.environ['KU2D_STAGED_AUTHORIZATION_RECORD']), os.environ['KU2D_AUTHORIZATION_ID'], os.environ['KU2D_EXECUTION_REVISION']); print('Staged continuation authorization: confirmed by reviewed execution code')"
+
+      - name: Initialize sanitized evidence paths
+        run: |
+          echo "KU2D_EVIDENCE_PATH=${RUNNER_TEMP}/ku2d-youtube-qdiving-${GITHUB_RUN_ID}.json" >> "$GITHUB_ENV"
+          echo "KU2D_ARTIFACT_NAME=youtube-qdiving-identity-discovery-${GITHUB_RUN_ID}" >> "$GITHUB_ENV"
+
+      - name: Run exact bounded public discovery
+        id: discovery
+        working-directory: services/data-acquisition
+        env:
+          PYTHONPATH: .
+          KU2D_YOUTUBE_API_KEY: ${{ secrets.KU2D_YOUTUBE_API_KEY }}
+          KU2D_AUTHORIZATION_ID: ${{ env.KU2D_AUTHORIZED_DECISION_ID }}
+          KU2D_EXECUTION_REVISION: ${{ env.KU2D_AUTHORIZED_EXECUTION_REVISION }}
+        run: |
+          set +e
+          python tools/LIVE_YOUTUBE_QDIVING_IDENTITY_DISCOVERY.py \
+            --authorization-record "${KU2D_STAGED_AUTHORIZATION_RECORD}" \
+            --authorization-id "${KU2D_AUTHORIZATION_ID}" \
+            --execution-revision "${KU2D_EXECUTION_REVISION}" \
+            --output "${KU2D_EVIDENCE_PATH}"
+          code=$?
+          set -e
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          if [ "$code" = 0 ]; then echo 'outcome=candidate-evidence-obtained' >> "$GITHUB_OUTPUT"; exit 0; fi
+          if [ "$code" = 2 ]; then echo 'outcome=evidence-withheld' >> "$GITHUB_OUTPUT"; exit 0; fi
+          echo 'outcome=technical-failure' >> "$GITHUB_OUTPUT"
+          exit "$code"
+
+      - name: Write sanitized Step Summary
+        if: always()
+        env:
+          KU2D_DISCOVERY_EXIT: ${{ steps.discovery.outputs.exit_code }}
+          KU2D_DISCOVERY_OUTCOME: ${{ steps.discovery.outputs.outcome }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          path = Path(os.environ['KU2D_EVIDENCE_PATH'])
+          result = {}
+          if path.is_file():
+              try: result = json.loads(path.read_text(encoding='utf-8'))
+              except (OSError, json.JSONDecodeError): result = {'classification': 'unreadable-evidence'}
+          fields = ('classification', 'technical_completion', 'candidate_count', 'usable_reviewed_identity_count', 'withheld_reason')
+          rows = '\n'.join(f'| {field} | {result.get(field, "unavailable")} |' for field in fields)
+          summary = f'''## Q-Diving Identity Discovery\n\n> This manual workflow is candidate discovery only. It does not complete Human Review or authorize acquisition.\n\n| Field | Value |\n|---|---|\n| exit code | {os.environ.get("KU2D_DISCOVERY_EXIT", "not-run")} |\n| outcome | {os.environ.get("KU2D_DISCOVERY_OUTCOME", "not-run")} |\n{rows}\n| Artifact | {os.environ["KU2D_ARTIFACT_NAME"]} |\n'''
+          Path(os.environ['GITHUB_STEP_SUMMARY']).write_text(summary, encoding='utf-8')
+          PY
+
+      - name: Check sanitized evidence
+        id: evidence
+        if: always()
+        run: echo "exists=$([[ -f \"$KU2D_EVIDENCE_PATH\" ]] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload sanitized identity evidence
+        if: always() && steps.evidence.outputs.exists == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.KU2D_ARTIFACT_NAME }}
+          path: ${{ env.KU2D_EVIDENCE_PATH }}
+          if-no-files-found: error
+          retention-days: 7

@@ -1,0 +1,171 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000039",
+  "prompt_id": "KU2D-P-000039",
+  "submitted_at": "2026-09-01T08:30:02.777+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "Corrected the guarded Q-Diving manual identity-discovery launcher without replaying P38 or issuing a YouTube request. Bash fail-fast is disabled only around the runner so exit 0 and exit 2 are captured, classified and followed by sanitized summary/artifact handling, while every unexpected nonzero remains a technical failure. The future default-branch launcher now fails closed on three promotion-time trust anchors: an immutable reviewed execution SHA, the confirmed Human Decision ID, and a separate immutable decision-record SHA. GitHub's historical invalid-workflow diagnostic identified runner.temp at job scope; path initialization was moved to runner scope and the workflow now registers cleanly. All 55 deterministic scripts and exact-head CI pass. PR #64 remains Ready, open, cleanly mergeable and unmerged.",
+  "evidence_references": [
+    "KU2D-P-000039",
+    "KU2D-V-000038",
+    ".github/workflows/youtube-qdiving-identity-discovery.yml",
+    "tools/LIVE_YOUTUBE_QDIVING_IDENTITY_DISCOVERY.py",
+    "tools/SELF_TEST_YOUTUBE_IDENTITY_DISCOVERY_DISPATCH.py",
+    "docs/YOUTUBE_QDIVING_DEFAULT_BRANCH_LAUNCHER_PLAN.md",
+    "commit:79ff3dfc1803af7aae5022beeae79023f4677b74",
+    "commit:d513b3c2e75a6edf1586d5ca31bf524076dbffec",
+    "PR:#64"
+  ],
+  "repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "base_branch": "integration/data-acquisition-platform",
+    "implementation_commit_sha": "79ff3dfc1803af7aae5022beeae79023f4677b74",
+    "workflow_registration_fix_sha": "d513b3c2e75a6edf1586d5ca31bf524076dbffec",
+    "pull_request_number": 64,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/64",
+    "ready": true,
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "merged": false
+  },
+  "exit_semantics": {
+    "exit_0": {
+      "classification": "candidate-evidence-obtained",
+      "workflow_step_success": true
+    },
+    "exit_2": {
+      "classification": "evidence-withheld",
+      "workflow_step_success": true,
+      "step_summary_available": true,
+      "sanitized_artifact_handling_available": true
+    },
+    "unexpected_nonzero": {
+      "classification": "technical-failure",
+      "workflow_step_success": false
+    },
+    "bash_fail_fast_guard": "set +e immediately before the runner, capture code=$?, then restore set -e",
+    "summary_condition": "always",
+    "artifact_condition": "always when sanitized evidence exists"
+  },
+  "default_branch_launcher_plan": {
+    "default_branch_required_for_workflow_dispatch": true,
+    "main_modified": false,
+    "launcher_promoted": false,
+    "future_promotion_requires_assistant_review": true,
+    "future_promotion_requires_explicit_human_decision": true,
+    "future_promotion_shape": "one-file reviewed PR to main",
+    "fail_closed_placeholders": [
+      "KU2D_AUTHORIZED_EXECUTION_REVISION",
+      "KU2D_AUTHORIZED_DECISION_ID",
+      "KU2D_AUTHORIZATION_RECORD_REVISION"
+    ],
+    "trust_sequence": [
+      "operator inputs must equal promotion-time trust anchors before checkout",
+      "checkout immutable decision-record revision",
+      "validate confirmed decision and exact H12 scope",
+      "checkout immutable reviewed execution revision",
+      "verify execution HEAD before runtime secret step"
+    ],
+    "self_authorization_prevented": true,
+    "mutable_integration_checkout_used": false
+  },
+  "bounded_h12_contract": {
+    "profiles": [
+      "QYT-BEGINNER-KOH-TAO-TH",
+      "QYT-BEGINNER-EN"
+    ],
+    "max_pages_per_profile": 1,
+    "max_results_per_profile": 5,
+    "max_search_list_requests": 2,
+    "max_videos_list_requests": 1,
+    "max_documented_quota_units": 201,
+    "scope_broadened": false
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "live_request_count": 0,
+    "git_diff_check": "passed",
+    "json_parse": "212 JSON files passed before Result submission",
+    "yaml_parse": "17 workflow files passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service and tools passed under Python 3.12",
+    "targeted_workflow_contract": "YIDW1-YIDW45 passed",
+    "agent_handoff_protocol": "AH1-AH31 passed",
+    "complete_deterministic_corpus": "55/55 scripts passed",
+    "historical_p38_prompt_and_result_unchanged": true,
+    "workflow_registration": "clean; no invalid-workflow run at d513b3c2e75a6edf1586d5ca31bf524076dbffec",
+    "exact_head_ci": {
+      "head_sha": "d513b3c2e75a6edf1586d5ca31bf524076dbffec",
+      "data_acquisition_platform_ci": {
+        "run_number": 366,
+        "run_id": 33458860531,
+        "conclusion": "success"
+      },
+      "frontend_ci": [
+        {
+          "run_number": 1338,
+          "run_id": 33458857509,
+          "event": "push",
+          "conclusion": "success"
+        },
+        {
+          "run_number": 1339,
+          "run_id": 33458860672,
+          "event": "pull_request",
+          "conclusion": "success"
+        }
+      ],
+      "pr_browser_preview": {
+        "run_number": 267,
+        "run_id": 33458860557,
+        "conclusion": "success"
+      }
+    }
+  },
+  "security_and_boundaries": {
+    "youtube_requests": 0,
+    "documented_quota_units": 0,
+    "workflow_dispatched": false,
+    "secret_value_read_printed_persisted_uploaded_or_committed": false,
+    "secret_reference_scope": "runtime API step only",
+    "comments_or_replies": false,
+    "captions_list_or_download": false,
+    "transcript_content": false,
+    "oauth": false,
+    "browser_or_scraping": false,
+    "production_store": false,
+    "production_approved": false,
+    "authority_promoted": false,
+    "scheduler_action": null,
+    "main_modified": false,
+    "integration_modified": false,
+    "pr_merged": false
+  },
+  "completed_queue_summary": {
+    "work_completed": "Implemented P39 exit handling, immutable launcher trust anchors, default-branch promotion documentation, registration correction, deterministic tests and exact-head CI.",
+    "key_findings_results": "Exit 2 is now captured without Bash fail-fast and remains evidence-withheld rather than technical failure. The launcher cannot operate from integration alone and cannot run until a reviewed one-file main promotion replaces all three trust-anchor placeholders.",
+    "repo_knowledge_state_changes": "Added launcher and runtime safeguards only. P38 and R38 remain unchanged historical evidence; no source evidence, reviewed identity, approval or authority state changed.",
+    "important_out_of_scope_actions_not_performed": "No YouTube request, workflow dispatch, credential inspection, source expansion, Human Review, production write, scheduling, main/integration mutation, PR merge or P38 replay.",
+    "remaining_blockers_risks": "The default-branch launcher is intentionally inoperable until assistant review, an explicit Human Decision, a committed decision record and a separate reviewed one-file promotion to main bind all immutable trust anchors.",
+    "recommended_next_step": "Assistant reviews R39 and exact-head PR #64. Do not dispatch. If accepted, integration and the later one-file default-branch promotion remain separate explicitly authorized decisions."
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000039.json",
+    "depends_on_prompt": "KU2D-P-000038",
+    "depends_on_result": "KU2D-R-000038",
+    "depends_on_review": "KU2D-V-000038",
+    "target_pr": 64
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000013",
+  "prompt_id": "KU2D-P-000040",
+  "result_id": "KU2D-R-000040",
+  "review_id": "KU2D-V-000040",
+  "decided_at": "2026-09-01T09:02:30.000+07:00",
+  "decided_by": {
+    "actor": "human",
+    "actor_id": "project_owner"
+  },
+  "decision": "confirmed",
+  "reason_note": "Project owner explicitly confirms merging PR #64 into integration/data-acquisition-platform. The owner also delegates future decisions that concern only whether reviewed code runs correctly and has no technical problem to the Assistant Reviewer, because the Assistant Reviewer is the technical checker. Human confirmation remains required for live data/API or quota use, privacy or rights-sensitive acquisition, production or scheduling, material business-scope changes, and other non-technical authority gates. This decision authorizes only the reviewed PR #64 integration merge and does not authorize main promotion, launcher trust-anchor replacement, workflow dispatch, secret access, YouTube requests or quota, Human Review, candidate approval, comments, captions, transcripts, production storage, scheduling, or authority promotion.",
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_context": "User stated that future code-run/no-problem decisions may be made by the Assistant Reviewer and explicitly confirmed the current merge.",
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "depends_on_review": "KU2D-V-000040",
+    "reviewed_pr_head": "8ce78875e4cde024de43a4d6e3187a37f385e4ed",
+    "target_pull_request": 64,
+    "target_branch": "integration/data-acquisition-platform"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
