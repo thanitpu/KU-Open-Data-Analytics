@@ -1,0 +1,30 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000014",
+  "prompt_id": "KU2D-P-000040",
+  "result_id": "KU2D-R-000040",
+  "review_id": "KU2D-V-000040",
+  "decided_at": "2026-09-01T09:10:30.000+07:00",
+  "decided_by": {
+    "actor": "human",
+    "actor_id": "project_owner"
+  },
+  "decision": "confirmed",
+  "reason_note": "Project owner explicitly confirmed merging PR #64 at exact head 593ddaa54d5eb082ad0f71007f5614e218ed2d16 into integration/data-acquisition-platform after being informed that the head includes coordination records and the Agent Handoff regression-test registration for H13. The merge completed as commit 453d75ff23e5fdd78e4a8d36f77cd7185db99059. This confirmation remains limited to the integration merge and does not authorize main promotion, launcher trust-anchor replacement, workflow dispatch, secret access, YouTube requests or quota, comments, captions, transcripts, Human Review, candidate approval, production storage, scheduling, or authority promotion.",
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_context": "User repeated the exact requested confirmation including PR number, exact head SHA and integration target branch.",
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "depends_on_review": "KU2D-V-000040",
+    "authorized_pr_head": "593ddaa54d5eb082ad0f71007f5614e218ed2d16",
+    "target_pull_request": 64,
+    "target_branch": "integration/data-acquisition-platform",
+    "resulting_merge_commit": "453d75ff23e5fdd78e4a8d36f77cd7185db99059"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
