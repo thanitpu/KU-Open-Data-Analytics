@@ -1,0 +1,151 @@
+{
+  "schema": "ku2d.technical-correction-journal.v1",
+  "journal_id": "KU2D-CJ-000003",
+  "source_completion_prompt_id": "KU2D-P-000053",
+  "created_at": "2026-09-01T18:00:00.000+07:00",
+  "closed_at": "2026-09-01T18:45:00.000+07:00",
+  "events": [
+    {
+      "event_id": "KU2D-TC-000010",
+      "observed_at": "2026-09-01T18:00:00.000+07:00",
+      "phase": "implementation",
+      "failure_code": "p52_reference_execution_not_manifest_pinned",
+      "observed_signal": "The P52 YouTube reference instantiated Connector Kit components directly, so no authoritative immutable run manifest or registry resolution pinned the complete execution.",
+      "root_cause_layer": "runtime_code",
+      "correction": {
+        "action": "Added closed Run Manifest and Adapter Registry contracts, a source-neutral runner, an early technical quality gate, and routed the YouTube fixture reference through the complete path.",
+        "components": [
+          "services/data-acquisition/acquisition/adapter_registry.py",
+          "services/data-acquisition/acquisition/run_manifest.py",
+          "services/data-acquisition/acquisition/source_runner.py",
+          "services/data-acquisition/acquisition/acquisition_quality_gate.py"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": ["Source Runner SR1-SR10", "Foundation Consolidation FC1-FC5", "YouTube ten-candidate parity", "zero-provider fixture replay"],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "schema_impact": "Adds closed Adapter Registry v1 and Immutable Run Manifest v1 schemas without rewriting P52 evidence.",
+      "quality_impact": "Adds a technical pre-Analysis gate while preserving Analysis authority over semantic quality and final inclusion.",
+      "related_commit_or_pending_commit": "4b15cf2d325a94045c73e2e824a97538c3c84da8",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "A reusable Connector Kit needs an immutable execution envelope and explicit registry resolution before a run is authoritative.",
+        "future_prevention": "Require every new source proof to enter through a hash-pinned manifest and allowlisted registry identity.",
+        "labels": ["foundation", "immutable-manifest", "adapter-registry", "source-runner"]
+      },
+      "evidence_refs": ["KU2D-P-000053", "KU2D-RM-000001-V001", "KU2D-SM-YOUTUBE-QDIVING-000001"]
+    },
+    {
+      "event_id": "KU2D-TC-000011",
+      "observed_at": "2026-09-01T18:15:00.000+07:00",
+      "phase": "test",
+      "failure_code": "raw_payload_absence_assertion_matched_fingerprint_field",
+      "observed_signal": "The first Foundation integration test rejected sanitized evidence because a substring assertion treated payload_sha256 as if it were a raw payload key.",
+      "root_cause_layer": "ci",
+      "correction": {
+        "action": "Replaced substring matching with recursive exact-key detection so raw payload fields fail while payload fingerprints remain required evidence.",
+        "components": ["services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py"],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": ["Foundation Consolidation FC1-FC5", "raw payload exact-key absence", "payload_sha256 retention"],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "schema_impact": "No schema change; the test now distinguishes forbidden raw content from required hash evidence.",
+      "quality_impact": "Prevents a false-red test while retaining the raw-payload prohibition.",
+      "related_commit_or_pending_commit": "4b15cf2d325a94045c73e2e824a97538c3c84da8",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "Sensitive-evidence assertions must inspect JSON keys structurally rather than match safe fingerprint-field substrings.",
+        "future_prevention": "Use recursive exact-key checks for forbidden evidence fields in all source-neutral quality tests.",
+        "labels": ["test-correction", "sanitization", "evidence-fingerprint"]
+      },
+      "evidence_refs": ["SELF_TEST_FOUNDATION_CONSOLIDATION.py", "KU2D-P-000053"]
+    },
+    {
+      "event_id": "KU2D-TC-000012",
+      "observed_at": "2026-09-01T18:25:00.000+07:00",
+      "phase": "test",
+      "failure_code": "manifest_paths_not_bound_to_loaded_repository_documents",
+      "observed_signal": "Level 2 design review found that content hashes were checked but a caller could supply matching documents without proving they were loaded from the repository paths pinned by the manifest.",
+      "root_cause_layer": "runtime_code",
+      "correction": {
+        "action": "Added the authoritative repository loader with resolved path-containment checks, exact JSON object loading and manifest hash verification for source, profile, registry and fixtures.",
+        "components": [
+          "services/data-acquisition/acquisition/source_runner.py",
+          "services/data-acquisition/acquisition/run_manifest.py",
+          "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": ["Pinned repository-path execution", "path traversal rejection", "source/profile/registry/fixture hash validation"],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "schema_impact": "Adds the closed adapter_registry_path pin beside its SHA-256 in Immutable Run Manifest v1.",
+      "quality_impact": "Prevents valid content supplied from an unpinned location from being mistaken for repository-pinned execution evidence.",
+      "related_commit_or_pending_commit": "4b15cf2d325a94045c73e2e824a97538c3c84da8",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "An immutable reference needs both a contained repository path and a content hash; either one alone leaves provenance ambiguity.",
+        "future_prevention": "Exercise the repository-loading entry point and a path-traversal negative in every manifest-backed adapter fixture.",
+        "labels": ["manifest-integrity", "path-containment", "provenance"]
+      },
+      "evidence_refs": ["KU2D-P-000053", "SELF_TEST_SOURCE_RUNNER_V1.py"]
+    },
+    {
+      "event_id": "KU2D-TC-000013",
+      "observed_at": "2026-09-01T18:35:00.000+07:00",
+      "phase": "test",
+      "failure_code": "v1_validators_accepted_unsupported_runtime_versions",
+      "observed_signal": "Contract review found that syntactically valid future manifest and registry versions could pass v1 validators even though this runtime implements only version 1.0.0.",
+      "root_cause_layer": "runtime_code",
+      "correction": {
+        "action": "Pinned Run Manifest v1, Adapter Registry v1 and Connector Kit contract runtime compatibility to 1.0.0 in schemas and pure validators, with deterministic drift negatives.",
+        "components": [
+          "services/data-acquisition/acquisition/run_manifest.py",
+          "services/data-acquisition/acquisition/adapter_registry.py",
+          "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json",
+          "services/data-acquisition/knowledge/v1/adapter-registry.schema.json"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": ["Run Manifest 2.0.0 rejection", "Adapter Registry 2.0.0 rejection", "registered contract incompatibility rejection"],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "schema_impact": "Narrows v1 runtime version fields to the implemented 1.0.0 contract rather than accepting unimplemented future semantics.",
+      "quality_impact": "Prevents false-green execution under a manifest or registry version the runner does not understand.",
+      "related_commit_or_pending_commit": "4b15cf2d325a94045c73e2e824a97538c3c84da8",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "Version syntax validation is not compatibility validation; executable contracts must enumerate supported runtime versions.",
+        "future_prevention": "Add unsupported-future-version negatives whenever a versioned runtime schema is introduced.",
+        "labels": ["version-drift", "fail-closed", "contract-compatibility"]
+      },
+      "evidence_refs": ["KU2D-P-000053", "SELF_TEST_SOURCE_RUNNER_V1.py"]
+    }
+  ],
+  "summary": {
+    "event_count": 4,
+    "resolved_count": 4,
+    "unresolved_count": 0,
+    "correction_cycles_used": 4
+  },
+  "safety": {
+    "contains_secret": false,
+    "contains_raw_payload": false,
+    "contains_request_url": false,
+    "contains_personal_data": false
+  }
+}

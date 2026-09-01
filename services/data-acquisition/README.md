@@ -10,6 +10,8 @@ GitHub-mediated Codex/assistant/human coordination uses the storage-neutral [Age
 
 [Data Acquisition v1 Source Completion](docs/DATA_ACQUISITION_V1_SOURCE_COMPLETION.md) defines the reusable Connector Kit, domain capability, Source Lab, MTC and one-queue operating model. YouTube Q-Diving is the fixture-only reference connector; semantic quality remains Analysis-owned.
 
+[Foundation Consolidation v1](docs/DATA_ACQUISITION_FOUNDATION_CONSOLIDATION_V1.md) makes immutable Run Manifest → Adapter Registry → source-neutral runner → Connector Kit → technical quality gate the authoritative deterministic execution path. It preserves the ten-item YouTube reference handoff with zero provider requests/quota and lets P54 add a registered adapter and manifest without changing runner or workflow logic.
+
 Shopee Commerce Pulse is a separate, non-production marketplace-observation domain. Its public-signal semantics and now-paused public unauthenticated access checkpoint are documented in [docs/SHOPEE_COMMERCE_PULSE.md](docs/SHOPEE_COMMERCE_PULSE.md). Lazada reuses the generic observation contracts while keeping platform-specific access and interpretation explicit in [docs/LAZADA_COMMERCE_PULSE.md](docs/LAZADA_COMMERCE_PULSE.md).
 
 ## Live validation status semantics
