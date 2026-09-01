@@ -1,0 +1,67 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000051",
+  "created_at": "2026-09-01T12:16:00.000+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+  "objective": "Realign the KU2D Acquisition-to-Analysis boundary so every technically valid, policy-compliant and sanitized acquisition record is durably handed to Analysis without semantic Human selection in Acquisition, and stage all ten P50 YouTube candidates for Analysis while preserving full retrieval and provenance.",
+  "queue_purpose_summary": "Remove the unnecessary two-candidate Human gate from Acquisition, preserve all ten YouTube candidates, and make Analysis responsible for later quality/relevance selection.",
+  "instructions": [
+    "Treat KU2D-H-000020 and KU2D-V-000050 as complete authority. This is one bounded architecture-alignment queue and must not make any provider request or replay P50.",
+    "Do not rewrite immutable P50 records, KU2D-R-000050, KU2D-X-000002, KU2D-CJ-000001, the workflow artifact or candidate packet KU2D-YT-QDIVING-CANDIDATES-000001. Their former human_review and selection_target fields remain historical evidence of the contract used at execution time.",
+    "Define a versioned Acquisition-to-Analysis handoff contract and schema. Acquisition acceptance means technically valid, authorized, policy-compliant, provenance-bearing and sanitized; it must not imply semantic relevance, analytical quality, production approval or scheduling.",
+    "Create an Analysis intake manifest for the P50 YouTube batch that references all ten candidate IDs and the immutable candidate packet rather than discarding or hiding eight records. Mark semantic relevance, quality, ranking, analytical deduplication and final inclusion as pending Analysis.",
+    "The Analysis intake manifest must preserve retrievability and provenance for every candidate, include source batch/result/artifact references, and use null/unknown for quality values that have not been assessed.",
+    "Update active schemas, policies, documentation, validation and deterministic tests so future source connectors do not require Human candidate selection inside Acquisition. Remove selection_target as an active Acquisition completion gate.",
+    "Retain Human gates in Acquisition only for legal/policy ambiguity, restricted or personal data, material provider scope or quota expansion, new spending, production write or elevated authority.",
+    "Where current code or documentation uses human_review_completed, usable_reviewed_identity_count, human_adjudication_required or usable_for_live_acquisition as a technical completion requirement, replace the active requirement with explicit acquisition_acceptance and analysis_handoff status. Preserve backward-compatible reading of historical evidence without treating it as current authority.",
+    "Do not label all ten candidates high-quality or production-ready. Label them accepted_for_analysis only.",
+    "Run targeted contract/schema tests during implementation, then the complete deterministic corpus once before merge/closure. Validate repository JSON/YAML and any affected Python modules.",
+    "Prepare one coherent PR to integration/data-acquisition-platform. Verify exact head, changed-file scope, CI and mergeability; merge when technically green under standing authority without requesting another Human confirmation.",
+    "Return only KU2D-R-000051 with file/commit/PR/CI/merge metadata, validation results, the Analysis intake manifest identifier/path, candidate preservation count, retrieval contract, and explicit confirmation that provider requests/quota were zero."
+  ],
+  "stop_conditions": [
+    "implementation would require rewriting immutable P50 evidence",
+    "provider access or additional quota is required",
+    "production write, scheduling, restricted data, personal data, new spending or elevated authority is required",
+    "repository permission or protected-branch policy prevents the authorized merge",
+    "a schema change would lose provenance or make any of the ten candidates irretrievable"
+  ],
+  "definition_of_done": [
+    "all ten P50 candidates are accepted for Analysis intake without semantic quality claims",
+    "all ten remain durably retrievable through immutable packet and versioned Analysis intake manifest",
+    "Acquisition no longer requires Human semantic candidate selection as an active completion gate",
+    "Analysis owns relevance, quality, ranking, analytical deduplication and final inclusion",
+    "historical P50 evidence remains unchanged and readable",
+    "targeted tests and one final complete deterministic corpus pass",
+    "one technically green PR is merged to integration/data-acquisition-platform",
+    "no provider request, quota consumption, production write or scheduling occurs",
+    "KU2D-R-000051 is submitted for Assistant review"
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000051",
+    "next_actor": "assistant",
+    "closure_target": "acquisition_analysis_boundary_alignment",
+    "provider_requests_allowed": 0
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_prompt": "KU2D-P-000050",
+    "depends_on_result": "KU2D-R-000050",
+    "depends_on_review": "KU2D-V-000050",
+    "depends_on_human_decision": "KU2D-H-000020",
+    "candidate_packet": "KU2D-YT-QDIVING-CANDIDATES-000001",
+    "experience_record": "KU2D-X-000002"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
