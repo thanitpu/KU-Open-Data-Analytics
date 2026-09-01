@@ -108,6 +108,7 @@
       "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
       "schema_impact": "None; the correction changes provenance timestamps and journal accounting only.",
       "quality_impact": "Prevents future-dated closure evidence from entering the coordination Result.",
+      "related_commit_or_pending_commit": "e7afcf1af94ac89bcd88d2ab6aec6aa5d1d5dd35",
       "effort_minutes": null,
       "learning": {"reusable_lesson": "Evidence timestamps must be captured from the observation clock rather than rounded to a future convenience value.", "future_prevention": "Read the current clock immediately before finalizing journal timestamps and validate closure time before committing.", "labels": ["provenance", "timestamp", "evidence-integrity"]},
       "evidence_refs": ["KU2D-P-000057", "KU2D-CJ-000007"]
