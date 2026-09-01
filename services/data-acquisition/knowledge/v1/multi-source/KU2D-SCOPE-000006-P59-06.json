@@ -1,0 +1,26 @@
+{
+  "schema": "ku2d.phase-scope-entry.v1",
+  "scope_declaration_id": "KU2D-SCOPE-000006",
+  "prompt_id": "KU2D-P-000059",
+  "phase_id": "P59-06",
+  "entered_at": "2026-09-02T00:24:20+07:00",
+  "domain": ["Beauty Retail", "Coffee Retail Product", "Commerce Market Observation", "IT Retail", "OTA", "Q-Diving Content", "Q-Diving Course Services", "Q-Diving Retail Equipment", "Q-Diving metadata", "Supermarket"],
+  "source": ["all eighteen manifest sources with source summary and failure disposition"],
+  "capability": ["domain-separated CSV", "domain-separated JSONL", "three-sheet XLSX", "ZIP", "embedded campaign manifest", "detached delivery manifest"],
+  "acquisition_technique": ["deterministic offline export of the sealed ledger only"],
+  "authorized_files_or_modules": ["acquisition/domain_export_bundle.py", "config/multi_source_domain_export_schema_v1.json"],
+  "explicit_out_of_scope": ["provider access", "Git publication of live records or ZIP", "production database", "KU2A intake"],
+  "validation_profile": ["UTF-8 and formula safety", "null/empty distinction", "stable ordering", "CSV/JSONL/XLSX round trip", "all member sizes and SHA-256", "exact ZIP SHA-256", "failure-report completeness"],
+  "completion_evidence": {
+    "run_id": "KU2D-P59-RR-20260902-001",
+    "domain_count": 10,
+    "member_count": 34,
+    "zip_name": "KU2D_P59_MultiSource_RoundRobin_KU2D-P59-RR-20260902-001.zip",
+    "zip_size": 167218,
+    "zip_sha256": "b52a236cc7ad75a0b037f1ef3c833fd9a9994ba400f8f43ee8f4cc53875d29c3",
+    "detached_delivery_manifest": "KU2D_P59_MultiSource_RoundRobin_KU2D-P59-RR-20260902-001.delivery.json",
+    "hash_reconciliation": "passed",
+    "delivered_outside_git": true
+  },
+  "boundaries": {"production_approved": false, "production_store": false, "scheduler_action": null}
+}

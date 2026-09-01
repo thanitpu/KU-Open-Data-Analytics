@@ -271,4 +271,26 @@ with TemporaryDirectory() as tmp:
     assert legacy_runner.ledger["provider_operations"] == 4
 
 
-print("P59 multi-source round-robin deterministic tests passed (RR1-RR50).")
+# RR51-RR58: sanitized live aggregate and post-live phase records are exact, non-authorizing, and contain no live payloads.
+evidence = json.loads((ROOT / "knowledge" / "v1" / "multi-source" / "KU2D-P59-RR-20260902-001.json").read_text(encoding="utf-8"))
+assert evidence["selected_sources"] == MANIFEST["source_order"]
+assert evidence["provider_operations"] == 107 and evidence["documented_quota"] == 0
+assert evidence["accepted_unique"] == 286 and evidence["observations"] == 305
+assert evidence["quality"]["unique_identity_reconciliation"] == "286/286"
+assert evidence["fixture_replay"]["provider_operations"] == 0
+assert evidence["export"]["outside_git"] is True
+assert evidence["safety"]["production_approved"] is False
+assert evidence["safety"]["scheduler_action"] is None
+serialized_evidence = json.dumps(evidence, ensure_ascii=False).lower()
+assert not any(marker in serialized_evidence for marker in ('"api_key"', '"authorization"', '"cookie"', '"access_token"', '"raw_payload"'))
+for phase_id in ("P59-04", "P59-05", "P59-06"):
+    phase = json.loads((ROOT / "knowledge" / "v1" / "multi-source" / f"KU2D-SCOPE-000006-{phase_id}.json").read_text(encoding="utf-8"))
+    assert phase["scope_declaration_id"] == "KU2D-SCOPE-000006"
+    assert all(phase.get(field) for field in (
+        "domain", "source", "capability", "acquisition_technique",
+        "authorized_files_or_modules", "explicit_out_of_scope", "validation_profile",
+    ))
+    assert phase["boundaries"] == {"production_approved": False, "production_store": False, "scheduler_action": None}
+
+
+print("P59 multi-source round-robin deterministic tests passed (RR1-RR58).")
