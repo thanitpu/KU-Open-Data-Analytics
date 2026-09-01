@@ -341,7 +341,7 @@ if repository_bundle["queue_state"]["next_action"]["actor"] == "assistant":
 assert set(repository_bundle["human_decision_records"]) == {
     "KU2D-H-000001", "KU2D-H-000002", "KU2D-H-000004", "KU2D-H-000005",
     "KU2D-H-000006", "KU2D-H-000007", "KU2D-H-000008", "KU2D-H-000009",
-    "KU2D-H-000010", "KU2D-H-000011", "KU2D-H-000012", "KU2D-H-000013",
+    "KU2D-H-000010", "KU2D-H-000011", "KU2D-H-000012", "KU2D-H-000013", "KU2D-H-000014",
 }
 assert repository_bundle["human_decision_records"]["KU2D-H-000001"]["decision"] == "confirmed"
 assert repository_bundle["human_decision_records"]["KU2D-H-000002"]["decision"] == "confirmed"
@@ -355,6 +355,7 @@ assert repository_bundle["human_decision_records"]["KU2D-H-000010"]["decision"] 
 assert repository_bundle["human_decision_records"]["KU2D-H-000011"]["decision"] == "confirmed"
 assert repository_bundle["human_decision_records"]["KU2D-H-000012"]["decision"] == "confirmed"
 assert repository_bundle["human_decision_records"]["KU2D-H-000013"]["decision"] == "confirmed"
+assert repository_bundle["human_decision_records"]["KU2D-H-000014"]["decision"] == "confirmed"
 assert validate_authoritative_branch(
     repository_prompts[-1], repository_queue, repository_queue["authoritative_branch"],
     repository_handoffs[-1] if repository_handoffs else None,
