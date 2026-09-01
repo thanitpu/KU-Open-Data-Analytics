@@ -1,10 +1,10 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T09:25:33.839+07:00",
+  "updated_at": "2026-09-01T09:29:30.000+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
-  "latest_prompt": "KU2D-P-000042",
+  "latest_prompt": "KU2D-P-000043",
   "latest_result": "KU2D-R-000042",
-  "latest_review": "KU2D-V-000041",
+  "latest_review": "KU2D-V-000042",
   "latest_human_decision": "KU2D-H-000015",
   "prompt_states": {
     "KU2D-P-000001": "completed",
@@ -47,7 +47,8 @@
     "KU2D-P-000039": "reviewed",
     "KU2D-P-000040": "completed",
     "KU2D-P-000041": "completed",
-    "KU2D-P-000042": "result_submitted"
+    "KU2D-P-000042": "completed",
+    "KU2D-P-000043": "ready_for_codex"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -77,12 +78,13 @@
     "KU2D-P-000036",
     "KU2D-P-000037",
     "KU2D-P-000040",
-    "KU2D-P-000041"
+    "KU2D-P-000041",
+    "KU2D-P-000042"
   ],
   "next_action": {
-    "actor": "assistant",
-    "prompt_id": "KU2D-P-000042",
-    "result_id": "KU2D-R-000042",
+    "actor": "codex",
+    "prompt_id": "KU2D-P-000043",
+    "result_id": null,
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
@@ -101,5 +103,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "KU2D-R-000042 records the completed one-file launcher promotion preparation. Ready PR #65 targets main at exact head ae7a0473d633fbbe847a66326d067bc253450fe6 and contains only .github/workflows/youtube-qdiving-identity-discovery.yml. It is byte-equivalent to the reviewed integration launcher after exactly three H15-authorized anchor replacements; YAML, static contract, diff and all applicable exact-head checks pass. PR #65 remains open and unmerged. No workflow dispatch, secret read, YouTube request/quota, Human Review, production write, scheduling or authority promotion occurred. Assistant review is next."
+  "notes": "KU2D-V-000042 technically accepts Ready one-file PR #65 at exact head ae7a0473d633fbbe847a66326d067bc253450fe6 under existing KU2D-H-000015 authority. KU2D-P-000043 directs Codex to merge PR #65 with an expected-head guard, verify the registered main launcher, dispatch exactly once with the H15/453d75ff/8295ecb anchors, monitor only that run and return sanitized evidence. Automatic retry or a second dispatch is prohibited. Comments, captions, transcripts, OAuth, scraping, candidate approval, Human Review completion, production write, scheduling, scope broadening and authority promotion remain prohibited."
 }
