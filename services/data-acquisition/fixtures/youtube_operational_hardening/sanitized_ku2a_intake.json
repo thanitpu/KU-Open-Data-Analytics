@@ -1,0 +1,18 @@
+{
+  "schema":"ku2d.youtube-batch-dataset-intake.v1",
+  "dataset_id":"KU2D-YT-SANITIZED-INTAKE-000001",
+  "storage_neutral":true,
+  "sanitized":true,
+  "entities":{
+    "channels":[{"channel_id":"SIM-CHAN-01","title_snapshot":"Sanitized Dive Channel","acquired_at":"2026-09-01T00:00:00Z","provenance":"offline_fixture"}],
+    "videos":[
+      {"video_id":"SIM-VID-001","channel_id":"SIM-CHAN-01","title_snapshot":"Sanitized Thai equipment guide","published_at":"2026-08-01T00:00:00Z","acquired_at":"2026-09-01T00:00:00Z","module_status":{"metadata":"complete","comments":"partial","transcript":"disabled"},"statistics_are_snapshot":true,"provenance":"offline_fixture"},
+      {"video_id":"SIM-VID-002","channel_id":"SIM-CHAN-01","title_snapshot":"Sanitized English dive guide","published_at":"2026-08-02T00:00:00Z","acquired_at":"2026-09-01T00:00:00Z","module_status":{"metadata":"complete","comments":"no_comments","transcript":"disabled"},"statistics_are_snapshot":true,"provenance":"offline_fixture"}
+    ],
+    "comments":[{"comment_id":"SIM-COMMENT-001","video_id":"SIM-VID-001","parent_comment_id":null,"published_at":"2026-08-03T00:00:00Z","updated_at":"2026-08-03T00:00:00Z","acquired_at":"2026-09-01T00:00:00Z","provenance":"offline_fixture"}],
+    "comment_replies":[{"comment_id":"SIM-REPLY-001","video_id":"SIM-VID-001","parent_comment_id":"SIM-COMMENT-001","published_at":"2026-08-04T00:00:00Z","updated_at":"2026-08-05T00:00:00Z","acquired_at":"2026-09-01T00:00:00Z","provenance":"offline_fixture"}]
+  },
+  "coverage":{"videos_expected":2,"videos_resolved":2,"comment_threads_page_cap":2,"truncated":true,"representative":false},
+  "audit":{"passed":true,"fixture_only":true,"analytics_performed":false},
+  "production_approved":false,"scheduler_action":null
+}

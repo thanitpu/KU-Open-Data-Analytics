@@ -1,0 +1,44 @@
+{
+  "schema":"ku2d.youtube-operational-hardening.v1",
+  "prepared_at":"2026-09-01T01:00:00+07:00",
+  "documentation_provenance":[
+    {"title":"Videos: list","url":"https://developers.google.com/youtube/v3/docs/videos/list","accessed_at":"2026-09-01","facts":{"documented_unit_cost":1,"exact_id_filter_supported":true}},
+    {"title":"CommentThreads: list","url":"https://developers.google.com/youtube/v3/docs/commentThreads/list","accessed_at":"2026-09-01","facts":{"documented_unit_cost":1,"max_results_range":"1-100","page_token_supported":true,"comments_disabled_error_documented":true}},
+    {"title":"Comments: list","url":"https://developers.google.com/youtube/v3/docs/comments/list","accessed_at":"2026-09-01","facts":{"documented_unit_cost":1,"parent_id_supported":true,"max_results_range":"1-100","page_token_supported":true}},
+    {"title":"Quota Calculator","url":"https://developers.google.com/youtube/v3/determine_quota_cost","accessed_at":"2026-09-01","facts":{"every_request_costs_at_least_one":true,"pagination_costs_per_request":true}},
+    {"title":"YouTube Data API reference","url":"https://developers.google.com/youtube/v3/docs","accessed_at":"2026-09-01","facts":{"embedded_comment_replies_may_be_incomplete":true}},
+    {"title":"Captions: list and download","url":"https://developers.google.com/youtube/v3/docs/captions","accessed_at":"2026-09-01","facts":{"oauth_owner_authority_required":true,"list_unit_cost":50,"download_unit_cost":200}}
+  ],
+  "endpoint_contract":{"exact_input_only":true,"metadata_batch_size_cap":{"value":50,"origin":"merged_policy_contract"},"allowed_endpoints":["videos.list","commentThreads.list","comments.list"],"search_fallback":false,"caption_execution":false},
+  "comments_contract":{"comment_threads_page_cap":2,"comments_list_only_for_incomplete_embedded_replies":true,"comments_disabled_distinct_from_no_comments":true,"deletion_or_moderation_incompleteness_disclosed":true,"ordering_is_context_not_representativeness":true,"raw_page_tokens_persisted":false},
+  "quota_checkpoint_idempotency":{"official_unit_costs":{"videos.list":1,"commentThreads.list":1,"comments.list":1},"workload_values":"proposal_not_observed","evidence_before_next_request":true,"immutable_intent":true,"serialized_concurrency":1,"durable_request_keys":true,"resume_skips_durable_pages":true},
+  "drift_taxonomy":[
+    {"drift":"video_unavailable_or_deleted","response":"re_review","authority":"existing_review_context"},
+    {"drift":"privacy_or_status_change","response":"re_review","authority":"human_review"},
+    {"drift":"comments_disabled_change","response":"bounded_re_read","authority":"manifest"},
+    {"drift":"comment_pagination_behavior_change","response":"bounded_re_read","authority":"manifest"},
+    {"drift":"reply_completeness_change","response":"bounded_re_read","authority":"manifest"},
+    {"drift":"metadata_field_disappearance","response":"re_review","authority":"human_review_if_required_field"},
+    {"drift":"channel_relationship_drift","response":"stop_and_re_review","authority":"human_review"},
+    {"drift":"quota_cost_or_documentation_change","response":"stop_and_update_contract","authority":"new_review"},
+    {"drift":"endpoint_or_response_schema_change","response":"stop_and_update_contract","authority":"new_review"},
+    {"drift":"language_signal_change","response":"re_review","authority":"human_review"},
+    {"drift":"transcript_caption_authorization_boundary_change","response":"stop","authority":"new_explicit_human_authority"},
+    {"drift":"evidence_or_provenance_writer_failure","response":"technical_failure_exit_1","authority":"none"}
+  ],
+  "deep_audit_gates":["identity_provenance_integrity","available_video_metadata_complete","snapshot_semantics","comment_relationship_integrity","pagination_coverage_disclosed","quota_ledger_reconciled","checkpoint_deterministic","unsupported_language_transcript_text_zero","unauthorized_caption_oauth_zero","representativeness_claims_zero","production_approved_false"],
+  "operational_tiers":["batch_ready_reviewed_identity","bounded_only","identity_review_required","owner_authorized_caption_required","unavailable_or_withheld","drift_review_required"],
+  "current_tier":"identity_review_required",
+  "human_gate_register":[
+    {"gate_id":"YT-GATE-01","decision":"establish exactly two durable canonical Q-Diving video identities","evidence_needed":"two non-sanitized explicit Human Review inclusion records"},
+    {"gate_id":"YT-GATE-02","decision":"expand beyond two videos","evidence_needed":"new bounded Human Decision and reviewed registry entries"},
+    {"gate_id":"YT-GATE-03","decision":"allow live search or discovery","evidence_needed":"new explicit Human Decision"},
+    {"gate_id":"YT-GATE-04","decision":"allow captions.list/download or OAuth owner flow","evidence_needed":"owner authorization and new explicit Human Decision"},
+    {"gate_id":"YT-GATE-05","decision":"approve a public transcript surface","evidence_needed":"surface review, terms/provenance/privacy evidence and Human Decision"},
+    {"gate_id":"YT-GATE-06","decision":"enable production storage or scheduler","evidence_needed":"production Human Approve"},
+    {"gate_id":"YT-GATE-07","decision":"promote knowledge or source authority","evidence_needed":"separate governance review and Human Decision"},
+    {"gate_id":"YT-GATE-08","decision":"authorize broader batch execution","evidence_needed":"reviewed identities, exact manifest, current quota evidence, successful deterministic audit and Human Decision"}
+  ],
+  "readiness":{"identity_governance":"implemented_not_live_validated","metadata":"implemented_not_live_validated","comments_replies":"implemented_not_live_validated","quota_checkpoint_idempotency":"implemented_not_live_validated","deep_audit":"implemented_not_live_validated","ku2a_intake":"implemented_sanitized_fixture_only","real_qdiving_rerun":"blocked_on_human_reviewed_identities"},
+  "live_source_request_count":0,"production_approved":false,"scheduler_action":null
+}

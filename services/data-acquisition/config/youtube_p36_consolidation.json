@@ -1,0 +1,15 @@
+{
+  "schema":"ku2d.youtube-p36-consolidation.v1",
+  "source_evidence":"config/youtube_qdiving_live_pilot_v1.json",
+  "classification":"evidence_withheld",
+  "exit_classification":2,
+  "technical_completion":true,
+  "required_reviewed_identity_count":2,
+  "resolved_reviewed_identity_count":0,
+  "reason":"No durable non-sanitized explicitly Human-Reviewed canonical YouTube video identities were available; P36 therefore stopped before credential or transport evaluation.",
+  "failure_boundaries":{"identity_evidence_withheld":true,"credential_failure":false,"transport_failure":false,"youtube_access_failure":false,"comment_failure":false},
+  "observed_counts":{"requests":0,"estimated_quota_units":0,"pages":0,"metadata_records":0,"comments":0,"replies":0,"captions":0,"transcripts":0,"oauth_flows":0},
+  "implemented_not_live_validated":true,
+  "production_approved":false,
+  "scheduler_action":null
+}

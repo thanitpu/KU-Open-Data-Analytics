@@ -1,0 +1,21 @@
+{
+  "schema":"ku2d.youtube-batch-scenarios.v1",
+  "sanitized":true,
+  "live_source_requests":0,
+  "scenarios":[
+    {"scenario_id":"all-success","flags":[],"expected_exit":0},
+    {"scenario_id":"one-video-unavailable","flags":["one_video_unavailable"],"expected_exit":2},
+    {"scenario_id":"comments-disabled","flags":["comments_disabled"],"expected_exit":0},
+    {"scenario_id":"no-comments","flags":["no_comments"],"expected_exit":0},
+    {"scenario_id":"partial-replies-requiring-comments-list","flags":["partial_replies_requiring_comments_list"],"expected_exit":0},
+    {"scenario_id":"page-limit-truncation","flags":["page_limit_truncation"],"expected_exit":0},
+    {"scenario_id":"duplicate-pages-comments","flags":["duplicate_pages_comments"],"expected_exit":0},
+    {"scenario_id":"edited-comment","flags":["edited_comment"],"expected_exit":0},
+    {"scenario_id":"quota-boundary-before-next-page","flags":["quota_boundary_before_next_page"],"expected_exit":0},
+    {"scenario_id":"checkpoint-resume","flags":["checkpoint_resume"],"expected_exit":0},
+    {"scenario_id":"corrupt-checkpoint","flags":["corrupt_checkpoint"],"expected_exit":1},
+    {"scenario_id":"relationship-mismatch","flags":["relationship_mismatch"],"expected_exit":1},
+    {"scenario_id":"identity-revoked-after-manifest-creation","flags":["identity_revoked_after_manifest_creation"],"expected_exit":2},
+    {"scenario_id":"mixed-optional-module-outcomes","flags":["mixed_optional_module_outcomes"],"expected_exit":0}
+  ]
+}
