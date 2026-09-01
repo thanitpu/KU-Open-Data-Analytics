@@ -1,10 +1,10 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T08:44:55.001+07:00",
+  "updated_at": "2026-09-01T08:53:49.418+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
   "latest_prompt": "KU2D-P-000040",
   "latest_result": "KU2D-R-000040",
-  "latest_review": null,
+  "latest_review": "KU2D-V-000040",
   "latest_human_decision": null,
   "prompt_states": {
     "KU2D-P-000001": "completed",
@@ -45,7 +45,7 @@
     "KU2D-P-000037": "completed",
     "KU2D-P-000038": "reviewed",
     "KU2D-P-000039": "reviewed",
-    "KU2D-P-000040": "result_submitted"
+    "KU2D-P-000040": "human_decision_required"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -76,10 +76,10 @@
     "KU2D-P-000037"
   ],
   "next_action": {
-    "actor": "assistant",
+    "actor": "human",
     "prompt_id": "KU2D-P-000040",
     "result_id": "KU2D-R-000040",
-    "review_id": null,
+    "review_id": "KU2D-V-000040",
     "human_decision_id": null,
     "replay_requested": false
   },
@@ -97,5 +97,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "KU2D-R-000040 completes the bounded P40 correction without replaying P39. The exact Human Decision JSON is copied from its immutable record revision to bounded runner-temporary storage without executing project content, survives the second checkout, and is validated and consumed only by the immutable reviewed execution code. All negative cases fail before provider preflight; all 55 deterministic scripts and exact-head CI pass. No workflow was dispatched, secret read, YouTube request or quota use occurred. PR #64 is Ready, open and unmerged. Assistant review is next."
+  "notes": "KU2D-V-000040 accepts R40 and the corrected two-checkout launcher at implementation commit 651969cd67b9f7e88cce1b6464136fdb24df5f29. Current PR head 98b68569b413ed9e79ed29a0e137bdda2b73972b has exact-head CI green; PR #64 remains Ready, open, mergeable and unmerged. The next gate is a Human Decision on merging PR #64 into integration/data-acquisition-platform only. No main promotion, trust-anchor replacement, workflow dispatch, secret access, YouTube request/quota, Human Review, candidate approval, production write, scheduling or authority promotion is authorized."
 }
