@@ -1,0 +1,548 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000055",
+  "created_at": "2026-09-01T19:36:43.000+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+  "objective": "Implement backward-compatible versioned Adapter Registry and immutable Run Manifest resolution, preserve byte-identical v1 history and replay, and create an explicit non-rewriting migration path without calling any provider.",
+  "queue_purpose_summary": "แยก registry เป็น immutable versioned snapshots และให้ manifest รุ่นใหม่ supersede รุ่นเดิมโดยไม่แก้ประวัติ เพื่อเพิ่ม source ใหม่ได้โดยไม่ทำลาย YouTube replay.",
+  "phase_package_scope_declaration": {
+    "declaration_id": "KU2D-SCOPE-000002",
+    "package_id": "KU2D-P-000055",
+    "package_name": "Versioned Adapter Registry and Historical Manifest Migration",
+    "domain": {
+      "id": "acquisition.foundation",
+      "label": "KU2D Data Acquisition Foundation"
+    },
+    "source": {
+      "id": "source_neutral_registry",
+      "label": "Source-neutral; YouTube v1 is the historical compatibility reference"
+    },
+    "capability": [
+      "versioned_adapter_registry_snapshots",
+      "registry_catalog_resolution",
+      "immutable_manifest_backward_replay",
+      "explicit_manifest_supersession",
+      "exact_implementation_composition",
+      "integrity_provenance"
+    ],
+    "acquisition_technique": {
+      "status": "selected",
+      "selected_technique": "deterministic additive repository migration plus fixture replay",
+      "provider_requests": 0
+    },
+    "authorized_files_or_modules": [
+      "services/data-acquisition/acquisition/adapter_registry.py",
+      "services/data-acquisition/acquisition/run_manifest.py",
+      "services/data-acquisition/acquisition/source_runner.py (versioned registry/manifest resolution only)",
+      "services/data-acquisition/config/adapter_registry_v1.json (read-only invariant)",
+      "services/data-acquisition/config/adapter_registry_v2.json",
+      "services/data-acquisition/config/adapter_registry_catalog_v1.json",
+      "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json (read-only invariant)",
+      "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+      "services/data-acquisition/knowledge/v1/adapter-registry.schema.json (read-only invariant)",
+      "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json (read-only invariant)",
+      "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+      "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+      "services/data-acquisition/knowledge/v1/adapter-registry-catalog.schema.json",
+      "services/data-acquisition/knowledge/v1/registry-migrations/**",
+      "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000005.json",
+      "services/data-acquisition/docs/ADAPTER_REGISTRY_VERSIONING_AND_MANIFEST_MIGRATION.md",
+      "services/data-acquisition/tools/SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py",
+      "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test aggregation only)"
+    ],
+    "explicit_out_of_scope": [
+      ".github/workflows/data-acquisition-platform-ci.yml",
+      "services/data-acquisition/acquisition/connector_kit.py",
+      "services/data-acquisition/acquisition/acquisition_quality_gate.py",
+      "all source-specific connectors and manifests",
+      "mutation of adapter_registry_v1.json, youtube_qdiving_fixture_v1.json or either v1 schema",
+      "TikTok or any provider request",
+      "login, cookies, credentials or access-policy bypass",
+      "semantic quality, production write, scheduling or main modification"
+    ],
+    "validation_profile": [
+      "seven-field declaration and contract validation",
+      "v1 byte-invariant and historical replay",
+      "v2 registry/catalog/manifest unit and negative tests",
+      "explicit supersession lineage tests",
+      "source-neutral runner integration",
+      "YouTube v1/v2 fixture parity 10/10 with zero provider/quota",
+      "synthetic additive multi-registration proof",
+      "exact-head full deterministic corpus",
+      "PR and Data Acquisition CI",
+      "squash merge to integration and post-merge verification"
+    ]
+  },
+  "phase_declaration_requirements": {
+    "required_fields": [
+      "domain",
+      "source",
+      "capability",
+      "acquisition_technique",
+      "authorized_files_or_modules",
+      "explicit_out_of_scope",
+      "validation_profile"
+    ],
+    "phases": [
+      {
+        "phase_id": "P55-01",
+        "phase": "contract_and_versioning_definition",
+        "declaration": {
+          "domain": {
+            "id": "acquisition.foundation",
+            "label": "KU2D Data Acquisition Foundation"
+          },
+          "source": {
+            "id": "source_neutral_registry",
+            "label": "Source-neutral; YouTube v1 is the historical compatibility reference"
+          },
+          "capability": [
+            "versioned_adapter_registry_snapshots",
+            "registry_catalog_resolution"
+          ],
+          "acquisition_technique": {
+            "status": "selected",
+            "selected_technique": "deterministic additive repository migration plus fixture replay",
+            "provider_requests": 0
+          },
+          "authorized_files_or_modules": [
+            "services/data-acquisition/acquisition/adapter_registry.py",
+            "services/data-acquisition/acquisition/run_manifest.py",
+            "services/data-acquisition/acquisition/source_runner.py (versioned registry/manifest resolution only)",
+            "services/data-acquisition/config/adapter_registry_v1.json (read-only invariant)",
+            "services/data-acquisition/config/adapter_registry_v2.json",
+            "services/data-acquisition/config/adapter_registry_catalog_v1.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json (read-only invariant)",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry.schema.json (read-only invariant)",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json (read-only invariant)",
+            "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry-catalog.schema.json",
+            "services/data-acquisition/knowledge/v1/registry-migrations/**",
+            "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000005.json",
+            "services/data-acquisition/docs/ADAPTER_REGISTRY_VERSIONING_AND_MANIFEST_MIGRATION.md",
+            "services/data-acquisition/tools/SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py",
+            "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test aggregation only)"
+          ],
+          "explicit_out_of_scope": [
+            ".github/workflows/data-acquisition-platform-ci.yml",
+            "services/data-acquisition/acquisition/connector_kit.py",
+            "services/data-acquisition/acquisition/acquisition_quality_gate.py",
+            "all source-specific connectors and manifests",
+            "mutation of adapter_registry_v1.json, youtube_qdiving_fixture_v1.json or either v1 schema",
+            "TikTok or any provider request",
+            "login, cookies, credentials or access-policy bypass",
+            "semantic quality, production write, scheduling or main modification"
+          ],
+          "validation_profile": [
+            "seven-field declaration and contract validation",
+            "v1 byte-invariant and historical replay",
+            "v2 registry/catalog/manifest unit and negative tests",
+            "explicit supersession lineage tests",
+            "source-neutral runner integration",
+            "YouTube v1/v2 fixture parity 10/10 with zero provider/quota",
+            "synthetic additive multi-registration proof",
+            "exact-head full deterministic corpus",
+            "PR and Data Acquisition CI",
+            "squash merge to integration and post-merge verification"
+          ]
+        },
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow but never omit a field, widen authority, mutate v1 invariants or access a provider.",
+        "completion_evidence": "Persist validated declaration and declared-versus-actual scope."
+      },
+      {
+        "phase_id": "P55-02",
+        "phase": "backward_compatibility_and_historical_replay",
+        "declaration": {
+          "domain": {
+            "id": "acquisition.foundation",
+            "label": "KU2D Data Acquisition Foundation"
+          },
+          "source": {
+            "id": "source_neutral_registry",
+            "label": "Source-neutral; YouTube v1 is the historical compatibility reference"
+          },
+          "capability": [
+            "immutable_manifest_backward_replay",
+            "integrity_provenance"
+          ],
+          "acquisition_technique": {
+            "status": "selected",
+            "selected_technique": "deterministic additive repository migration plus fixture replay",
+            "provider_requests": 0
+          },
+          "authorized_files_or_modules": [
+            "services/data-acquisition/acquisition/adapter_registry.py",
+            "services/data-acquisition/acquisition/run_manifest.py",
+            "services/data-acquisition/acquisition/source_runner.py (versioned registry/manifest resolution only)",
+            "services/data-acquisition/config/adapter_registry_v1.json (read-only invariant)",
+            "services/data-acquisition/config/adapter_registry_v2.json",
+            "services/data-acquisition/config/adapter_registry_catalog_v1.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json (read-only invariant)",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry.schema.json (read-only invariant)",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json (read-only invariant)",
+            "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry-catalog.schema.json",
+            "services/data-acquisition/knowledge/v1/registry-migrations/**",
+            "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000005.json",
+            "services/data-acquisition/docs/ADAPTER_REGISTRY_VERSIONING_AND_MANIFEST_MIGRATION.md",
+            "services/data-acquisition/tools/SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py",
+            "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test aggregation only)"
+          ],
+          "explicit_out_of_scope": [
+            ".github/workflows/data-acquisition-platform-ci.yml",
+            "services/data-acquisition/acquisition/connector_kit.py",
+            "services/data-acquisition/acquisition/acquisition_quality_gate.py",
+            "all source-specific connectors and manifests",
+            "mutation of adapter_registry_v1.json, youtube_qdiving_fixture_v1.json or either v1 schema",
+            "TikTok or any provider request",
+            "login, cookies, credentials or access-policy bypass",
+            "semantic quality, production write, scheduling or main modification"
+          ],
+          "validation_profile": [
+            "seven-field declaration and contract validation",
+            "v1 byte-invariant and historical replay",
+            "v2 registry/catalog/manifest unit and negative tests",
+            "explicit supersession lineage tests",
+            "source-neutral runner integration",
+            "YouTube v1/v2 fixture parity 10/10 with zero provider/quota",
+            "synthetic additive multi-registration proof",
+            "exact-head full deterministic corpus",
+            "PR and Data Acquisition CI",
+            "squash merge to integration and post-merge verification"
+          ]
+        },
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow but never omit a field, widen authority, mutate v1 invariants or access a provider.",
+        "completion_evidence": "Persist validated declaration and declared-versus-actual scope."
+      },
+      {
+        "phase_id": "P55-03",
+        "phase": "non_rewriting_manifest_migration",
+        "declaration": {
+          "domain": {
+            "id": "acquisition.foundation",
+            "label": "KU2D Data Acquisition Foundation"
+          },
+          "source": {
+            "id": "source_neutral_registry",
+            "label": "Source-neutral; YouTube v1 is the historical compatibility reference"
+          },
+          "capability": [
+            "explicit_manifest_supersession",
+            "exact_implementation_composition"
+          ],
+          "acquisition_technique": {
+            "status": "selected",
+            "selected_technique": "deterministic additive repository migration plus fixture replay",
+            "provider_requests": 0
+          },
+          "authorized_files_or_modules": [
+            "services/data-acquisition/acquisition/adapter_registry.py",
+            "services/data-acquisition/acquisition/run_manifest.py",
+            "services/data-acquisition/acquisition/source_runner.py (versioned registry/manifest resolution only)",
+            "services/data-acquisition/config/adapter_registry_v1.json (read-only invariant)",
+            "services/data-acquisition/config/adapter_registry_v2.json",
+            "services/data-acquisition/config/adapter_registry_catalog_v1.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json (read-only invariant)",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry.schema.json (read-only invariant)",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json (read-only invariant)",
+            "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry-catalog.schema.json",
+            "services/data-acquisition/knowledge/v1/registry-migrations/**",
+            "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000005.json",
+            "services/data-acquisition/docs/ADAPTER_REGISTRY_VERSIONING_AND_MANIFEST_MIGRATION.md",
+            "services/data-acquisition/tools/SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py",
+            "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test aggregation only)"
+          ],
+          "explicit_out_of_scope": [
+            ".github/workflows/data-acquisition-platform-ci.yml",
+            "services/data-acquisition/acquisition/connector_kit.py",
+            "services/data-acquisition/acquisition/acquisition_quality_gate.py",
+            "all source-specific connectors and manifests",
+            "mutation of adapter_registry_v1.json, youtube_qdiving_fixture_v1.json or either v1 schema",
+            "TikTok or any provider request",
+            "login, cookies, credentials or access-policy bypass",
+            "semantic quality, production write, scheduling or main modification"
+          ],
+          "validation_profile": [
+            "seven-field declaration and contract validation",
+            "v1 byte-invariant and historical replay",
+            "v2 registry/catalog/manifest unit and negative tests",
+            "explicit supersession lineage tests",
+            "source-neutral runner integration",
+            "YouTube v1/v2 fixture parity 10/10 with zero provider/quota",
+            "synthetic additive multi-registration proof",
+            "exact-head full deterministic corpus",
+            "PR and Data Acquisition CI",
+            "squash merge to integration and post-merge verification"
+          ]
+        },
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow but never omit a field, widen authority, mutate v1 invariants or access a provider.",
+        "completion_evidence": "Persist validated declaration and declared-versus-actual scope."
+      },
+      {
+        "phase_id": "P55-04",
+        "phase": "integration_validation_and_closure",
+        "declaration": {
+          "domain": {
+            "id": "acquisition.foundation",
+            "label": "KU2D Data Acquisition Foundation"
+          },
+          "source": {
+            "id": "source_neutral_registry",
+            "label": "Source-neutral; YouTube v1 is the historical compatibility reference"
+          },
+          "capability": [
+            "versioned_adapter_registry_snapshots",
+            "registry_catalog_resolution",
+            "immutable_manifest_backward_replay",
+            "explicit_manifest_supersession",
+            "exact_implementation_composition",
+            "integrity_provenance"
+          ],
+          "acquisition_technique": {
+            "status": "selected",
+            "selected_technique": "deterministic additive repository migration plus fixture replay",
+            "provider_requests": 0
+          },
+          "authorized_files_or_modules": [
+            "services/data-acquisition/acquisition/adapter_registry.py",
+            "services/data-acquisition/acquisition/run_manifest.py",
+            "services/data-acquisition/acquisition/source_runner.py (versioned registry/manifest resolution only)",
+            "services/data-acquisition/config/adapter_registry_v1.json (read-only invariant)",
+            "services/data-acquisition/config/adapter_registry_v2.json",
+            "services/data-acquisition/config/adapter_registry_catalog_v1.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json (read-only invariant)",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry.schema.json (read-only invariant)",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json (read-only invariant)",
+            "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry-catalog.schema.json",
+            "services/data-acquisition/knowledge/v1/registry-migrations/**",
+            "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000005.json",
+            "services/data-acquisition/docs/ADAPTER_REGISTRY_VERSIONING_AND_MANIFEST_MIGRATION.md",
+            "services/data-acquisition/tools/SELF_TEST_VERSIONED_ADAPTER_REGISTRY.py",
+            "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test aggregation only)"
+          ],
+          "explicit_out_of_scope": [
+            ".github/workflows/data-acquisition-platform-ci.yml",
+            "services/data-acquisition/acquisition/connector_kit.py",
+            "services/data-acquisition/acquisition/acquisition_quality_gate.py",
+            "all source-specific connectors and manifests",
+            "mutation of adapter_registry_v1.json, youtube_qdiving_fixture_v1.json or either v1 schema",
+            "TikTok or any provider request",
+            "login, cookies, credentials or access-policy bypass",
+            "semantic quality, production write, scheduling or main modification"
+          ],
+          "validation_profile": [
+            "seven-field declaration and contract validation",
+            "v1 byte-invariant and historical replay",
+            "v2 registry/catalog/manifest unit and negative tests",
+            "explicit supersession lineage tests",
+            "source-neutral runner integration",
+            "YouTube v1/v2 fixture parity 10/10 with zero provider/quota",
+            "synthetic additive multi-registration proof",
+            "exact-head full deterministic corpus",
+            "PR and Data Acquisition CI",
+            "squash merge to integration and post-merge verification"
+          ]
+        },
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow but never omit a field, widen authority, mutate v1 invariants or access a provider.",
+        "completion_evidence": "Persist validated declaration and declared-versus-actual scope."
+      }
+    ],
+    "rules": [
+      "All seven fields are mandatory before each phase.",
+      "Authorized paths are a strict allowlist.",
+      "Existing v1 registry, YouTube V001 manifest and both v1 schemas are byte-identical read-only invariants.",
+      "Executed manifests are never edited, backfilled or silently retargeted.",
+      "Migration creates V002 with explicit supersedes lineage and pins a versioned registry path/fingerprint.",
+      "Historical replay resolves the manifest-pinned snapshot; default-to-latest is forbidden.",
+      "Implementation composition remains exact; dynamic imports and integrity-gate weakening are forbidden.",
+      "Authority drift stops for a new Human Decision."
+    ],
+    "durable_deliverable": {
+      "declaration": "KU2D-SCOPE-000002",
+      "future_rule": "Every registry evolution creates an immutable snapshot; every executed manifest pins one snapshot.",
+      "validator_rejections": [
+        "unknown registry version",
+        "unlisted snapshot",
+        "path/fingerprint drift",
+        "supersession cycle",
+        "v1 mutation",
+        "implementation-catalog mismatch",
+        "latest-registry fallback",
+        "provider access"
+      ]
+    }
+  },
+  "migration_policy": {
+    "immutable_v1_artifacts": [
+      "services/data-acquisition/config/adapter_registry_v1.json",
+      "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json",
+      "services/data-acquisition/knowledge/v1/adapter-registry.schema.json",
+      "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json"
+    ],
+    "required_behavior": [
+      "V1 replays with 10/10 YouTube parity using its pinned V1 snapshot.",
+      "V002 has a distinct identity, supersedes KU2D-RM-000001-V001 and pins V2.",
+      "V2 replays with 10/10 parity and zero provider/quota.",
+      "Future snapshots never alter earlier fingerprints.",
+      "A synthetic second registration proves additive composition without adding a source adapter.",
+      "Missing, substituted or mutated snapshots fail closed.",
+      "No default-to-latest behavior."
+    ]
+  },
+  "protected_runtime_authority": {
+    "allowed_to_change": [
+      "services/data-acquisition/acquisition/adapter_registry.py",
+      "services/data-acquisition/acquisition/run_manifest.py",
+      "services/data-acquisition/acquisition/source_runner.py"
+    ],
+    "limits": [
+      "Only version negotiation, pinned resolution, lineage and backward compatibility.",
+      "Connector lifecycle, retry, evidence, quality ownership and provider behavior remain unchanged.",
+      "No dynamic import, implicit discovery or integrity relaxation."
+    ]
+  },
+  "testing_policy": {
+    "level_1": [
+      "v1/v2 registry validation",
+      "catalog/pinned-resolution tests",
+      "manifest lineage tests",
+      "negative mutation/fallback/cycle/composition tests"
+    ],
+    "level_2": [
+      "v1 and v2 YouTube replay 10/10",
+      "output parity",
+      "synthetic additive integration",
+      "zero provider/quota evidence",
+      "v1 byte invariants",
+      "scope audit"
+    ],
+    "level_3": [
+      "full deterministic corpus on exact PR head"
+    ],
+    "rerun_if_final_code_schema_manifest_registry_test_policy_journal_or_declaration_changes": true,
+    "reuse_only_if_merge_tree_equals_tested_tree": true
+  },
+  "technical_correction_policy": {
+    "journal_id": "KU2D-CJ-000005",
+    "next_event_id": "KU2D-TC-000019",
+    "multiple_corrections_per_queue": true,
+    "one_pr": true,
+    "pr_or_queue_per_correction": false,
+    "finalize_all_commit_links_before_pr_or_closure": true
+  },
+  "implementation_and_merge": {
+    "implementation_branch": "codex/ku2d-versioned-adapter-registry-migration-v1",
+    "target_branch": "integration/data-acquisition-platform",
+    "integration_baseline": "ecd8614c6be78b662d637b1f2caa954fdb1b7dca",
+    "one_coherent_pr": true,
+    "exact_head_required": true,
+    "data_acquisition_ci_required": true,
+    "technically_green_squash_merge_authorized": true,
+    "post_merge_verification_required": true,
+    "main_modification_authorized": false
+  },
+  "instructions": [
+    "Validate KU2D-SCOPE-000002 and each phase declaration before development.",
+    "Preserve listed v1 artifacts byte-identically and prove historical replay.",
+    "Prefer additive v2 schemas, snapshots and V002; never rewrite V001.",
+    "Keep exact implementation composition and fail-closed integrity checks.",
+    "Use fixtures only; provider and quota remain zero.",
+    "Record corrections in KU2D-CJ-000005 and use one PR.",
+    "Run all three validation levels and require Data Acquisition CI before merge.",
+    "Submit KU2D-R-000056 with declarations, migration map, fingerprints, parity, CJ5, exact head/tree, PR/CI/merge and zero-provider evidence."
+  ],
+  "stop_conditions": [
+    "any v1 invariant changes",
+    "history would be rewritten or retargeted",
+    "dynamic import/default-latest/gate weakening required",
+    "Connector Kit, quality gate, CI workflow or source connector must change",
+    "provider access, credentials, quota, production write or scheduling required",
+    "authority must widen",
+    "v1 replay or 10/10 parity fails"
+  ],
+  "definition_of_done": [
+    "all entered phases have valid seven-field declarations",
+    "four v1 artifacts remain byte-identical",
+    "v1 replay 10/10 and zero provider/quota",
+    "v2 registry/catalog resolution implemented",
+    "V002 explicitly supersedes V001",
+    "v2 replay 10/10 and zero provider/quota",
+    "synthetic additive composition passes",
+    "CJ5 closed",
+    "exact-head corpus and Data Acquisition CI pass",
+    "one PR merges to integration and final tree is verified",
+    "KU2D-R-000056 submitted"
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000056",
+    "next_actor": "assistant",
+    "closure_target": "versioned_adapter_registry_and_non_rewriting_manifest_migration",
+    "provider_request_limit": 0
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_prompt": "KU2D-P-000054",
+    "depends_on_result": "KU2D-R-000055",
+    "depends_on_review": "KU2D-V-000055",
+    "depends_on_human_decision": "KU2D-H-000024",
+    "integration_baseline": "ecd8614c6be78b662d637b1f2caa954fdb1b7dca"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
