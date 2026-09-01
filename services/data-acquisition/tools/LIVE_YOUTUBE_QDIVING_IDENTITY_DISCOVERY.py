@@ -18,7 +18,7 @@ sys.path.insert(0, str(ROOT / "acquisition"))
 
 from providers.youtube_data_api import YouTubeDataAPI, YouTubeProviderError, api_status, load_policy
 from youtube_identity_discovery_review import (
-    SEARCH_UNIT_COST, VIDEOS_UNIT_COST, build_review_package, retain_candidates,
+    SEARCH_UNIT_COST, VIDEOS_UNIT_COST, build_analysis_handoff_summary, retain_candidates,
     validate_discovery_evidence,
 )
 from youtube_source_foundation import load_query_profiles, select_query_profiles
@@ -84,7 +84,7 @@ def base_evidence(decision_id: str, *, classification: str, exit_code: int, reas
         "technical_completion": exit_code != 1, "withheld_reason": reason,
         "authority": {"human_decision_id": decision_id, "scope": "exact H12 continuation"},
         "planned_profiles": PROFILES, "candidate_count": 0, "retained_candidates": [], "excluded_candidates": [],
-        "human_review_completed": False, "usable_reviewed_identity_count": 0,
+        **build_analysis_handoff_summary([]),
         "boundaries": {"comments_acquired": False, "captions_called": False, "transcript_text_acquired": False,
                        "oauth_used": False, "browser_or_scraping_used": False, "production_store": False,
                        "production_approved": False, "authority_promoted": False, "scheduler_action": None},
@@ -110,7 +110,7 @@ def run(output: Path, decision_path: Path, decision_id: str, execution_revision:
     policy["allowed_endpoints"] = ["search.list", "videos.list"]
     policy["quota_policy"]["endpoint_costs"].update({"search.list": SEARCH_UNIT_COST, "videos.list": VIDEOS_UNIT_COST})
     provider = YouTubeDataAPI(policy=policy, quota_budget=AUTH_SCOPE["max_documented_quota_units"], max_transient_retries=0)
-    evidence = base_evidence(decision_id, classification="evidence_withheld", exit_code=2, reason="candidate_count_below_two")
+    evidence = base_evidence(decision_id, classification="evidence_withheld", exit_code=2, reason="candidate_count_zero")
     evidence["credential_preflight"] = {"configured": True, "secret_read_or_logged": False}
     search_rows: list[dict] = []
     try:
@@ -138,12 +138,13 @@ def run(output: Path, decision_path: Path, decision_id: str, execution_revision:
                 "privacy_status": status_row.get("privacyStatus"),
                 "publicly_usable": status_row.get("privacyStatus") == "public"})
         retained = retain_candidates(search_rows, metadata_rows, limit=10)
-        evidence.update({"candidate_count": len(retained["retained"]), "retained_candidates": retained["retained"],
+        accepted_count = len(retained["retained"])
+        evidence.update({"candidate_count": accepted_count, "retained_candidates": retained["retained"],
                          "excluded_candidates": retained["excluded"],
-                         "classification": "candidate_evidence_obtained" if len(retained["retained"]) >= 2 else "evidence_withheld",
-                         "exit_classification": 0 if len(retained["retained"]) >= 2 else 2,
-                         "withheld_reason": None if len(retained["retained"]) >= 2 else "candidate_count_below_two",
-                         "human_review_package": build_review_package(retained["retained"])})
+                         "classification": "candidate_evidence_obtained" if accepted_count else "evidence_withheld",
+                         "exit_classification": 0 if accepted_count else 2,
+                         "withheld_reason": None if accepted_count else "candidate_count_zero",
+                         **build_analysis_handoff_summary(retained["retained"])})
     except YouTubeProviderError as exc:
         evidence.update({"classification": "evidence_withheld", "exit_classification": 2,
                          "withheld_reason": "provider_or_quota_withheld", "provider_error_code": exc.error_code})

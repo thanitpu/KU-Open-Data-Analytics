@@ -1,0 +1,200 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ku2d.local/schemas/acquisition-analysis-handoff.v1.schema.json",
+  "title": "KU2D Acquisition-to-Analysis Handoff v1",
+  "description": "Durable, non-authorizing transfer of technically accepted sanitized acquisition records to Analysis.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "manifest_id",
+    "created_at",
+    "source_batch",
+    "acquisition_acceptance",
+    "records",
+    "analysis_handoff",
+    "retrieval",
+    "governance",
+    "boundaries"
+  ],
+  "properties": {
+    "schema": {
+      "const": "ku2d.acquisition-analysis-handoff.v1"
+    },
+    "manifest_id": {
+      "type": "string",
+      "pattern": "^KU2D-AI-[0-9]{6}$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_batch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "provider",
+        "batch_id",
+        "result_id",
+        "artifact_id",
+        "artifact_name",
+        "immutable_packet"
+      ],
+      "properties": {
+        "domain": {"type": "string", "minLength": 1},
+        "provider": {"type": "string", "minLength": 1},
+        "batch_id": {"type": "string", "minLength": 1},
+        "result_id": {"type": "string", "minLength": 1},
+        "artifact_id": {"type": "string", "minLength": 1},
+        "artifact_name": {"type": "string", "minLength": 1},
+        "immutable_packet": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["packet_id", "path", "commit_sha", "git_blob_sha", "sha256"],
+          "properties": {
+            "packet_id": {"type": "string", "minLength": 1},
+            "path": {"type": "string", "minLength": 1},
+            "commit_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+            "git_blob_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+            "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+          }
+        }
+      }
+    },
+    "acquisition_acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "accepted_record_count", "criteria", "semantic_quality_claimed"],
+      "properties": {
+        "status": {"const": "accepted_for_analysis"},
+        "accepted_record_count": {"type": "integer", "minimum": 1},
+        "criteria": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["technically_valid", "authorized", "policy_compliant", "provenance_bearing", "sanitized"],
+          "properties": {
+            "technically_valid": {"const": true},
+            "authorized": {"const": true},
+            "policy_compliant": {"const": true},
+            "provenance_bearing": {"const": true},
+            "sanitized": {"const": true}
+          }
+        },
+        "semantic_quality_claimed": {"const": false}
+      }
+    },
+    "records": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "candidate_id",
+          "record_type",
+          "source_packet_id",
+          "source_packet_index",
+          "provenance",
+          "acceptance_status",
+          "semantic_relevance",
+          "quality",
+          "analytical_rank",
+          "analytical_deduplication",
+          "final_inclusion",
+          "production_ready"
+        ],
+        "properties": {
+          "candidate_id": {"type": "string", "pattern": "^[A-Za-z0-9_-]{11}$"},
+          "record_type": {"const": "public_video_identity_candidate"},
+          "source_packet_id": {"type": "string", "minLength": 1},
+          "source_packet_index": {"type": "integer", "minimum": 0},
+          "provenance": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["channel_id", "query_profile_ids", "observed_at"],
+            "properties": {
+              "channel_id": {"type": "string", "minLength": 1},
+              "query_profile_ids": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {"type": "string", "minLength": 1}
+              },
+              "observed_at": {"type": "string", "format": "date-time"}
+            }
+          },
+          "acceptance_status": {"const": "accepted_for_analysis"},
+          "semantic_relevance": {"type": "null"},
+          "quality": {"type": "null"},
+          "analytical_rank": {"type": "null"},
+          "analytical_deduplication": {"type": "null"},
+          "final_inclusion": {"type": "null"},
+          "production_ready": {"const": false}
+        }
+      }
+    },
+    "analysis_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "owner", "record_count", "pending_decisions"],
+      "properties": {
+        "status": {"const": "ready_for_analysis"},
+        "owner": {"const": "KU2A"},
+        "record_count": {"type": "integer", "minimum": 1},
+        "pending_decisions": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["semantic_relevance", "quality", "analytical_rank", "analytical_deduplication", "final_inclusion"]
+          }
+        }
+      }
+    },
+    "retrieval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["record_count", "all_records_indexed", "immutable_packet_required", "provenance_preserved", "hidden_record_count_zero"],
+      "properties": {
+        "record_count": {"type": "integer", "minimum": 1},
+        "all_records_indexed": {"const": true},
+        "immutable_packet_required": {"const": true},
+        "provenance_preserved": {"const": true},
+        "hidden_record_count_zero": {"const": true}
+      }
+    },
+    "governance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["acquisition_human_gate_retained_only_for", "analysis_selection_is_acquisition_authority"],
+      "properties": {
+        "acquisition_human_gate_retained_only_for": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["legal_or_policy_ambiguity", "restricted_or_personal_data", "material_provider_scope_or_quota_expansion", "new_spending", "production_write", "elevated_authority"]
+          }
+        },
+        "analysis_selection_is_acquisition_authority": {"const": false}
+      }
+    },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider_request_performed", "documented_quota_units", "semantic_quality_claimed", "production_store", "production_approved", "authority_promoted", "scheduler_action"],
+      "properties": {
+        "provider_request_performed": {"const": false},
+        "documented_quota_units": {"const": 0},
+        "semantic_quality_claimed": {"const": false},
+        "production_store": {"const": false},
+        "production_approved": {"const": false},
+        "authority_promoted": {"const": false},
+        "scheduler_action": {"type": "null"}
+      }
+    }
+  }
+}

@@ -45,14 +45,17 @@ Deep Audit produces separate source, video and module gates for identity provena
 
 ## Operational tiers
 
-The evidence-based tiers are `batch_ready_reviewed_identity`, `bounded_only`, `identity_review_required`, `owner_authorized_caption_required`, `unavailable_or_withheld`, and `drift_review_required`. Current Q-Diving status is `identity_review_required`; this checkpoint cannot promote it.
+The historical batch-execution tiers are `batch_ready_reviewed_identity`, `bounded_only`, `identity_review_required`, `owner_authorized_caption_required`, `unavailable_or_withheld`, and `drift_review_required`. They govern the legacy exact-input content/monitoring batch, not Acquisition-to-Analysis completion. Current P50 identities are accepted for Analysis without promotion to production or monitoring authority.
 
 ## Human Gate Register and next action
 
-The durable register defers: exactly two reviewed canonical Q-Diving IDs; any expansion beyond two; live search/discovery; captions or OAuth owner flow; approval of any public transcript surface; production storage/scheduling; authority promotion; and broader batch execution. Each requires the evidence and authority stated in `config/youtube_operational_hardening_v1.json`.
+The durable register's exactly-two identity and expansion entries are historical safeguards for the legacy executable batch. They are not active semantic-selection gates for Analysis intake. New provider scope, captions or OAuth owner flow, approval of any public transcript surface, production storage/scheduling, authority promotion and broader batch execution still require the evidence and authority stated in `config/youtube_operational_hardening_v1.json`.
 
-The smallest governed next action is Human Review that establishes exactly two non-sanitized canonical video IDs with channel relationship and provenance evidence, then records them in the registry. Only after independent review may a separate prompt authorize the existing two-video exact-input manifest. No automatic rerun is allowed.
+The active next action is downstream Analysis of the ten-record `KU2D-AI-000001` intake. If a later operational purpose proposes an executable content or monitoring batch, that separate production/elevated-authority boundary must be reviewed on its own evidence. No automatic provider rerun is allowed.
 
 ## References
 
 Official documentation accessed 2026-09-01: [Videos: list](https://developers.google.com/youtube/v3/docs/videos/list), [CommentThreads: list](https://developers.google.com/youtube/v3/docs/commentThreads/list), [Comments: list](https://developers.google.com/youtube/v3/docs/comments/list), [quota costs](https://developers.google.com/youtube/v3/determine_quota_cost), [API reference](https://developers.google.com/youtube/v3/docs), and [captions reference](https://developers.google.com/youtube/v3/docs/captions).
+## Active boundary note
+
+P51 removes semantic candidate selection from Acquisition completion. The reviewed-identity and exact-input rules below remain historical batch/monitoring safeguards and do not prevent technically valid sanitized records from entering Analysis. Any production write, monitoring schedule or elevated authority still requires its applicable Human gate.

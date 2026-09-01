@@ -1,0 +1,253 @@
+{
+  "schema": "ku2d.acquisition-analysis-handoff.v1",
+  "manifest_id": "KU2D-AI-000001",
+  "created_at": "2026-09-01T12:20:56.9216009+07:00",
+  "source_batch": {
+    "domain": "Q-Diving",
+    "provider": "YouTube Data API v3",
+    "batch_id": "KU2D-YT-QDIVING-IDENTITY-DISCOVERY-RUNTIME-000001",
+    "result_id": "KU2D-R-000050",
+    "artifact_id": "9786568183",
+    "artifact_name": "youtube-qdiving-identity-discovery-33471158167",
+    "immutable_packet": {
+      "packet_id": "KU2D-YT-QDIVING-CANDIDATES-000001",
+      "path": "services/data-acquisition/knowledge/v1/candidate-closure-packets/KU2D-YT-QDIVING-CANDIDATES-000001.json",
+      "commit_sha": "722b54ef5ea8b8778a33f84e31e17a3a2083ddc0",
+      "git_blob_sha": "84eefad591b12944579e2f4e65e0e65d69b9c26e",
+      "sha256": "794b4951987592f715663fa5b9c0a47fc7d9b611379aa6ed2868fe7029277609"
+    }
+  },
+  "acquisition_acceptance": {
+    "status": "accepted_for_analysis",
+    "accepted_record_count": 10,
+    "criteria": {
+      "technically_valid": true,
+      "authorized": true,
+      "policy_compliant": true,
+      "provenance_bearing": true,
+      "sanitized": true
+    },
+    "semantic_quality_claimed": false
+  },
+  "records": [
+    {
+      "candidate_id": "XZ6tmqUATWk",
+      "record_type": "public_video_identity_candidate",
+      "source_packet_id": "KU2D-YT-QDIVING-CANDIDATES-000001",
+      "source_packet_index": 0,
+      "provenance": {
+        "channel_id": "UCqs3pijNrYHZCdl_HGfgTQw",
+        "query_profile_ids": ["QYT-BEGINNER-KOH-TAO-TH"],
+        "observed_at": "2026-09-01T04:47:45.246533+00:00"
+      },
+      "acceptance_status": "accepted_for_analysis",
+      "semantic_relevance": null,
+      "quality": null,
+      "analytical_rank": null,
+      "analytical_deduplication": null,
+      "final_inclusion": null,
+      "production_ready": false
+    },
+    {
+      "candidate_id": "MyDSwfGTmd0",
+      "record_type": "public_video_identity_candidate",
+      "source_packet_id": "KU2D-YT-QDIVING-CANDIDATES-000001",
+      "source_packet_index": 1,
+      "provenance": {
+        "channel_id": "UCFlqnrKdEcMdRuS9lc4Z3oQ",
+        "query_profile_ids": ["QYT-BEGINNER-KOH-TAO-TH"],
+        "observed_at": "2026-09-01T04:47:45.246604+00:00"
+      },
+      "acceptance_status": "accepted_for_analysis",
+      "semantic_relevance": null,
+      "quality": null,
+      "analytical_rank": null,
+      "analytical_deduplication": null,
+      "final_inclusion": null,
+      "production_ready": false
+    },
+    {
+      "candidate_id": "cCpadHyIoNQ",
+      "record_type": "public_video_identity_candidate",
+      "source_packet_id": "KU2D-YT-QDIVING-CANDIDATES-000001",
+      "source_packet_index": 2,
+      "provenance": {
+        "channel_id": "UCRzYFduWt7a-9cPS2YrRcaQ",
+        "query_profile_ids": ["QYT-BEGINNER-KOH-TAO-TH"],
+        "observed_at": "2026-09-01T04:47:45.246609+00:00"
+      },
+      "acceptance_status": "accepted_for_analysis",
+      "semantic_relevance": null,
+      "quality": null,
+      "analytical_rank": null,
+      "analytical_deduplication": null,
+      "final_inclusion": null,
+      "production_ready": false
+    },
+    {
+      "candidate_id": "aVpL68zeIoE",
+      "record_type": "public_video_identity_candidate",
+      "source_packet_id": "KU2D-YT-QDIVING-CANDIDATES-000001",
+      "source_packet_index": 3,
+      "provenance": {
+        "channel_id": "UC6J5FmAHnzX4G4fDeIEU0rg",
+        "query_profile_ids": ["QYT-BEGINNER-KOH-TAO-TH"],
+        "observed_at": "2026-09-01T04:47:45.246612+00:00"
+      },
+      "acceptance_status": "accepted_for_analysis",
+      "semantic_relevance": null,
+      "quality": null,
+      "analytical_rank": null,
+      "analytical_deduplication": null,
+      "final_inclusion": null,
+      "production_ready": false
+    },
+    {
+      "candidate_id": "qztSQDGdny8",
+      "record_type": "public_video_identity_candidate",
+      "source_packet_id": "KU2D-YT-QDIVING-CANDIDATES-000001",
+      "source_packet_index": 4,
+      "provenance": {
+        "channel_id": "UCicKegGtK8YBWg6WJ2w_5-A",
+        "query_profile_ids": ["QYT-BEGINNER-KOH-TAO-TH"],
+        "observed_at": "2026-09-01T04:47:45.246615+00:00"
+      },
+      "acceptance_status": "accepted_for_analysis",
+      "semantic_relevance": null,
+      "quality": null,
+      "analytical_rank": null,
+      "analytical_deduplication": null,
+      "final_inclusion": null,
+      "production_ready": false
+    },
+    {
+      "candidate_id": "T3wCrNhTW3Y",
+      "record_type": "public_video_identity_candidate",
+      "source_packet_id": "KU2D-YT-QDIVING-CANDIDATES-000001",
+      "source_packet_index": 5,
+      "provenance": {
+        "channel_id": "UCGdao2VKYgHLBggF6RwfvZA",
+        "query_profile_ids": ["QYT-BEGINNER-EN"],
+        "observed_at": "2026-09-01T04:47:45.246621+00:00"
+      },
+      "acceptance_status": "accepted_for_analysis",
+      "semantic_relevance": null,
+      "quality": null,
+      "analytical_rank": null,
+      "analytical_deduplication": null,
+      "final_inclusion": null,
+      "production_ready": false
+    },
+    {
+      "candidate_id": "-xssfyMuHLA",
+      "record_type": "public_video_identity_candidate",
+      "source_packet_id": "KU2D-YT-QDIVING-CANDIDATES-000001",
+      "source_packet_index": 6,
+      "provenance": {
+        "channel_id": "UCkoJu-OVU7qc-xbWozSMRKQ",
+        "query_profile_ids": ["QYT-BEGINNER-EN"],
+        "observed_at": "2026-09-01T04:47:45.246624+00:00"
+      },
+      "acceptance_status": "accepted_for_analysis",
+      "semantic_relevance": null,
+      "quality": null,
+      "analytical_rank": null,
+      "analytical_deduplication": null,
+      "final_inclusion": null,
+      "production_ready": false
+    },
+    {
+      "candidate_id": "dWu-nPvPjZk",
+      "record_type": "public_video_identity_candidate",
+      "source_packet_id": "KU2D-YT-QDIVING-CANDIDATES-000001",
+      "source_packet_index": 7,
+      "provenance": {
+        "channel_id": "UC31tgjNLZH3oy4MLri0mSHg",
+        "query_profile_ids": ["QYT-BEGINNER-EN"],
+        "observed_at": "2026-09-01T04:47:45.246627+00:00"
+      },
+      "acceptance_status": "accepted_for_analysis",
+      "semantic_relevance": null,
+      "quality": null,
+      "analytical_rank": null,
+      "analytical_deduplication": null,
+      "final_inclusion": null,
+      "production_ready": false
+    },
+    {
+      "candidate_id": "GF75EVUld5E",
+      "record_type": "public_video_identity_candidate",
+      "source_packet_id": "KU2D-YT-QDIVING-CANDIDATES-000001",
+      "source_packet_index": 8,
+      "provenance": {
+        "channel_id": "UC5HnGcnpqkTL0OUe1Y7HDUA",
+        "query_profile_ids": ["QYT-BEGINNER-EN"],
+        "observed_at": "2026-09-01T04:47:45.246629+00:00"
+      },
+      "acceptance_status": "accepted_for_analysis",
+      "semantic_relevance": null,
+      "quality": null,
+      "analytical_rank": null,
+      "analytical_deduplication": null,
+      "final_inclusion": null,
+      "production_ready": false
+    },
+    {
+      "candidate_id": "wQZpvrijs8g",
+      "record_type": "public_video_identity_candidate",
+      "source_packet_id": "KU2D-YT-QDIVING-CANDIDATES-000001",
+      "source_packet_index": 9,
+      "provenance": {
+        "channel_id": "UCmRL4-a1AUJafnvndpHzOEw",
+        "query_profile_ids": ["QYT-BEGINNER-EN"],
+        "observed_at": "2026-09-01T04:47:45.246632+00:00"
+      },
+      "acceptance_status": "accepted_for_analysis",
+      "semantic_relevance": null,
+      "quality": null,
+      "analytical_rank": null,
+      "analytical_deduplication": null,
+      "final_inclusion": null,
+      "production_ready": false
+    }
+  ],
+  "analysis_handoff": {
+    "status": "ready_for_analysis",
+    "owner": "KU2A",
+    "record_count": 10,
+    "pending_decisions": [
+      "semantic_relevance",
+      "quality",
+      "analytical_rank",
+      "analytical_deduplication",
+      "final_inclusion"
+    ]
+  },
+  "retrieval": {
+    "record_count": 10,
+    "all_records_indexed": true,
+    "immutable_packet_required": true,
+    "provenance_preserved": true,
+    "hidden_record_count_zero": true
+  },
+  "governance": {
+    "acquisition_human_gate_retained_only_for": [
+      "legal_or_policy_ambiguity",
+      "restricted_or_personal_data",
+      "material_provider_scope_or_quota_expansion",
+      "new_spending",
+      "production_write",
+      "elevated_authority"
+    ],
+    "analysis_selection_is_acquisition_authority": false
+  },
+  "boundaries": {
+    "provider_request_performed": false,
+    "documented_quota_units": 0,
+    "semantic_quality_claimed": false,
+    "production_store": false,
+    "production_approved": false,
+    "authority_promoted": false,
+    "scheduler_action": null
+  }
+}

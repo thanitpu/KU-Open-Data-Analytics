@@ -1,5 +1,7 @@
 # YouTube Content Acquisition v2
 
+> P51 boundary alignment: Acquisition hands every technically valid, authorized, policy-compliant, provenance-bearing and sanitized record to Analysis. Human Review in this document governs downstream Analysis inclusion or separate production/monitoring authority; it is not a semantic-selection prerequisite for Acquisition completion.
+
 Status: offline contract ready; no live content validation; no acquisition,
 OAuth, production storage, scheduling, or authority is granted.
 
@@ -152,7 +154,7 @@ technical failure.
 - Transcript absence is not irrelevance.
 - Metadata statistics are observations, not causal explanations.
 - Provenance identifies evidence origin; it does not grant semantic authority.
-- Human Review remains authoritative for inclusion and monitoring decisions.
+- Analysis remains authoritative for semantic inclusion; Human authority remains separate for monitoring, production and elevated-scope decisions.
 
 Metadata is required by default. Transcript and comments are optional by
 default and can be configured as required, optional, or disabled. Optional

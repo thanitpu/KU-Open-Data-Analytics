@@ -33,6 +33,12 @@ Observations produced by a currently approved technique profile and accepted by 
 
 Rejected candidates remain useful negative evidence. They should retain rejection_reason instead of being silently deleted.
 
+## Acquisition-to-Analysis boundary
+
+Every technically valid, authorized, policy-compliant, provenance-bearing and sanitized acquisition record is durably handed to Analysis as `accepted_for_analysis`. Acquisition does not select records by semantic relevance or analytical quality. Analysis owns relevance, quality, ranking, analytical deduplication/grouping and final inclusion, with unassessed values preserved as unknown/null rather than inferred.
+
+The lifecycle's Human Approve stage remains a governance boundary for approved technique profiles, production write/scheduling, elevated authority, legal/policy ambiguity, restricted or personal data, material provider scope/quota expansion and new spending. It is not a per-record semantic-selection gate between Acquisition and Analysis.
+
 ## Scheduling policy
 
 Suggested default operating model:
