@@ -154,4 +154,20 @@ assert all(isinstance(link, str) and re.fullmatch(r"[0-9a-f]{40}", link) for lin
 assert sum(event["provider_impact"]["request_delta"] for event in journal["events"]) == 27
 assert journal["summary"] == {"event_count": 6, "resolved_count": 5, "unresolved_count": 1, "correction_cycles_used": 6}
 
-print("TikTok P57 blocked-boundary checks passed: scope=3 requests=27 retained=0 invariants=7 corrections=6")
+p58_journal = load(ROOT / "knowledge" / "v1" / "correction-journals" / "KU2D-CJ-000008.json")
+validate_technical_correction_journal(p58_journal, require_closed=True)
+assert p58_journal["summary"] == {
+    "event_count": 10,
+    "resolved_count": 9,
+    "unresolved_count": 1,
+    "correction_cycles_used": 10,
+}
+assert all(
+    isinstance(event["related_commit_or_pending_commit"], str)
+    and re.fullmatch(r"[0-9a-f]{40}", event["related_commit_or_pending_commit"])
+    for event in p58_journal["events"]
+)
+assert sum(event["provider_impact"]["request_delta"] for event in p58_journal["events"]) == 19
+assert sum(event["provider_impact"]["quota_delta"] for event in p58_journal["events"]) == 0
+
+print("TikTok source completion checks passed: P57 requests=27 corrections=6; P58 provider=17 preconnect=2 corrections=10")

@@ -1,0 +1,510 @@
+{
+  "schema": "ku2d.technical-correction-journal.v1",
+  "journal_id": "KU2D-CJ-000008",
+  "source_completion_prompt_id": "KU2D-P-000058",
+  "created_at": "2026-09-01T22:17:10.6247570+07:00",
+  "closed_at": "2026-09-01T22:44:51.0013524+07:00",
+  "events": [
+    {
+      "event_id": "KU2D-TC-000031",
+      "observed_at": "2026-09-01T22:17:22.021782+07:00",
+      "phase": "preflight",
+      "failure_code": "cdp_fetch_pause_deadlocked_page_navigation",
+      "observed_signal": "The first disposable-browser preflight created and destroyed its profile safely but timed out before a TikTok response because a paused Fetch request was not answered while Page.navigate awaited its command response.",
+      "root_cause_layer": "runtime_code",
+      "correction": {
+        "action": "Answered Fetch.requestPaused events immediately without waiting recursively, preserved the separate preconnect ledger, and added deterministic CDP interleaving coverage.",
+        "components": [
+          "acquisition/tiktok_ephemeral_browser.py",
+          "tools/LIVE_TIKTOK_EPHEMERAL_BROWSER.py",
+          "tools/SELF_TEST_TIKTOK_EPHEMERAL_BROWSER.py"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": [
+          "CDP paused-request ordering",
+          "preconnect classification",
+          "atomic evidence before resume"
+        ],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {
+        "provider_reached": false,
+        "request_delta": 1,
+        "quota_delta": 0
+      },
+      "schema_impact": "Added an explicit correction-resume path while preserving the sanitized evidence contract.",
+      "quality_impact": "Prevents an implementation deadlock from being mistaken for provider access evidence.",
+      "related_commit_or_pending_commit": "fc2effe3e467ab9773d150d3f07c69985bd79aa1",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "CDP interception must service paused requests even while another command response is pending.",
+        "future_prevention": "Exercise paused-event interleaving deterministically before a live browser preflight.",
+        "labels": [
+          "cdp",
+          "preconnect",
+          "evidence-before-exit"
+        ]
+      },
+      "evidence_refs": [
+        "KU2D-P-000058",
+        "KU2D-H-000027",
+        "KU2D-TIKTOK-LIVE-EVIDENCE-000003"
+      ]
+    },
+    {
+      "event_id": "KU2D-TC-000032",
+      "observed_at": "2026-09-01T22:20:20.657745+07:00",
+      "phase": "acquisition",
+      "failure_code": "tiktok_static_delivery_assets_were_blocked",
+      "observed_signal": "The corrected preflight reached TikTok, but both topic pages exposed zero candidates while all non-tiktok.com subresources were blocked.",
+      "root_cause_layer": "runtime_code",
+      "correction": {
+        "action": "Allowed only known TikTok public delivery suffixes required for rendering while retaining the browser third-party-cookie block and blocking unrelated hosts.",
+        "components": [
+          "acquisition/tiktok_ephemeral_browser.py",
+          "tools/LIVE_TIKTOK_EPHEMERAL_BROWSER.py",
+          "tools/SELF_TEST_TIKTOK_EPHEMERAL_BROWSER.py"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": [
+          "TikTok delivery allowlist",
+          "unrelated-host blocking",
+          "temporary-profile destruction"
+        ],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {
+        "provider_reached": true,
+        "request_delta": 3,
+        "quota_delta": 0
+      },
+      "schema_impact": "No provider payload or network URL was added to evidence.",
+      "quality_impact": "Permits public rendering without broad third-party access or cookie persistence.",
+      "related_commit_or_pending_commit": "411993eeac9629729bcb7a103b838dfbb6105121",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "A tiktok.com-only subresource rule can block provider-owned assets required by the public application.",
+        "future_prevention": "Keep the resource allowlist explicit, provider-owned, and covered by negative host tests.",
+        "labels": [
+          "rendering",
+          "allowlist",
+          "third-party-cookie-block"
+        ]
+      },
+      "evidence_refs": [
+        "KU2D-P-000058",
+        "KU2D-H-000027",
+        "KU2D-TIKTOK-LIVE-EVIDENCE-000003"
+      ]
+    },
+    {
+      "event_id": "KU2D-TC-000033",
+      "observed_at": "2026-09-01T22:25:00.0000000+07:00",
+      "phase": "acquisition",
+      "failure_code": "anchor_only_extraction_returned_zero_identities",
+      "observed_signal": "Rendered pages reached TikTok with first-party session state but exposed no canonical video anchors to the anchor-only extractor.",
+      "root_cause_layer": "runtime_code",
+      "correction": {
+        "action": "Added in-page structured-state traversal that returns only sanitized creator/video identities and discards raw DOM and script state.",
+        "components": [
+          "acquisition/tiktok_ephemeral_browser.py",
+          "tools/SELF_TEST_TIKTOK_EPHEMERAL_BROWSER.py"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": [
+          "canonical URL normalization",
+          "structured-state identity extraction",
+          "raw DOM non-persistence"
+        ],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {
+        "provider_reached": true,
+        "request_delta": 2,
+        "quota_delta": 0
+      },
+      "schema_impact": "Added no raw structured-state field; only canonical candidate records remain returnable.",
+      "quality_impact": "Expands identity discovery without weakening stable-ID or official-host requirements.",
+      "related_commit_or_pending_commit": "59dfca2ee9846c9130cc4ed7ad7bdecfc327d26f",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "Public video identities may live in rendered structured state rather than anchor nodes.",
+        "future_prevention": "Test both canonical anchors and sanitized structured-state identity shapes.",
+        "labels": [
+          "rendered-dom",
+          "structured-state",
+          "sanitization"
+        ]
+      },
+      "evidence_refs": [
+        "KU2D-P-000058",
+        "KU2D-H-000027",
+        "KU2D-TIKTOK-LIVE-EVIDENCE-000003"
+      ]
+    },
+    {
+      "event_id": "KU2D-TC-000034",
+      "observed_at": "2026-09-01T22:28:00.0000000+07:00",
+      "phase": "acquisition",
+      "failure_code": "rendered_state_contained_no_candidate_objects",
+      "observed_signal": "Sanitized DOM and structured-state extraction still returned zero candidates after two provider-reached topic navigations.",
+      "root_cause_layer": "runtime_code",
+      "correction": {
+        "action": "Inspected bounded page-initiated public JSON in memory, extracted only canonical identity fields, and discarded every raw body.",
+        "components": [
+          "acquisition/tiktok_ephemeral_browser.py",
+          "tools/SELF_TEST_TIKTOK_EPHEMERAL_BROWSER.py"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": [
+          "two-megabyte response bound",
+          "stable identity sanitizer",
+          "no raw-body persistence"
+        ],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {
+        "provider_reached": true,
+        "request_delta": 2,
+        "quota_delta": 0
+      },
+      "schema_impact": "Added aggregate inspection counts only; response bodies and endpoints remain absent.",
+      "quality_impact": "Allows official browser-initiated state to contribute candidates without becoming retained raw evidence.",
+      "related_commit_or_pending_commit": "533f402d994f1432fb6131bbc023b1b094f9e192",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "Rendered applications can keep result identity in page-initiated JSON rather than DOM state.",
+        "future_prevention": "Use bounded in-memory parsing with canonical field projection and immediate raw-body disposal.",
+        "labels": [
+          "public-response",
+          "bounded-inspection",
+          "sanitization"
+        ]
+      },
+      "evidence_refs": [
+        "KU2D-P-000058",
+        "KU2D-H-000027",
+        "KU2D-TIKTOK-LIVE-EVIDENCE-000003"
+      ]
+    },
+    {
+      "event_id": "KU2D-TC-000035",
+      "observed_at": "2026-09-01T22:31:31.428103+07:00",
+      "phase": "acquisition",
+      "failure_code": "response_inspection_did_not_match_render_allowlist",
+      "observed_signal": "The page loaded provider-owned delivery resources, but response inspection considered only tiktok.com JSON MIME declarations and found no identities.",
+      "root_cause_layer": "runtime_code",
+      "correction": {
+        "action": "Aligned inspection with the explicit TikTok delivery allowlist, parsed only completed XHR/fetch JSON values within the byte bound, waited for rendering, and persisted counts only.",
+        "components": [
+          "acquisition/tiktok_ephemeral_browser.py",
+          "tools/LIVE_TIKTOK_EPHEMERAL_BROWSER.py",
+          "tools/SELF_TEST_TIKTOK_EPHEMERAL_BROWSER.py"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": [
+          "allowlist alignment",
+          "aggregate telemetry",
+          "provider/preconnect accounting"
+        ],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {
+        "provider_reached": true,
+        "request_delta": 2,
+        "quota_delta": 0
+      },
+      "schema_impact": "Operation rows gained sanitized response-count telemetry and no network identities.",
+      "quality_impact": "Makes absence diagnostics attributable without exposing provider responses.",
+      "related_commit_or_pending_commit": "d1abea3a1941d68cb5f85f2693af8c68dc7e7fe6",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "The inspection boundary must match the already authorized render resource boundary.",
+        "future_prevention": "Record only aggregate response and candidate counts for each finalized navigation.",
+        "labels": [
+          "telemetry",
+          "allowlist",
+          "request-ledger"
+        ]
+      },
+      "evidence_refs": [
+        "KU2D-P-000058",
+        "KU2D-H-000027",
+        "KU2D-TIKTOK-LIVE-EVIDENCE-000003"
+      ]
+    },
+    {
+      "event_id": "KU2D-TC-000036",
+      "observed_at": "2026-09-01T22:33:40.113411+07:00",
+      "phase": "acquisition",
+      "failure_code": "headless_context_returned_no_search_candidates",
+      "observed_signal": "Headless contexts reached hundreds of TikTok responses and inspected public JSON but produced no stable search identities.",
+      "root_cause_layer": "environment",
+      "correction": {
+        "action": "Used a normal visible Edge process with the same unique temporary profile, CDP controls, host allowlist, cookie boundary, and teardown proof; no stealth or bypass was added.",
+        "components": [
+          "acquisition/tiktok_ephemeral_browser.py",
+          "tools/SELF_TEST_TIKTOK_EPHEMERAL_BROWSER.py"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": [
+          "headless flag absent",
+          "fresh profile retained",
+          "no stealth or proxy flags"
+        ],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {
+        "provider_reached": true,
+        "request_delta": 2,
+        "quota_delta": 0
+      },
+      "schema_impact": "None; execution-environment behavior changed without adding evidence fields.",
+      "quality_impact": "Produced 12 stable equipment candidates while preserving the public unauthenticated boundary.",
+      "related_commit_or_pending_commit": "c7c6054b27d71f312ae0374d19ed55df51a84b87",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "A normal ephemeral browser can expose public application behavior that headless rendering does not reproduce.",
+        "future_prevention": "Treat normal versus headless execution as an explicit tested environment choice, never as bypass behavior.",
+        "labels": [
+          "edge",
+          "headed-browser",
+          "execution-environment"
+        ]
+      },
+      "evidence_refs": [
+        "KU2D-P-000058",
+        "KU2D-H-000027",
+        "KU2D-TIKTOK-LIVE-EVIDENCE-000003"
+      ]
+    },
+    {
+      "event_id": "KU2D-TC-000037",
+      "observed_at": "2026-09-01T22:35:48.137212+07:00",
+      "phase": "acquisition",
+      "failure_code": "lesson_query_was_overconstrained_and_budget_needed_reservation",
+      "observed_signal": "The first query in each fresh context returned zero candidates while the second equipment query returned 12-14 stable identities; only twenty-seven provider operations remained.",
+      "root_cause_layer": "data_quality",
+      "correction": {
+        "action": "Narrowed the lesson query and added a fail-closed reservation that stops before an operation if the remaining provider budget cannot complete both required rounds.",
+        "components": [
+          "tools/LIVE_TIKTOK_EPHEMERAL_BROWSER.py",
+          "tools/SELF_TEST_TIKTOK_EPHEMERAL_BROWSER.py"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": [
+          "lesson query profile",
+          "minimum future-operation arithmetic",
+          "exit-two budget boundary"
+        ],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {
+        "provider_reached": true,
+        "request_delta": 2,
+        "quota_delta": 0
+      },
+      "schema_impact": "None; query and budget policy changed inside the existing evidence schema.",
+      "quality_impact": "Prevents partial verification from consuming operations required for independent reproduction.",
+      "related_commit_or_pending_commit": "d7c7071ce5e36c9ad8627a24c0be4f30b3a3b9a5",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "Live search planning must reserve the complete future verification contract, not only the next request.",
+        "future_prevention": "Recompute minimum future provider operations before every candidate verification.",
+        "labels": [
+          "query-profile",
+          "budget-reservation",
+          "fail-closed"
+        ]
+      },
+      "evidence_refs": [
+        "KU2D-P-000058",
+        "KU2D-H-000027",
+        "KU2D-TIKTOK-LIVE-EVIDENCE-000003"
+      ]
+    },
+    {
+      "event_id": "KU2D-TC-000038",
+      "observed_at": "2026-09-01T22:39:00.015608+07:00",
+      "phase": "acquisition",
+      "failure_code": "first_navigation_in_fresh_context_behaved_as_render_warmup",
+      "observed_signal": "Across repeated fresh contexts the first search navigation returned zero candidates while the second returned a populated equipment set.",
+      "root_cause_layer": "provider_access",
+      "correction": {
+        "action": "Replaced two topic-specific searches with one official home warm-up and one broad diving discovery set per round, with local topic qualification and exact future-budget reservation.",
+        "components": [
+          "tools/LIVE_TIKTOK_EPHEMERAL_BROWSER.py",
+          "tools/SELF_TEST_TIKTOK_EPHEMERAL_BROWSER.py"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": [
+          "one warm-up plus one discovery per round",
+          "local topic partition",
+          "twenty-four-operation minimum"
+        ],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {
+        "provider_reached": true,
+        "request_delta": 3,
+        "quota_delta": 0
+      },
+      "schema_impact": "None; the ledger uses existing sanitized operation classifications.",
+      "quality_impact": "Avoids treating an empty first navigation as content absence and preserves the two-context contract.",
+      "related_commit_or_pending_commit": "46b32bd24849aac4277987c5289cc14014a88407",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "Fresh public application contexts may require one attributable top-level warm-up before search results appear.",
+        "future_prevention": "Model warm-up as a counted provider operation and include it in feasibility arithmetic.",
+        "labels": [
+          "warmup",
+          "fresh-context",
+          "budget"
+        ]
+      },
+      "evidence_refs": [
+        "KU2D-P-000058",
+        "KU2D-H-000027",
+        "KU2D-TIKTOK-LIVE-EVIDENCE-000003"
+      ]
+    },
+    {
+      "event_id": "KU2D-TC-000039",
+      "observed_at": "2026-09-01T22:42:15.992578+07:00",
+      "phase": "acquisition",
+      "failure_code": "cdp_default_frame_limit_closed_browser_connection",
+      "observed_signal": "The warmed broad-discovery attempt stopped before provider response when a 1,230,407-byte CDP frame exceeded the WebSocket library default 1 MiB ceiling.",
+      "root_cause_layer": "dependency",
+      "correction": {
+        "action": "Set a bounded 10 MB CDP frame ceiling, preserved the technical-failure history, and allowed only an exact evidence-validated correction resume.",
+        "components": [
+          "acquisition/tiktok_ephemeral_browser.py",
+          "tools/LIVE_TIKTOK_EPHEMERAL_BROWSER.py",
+          "tools/SELF_TEST_TIKTOK_EPHEMERAL_BROWSER.py"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": [
+          "bounded max_size",
+          "technical failure history",
+          "exact resume predicate"
+        ],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {
+        "provider_reached": true,
+        "request_delta": 2,
+        "quota_delta": 0
+      },
+      "schema_impact": "Added a sanitized technical-failure history without raw frames.",
+      "quality_impact": "Prevents large public CDP events from becoming false provider failures while retaining a finite memory bound.",
+      "related_commit_or_pending_commit": "7424bf4422cab07e2aea1830956d0cb68f0cba35",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "Browser automation transport limits must accommodate provider event frames without becoming unbounded.",
+        "future_prevention": "Pin and regression-test a finite CDP message ceiling above observed public frame sizes.",
+        "labels": [
+          "websocket",
+          "cdp-frame",
+          "technical-failure"
+        ]
+      },
+      "evidence_refs": [
+        "KU2D-P-000058",
+        "KU2D-H-000027",
+        "KU2D-TIKTOK-LIVE-EVIDENCE-000003"
+      ]
+    },
+    {
+      "event_id": "KU2D-TC-000040",
+      "observed_at": "2026-09-01T22:44:20.0000000+07:00",
+      "phase": "closure",
+      "failure_code": "two_round_tiktok_contract_exceeds_remaining_provider_budget",
+      "observed_signal": "Final evidence contains seventeen provider-reached operations, two preconnect failures, zero retained lesson records, and twenty-three provider operations remaining while two complete warm/discover/verify rounds require at least twenty-four.",
+      "root_cause_layer": "provider_access",
+      "correction": {
+        "action": "Stopped live TikTok work, persisted the missing entered P58-02 declaration and exact budget proof, and prohibited adapter, Registry V3, fixture, MTC, Analysis handoff, PR, or merge creation.",
+        "components": [
+          "knowledge/v1/tiktok/KU2D-SCOPE-000005-P02.json",
+          "knowledge/v1/tiktok/KU2D-TIKTOK-EPHEMERAL-BROWSER-EVIDENCE-000003.json",
+          "tools/SELF_TEST_TIKTOK_SOURCE_COMPLETION.py",
+          "tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": [
+          "17-of-40 provider accounting",
+          "2-of-10 preconnect accounting",
+          "23-versus-24 feasibility proof",
+          "zero retained records",
+          "downstream artifacts absent"
+        ],
+        "result": "passed"
+      },
+      "outcome": "unresolved",
+      "provider_impact": {
+        "provider_reached": false,
+        "request_delta": 0,
+        "quota_delta": 0
+      },
+      "schema_impact": "No adapter registry, source manifest, run manifest, fixture, MTC, or Analysis artifact was created.",
+      "quality_impact": "Prevents a false-green source completion when equipment discovery exists but the required lesson track and repeated verification do not.",
+      "related_commit_or_pending_commit": "ebfa37e2adb1c65ba10f5f2a7fb740af64bb6af0",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "A usable single-topic discovery signal is not a two-topic Minimum Trusted Connection.",
+        "future_prevention": "Require new human authority and a budget that covers warm-up, discovery, twenty official verifications, and bounded failures before replaying P58.",
+        "labels": [
+          "blocked",
+          "budget-boundary",
+          "minimum-trusted-connection",
+          "no-false-green"
+        ]
+      },
+      "evidence_refs": [
+        "KU2D-P-000058",
+        "KU2D-H-000027",
+        "KU2D-TIKTOK-LIVE-EVIDENCE-000003"
+      ]
+    }
+  ],
+  "summary": {
+    "event_count": 10,
+    "resolved_count": 9,
+    "unresolved_count": 1,
+    "correction_cycles_used": 10
+  },
+  "safety": {
+    "contains_secret": false,
+    "contains_raw_payload": false,
+    "contains_request_url": false,
+    "contains_personal_data": false
+  }
+}

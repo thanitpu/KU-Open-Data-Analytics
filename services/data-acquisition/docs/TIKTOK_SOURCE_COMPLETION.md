@@ -37,3 +37,26 @@ run manifest, Registry V3, MTC assessment, Analysis handoff, PR or merge was
 created. Registry V1/V2 and all shared runner, validator, manifest, schema and
 workflow files remain unchanged. Production storage, approval and scheduling
 remain disabled.
+
+## P58 ephemeral-browser recovery
+
+P58 used a unique temporary Edge profile for every context, allowed only
+first-party session cookies inside that context, blocked unrelated hosts and
+third-party cookie storage, and deleted each profile after teardown. No cookie
+value, storage state, raw DOM, raw response, header, browser profile, or network
+log was persisted.
+
+The exact P58 ledger closed with 17 provider-reached operations, 2 preconnect
+failures, and zero quota. The corrected normal-browser path reproducibly exposed
+12–14 stable `Diving equipment` candidates on the second same-context
+navigation, but exposed no `Diving lesson` candidates. No candidate was retained
+because the two-topic success contract was not complete and no official
+two-round verification set existed.
+
+Only 23 provider operations remained. Two new fresh contexts require at least
+24 operations: one warm-up and one discovery per context plus official
+verification of five records for each topic in both contexts. P58 therefore
+stopped at the hard feasibility boundary. P58-01 and P58-02 were entered;
+P58-03 through P58-05 were not. The technique remains unfrozen and no TikTok
+adapter, Registry V3, fixture, MTC, Analysis handoff, PR, merge, production
+approval, store, or scheduler action was created.
