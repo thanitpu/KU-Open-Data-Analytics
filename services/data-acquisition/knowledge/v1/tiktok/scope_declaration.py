@@ -1,4 +1,4 @@
-"""Fail-closed validation for P57 seven-field scope declarations."""
+"""Fail-closed validation for TikTok seven-field scope declarations."""
 from __future__ import annotations
 
 import copy
@@ -16,9 +16,23 @@ SEVEN_FIELDS = {
     "domain", "source", "capability", "acquisition_technique",
     "authorized_files_or_modules", "explicit_out_of_scope", "validation_profile",
 }
-TECHNIQUE_FIELDS = {
+STRATEGY_TECHNIQUE_FIELDS = {
     "status", "strategy_ladder", "preferred_path", "strategy_switch_rule",
     "freeze_rule", "selected_technique",
+}
+BROWSER_TECHNIQUE_FIELDS = {
+    "status", "selected_technique", "browser_policy", "operation_counting",
+    "freeze_rule",
+}
+BROWSER_POLICY_FIELDS = {
+    "fresh_temporary_profile", "first_party_session_cookies_allowed",
+    "third_party_cookie_storage_blocked", "no_cookie_values_persisted",
+    "no_storage_state_persisted", "no_browser_profile_persisted",
+    "context_destroyed_between_rounds",
+}
+OPERATION_COUNTING_FIELDS = {
+    "provider_reached_operation", "preconnect_failure", "browser_subresources",
+    "maximum_provider_reached", "maximum_preconnect_failures",
 }
 
 
@@ -45,6 +59,39 @@ def _contains(pattern: str, candidate: str) -> bool:
     return pattern == candidate
 
 
+def _validate_technique(value: Any) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ValueError("acquisition technique must be an object")
+    fields = set(value)
+    if fields == STRATEGY_TECHNIQUE_FIELDS:
+        if value["status"] not in {"strategy_ladder_authorized", "selected", "blocked"}:
+            raise ValueError("invalid acquisition technique status")
+        ladder = _texts(value["strategy_ladder"], "strategy ladder")
+        selected = value["selected_technique"]
+        if value["status"] == "selected" and selected not in ladder:
+            raise ValueError("selected technique is outside the authorized ladder")
+        if value["status"] != "selected" and selected is not None:
+            raise ValueError("unselected technique must be null")
+        return value
+    _exact(value, BROWSER_TECHNIQUE_FIELDS, "acquisition technique")
+    if value["status"] != "authorized":
+        raise ValueError("ephemeral browser technique must be authorized")
+    if not isinstance(value["selected_technique"], str) or not value["selected_technique"].strip():
+        raise ValueError("ephemeral browser selected technique is required")
+    policy = _exact(value["browser_policy"], BROWSER_POLICY_FIELDS, "browser policy")
+    if any(policy[field] is not True for field in BROWSER_POLICY_FIELDS):
+        raise ValueError("ephemeral browser policy must retain every fail-closed safeguard")
+    counting = _exact(value["operation_counting"], OPERATION_COUNTING_FIELDS, "operation counting")
+    for field in ("provider_reached_operation", "preconnect_failure", "browser_subresources"):
+        if not isinstance(counting[field], str) or not counting[field].strip():
+            raise ValueError(f"{field} definition is required")
+    if counting["maximum_provider_reached"] != 40 or counting["maximum_preconnect_failures"] != 10:
+        raise ValueError("ephemeral browser operation limits drifted")
+    if not isinstance(value["freeze_rule"], str) or not value["freeze_rule"].strip():
+        raise ValueError("freeze rule is required")
+    return value
+
+
 def validate_scope_declaration(
     declaration: dict[str, Any], *, parent: dict[str, Any] | None = None,
     allowed_root_files: Iterable[str] | None = None,
@@ -58,18 +105,10 @@ def validate_scope_declaration(
     _exact(declaration["domain"], {"id", "label"}, "domain")
     _exact(declaration["source"], {"id", "label", "topics"}, "source")
     if declaration["domain"]["id"] != "social.public_short_video" or declaration["source"]["id"] != "tiktok":
-        raise ValueError("P57 domain/source authority drifted")
+        raise ValueError("TikTok domain/source authority drifted")
     _texts(declaration["source"]["topics"], "source.topics")
     _texts(declaration["capability"], "capability")
-    technique = _exact(declaration["acquisition_technique"], TECHNIQUE_FIELDS, "acquisition technique")
-    if technique["status"] not in {"strategy_ladder_authorized", "selected", "blocked"}:
-        raise ValueError("invalid acquisition technique status")
-    ladder = _texts(technique["strategy_ladder"], "strategy ladder")
-    selected = technique["selected_technique"]
-    if technique["status"] == "selected" and selected not in ladder:
-        raise ValueError("selected technique is outside the authorized ladder")
-    if technique["status"] != "selected" and selected is not None:
-        raise ValueError("unselected technique must be null")
+    technique = _validate_technique(declaration["acquisition_technique"])
     allowed = _texts(declaration["authorized_files_or_modules"], "authorized files")
     excluded = _texts(declaration["explicit_out_of_scope"], "explicit out of scope")
     _texts(declaration["validation_profile"], "validation profile")
@@ -103,6 +142,10 @@ def validate_scope_declaration(
             raise ValueError("phase removed an exclusion")
         if not set(declaration["validation_profile"]).issubset(parent["validation_profile"]):
             raise ValueError("phase validation widened")
-        if not set(technique["strategy_ladder"]).issubset(parent["acquisition_technique"]["strategy_ladder"]):
-            raise ValueError("phase strategy widened")
+        parent_technique = parent["acquisition_technique"]
+        if set(technique) == STRATEGY_TECHNIQUE_FIELDS:
+            if set(parent_technique) != STRATEGY_TECHNIQUE_FIELDS or not set(technique["strategy_ladder"]).issubset(parent_technique["strategy_ladder"]):
+                raise ValueError("phase strategy widened")
+        elif technique != parent_technique:
+            raise ValueError("phase browser technique drifted")
     return copy.deepcopy(declaration)
