@@ -1,0 +1,165 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000053",
+  "created_at": "2026-09-01T17:46:39.000+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+  "objective": "Consolidate the P52 Data Acquisition v1 foundation into a source-neutral execution path that can run registered adapters from immutable run manifests, while preserving YouTube Q-Diving as the reference adapter and proving the complete path through deterministic fixture replay.",
+  "queue_purpose_summary": "รวม foundation ให้เหลือ runner และ registry กลางที่เสถียร โดย pin ทุก run ด้วย immutable manifest, ย้าย YouTube มาใช้เส้นทางกลางจริง และเตรียมฐานให้ source ถัดไปเพิ่ม adapter+manifest ได้โดยไม่แก้ runner หรือ workflow.",
+  "required_deliverables": [
+    {
+      "component": "Generic Source Runner",
+      "requirements": [
+        "one authoritative source-neutral runner owns lifecycle orchestration and invokes Connector Kit contracts",
+        "runner accepts only validated immutable run manifests and resolves adapters through Adapter Registry V1",
+        "runner must not contain source IDs, endpoints, selectors, payload parsing or domain semantic-quality rules",
+        "unknown adapters, unsupported capabilities, manifest-version drift and boundary violations fail closed"
+      ]
+    },
+    {
+      "component": "Immutable Run Manifest v1",
+      "requirements": [
+        "create a versioned closed schema and validator",
+        "pin run ID, source manifest, adapter and parser/mapper versions, domain capability profile, requested capabilities, transport mode, fixture/evidence references, request policy, timestamps, hashes and authority boundaries",
+        "manifest is append-only after execution begins; corrections create a new manifest/version rather than rewriting executed evidence",
+        "record provider request/quota counts and production/scheduler boundaries explicitly"
+      ]
+    },
+    {
+      "component": "Adapter Registry V1",
+      "requirements": [
+        "register adapters by stable source and adapter version without dynamic arbitrary imports",
+        "reject duplicate registrations, unknown IDs and incompatible contract versions",
+        "separate registration metadata from source implementation",
+        "allow a future source adapter and manifest to be added without modifying runner logic"
+      ]
+    },
+    {
+      "component": "YouTube Reference Adapter",
+      "requirements": [
+        "route the existing YouTube Q-Diving adapter, parser and domain mapper through the generic runner and registry",
+        "preserve the ten sanitized candidates, ordering, provenance, Analysis handoff and MTC status",
+        "do not retrieve comments, captions, transcripts or raw provider payloads",
+        "do not move semantic relevance, ranking or inclusion decisions back into Acquisition"
+      ]
+    },
+    {
+      "component": "Fixture Replay and Early Acquisition Quality Gate",
+      "requirements": [
+        "exercise the complete manifest-to-registry-to-runner-to-Connector-Kit-to-parser-to-mapper path using deterministic fixtures",
+        "quality gate checks authority, schema, provenance, timestamps, sanitization, exact technical duplication rules and evidence completeness before Analysis handoff",
+        "quality gate must not score semantic relevance or make final inclusion decisions",
+        "fixture replay must prove zero provider requests and zero quota"
+      ]
+    },
+    {
+      "component": "Foundation Operating Contract",
+      "requirements": [
+        "document the extension seam for P54: add source adapter, parser/mapper, capability profile, source manifest, immutable run manifest and fixtures without changing generic runner/workflow",
+        "retain one Source Completion Queue, three-level testing and multi-correction single-PR journaling",
+        "avoid compatibility-wrapper accumulation; migrate authoritative paths and document any temporary shim with removal criteria"
+      ]
+    }
+  ],
+  "execution_policy": {
+    "default_mode": "fixture_replay",
+    "provider_requests_expected": 0,
+    "bounded_live_smoke": {
+      "allowed_only_if_deterministic_fixture_and_CI_cannot_prove_the_required_connection": true,
+      "maximum_requests": 1,
+      "require_preflight_policy_and_credential_check": true,
+      "stop_if_quota_cost_or_authority_is_unclear": true,
+      "record_request_and_quota_in_ledger_and_result": true
+    },
+    "tiktok_execution": false,
+    "production_write": false,
+    "scheduler_action": null
+  },
+  "testing_policy": {
+    "level_1_self_correction": [
+      "unit_test",
+      "adapter_specific_fixture"
+    ],
+    "level_2_before_pr": [
+      "source_level_integration",
+      "evidence_validation"
+    ],
+    "level_3_before_merge_or_closure": [
+      "full_deterministic_corpus_exact_head"
+    ],
+    "rerun_level_3_if_code_schema_fixture_policy_test_or_journal_input_changes": true,
+    "reuse_level_3_only_when_final_merge_tree_equals_tested_tree": true
+  },
+  "technical_correction_policy": {
+    "journal_id": "KU2D-CJ-000003",
+    "multiple_corrections_per_queue": true,
+    "one_pr": true,
+    "pr_or_queue_per_correction": false,
+    "finalize_all_commit_links_before_pr_or_closure": true,
+    "preserve_symptom_root_cause_correction_test_schema_quality_provider_impact_commit_and_learning": true
+  },
+  "implementation_and_merge": {
+    "integration_baseline": "ff5093269bf511bac7d0cc53aa996b2e7bf42f93",
+    "target_branch": "integration/data-acquisition-platform",
+    "one_coherent_pr": true,
+    "exact_head_required": true,
+    "technically_green_merge_authorized": true,
+    "assistant_intermediate_review_required": false,
+    "main_modification_authorized": false
+  },
+  "instructions": [
+    "Inspect the merged P52 implementation and reuse its authoritative Connector Kit, capability, source-manifest, MTC, evidence, logging and correction-journal modules before editing.",
+    "Implement the smallest coherent Foundation Consolidation needed for P54; do not implement TikTok or speculative provider-specific capabilities.",
+    "Keep all technical corrections within P53 and KU2D-CJ-000003; do not open a queue or PR per correction.",
+    "Use deterministic fixtures throughout normal development. A live smoke is optional, never a completion requirement, and may occur only under the explicit one-request boundary in H22.",
+    "Create one Ready PR to integration/data-acquisition-platform only after Level 2 passes. Run the full deterministic corpus once on the final exact PR head, verify applicable CI and tree identity, then merge when technically green.",
+    "Submit KU2D-R-000054 with changed files, registry/manifest/runner evidence, YouTube parity, quality-gate evidence, correction journal, tests by level, PR/CI/merge metadata, provider/quota accounting, remaining limitations and explicit P54 readiness."
+  ],
+  "stop_conditions": [
+    "implementation requires TikTok or another new source execution",
+    "more than one live provider request is required",
+    "quota cost, legal/policy authority, credential scope or personal/restricted-data handling is unclear",
+    "production write, scheduling, new spending, main modification or elevated authority is required",
+    "generic runner cannot remain source-neutral",
+    "immutable P52 evidence or historical coordination records would need rewriting",
+    "repository permission or protected-branch policy blocks the authorized merge"
+  ],
+  "definition_of_done": [
+    "generic source runner executes validated immutable run manifests through Adapter Registry V1",
+    "run-manifest and registry schemas/validators fail closed on drift and unknown identities",
+    "YouTube reference adapter passes through the generic path with ten candidates and provenance unchanged",
+    "early acquisition quality gate remains technical and Analysis retains semantic quality",
+    "fixture replay proves zero provider requests and quota in the normal path",
+    "extension contract shows P54 can add a source adapter and manifest without runner/workflow changes",
+    "KU2D-CJ-000003 is finalized with all material corrections and commit links",
+    "Level 1, Level 2 and one final exact-head full deterministic corpus pass",
+    "one technically green PR is merged to integration/data-acquisition-platform",
+    "KU2D-R-000054 is submitted for Assistant review"
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000054",
+    "next_actor": "assistant",
+    "closure_target": "foundation_consolidation",
+    "next_source_proof": "P54",
+    "provider_requests_expected": 0
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_prompt": "KU2D-P-000052",
+    "depends_on_result": "KU2D-R-000053",
+    "depends_on_review": "KU2D-V-000053",
+    "depends_on_human_decision": "KU2D-H-000022",
+    "integration_baseline": "ff5093269bf511bac7d0cc53aa996b2e7bf42f93"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

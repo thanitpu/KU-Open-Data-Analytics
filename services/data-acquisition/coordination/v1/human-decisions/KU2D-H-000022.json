@@ -1,0 +1,72 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000022",
+  "prompt_id": "KU2D-P-000052",
+  "result_id": "KU2D-R-000053",
+  "review_id": "KU2D-V-000053",
+  "decided_at": "2026-09-01T17:46:39.000+07:00",
+  "decided_by": {
+    "actor": "human",
+    "actor_id": "project_owner"
+  },
+  "decision": "confirmed",
+  "reason_note": "The project owner explicitly instructs the main Assistant to accept P52 when verified, close P52, open and authorize P53 Foundation Consolidation, assign the next action to Codex and return the Codex continuation command.",
+  "authorized_scope": {
+    "operation": "foundation_consolidation",
+    "target_prompt": "KU2D-P-000053",
+    "target_branch": "integration/data-acquisition-platform",
+    "deliverables": [
+      "generic_source_runner",
+      "immutable_run_manifest",
+      "adapter_registry_v1",
+      "youtube_reference_adapter",
+      "fixture_replay",
+      "early_acquisition_quality_gate"
+    ],
+    "one_coherent_pull_request": true,
+    "one_correction_journal": "KU2D-CJ-000003",
+    "default_execution_mode": "fixture_replay",
+    "bounded_live_smoke_max_requests": 1,
+    "bounded_live_smoke_only_if_necessary": true,
+    "execute_tiktok": false,
+    "production_store": false,
+    "scheduler_action": null
+  },
+  "testing_policy": {
+    "self_correction": "unit tests plus adapter-specific fixtures",
+    "before_pr": "source-level integration plus evidence validation",
+    "before_merge_or_closure": "full deterministic corpus on exact PR head",
+    "rerun_if_exact_tree_changes": true,
+    "reuse_when_merge_tree_is_identical": true
+  },
+  "workflow_authority": {
+    "create_prompt": "KU2D-P-000053",
+    "next_actor": "codex",
+    "assistant_intermediate_review_required": false,
+    "one_pr": true,
+    "technically_green_merge_to_integration_authorized": true,
+    "immutable_historical_records_must_not_be_rewritten": true
+  },
+  "provider_boundary": {
+    "fixture_and_replay_preferred": true,
+    "live_smoke_optional_not_required": true,
+    "maximum_live_provider_requests": 1,
+    "stop_if_quota_or_policy_is_unclear": true,
+    "no_tiktok_provider_access": true
+  },
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_context": "Project owner requested P53 Foundation Consolidation after Codex completed the corrected P52 closure work.",
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_review": "KU2D-V-000053",
+    "depends_on_result": "KU2D-R-000053",
+    "integration_baseline": "ff5093269bf511bac7d0cc53aa996b2e7bf42f93"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
