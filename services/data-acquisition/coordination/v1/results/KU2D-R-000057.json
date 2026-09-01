@@ -1,0 +1,213 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000057",
+  "prompt_id": "KU2D-P-000056",
+  "submitted_at": "2026-09-01T21:02:16.895+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "P56 completed the authorized Coordination Protocol Fixture Maintenance. The static repository test no longer encodes a terminal Human Decision ID set: it retains stable anchors, requires exact equality with all discovered non-historical decisions, validates every active chain, and proves future complete-chain acceptance plus duplicate, malformed, orphan and unrelated-chain rejection. One portable self-test blob passed the baseline integration protocol and the extended authoritative protocol. The audit also found and corrected unpinned proactive H25 authority through append-only exact-blob migration KU2D-M-000006. PR 73 passed the exact-head 56/56 corpus and CI, squash-merged to integration, and the exact tested self-test blob was synced back and passed the authoritative AH1-AH55 suite and complete bundle. No runtime, workflow, provider, production, scheduling or main change occurred.",
+  "evidence_references": [
+    "KU2D-P-000056",
+    "KU2D-H-000025",
+    "KU2D-SCOPE-000003",
+    "KU2D-CJ-000006",
+    "KU2D-M-000006",
+    "PR:73",
+    "implementation-head:8c80498b5b746ff5f17a0128bed75c3945e1782f",
+    "implementation-tree:2a0f475677d3a513d39bdd633ed4fd541879a459",
+    "integration-squash:fc611d408146830b47f9220ae85d04645512d4da",
+    "coordination-migration:7d4684e6d1383d789efbc03cbce6b6df42ef1096",
+    "coordination-test-sync:b44b566307cc8f64baca5c2c85ee05430578eea2",
+    "self-test-blob:0c90d49c59fb037a7baf632753d7b7c0ddf5cd96",
+    "complete-deterministic-corpus:56/56"
+  ],
+  "changed_files": {
+    "implementation_pull_request": [
+      "services/data-acquisition/docs/AGENT_HANDOFF_PROTOCOL.md",
+      "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000006.json",
+      "services/data-acquisition/tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py"
+    ],
+    "authoritative_coordination": [
+      "services/data-acquisition/coordination/v1/migrations/KU2D-M-000006.json",
+      "services/data-acquisition/tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py",
+      "services/data-acquisition/coordination/v1/results/KU2D-R-000057.json",
+      "services/data-acquisition/coordination/queue.json"
+    ]
+  },
+  "scope_declaration": {
+    "declaration_id": "KU2D-SCOPE-000003",
+    "entered_phases": ["P56-01", "P56-02", "P56-03"],
+    "required_fields": [
+      "domain",
+      "source",
+      "capability",
+      "acquisition_technique",
+      "authorized_files_or_modules",
+      "explicit_out_of_scope",
+      "validation_profile"
+    ],
+    "declared_scope_equals_actual_scope": true,
+    "scope_deviations": [],
+    "provider_requests": 0
+  },
+  "fixture_contract": {
+    "terminal_human_decision_id_set_removed": true,
+    "stable_anchor_retention": true,
+    "discovered_active_index_equality": true,
+    "explicit_human_provenance_checked": true,
+    "prompt_result_review_decision_chain_checked": true,
+    "count_only_validation": false,
+    "latest_id_assumption": false,
+    "future_complete_chain_acceptance": "passed",
+    "duplicate_future_decision_rejection": "passed",
+    "malformed_future_decision_rejection": "passed",
+    "orphan_future_decision_rejection": "passed",
+    "unrelated_future_chain_rejection": "passed",
+    "queue_transition_negatives_preserved": true
+  },
+  "cross_runtime_validation": {
+    "baseline_integration_runtime": "AH1-AH31 plus P56 A-E passed",
+    "extended_authoritative_runtime": "AH1-AH55 plus P56 A-E passed",
+    "extended_checks_execute_when_contract_present": true,
+    "runtime_validator_weakened": false,
+    "self_test_blob": "0c90d49c59fb037a7baf632753d7b7c0ddf5cd96",
+    "integration_blob_equals_coordination_blob": true
+  },
+  "proactive_h25_correction": {
+    "migration_id": "KU2D-M-000006",
+    "human_decision_id": "KU2D-H-000025",
+    "human_decision_blob": "360b5dccef8060e338f6a46e355b75842a450a0e",
+    "assistant_review_id": "KU2D-V-000056",
+    "assistant_review_blob": "2710c0a482aad5cc1b83ee728b3e54ef8590d8cd",
+    "historical_records_rewritten": false,
+    "general_human_gate_relaxed": false,
+    "authoritative_bundle_after_pin": "passed"
+  },
+  "technical_correction_journal": {
+    "journal_id": "KU2D-CJ-000006",
+    "status": "closed",
+    "event_range": "KU2D-TC-000023..KU2D-TC-000024",
+    "event_count": 2,
+    "resolved_count": 2,
+    "unresolved_count": 0,
+    "pending_commit_count": 0,
+    "related_commits": [
+      "1cfa395f2954b5cce594b6f31210a274cc369179",
+      "7d4684e6d1383d789efbc03cbce6b6df42ef1096"
+    ],
+    "provider_request_delta": 0,
+    "quota_delta": 0,
+    "sanitized": true
+  },
+  "invariants": {
+    "integration_baseline": "d79100e6b78895c72d161e3dcc3787d94a81c0fd",
+    "agent_handoff_protocol_blob_before_and_after": "17d192f4235d173a37e35c93315c204728c89477",
+    "data_acquisition_workflow_blob_before_and_after": "481a6f072c541831d562ab5f3dabc6fecd3ce143",
+    "adapter_registry_runtime_unchanged": true,
+    "run_manifest_runtime_unchanged": true,
+    "source_runner_runtime_unchanged": true,
+    "historical_coordination_records_rewritten": false,
+    "main_modified": false
+  },
+  "testing": {
+    "level_1": {
+      "status": "passed",
+      "python_compilation": "passed on Python 3.12",
+      "native_cj6_validator": "passed with two resolved events and no pending links",
+      "scope_and_invariant_audit": "passed"
+    },
+    "level_2": {
+      "status": "passed",
+      "baseline_fixture": "AH1-AH31 plus P56 A-E",
+      "authoritative_fixture": "AH1-AH55 plus P56 A-E",
+      "authoritative_complete_bundle": "passed",
+      "active_append_only_decisions": ["KU2D-H-000023", "KU2D-H-000024", "KU2D-H-000025"],
+      "historical_migration_count": 6
+    },
+    "level_3": {
+      "status": "passed",
+      "exact_head": "8c80498b5b746ff5f17a0128bed75c3945e1782f",
+      "exact_tree": "2a0f475677d3a513d39bdd633ed4fd541879a459",
+      "complete_deterministic_corpus": "56/56",
+      "yaml_parsing": "passed",
+      "merged_tree": "2a0f475677d3a513d39bdd633ed4fd541879a459",
+      "tested_tree_equals_merged_tree": true
+    }
+  },
+  "continuous_integration": {
+    "exact_head_checks": {
+      "data_acquisition_platform_ci": {"run_id": 33516235307, "run_number": 394, "conclusion": "success"},
+      "frontend_ci": {"run_id": 33516235378, "run_number": 1488, "conclusion": "success"},
+      "pr_browser_preview": {"run_id": 33516235392, "run_number": 292, "conclusion": "success"}
+    },
+    "post_merge_checks": {
+      "data_acquisition_platform_ci": {"run_id": 33516666648, "run_number": 395, "conclusion": "success"},
+      "frontend_ci": {"run_id": 33516666710, "run_number": 1489, "conclusion": "success"}
+    }
+  },
+  "publication": {
+    "implementation_branch": "codex/ku2d-coordination-fixture-maintenance-v1",
+    "pull_request": 73,
+    "ready_for_review": true,
+    "merge_method": "squash",
+    "merge_target": "integration/data-acquisition-platform",
+    "integration_commit": "fc611d408146830b47f9220ae85d04645512d4da",
+    "integration_tree": "2a0f475677d3a513d39bdd633ed4fd541879a459",
+    "main_head": "502ac05042a214add17fd4223387187ef05aa605",
+    "main_modified": false
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "live_request_count": 0,
+    "provider_requests": 0,
+    "documented_quota_units": 0,
+    "quota_delta": 0,
+    "live_smoke": "not_executed",
+    "git_diff_check": "passed",
+    "exact_tree_reuse_valid": true
+  },
+  "coordination_validation": {
+    "exact_test_blob_sync": "passed",
+    "authoritative_static_self_test": "passed",
+    "authoritative_complete_bundle": "passed",
+    "result_queue_transition": "passed: ready_for_codex to result_submitted with next actor assistant"
+  },
+  "remaining_limitations": [
+    "The integration branch retains its baseline Agent Handoff runtime; extended historical-migration tests execute only on a runtime that exposes that contract.",
+    "This maintenance changes deterministic coordination fixtures and documentation only; it adds no acquisition capability or source access.",
+    "No production approval, production write, scheduling authority, provider access or main change is included."
+  ],
+  "security_and_boundaries": {
+    "provider_credentials_used": false,
+    "contains_secret": false,
+    "contains_raw_payload": false,
+    "contains_request_url": false,
+    "contains_personal_data": false,
+    "production_store": false,
+    "production_approved": false,
+    "scheduler_action": null,
+    "main_modified": false
+  },
+  "closure": {
+    "completed": true,
+    "closure_target": "append_only_agent_handoff_fixture_maintenance",
+    "recommended_next_step": "Assistant reviews KU2D-R-000057. Do not replay P56 automatically or widen runtime, provider, production, scheduling or main authority."
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "implementation_branch": "codex/ku2d-coordination-fixture-maintenance-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000056.json",
+    "human_authority": "KU2D-H-000025",
+    "integration_baseline": "d79100e6b78895c72d161e3dcc3787d94a81c0fd"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

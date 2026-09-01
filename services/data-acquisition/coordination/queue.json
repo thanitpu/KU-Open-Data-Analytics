@@ -1,9 +1,9 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T20:37:30.000+07:00",
+  "updated_at": "2026-09-01T21:02:16.895+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
   "latest_prompt": "KU2D-P-000056",
-  "latest_result": "KU2D-R-000056",
+  "latest_result": "KU2D-R-000057",
   "latest_review": "KU2D-V-000056",
   "latest_human_decision": "KU2D-H-000025",
   "prompt_states": {
@@ -61,7 +61,7 @@
     "KU2D-P-000053": "reviewed",
     "KU2D-P-000054": "completed",
     "KU2D-P-000055": "completed",
-    "KU2D-P-000056": "ready_for_codex"
+    "KU2D-P-000056": "result_submitted"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -98,9 +98,9 @@
     "KU2D-P-000055"
   ],
   "next_action": {
-    "actor": "codex",
+    "actor": "assistant",
     "prompt_id": "KU2D-P-000056",
-    "result_id": null,
+    "result_id": "KU2D-R-000057",
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
@@ -119,5 +119,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "H25 authorizes P56 Coordination Protocol Fixture Maintenance. P55 remains completed and must not replay. P56 may change only the static Agent Handoff self-test, its documentation, CJ6/test aggregation if required, and append-only P56 coordination records. It must replace the brittle terminal Human Decision ID set with append-only-aware complete-chain validation while preserving duplicate, malformed, orphan and queue-transition failures. Acquisition runtime, workflows, source files, provider access, production, scheduling and main are prohibited. Use KU2D-SCOPE-000003, one Queue, one PR, KU2D-CJ-000006, exact-head full corpus and Data Acquisition CI. After merge, sync only the exact tested self-test blob to the authoritative coordination branch and rerun the real bundle. Expected Result is KU2D-R-000057; next actor is Codex."
+  "notes": "P56 completed the H25-authorized Coordination Protocol Fixture Maintenance. PR 73 passed the exact-head 56/56 corpus and CI, then squash-merged to integration as fc611d408146830b47f9220ae85d04645512d4da with the exact tested tree 2a0f475677d3a513d39bdd633ed4fd541879a459. The exact self-test blob 0c90d49c59fb037a7baf632753d7b7c0ddf5cd96 was synced to this authoritative branch and passed AH1-AH55 plus P56 A-E and the complete bundle. Append-only KU2D-M-000006 exact-pins proactive H25/V56 without weakening human-authority rules. KU2D-CJ-000006 closed 2/2; provider requests and quota delta remained zero. KU2D-R-000057 awaits assistant review; do not replay P56 automatically."
 }
