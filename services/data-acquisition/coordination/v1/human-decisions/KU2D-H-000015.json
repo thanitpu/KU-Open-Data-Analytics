@@ -1,0 +1,47 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000015",
+  "prompt_id": "KU2D-P-000041",
+  "result_id": "KU2D-R-000041",
+  "review_id": "KU2D-V-000041",
+  "decided_at": "2026-09-01T09:17:13.192+07:00",
+  "decided_by": {
+    "actor": "human",
+    "actor_id": "project_owner"
+  },
+  "decision": "confirmed",
+  "reason_note": "Project owner explicitly authorizes one exact bounded YouTube Q-Diving Identity Discovery run under KU2D-V-000041, bound to immutable integration commit 453d75ff23e5fdd78e4a8d36f77cd7185db99059. This permits a separately reviewed one-file main launcher promotion, one manual workflow dispatch, runtime use of KU2D_YOUTUBE_API_KEY, at most two search.list calls, one videos.list call and 201 documented quota units, followed by retrieval and review of sanitized candidate evidence. It does not authorize comments, captions, transcript content, OAuth, browser automation, scraping, automatic Human Review completion, candidate approval, production storage, scheduling, broader profiles/pagination/retries/quota, or authority promotion.",
+  "authorized_scope": {
+    "operation": "youtube_qdiving_identity_discovery",
+    "profiles": [
+      "QYT-BEGINNER-KOH-TAO-TH",
+      "QYT-BEGINNER-EN"
+    ],
+    "max_results_per_profile": 5,
+    "max_pages_per_profile": 1,
+    "max_search_list_requests": 2,
+    "max_videos_list_requests": 1,
+    "max_documented_quota_units": 201,
+    "comments_acquired": false,
+    "captions_called": false,
+    "transcript_text_acquired": false,
+    "oauth_used": false,
+    "production_store": false,
+    "scheduler_action": null
+  },
+  "authorized_execution_revision": "453d75ff23e5fdd78e4a8d36f77cd7185db99059",
+  "authorized_execution_branch": "integration/data-acquisition-platform",
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_context": "User repeated the exact confirmation requested by KU2D-V-000041, including the bounded operation and immutable integration commit.",
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "depends_on_review": "KU2D-V-000041",
+    "depends_on_merge": "453d75ff23e5fdd78e4a8d36f77cd7185db99059"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
