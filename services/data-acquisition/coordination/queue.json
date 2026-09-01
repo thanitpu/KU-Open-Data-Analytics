@@ -1,11 +1,11 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T11:03:51.7441165+07:00",
+  "updated_at": "2026-09-01T11:13:00.000+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
-  "latest_prompt": "KU2D-P-000048",
+  "latest_prompt": "KU2D-P-000049",
   "latest_result": "KU2D-R-000048",
-  "latest_review": "KU2D-V-000047",
-  "latest_human_decision": "KU2D-H-000017",
+  "latest_review": "KU2D-V-000048",
+  "latest_human_decision": "KU2D-H-000018",
   "prompt_states": {
     "KU2D-P-000001": "completed",
     "KU2D-P-000002": "completed",
@@ -53,7 +53,8 @@
     "KU2D-P-000045": "reviewed",
     "KU2D-P-000046": "reviewed",
     "KU2D-P-000047": "reviewed",
-    "KU2D-P-000048": "result_submitted"
+    "KU2D-P-000048": "reviewed",
+    "KU2D-P-000049": "ready_for_codex"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -88,11 +89,11 @@
     "KU2D-P-000044"
   ],
   "next_action": {
-    "actor": "assistant",
-    "prompt_id": "KU2D-P-000048",
-    "result_id": "KU2D-R-000048",
+    "actor": "codex",
+    "prompt_id": "KU2D-P-000049",
+    "result_id": "KU2D-R-000049",
     "review_id": null,
-    "human_decision_id": null,
+    "human_decision_id": "KU2D-H-000018",
     "replay_requested": false
   },
   "branch_handoff": {
@@ -109,5 +110,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "KU2D-R-000048 stopped P48 fail-closed before any remote promotion or dispatch. The immutable acquisition validator accepts H17 and its scope exactly, and a one-file H17 launcher commit exists locally only, but Agent Handoff v1 rejects V47's unsupported review_result and H17's non-canonical decision_source. Append-only records and immutable authority anchors were not rewritten. The promotion branch was not pushed, no PR was opened, main was untouched, and there were zero secret accesses, YouTube requests and quota units. Assistant review is next; do not replay or dispatch P48 until a protocol-valid append-only authority path is queued."
+  "notes": "Queue objective: complete the protocol-valid H18 YouTube recovery in one guarded execution, return sanitized closure evidence, and export one normalized KU2D Acquisition Experience Record. P49 must preflight the full corpus before any remote mutation, may merge only an exact-head one-file launcher anchor PR, may dispatch exactly once, and may not retry automatically."
 }
