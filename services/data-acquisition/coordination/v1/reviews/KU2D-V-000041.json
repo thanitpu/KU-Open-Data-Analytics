@@ -1,0 +1,79 @@
+{
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
+  "review_id": "KU2D-V-000041",
+  "prompt_id": "KU2D-P-000041",
+  "result_id": "KU2D-R-000041",
+  "reviewed_at": "2026-09-01T09:14:00.000+07:00",
+  "reviewed_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review",
+    "human_authority_claimed": false
+  },
+  "review_result": "human_decision_required",
+  "requires_human_decision": true,
+  "reason_code": "integration_merge_accepted_live_youtube_discovery_requires_human_authority",
+  "explanation": "Accepted R41. PR #64 exact head 593ddaa54d5eb082ad0f71007f5614e218ed2d16 was merged into integration/data-acquisition-platform as immutable commit 453d75ff23e5fdd78e4a8d36f77cd7185db99059 after all three exact-head checks passed. The remaining next step is not a technical code-correctness decision: it would authorize a real bounded YouTube Data API discovery run, secret use at runtime, and up to 201 documented quota units. The smallest safe continuation is to bind a new confirmed Human Decision to the exact integration commit and unchanged H12 scope, then prepare and review a one-file main launcher promotion before one manual dispatch. This review does not itself authorize main mutation, trust-anchor replacement, dispatch, secret access, API requests, quota use, comments, captions, transcripts, Human Review, candidate approval, production storage, scheduling, or authority promotion.",
+  "evidence_references": [
+    "KU2D-R-000041",
+    "KU2D-P-000041",
+    "KU2D-H-000013",
+    "KU2D-H-000014",
+    "PR:#64",
+    "merged-pr-head:593ddaa54d5eb082ad0f71007f5614e218ed2d16",
+    "integration-merge:453d75ff23e5fdd78e4a8d36f77cd7185db99059",
+    "workflow:Data Acquisition Platform CI#380",
+    "workflow:Frontend CI#1367",
+    "workflow:PR Browser Preview Link#281"
+  ],
+  "requested_human_decision": {
+    "operation": "authorize_exact_bounded_youtube_qdiving_identity_discovery",
+    "authorized_execution_revision": "453d75ff23e5fdd78e4a8d36f77cd7185db99059",
+    "authorized_execution_branch": "integration/data-acquisition-platform",
+    "authorized_scope": {
+      "operation": "youtube_qdiving_identity_discovery",
+      "profiles": [
+        "QYT-BEGINNER-KOH-TAO-TH",
+        "QYT-BEGINNER-EN"
+      ],
+      "max_results_per_profile": 5,
+      "max_pages_per_profile": 1,
+      "max_search_list_requests": 2,
+      "max_videos_list_requests": 1,
+      "max_documented_quota_units": 201,
+      "comments_acquired": false,
+      "captions_called": false,
+      "transcript_text_acquired": false,
+      "oauth_used": false,
+      "production_store": false,
+      "scheduler_action": null
+    },
+    "permitted_follow_on": [
+      "record the exact confirmed Human Decision on the authoritative coordination branch",
+      "prepare and technically review a one-file main promotion that replaces only the three launcher trust-anchor placeholders",
+      "merge that one-file launcher promotion after technical checks under the delegated technical-review policy",
+      "manually dispatch the launcher once with the exact decision ID, execution SHA and authorization-record SHA",
+      "retrieve and review sanitized identity-discovery evidence"
+    ],
+    "excluded_authority": [
+      "comments, captions or transcript acquisition",
+      "OAuth, browser automation or scraping",
+      "automatic candidate approval or Human Review completion",
+      "production storage or scheduling",
+      "broader profiles, pagination, retries or quota",
+      "authority promotion beyond candidate discovery"
+    ]
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "target_pr": 64,
+    "reviewed_result": "KU2D-R-000041",
+    "reviewed_merge_commit": "453d75ff23e5fdd78e4a8d36f77cd7185db99059"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
