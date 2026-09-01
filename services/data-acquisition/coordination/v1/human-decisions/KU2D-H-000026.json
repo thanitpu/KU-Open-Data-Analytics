@@ -1,0 +1,74 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000026",
+  "prompt_id": "KU2D-P-000056",
+  "result_id": "KU2D-R-000057",
+  "review_id": "KU2D-V-000057",
+  "decided_at": "2026-09-01T21:10:00.000+07:00",
+  "decided_by": {
+    "actor": "human",
+    "actor_id": "project_owner"
+  },
+  "decision": "confirmed",
+  "reason_note": "The project owner explicitly authorized P57 — TikTok Acquisition Breakthrough & MTC after P56 completion: try multiple compliant public/official techniques for Diving lesson and Diving equipment until real data is obtained or a hard policy boundary is reached; verify every discovered URL on an official TikTok public surface; retain at most five valid records per topic; prove live retrieval twice; use one Queue, one PR, KU2D-CJ-000007 and a new immutable registry snapshot; prohibit login, cookies, credentials, CAPTCHA/anti-bot bypass, paid scraping, production write, recurring scheduling and main modification.",
+  "authorized_scope": {
+    "operation": "open_and_execute_p57_tiktok_acquisition_breakthrough_and_mtc",
+    "target_prompt": "KU2D-P-000057",
+    "topics": [
+      "Diving lesson",
+      "Diving equipment"
+    ],
+    "public_or_official_surfaces_only": true,
+    "every_discovered_url_officially_verified": true,
+    "maximum_new_outbound_requests": 40,
+    "prior_p54_requests_preserved_in_ledger": 5,
+    "maximum_retained_records_per_topic": 5,
+    "repeated_live_retrieval_rounds_required": 2,
+    "one_queue": true,
+    "one_pull_request": true,
+    "correction_journal": "KU2D-CJ-000007",
+    "immutable_registry_snapshot_required": "V3",
+    "merge_target": "integration/data-acquisition-platform",
+    "technically_green_squash_merge_authorized": true,
+    "production_store": false,
+    "scheduler_action": null,
+    "main_modification": false
+  },
+  "phase_package_scope_policy": {
+    "required_for_every_phase_and_package": true,
+    "required_fields": [
+      "domain",
+      "source",
+      "capability",
+      "acquisition_technique",
+      "authorized_files_or_modules",
+      "explicit_out_of_scope",
+      "validation_profile"
+    ],
+    "current_declaration": "KU2D-SCOPE-000004",
+    "enforcement": "Every P57 phase must declare all seven fields and may narrow but never widen authority."
+  },
+  "workflow_authority": {
+    "create_prompt": "KU2D-P-000057",
+    "next_actor": "codex",
+    "assistant_intermediate_review_required": false,
+    "one_pull_request": true,
+    "technically_green_squash_merge_to_integration_authorized": true,
+    "immutable_v1_v2_registry_and_historical_manifests_must_not_be_rewritten": true
+  },
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_context": "The project owner supplied the exact P57 strategy, verification and prohibition boundaries before P56 finished and directed that P57 be materialized only after P56 closure.",
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_review": "KU2D-V-000057",
+    "depends_on_result": "KU2D-R-000057",
+    "integration_baseline": "fc611d408146830b47f9220ae85d04645512d4da"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
