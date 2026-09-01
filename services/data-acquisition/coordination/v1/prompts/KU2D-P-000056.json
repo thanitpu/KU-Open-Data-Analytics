@@ -1,0 +1,420 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000056",
+  "created_at": "2026-09-01T20:35:29.000+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+  "objective": "Replace the brittle terminal Human Decision ID assertion in the static Agent Handoff self-test with append-only-aware repository-history validation, while preserving all fail-closed identity, provenance, chain and queue-transition checks and changing no acquisition runtime.",
+  "queue_purpose_summary": "ซ่อม coordination test fixture ให้รองรับ Human Decision ใหม่โดยอัตโนมัติ ไม่ต้องแก้ expected ID list ทุกครั้ง และไม่แตะ acquisition runtime.",
+  "phase_package_scope_declaration": {
+    "declaration_id": "KU2D-SCOPE-000003",
+    "package_id": "KU2D-P-000056",
+    "package_name": "Coordination Protocol Fixture Maintenance",
+    "domain": {
+      "id": "development_governance.coordination",
+      "label": "KU2D Development Governance — Coordination Protocol"
+    },
+    "source": {
+      "id": "repository_coordination_history",
+      "label": "Append-only Agent Handoff records in the KU2D repository"
+    },
+    "capability": [
+      "append_only_history_discovery",
+      "current_bundle_validation",
+      "future_human_decision_tolerance",
+      "duplicate_and_orphan_rejection",
+      "queue_transition_validation"
+    ],
+    "acquisition_technique": {
+      "status": "selected",
+      "selected_technique": "deterministic filesystem record discovery plus fail-closed schema/chain validation",
+      "provider_requests": 0
+    },
+    "authorized_files_or_modules": [
+      "services/data-acquisition/tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py",
+      "services/data-acquisition/docs/AGENT_HANDOFF_PROTOCOL.md",
+      "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000006.json",
+      "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test aggregation only if required)",
+      "services/data-acquisition/coordination/v1/** and coordination/queue.json (append-only P56 handoff records only)"
+    ],
+    "explicit_out_of_scope": [
+      "services/data-acquisition/acquisition/agent_handoff_protocol.py",
+      "services/data-acquisition/acquisition/** runtime code",
+      "services/data-acquisition/api/**",
+      "services/data-acquisition/control_plane/**",
+      "services/data-acquisition/repository/**",
+      "services/data-acquisition/service/**",
+      ".github/workflows/**",
+      "all source adapters, manifests, fixtures and provider tools",
+      "provider access, credentials, quota or live smoke",
+      "rewriting any historical Prompt, Result, Review, Human Decision or Branch Handoff",
+      "production write, scheduling or main modification"
+    ],
+    "validation_profile": [
+      "seven-field scope validation",
+      "static Agent Handoff self-test",
+      "current authoritative append-only bundle validation including H23-H25",
+      "synthetic append-only future Human Decision acceptance",
+      "duplicate ID, malformed ID, orphan-chain and queue-transition negative tests",
+      "declared-versus-actual diff check",
+      "exact-head full deterministic corpus",
+      "Data Acquisition CI",
+      "one squash PR to integration",
+      "post-merge verification",
+      "exact tested self-test blob sync to the authoritative coordination branch",
+      "post-sync authoritative static self-test and bundle validation"
+    ]
+  },
+  "phase_declaration_requirements": {
+    "required_fields": [
+      "domain",
+      "source",
+      "capability",
+      "acquisition_technique",
+      "authorized_files_or_modules",
+      "explicit_out_of_scope",
+      "validation_profile"
+    ],
+    "phases": [
+      {
+        "phase_id": "P56-01",
+        "phase": "fixture_contract_definition",
+        "declaration": {
+          "domain": {
+            "id": "development_governance.coordination",
+            "label": "KU2D Development Governance — Coordination Protocol"
+          },
+          "source": {
+            "id": "repository_coordination_history",
+            "label": "Append-only Agent Handoff records in the KU2D repository"
+          },
+          "capability": [
+            "append_only_history_discovery",
+            "future_human_decision_tolerance"
+          ],
+          "acquisition_technique": {
+            "status": "selected",
+            "selected_technique": "deterministic filesystem record discovery plus fail-closed schema/chain validation",
+            "provider_requests": 0
+          },
+          "authorized_files_or_modules": [
+            "services/data-acquisition/tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py",
+            "services/data-acquisition/docs/AGENT_HANDOFF_PROTOCOL.md",
+            "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000006.json",
+            "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test aggregation only if required)",
+            "services/data-acquisition/coordination/v1/** and coordination/queue.json (append-only P56 handoff records only)"
+          ],
+          "explicit_out_of_scope": [
+            "services/data-acquisition/acquisition/agent_handoff_protocol.py",
+            "services/data-acquisition/acquisition/** runtime code",
+            "services/data-acquisition/api/**",
+            "services/data-acquisition/control_plane/**",
+            "services/data-acquisition/repository/**",
+            "services/data-acquisition/service/**",
+            ".github/workflows/**",
+            "all source adapters, manifests, fixtures and provider tools",
+            "provider access, credentials, quota or live smoke",
+            "rewriting any historical Prompt, Result, Review, Human Decision or Branch Handoff",
+            "production write, scheduling or main modification"
+          ],
+          "validation_profile": [
+            "seven-field scope validation",
+            "static Agent Handoff self-test",
+            "current authoritative append-only bundle validation including H23-H25",
+            "synthetic append-only future Human Decision acceptance",
+            "duplicate ID, malformed ID, orphan-chain and queue-transition negative tests",
+            "declared-versus-actual diff check",
+            "exact-head full deterministic corpus",
+            "Data Acquisition CI",
+            "one squash PR to integration",
+            "post-merge verification",
+            "exact tested self-test blob sync to the authoritative coordination branch",
+            "post-sync authoritative static self-test and bundle validation"
+          ]
+        },
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow but never omit a field, widen authority, change runtime acquisition or rewrite coordination history.",
+        "completion_evidence": "Persist the validated phase declaration and declared-versus-actual scope."
+      },
+      {
+        "phase_id": "P56-02",
+        "phase": "negative_and_repository_bundle_tests",
+        "declaration": {
+          "domain": {
+            "id": "development_governance.coordination",
+            "label": "KU2D Development Governance — Coordination Protocol"
+          },
+          "source": {
+            "id": "repository_coordination_history",
+            "label": "Append-only Agent Handoff records in the KU2D repository"
+          },
+          "capability": [
+            "current_bundle_validation",
+            "duplicate_and_orphan_rejection",
+            "queue_transition_validation"
+          ],
+          "acquisition_technique": {
+            "status": "selected",
+            "selected_technique": "deterministic filesystem record discovery plus fail-closed schema/chain validation",
+            "provider_requests": 0
+          },
+          "authorized_files_or_modules": [
+            "services/data-acquisition/tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py",
+            "services/data-acquisition/docs/AGENT_HANDOFF_PROTOCOL.md",
+            "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000006.json",
+            "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test aggregation only if required)",
+            "services/data-acquisition/coordination/v1/** and coordination/queue.json (append-only P56 handoff records only)"
+          ],
+          "explicit_out_of_scope": [
+            "services/data-acquisition/acquisition/agent_handoff_protocol.py",
+            "services/data-acquisition/acquisition/** runtime code",
+            "services/data-acquisition/api/**",
+            "services/data-acquisition/control_plane/**",
+            "services/data-acquisition/repository/**",
+            "services/data-acquisition/service/**",
+            ".github/workflows/**",
+            "all source adapters, manifests, fixtures and provider tools",
+            "provider access, credentials, quota or live smoke",
+            "rewriting any historical Prompt, Result, Review, Human Decision or Branch Handoff",
+            "production write, scheduling or main modification"
+          ],
+          "validation_profile": [
+            "seven-field scope validation",
+            "static Agent Handoff self-test",
+            "current authoritative append-only bundle validation including H23-H25",
+            "synthetic append-only future Human Decision acceptance",
+            "duplicate ID, malformed ID, orphan-chain and queue-transition negative tests",
+            "declared-versus-actual diff check",
+            "exact-head full deterministic corpus",
+            "Data Acquisition CI",
+            "one squash PR to integration",
+            "post-merge verification",
+            "exact tested self-test blob sync to the authoritative coordination branch",
+            "post-sync authoritative static self-test and bundle validation"
+          ]
+        },
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow but never omit a field, widen authority, change runtime acquisition or rewrite coordination history.",
+        "completion_evidence": "Persist the validated phase declaration and declared-versus-actual scope."
+      },
+      {
+        "phase_id": "P56-03",
+        "phase": "integration_ci_and_coordination_sync",
+        "declaration": {
+          "domain": {
+            "id": "development_governance.coordination",
+            "label": "KU2D Development Governance — Coordination Protocol"
+          },
+          "source": {
+            "id": "repository_coordination_history",
+            "label": "Append-only Agent Handoff records in the KU2D repository"
+          },
+          "capability": [
+            "append_only_history_discovery",
+            "current_bundle_validation",
+            "future_human_decision_tolerance",
+            "duplicate_and_orphan_rejection",
+            "queue_transition_validation"
+          ],
+          "acquisition_technique": {
+            "status": "selected",
+            "selected_technique": "deterministic filesystem record discovery plus fail-closed schema/chain validation",
+            "provider_requests": 0
+          },
+          "authorized_files_or_modules": [
+            "services/data-acquisition/tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py",
+            "services/data-acquisition/docs/AGENT_HANDOFF_PROTOCOL.md",
+            "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000006.json",
+            "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test aggregation only if required)",
+            "services/data-acquisition/coordination/v1/** and coordination/queue.json (append-only P56 handoff records only)"
+          ],
+          "explicit_out_of_scope": [
+            "services/data-acquisition/acquisition/agent_handoff_protocol.py",
+            "services/data-acquisition/acquisition/** runtime code",
+            "services/data-acquisition/api/**",
+            "services/data-acquisition/control_plane/**",
+            "services/data-acquisition/repository/**",
+            "services/data-acquisition/service/**",
+            ".github/workflows/**",
+            "all source adapters, manifests, fixtures and provider tools",
+            "provider access, credentials, quota or live smoke",
+            "rewriting any historical Prompt, Result, Review, Human Decision or Branch Handoff",
+            "production write, scheduling or main modification"
+          ],
+          "validation_profile": [
+            "seven-field scope validation",
+            "static Agent Handoff self-test",
+            "current authoritative append-only bundle validation including H23-H25",
+            "synthetic append-only future Human Decision acceptance",
+            "duplicate ID, malformed ID, orphan-chain and queue-transition negative tests",
+            "declared-versus-actual diff check",
+            "exact-head full deterministic corpus",
+            "Data Acquisition CI",
+            "one squash PR to integration",
+            "post-merge verification",
+            "exact tested self-test blob sync to the authoritative coordination branch",
+            "post-sync authoritative static self-test and bundle validation"
+          ]
+        },
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow but never omit a field, widen authority, change runtime acquisition or rewrite coordination history.",
+        "completion_evidence": "Persist the validated phase declaration and declared-versus-actual scope."
+      }
+    ],
+    "rules": [
+      "All seven fields are mandatory before each phase.",
+      "Authorized paths are a strict allowlist.",
+      "The self-test must not hard-code a terminal/latest Human Decision ID set.",
+      "Repository discovery may accept valid append-only growth but must still fail on duplicate IDs, malformed IDs, orphan chains, inconsistent prompt/result/review/decision links and invalid queue transitions.",
+      "Historical coordination JSON records are immutable and must not be edited.",
+      "agent_handoff_protocol.py and all acquisition runtime are read-only invariants.",
+      "The exact tested self-test blob merged to integration must be copied to the authoritative coordination branch after merge; no other implementation file may be synced.",
+      "Any scope widening stops for new Human authority."
+    ]
+  },
+  "defect_acceptance": {
+    "current_failure": "Authoritative static test enumerates Human Decisions only through H22 and rejects valid H23-H25 append-only growth.",
+    "required_fix": [
+      "Derive the current decision set from discovered valid records or assert stable historical anchors plus monotonic append-only properties.",
+      "Do not weaken validate_agent_handoff_bundle.",
+      "Add a deterministic future-decision case that passes only with a complete valid chain.",
+      "Add negative cases for orphan, duplicate, malformed and unrelated Human Decisions.",
+      "Prove the current authoritative bundle passes without updating an expected terminal ID list."
+    ]
+  },
+  "testing_policy": {
+    "level_1": [
+      "fixture helper tests",
+      "future valid Human Decision case",
+      "duplicate/malformed/orphan negatives"
+    ],
+    "level_2": [
+      "authoritative repository bundle with H23-H25",
+      "AH1-AH31 or incremented suite",
+      "scope and invariant validation"
+    ],
+    "level_3": [
+      "full deterministic corpus on exact PR head"
+    ],
+    "rerun_if_test_docs_journal_or_declaration_changes": true,
+    "reuse_only_if_merge_tree_equals_tested_tree": true
+  },
+  "invariant_policy": {
+    "byte_identical": [
+      "services/data-acquisition/acquisition/agent_handoff_protocol.py",
+      "services/data-acquisition/acquisition/adapter_registry.py",
+      "services/data-acquisition/acquisition/run_manifest.py",
+      "services/data-acquisition/acquisition/source_runner.py",
+      ".github/workflows/data-acquisition-platform-ci.yml"
+    ],
+    "behavioral": [
+      "No provider request",
+      "No production write",
+      "No scheduling",
+      "No main modification",
+      "No historical record rewrite"
+    ]
+  },
+  "technical_correction_policy": {
+    "journal_id": "KU2D-CJ-000006",
+    "next_event_id": "KU2D-TC-000023",
+    "multiple_corrections_per_queue": true,
+    "one_pr": true,
+    "pr_or_queue_per_correction": false,
+    "finalize_all_commit_links_before_pr_or_closure": true
+  },
+  "implementation_and_merge": {
+    "implementation_branch": "codex/ku2d-coordination-fixture-maintenance-v1",
+    "target_branch": "integration/data-acquisition-platform",
+    "integration_baseline": "d79100e6b78895c72d161e3dcc3787d94a81c0fd",
+    "one_coherent_pr": true,
+    "exact_head_required": true,
+    "data_acquisition_ci_required": true,
+    "technically_green_squash_merge_authorized": true,
+    "post_merge_verification_required": true,
+    "coordination_branch_exact_blob_sync_authorized": true,
+    "main_modification_authorized": false
+  },
+  "instructions": [
+    "Validate KU2D-SCOPE-000003 and each phase declaration before editing.",
+    "Inspect AH18 and the authoritative H23-H25 history.",
+    "Make the fixture append-only-aware without changing agent_handoff_protocol.py.",
+    "Retain and extend negative tests; do not replace exact validation with a count-only assertion.",
+    "Run targeted tests, authoritative bundle validation and one exact-head full corpus.",
+    "Open one PR, require Data Acquisition CI, squash-merge to integration, then sync only the exact tested self-test blob to the authoritative coordination branch.",
+    "Rerun the authoritative static self-test and complete bundle after sync.",
+    "Close KU2D-CJ-000006 and submit KU2D-R-000057 with exact head/tree, PR/CI/merge, blob equality, invariants and zero-provider evidence."
+  ],
+  "stop_conditions": [
+    "agent_handoff_protocol.py or acquisition runtime must change",
+    "historical coordination record must be rewritten",
+    "validation would be weakened to count-only or latest-ID assumptions",
+    "workflow change required",
+    "provider/production/scheduling/main authority required",
+    "exact test blob cannot be preserved across integration and coordination branches",
+    "scope must widen"
+  ],
+  "definition_of_done": [
+    "all entered phases have seven-field declarations",
+    "static fixture is append-only-aware",
+    "current H23-H25 authoritative bundle passes",
+    "future valid Human Decision passes only with a complete chain",
+    "duplicate/malformed/orphan/transition negatives remain fail-closed",
+    "runtime and workflow invariants remain byte-identical",
+    "CJ6 closes with no pending links",
+    "exact-head full corpus and Data Acquisition CI pass",
+    "one PR merges to integration",
+    "exact tested self-test blob is synced to coordination branch and passes there",
+    "provider/quota remain zero",
+    "KU2D-R-000057 submitted"
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000057",
+    "next_actor": "assistant",
+    "closure_target": "append_only_agent_handoff_fixture_maintenance",
+    "provider_request_limit": 0
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_prompt": "KU2D-P-000055",
+    "depends_on_result": "KU2D-R-000056",
+    "depends_on_review": "KU2D-V-000056",
+    "depends_on_human_decision": "KU2D-H-000025",
+    "integration_baseline": "d79100e6b78895c72d161e3dcc3787d94a81c0fd"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
