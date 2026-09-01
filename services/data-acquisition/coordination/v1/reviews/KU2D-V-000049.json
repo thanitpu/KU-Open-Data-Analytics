@@ -1,0 +1,68 @@
+{
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
+  "review_id": "KU2D-V-000049",
+  "prompt_id": "KU2D-P-000049",
+  "result_id": "KU2D-R-000049",
+  "reviewed_at": "2026-09-01T11:22:59.619+07:00",
+  "reviewed_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review",
+    "human_authority_claimed": false
+  },
+  "review_result": "accepted",
+  "requires_human_decision": false,
+  "reason_code": "p49_blocked_result_accepted_for_source_completion_migration",
+  "explanation": "Accepted R49 as an accurate fail-closed result. V48 and H18 validate individually, H18 exactly matches the immutable acquisition scope, and KU2D-X-000001 is a valid sanitized ML-ready experience record. P49 correctly performed no remote mutation or dispatch because the legacy full-bundle validator still treats immutable historical V47 as an active v1 record. The user explicitly directs the project to preserve P49 and begin a YouTube Source Completion Queue at P50. P50 may implement a narrowly pinned append-only migration mechanism that preserves V47/H17 as historical failure evidence, prevents them from acting as current authority, validates their exact hashes and replacements, and restores a green active bundle without rewriting history.",
+  "evidence_references": [
+    "KU2D-R-000049",
+    "KU2D-P-000049",
+    "KU2D-V-000048",
+    "KU2D-H-000018",
+    "experience:KU2D-X-000001",
+    "historical-invalid-review:KU2D-V-000047",
+    "historical-invalid-decision:KU2D-H-000017",
+    "provider-request-count:0",
+    "documented-quota-units:0"
+  ],
+  "authorized_next_step": {
+    "operation": "youtube_source_completion_queue",
+    "prompt_id": "KU2D-P-000050",
+    "internal_phases": [
+      "protocol_migration",
+      "preflight",
+      "implementation",
+      "ci_and_merge",
+      "bounded_acquisition",
+      "sanitized_evidence",
+      "ml_experience",
+      "closure"
+    ],
+    "assistant_intermediate_review_required": false,
+    "technical_self_correction_attempts": 3,
+    "preprovider_dispatch_attempts": 2,
+    "provider_reached_attempts": 1,
+    "cumulative_provider_scope_change": false,
+    "automatic_retry_after_provider_reached": false
+  },
+  "migration_safety_contract": {
+    "rewrite_historical_records": false,
+    "hash_pin_every_exception": true,
+    "require_canonical_replacement": true,
+    "migrated_records_may_not_authorize_execution": true,
+    "unlisted_invalid_records_fail_closed": true,
+    "audit_visibility_preserved": true
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "reviewed_result": "KU2D-R-000049",
+    "explicit_user_instruction": "เก็บงาน P49 จากผลของ codex แล้ว ลองทำ Source Completion Queue กับ youtube ต่อเริ่มต้นที่ P50 เลยครับ",
+    "standing_human_authority": "KU2D-H-000016"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
