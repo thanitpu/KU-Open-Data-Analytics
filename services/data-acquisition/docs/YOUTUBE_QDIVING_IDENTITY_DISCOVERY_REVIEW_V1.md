@@ -1,4 +1,12 @@
-# Q-Diving YouTube Identity Discovery & Human Review Preparation v1
+# Q-Diving YouTube Identity Discovery & Analysis Handoff
+
+## Active boundary (P51)
+
+The active Acquisition contract no longer selects a semantic subset. Every technically valid, authorized, policy-compliant, provenance-bearing and sanitized identity is `accepted_for_analysis`; Analysis owns relevance, quality, ranking, analytical deduplication and final inclusion. `selection_target` and the historical Human Review fields remain readable in earlier evidence but are not active Acquisition completion gates.
+
+The completed P50 batch is staged intact in `KU2D-AI-000001`: all ten candidates remain retrievable from immutable packet `KU2D-YT-QDIVING-CANDIDATES-000001`, and every unassessed quality field is `null`. Production approval and scheduling remain disabled.
+
+The sections below describe the historical P38 execution-time contract and are retained for provenance.
 
 ## Outcome
 
@@ -14,12 +22,12 @@ No comments/replies, captions, transcript text, OAuth, browser/Edge, HTML scrapi
 
 ## Offline readiness
 
-The new pure validator and fixtures cover canonical retention, duplicate IDs across profiles, unavailable/deleted and private candidates, conflicting channel linkage, quota stop, zero-result queries, bounded truncation and non-authoritative Human Review package generation. Candidate suggestions preserve canonical ID, channel, title, publication time, query/profile provenance, observation time, public status, language signals and uncertainty. They remain `pending` and unusable until a human adjudicates them.
+The pure validator and fixtures cover canonical retention, duplicate IDs across profiles, unavailable/deleted and private candidates, conflicting channel linkage, quota stop, zero-result queries, bounded truncation and Analysis handoff generation. Candidate observations preserve canonical ID, channel, title, publication time, query/profile provenance, observation time, public status, language signals and uncertainty. Under the active contract they are accepted for Analysis without a semantic or production claim.
 
-The durable Reviewed Identity Registry remains unchanged at zero usable identities. Discovery success, Human Review completion and later metadata/comments acquisition are separate gates.
+The durable legacy Reviewed Identity Registry remains readable, but its usable count is not an active Acquisition completion gate. Discovery acceptance, Analysis inclusion and any later production/monitoring authority remain separate decisions.
 
 ## Exact blocker and next action
 
-The shortest safe next action is to provide `KU2D_YOUTUBE_API_KEY` through the existing local environment mechanism without placing it in repository files, commands, logs or review records, then issue a new explicit continuation that authorizes rerunning this exact two-profile, one-page, 201-unit plan. If at least two credible candidates are retained, a human must still select exactly two and create explicit Human Review records before they can enter an executable metadata/comments manifest.
+This historical blocker was resolved by P50. P51 does not replay discovery or use the credential: it hands all ten sanitized P50 candidates to Analysis under the versioned Acquisition-to-Analysis contract. Any broader provider call still requires separate scope/quota authority, and production or monitoring remains separately governed.
 
 Do not broaden profiles or substitute another source when yield is low. Do not automatically rerun.

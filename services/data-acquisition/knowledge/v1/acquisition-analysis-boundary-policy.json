@@ -1,0 +1,56 @@
+{
+  "schema": "ku2d.acquisition-analysis-boundary-policy.v1",
+  "policy_id": "KU2D-KP-000003",
+  "effective_at": "2026-09-01T12:16:00.000+07:00",
+  "handoff_schema": "ku2d.acquisition-analysis-handoff.v1",
+  "acquisition_acceptance": {
+    "status": "accepted_for_analysis",
+    "required_criteria": [
+      "technically_valid",
+      "authorized",
+      "policy_compliant",
+      "provenance_bearing",
+      "sanitized"
+    ],
+    "does_not_assert": [
+      "semantic_relevance",
+      "quality",
+      "analytical_rank",
+      "analytical_deduplication",
+      "final_inclusion",
+      "production_readiness"
+    ],
+    "exact_technical_deduplication_only": true,
+    "traceability_required": true
+  },
+  "analysis_owns": [
+    "semantic_relevance",
+    "quality",
+    "analytical_rank",
+    "analytical_deduplication",
+    "final_inclusion"
+  ],
+  "acquisition_human_gate_retained_only_for": [
+    "legal_or_policy_ambiguity",
+    "restricted_or_personal_data",
+    "material_provider_scope_or_quota_expansion",
+    "new_spending",
+    "production_write",
+    "elevated_authority"
+  ],
+  "historical_compatibility": {
+    "legacy_human_review_fields_readable": true,
+    "legacy_selection_target_is_active_gate": false,
+    "historical_records_rewritten": false,
+    "legacy_fields_grant_current_authority": false
+  },
+  "boundaries": {
+    "provider_request_authorized": false,
+    "production_authorized": false,
+    "scheduler_action": null
+  },
+  "provenance": {
+    "human_decision": "KU2D-H-000020",
+    "prompt": "KU2D-P-000051"
+  }
+}

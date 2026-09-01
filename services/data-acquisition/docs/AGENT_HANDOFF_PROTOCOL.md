@@ -112,6 +112,16 @@ be `confirmed`; an unlisted record, requested-decision case, duplicate pin, or
 any ID/content/hash mismatch fails closed. This narrow allowlist does not alter
 Queue actor rules or allow an assistant to claim human authority.
 
+An exact `review_flag_compatibility` entry covers only the separate legacy case
+where immutable Assistant Review bytes say `review_result=accepted` while also
+setting `requires_human_decision=true`. The entry must pin that Review and its
+confirmed Human Decision by Git blob SHA. The raw record remains unchanged;
+only that exact bundle instance is interpreted canonically as
+`human_decision_required`. Omission, hash drift, a wrong chain, duplicate pins,
+a non-required Human gate, or any meaning other than
+`accepted -> human_decision_required` fails closed. The ordinary Review
+validator remains strict.
+
 ## Bootstrap migration for PR #44
 
 `coordination/prompts/KU2D-P-000001.json` remains the immutable `bootstrap.v0` input. Its validated v1 projection lives separately at `coordination/v1/prompts/KU2D-P-000001.json` and cites the bootstrap source plus the independent review comment. This prevents migration from silently rewriting history.

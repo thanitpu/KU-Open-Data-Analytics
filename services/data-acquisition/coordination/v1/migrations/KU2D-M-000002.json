@@ -1,0 +1,29 @@
+{
+  "schema": "ku2d.agent-handoff-historical-migration.v1",
+  "migration_id": "KU2D-M-000002",
+  "created_at": "2026-09-01T12:24:00.000+07:00",
+  "entries": [],
+  "proactive_human_decisions": [],
+  "review_flag_compatibility": [
+    {
+      "human_decision_id": "KU2D-H-000020",
+      "human_decision_blob_sha": "c17d8c06ede180ce809bba6c4febd2d01d1a9562",
+      "assistant_review_id": "KU2D-V-000050",
+      "assistant_review_blob_sha": "8e8c1c67be8bc71df2c40448cf33c48b219d4835",
+      "legacy_review_result": "accepted",
+      "canonical_review_result": "human_decision_required"
+    }
+  ],
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "authorizing_prompt": "KU2D-P-000051",
+    "authorizing_human_decision": "KU2D-H-000020",
+    "purpose": "Preserve exact V50 bytes while canonically interpreting its contradictory accepted/required-Human flags only for the exact H20 chain."
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

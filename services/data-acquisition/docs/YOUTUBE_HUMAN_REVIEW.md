@@ -1,5 +1,7 @@
 # YouTube Human Review for Q-Diving
 
+> P51 boundary alignment: semantic video relevance, quality, ranking, analytical deduplication and final inclusion are Analysis responsibilities. The review contracts below remain relevant to downstream Analysis and to separate monitoring/production authority; they are no longer an Acquisition completion gate. Every technically accepted sanitized Acquisition record is handed to Analysis.
+
 This layer turns sanitized YouTube Data API v3 foundation metadata into a compact, non-production review package. It does not approve videos or channels, acquire transcripts or comments, write scheduler state, or create Product & Price records.
 
 The controlled flow is:

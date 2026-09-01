@@ -363,7 +363,7 @@ assert set(repository_bundle["human_decision_records"]) == {
     "KU2D-H-000001", "KU2D-H-000002", "KU2D-H-000004", "KU2D-H-000005",
     "KU2D-H-000006", "KU2D-H-000007", "KU2D-H-000008", "KU2D-H-000009",
     "KU2D-H-000010", "KU2D-H-000011", "KU2D-H-000012", "KU2D-H-000013", "KU2D-H-000014", "KU2D-H-000015",
-    "KU2D-H-000016", "KU2D-H-000018", "KU2D-H-000019",
+    "KU2D-H-000016", "KU2D-H-000018", "KU2D-H-000019", "KU2D-H-000020",
 }
 assert repository_bundle["human_decision_records"]["KU2D-H-000001"]["decision"] == "confirmed"
 assert repository_bundle["human_decision_records"]["KU2D-H-000002"]["decision"] == "confirmed"
@@ -382,6 +382,7 @@ assert repository_bundle["human_decision_records"]["KU2D-H-000015"]["decision"] 
 assert repository_bundle["human_decision_records"]["KU2D-H-000016"]["decision"] == "confirmed"
 assert repository_bundle["human_decision_records"]["KU2D-H-000018"]["decision"] == "confirmed"
 assert repository_bundle["human_decision_records"]["KU2D-H-000019"]["decision"] == "confirmed"
+assert repository_bundle["human_decision_records"]["KU2D-H-000020"]["decision"] == "confirmed"
 assert set(repository_bundle["historical_records"]) == {"KU2D-V-000047", "KU2D-H-000017"}
 assert all(
     record["active_authority"] is False
@@ -557,7 +558,7 @@ except ValueError:
     pass
 
 # AH32: the repository migration is exact, visible, and non-authoritative.
-assert len(repository_migrations) == 1
+assert len(repository_migrations) == 2
 assert validate_historical_migration_manifest(repository_migrations[0])["migration_id"] == (
     "KU2D-M-000001"
 )
@@ -569,6 +570,7 @@ assert all(
 assert repository_bundle["proactive_human_decision_ids"] == [
     "KU2D-H-000018", "KU2D-H-000019",
 ]
+assert repository_bundle["review_flag_compatibility_ids"] == ["KU2D-V-000050"]
 
 def repository_validation(*, migrations=None, reviews=None, humans=None, blobs=None, queue_state=None):
     return validate_agent_handoff_bundle(
@@ -739,4 +741,66 @@ try:
 except ValueError:
     pass
 
-print("Agent Handoff Protocol deterministic tests passed (AH1-AH44).")
+# AH45: the exact V50 bytes remain immutable while bundle interpretation is canonical.
+raw_v50 = next(item for item in repository_reviews if item["review_id"] == "KU2D-V-000050")
+assert raw_v50["review_result"] == "accepted" and raw_v50["requires_human_decision"] is True
+assert repository_bundle["assistant_review_records"]["KU2D-V-000050"]["review_result"] == "human_decision_required"
+try:
+    validate_assistant_review_record(raw_v50)
+    raise AssertionError("contradictory raw V50 validated without exact compatibility")
+except ValueError:
+    pass
+
+# AH46: omitting the exact compatibility migration exposes the invalid record.
+try:
+    repository_validation(migrations=[repository_migrations[0]])
+    raise AssertionError("V50 validated without compatibility manifest")
+except ValueError:
+    pass
+
+# AH47: either review or Human Decision hash drift fails closed.
+bad_flag_review_hash = deepcopy(repository_migrations)
+bad_flag_review_hash[1]["review_flag_compatibility"][0]["assistant_review_blob_sha"] = "0" * 40
+try:
+    repository_validation(migrations=bad_flag_review_hash)
+    raise AssertionError("review flag compatibility accepted a mismatched review hash")
+except ValueError:
+    pass
+bad_flag_human_hash = deepcopy(repository_migrations)
+bad_flag_human_hash[1]["review_flag_compatibility"][0]["human_decision_blob_sha"] = "0" * 40
+try:
+    repository_validation(migrations=bad_flag_human_hash)
+    raise AssertionError("review flag compatibility accepted a mismatched Human Decision hash")
+except ValueError:
+    pass
+
+# AH48: only accepted -> human_decision_required is a valid compatibility meaning.
+bad_flag_semantics = deepcopy(repository_migrations[1])
+bad_flag_semantics["review_flag_compatibility"][0]["canonical_review_result"] = "accepted"
+try:
+    validate_historical_migration_manifest(bad_flag_semantics)
+    raise AssertionError("invalid review flag compatibility semantics validated")
+except ValueError:
+    pass
+
+# AH49: duplicate compatibility pins fail closed.
+duplicate_flag_pin = deepcopy(repository_migrations[1])
+duplicate_flag_pin["review_flag_compatibility"].append(
+    deepcopy(duplicate_flag_pin["review_flag_compatibility"][0])
+)
+try:
+    validate_historical_migration_manifest(duplicate_flag_pin)
+    raise AssertionError("duplicate review flag compatibility pin validated")
+except ValueError:
+    pass
+
+# AH50: an empty migration without any exact-pinned action is invalid.
+empty_migration = deepcopy(repository_migrations[1])
+empty_migration["review_flag_compatibility"] = []
+try:
+    validate_historical_migration_manifest(empty_migration)
+    raise AssertionError("empty compatibility migration validated")
+except ValueError:
+    pass
+
+print("Agent Handoff Protocol deterministic tests passed (AH1-AH50).")

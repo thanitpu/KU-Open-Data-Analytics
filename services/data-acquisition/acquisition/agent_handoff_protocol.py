@@ -252,8 +252,8 @@ def validate_historical_migration_manifest(record: dict[str, Any]) -> dict[str, 
     _record_id(record, "migration_id")
     _nonempty(record.get("created_at"), "created_at")
     entries = record.get("entries")
-    if not isinstance(entries, list) or not entries:
-        raise ValueError("historical migration entries must be a non-empty JSON array")
+    if not isinstance(entries, list):
+        raise ValueError("historical migration entries must be a JSON array")
     historical_ids: set[str] = set()
     replacement_ids: set[str] = set()
     for entry in entries:
@@ -299,6 +299,28 @@ def validate_historical_migration_manifest(record: dict[str, Any]) -> dict[str, 
             raise ValueError("proactive Human Decision pins must be one-to-one")
         proactive_humans.add(human_id)
         proactive_reviews.add(review_id)
+    compatibility = record.get("review_flag_compatibility", [])
+    if not isinstance(compatibility, list):
+        raise ValueError("review_flag_compatibility must be a JSON array")
+    compatibility_humans: set[str] = set()
+    compatibility_reviews: set[str] = set()
+    for entry in compatibility:
+        if not isinstance(entry, dict):
+            raise ValueError("review flag compatibility pin must be a JSON object")
+        human_id = _optional_id(entry.get("human_decision_id"), "human_decision_id")
+        review_id = _optional_id(entry.get("assistant_review_id"), "review_id")
+        if human_id is None or review_id is None:
+            raise ValueError("review flag compatibility requires decision and review IDs")
+        validate_commit_sha(entry.get("human_decision_blob_sha"), "human_decision_blob_sha")
+        validate_commit_sha(entry.get("assistant_review_blob_sha"), "assistant_review_blob_sha")
+        if entry.get("legacy_review_result") != "accepted" or entry.get("canonical_review_result") != "human_decision_required":
+            raise ValueError("review flag compatibility semantics are invalid")
+        if human_id in compatibility_humans or review_id in compatibility_reviews:
+            raise ValueError("review flag compatibility pins must be one-to-one")
+        compatibility_humans.add(human_id)
+        compatibility_reviews.add(review_id)
+    if not entries and not proactive and not compatibility:
+        raise ValueError("historical migration must contain at least one exact-pinned compatibility entry")
     _mapping(record, "provenance")
     _validate_boundaries(record)
     return validate_safe_json_payload(record)
@@ -582,13 +604,13 @@ def _apply_historical_migrations(
     migration_records: list[dict[str, Any]],
     record_blobs: dict[str, bytes] | None,
 ) -> tuple[
-    list[dict[str, Any]], list[dict[str, Any]], dict[str, dict[str, Any]], set[str],
+    list[dict[str, Any]], list[dict[str, Any]], dict[str, dict[str, Any]], set[str], set[str],
 ]:
     migrations = _index(
         migration_records, "migration_id", validate_historical_migration_manifest,
     )
     if not migrations:
-        return assistant_review_records, human_decision_records, {}, set()
+        return assistant_review_records, human_decision_records, {}, set(), set()
     if not isinstance(record_blobs, dict):
         raise ValueError("historical migrations require exact raw record blobs")
 
@@ -651,6 +673,9 @@ def _apply_historical_migrations(
         raise ValueError("historical migration replacement cannot be circular or superseded")
 
     proactive_humans: set[str] = set()
+    compatible_human_ids: set[str] = set()
+    compatible_review_ids: set[str] = set()
+    compatible_reviews: dict[str, dict[str, Any]] = {}
     review_records, review_validator = collections["assistant_review"]
     human_records, human_validator = collections["human_decision"]
     for migration in migrations.values():
@@ -693,13 +718,59 @@ def _apply_historical_migrations(
                 raise ValueError("proactive Human Decision prompt/result chain is inconsistent")
             proactive_humans.add(human_id)
 
+    for migration in migrations.values():
+        for entry in migration.get("review_flag_compatibility", []):
+            human_id = entry["human_decision_id"]
+            review_id = entry["assistant_review_id"]
+            if human_id in historical or review_id in historical:
+                raise ValueError("historical record cannot grant review flag compatibility")
+            if human_id in proactive_humans or human_id in compatible_human_ids or review_id in compatible_review_ids:
+                raise ValueError("review flag compatibility authority is duplicated")
+            if human_id not in human_records or review_id not in review_records:
+                raise ValueError("review flag compatibility record is missing")
+            human_blob = record_blobs.get(human_id)
+            review_blob = record_blobs.get(review_id)
+            if not isinstance(human_blob, bytes) or not isinstance(review_blob, bytes):
+                raise ValueError("review flag compatibility requires exact raw record blobs")
+            try:
+                parsed_human = json.loads(human_blob.decode("utf-8"))
+                parsed_review = json.loads(review_blob.decode("utf-8"))
+            except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+                raise ValueError("review flag compatibility blob is invalid JSON") from exc
+            if parsed_human != human_records[human_id] or parsed_review != review_records[review_id]:
+                raise ValueError("review flag compatibility blob content mismatch")
+            if _git_blob_sha(human_blob) != entry["human_decision_blob_sha"]:
+                raise ValueError("review flag compatibility Human Decision hash mismatch")
+            if _git_blob_sha(review_blob) != entry["assistant_review_blob_sha"]:
+                raise ValueError("review flag compatibility Assistant Review hash mismatch")
+            human_validator(human_records[human_id])
+            original_review = review_records[review_id]
+            if original_review.get("review_result") != entry["legacy_review_result"]:
+                raise ValueError("review flag compatibility legacy result mismatch")
+            if original_review.get("requires_human_decision") is not True:
+                raise ValueError("review flag compatibility requires an explicit Human gate")
+            normalized_review = deepcopy(original_review)
+            normalized_review["review_result"] = entry["canonical_review_result"]
+            review_validator(normalized_review)
+            human = human_records[human_id]
+            if (
+                human["review_id"] != review_id or human["decision"] != "confirmed"
+                or human["prompt_id"] != original_review["prompt_id"]
+                or human["result_id"] != original_review["result_id"]
+            ):
+                raise ValueError("review flag compatibility decision chain is inconsistent")
+            compatible_review_ids.add(review_id)
+            compatible_human_ids.add(human_id)
+            compatible_reviews[review_id] = normalized_review
+
     active_reviews = [
-        record for record in assistant_review_records if record["review_id"] not in historical
+        compatible_reviews.get(record["review_id"], record)
+        for record in assistant_review_records if record["review_id"] not in historical
     ]
     active_humans = [
         record for record in human_decision_records if record["human_decision_id"] not in historical
     ]
-    return active_reviews, active_humans, historical, proactive_humans
+    return active_reviews, active_humans, historical, proactive_humans, compatible_review_ids
 
 
 def validate_agent_handoff_bundle(
@@ -713,7 +784,7 @@ def validate_agent_handoff_bundle(
     """Fail closed on broken chains, authority, queue state, and replay."""
     prompts = _index(prompt_records, "prompt_id", validate_prompt_record)
     results = _index(result_records, "result_id", validate_result_record)
-    active_reviews, active_humans, historical, proactive_human_ids = (
+    active_reviews, active_humans, historical, proactive_human_ids, compatible_review_ids = (
         _apply_historical_migrations(
         assistant_review_records, human_decision_records,
         historical_migration_records or [], record_blobs,
@@ -865,6 +936,7 @@ def validate_agent_handoff_bundle(
         "historical_migration_records": migrations,
         "historical_records": historical,
         "proactive_human_decision_ids": sorted(proactive_human_ids),
+        "review_flag_compatibility_ids": sorted(compatible_review_ids),
         "queue_state": queue,
     }
 

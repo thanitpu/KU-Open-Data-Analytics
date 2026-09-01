@@ -5,8 +5,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "acquisition"))
-from youtube_identity_discovery_review import (build_review_package, quota_plan, retain_candidates,
-                                                validate_discovery_evidence)
+from youtube_identity_discovery_review import (build_analysis_handoff_summary, build_review_package,
+                                                quota_plan, retain_candidates, validate_discovery_evidence)
 
 cases = json.loads((ROOT / "fixtures/youtube_identity_discovery/sanitized_cases.json").read_text(encoding="utf-8"))
 evidence = json.loads((ROOT / "config/youtube_qdiving_identity_discovery_v1.json").read_text(encoding="utf-8"))
@@ -26,7 +26,9 @@ assert rejects(lambda: quota_plan(0)) and rejects(lambda: quota_plan(9))
 assert validate_discovery_evidence(evidence) is evidence
 assert evidence["credential_preflight"] == {"configured": False, "secret_read_or_logged": False}
 assert evidence["request_quota_ledger"]["request_count"] == 0
-assert evidence["candidate_count"] == 0 and evidence["usable_reviewed_identity_count"] == 0
+assert evidence["candidate_count"] == 0
+assert evidence["acquisition_acceptance"]["status"] == "no_records_to_handoff"
+assert evidence["analysis_handoff"]["status"] == "not_ready"
 
 # YID11-YID24: duplicates, unavailable/private, ambiguity and bounded retention.
 result = retain_candidates(cases["search_rows"], cases["metadata_rows"])
@@ -34,34 +36,55 @@ assert [row["video_id"] for row in result["retained"]] == cases["expected"]["ret
 assert result["duplicate_cross_profile_count"] == cases["expected"]["duplicate_cross_profile_count"]
 assert sorted(row["reason"] for row in result["excluded"]) == sorted(cases["expected"]["excluded_reasons"])
 assert result["retained"][0]["query_profile_ids"] == ["QYT-BEGINNER-EN", "QYT-BEGINNER-KOH-TAO-TH"]
-assert all(row["human_review_status"] == "pending" for row in result["retained"])
-assert all(row["usable_for_live_acquisition"] is False for row in result["retained"])
+assert all(row["acquisition_acceptance"] == "accepted_for_analysis" for row in result["retained"])
+assert all(row["analysis_handoff_status"] == "pending_manifest" for row in result["retained"])
+assert all(row["semantic_relevance"] is None and row["quality"] is None for row in result["retained"])
+assert all(row["production_ready"] is False for row in result["retained"])
 assert retain_candidates(cases["zero_result_query"], [], limit=2)["retained"] == []
 assert cases["quota_stop"]["planned_quota_units"] > cases["quota_stop"]["available_quota_units"]
 assert cases["quota_stop"]["request_must_not_start"] is True
 bad = copy.deepcopy(cases["search_rows"]); bad[0]["video_id"] = "bad"
 assert rejects(lambda: retain_candidates(bad, cases["metadata_rows"]))
 
-# YID25-YID36: Human Review package is usable for adjudication but has no authority.
-staged = build_review_package(result["retained"])
-assert staged["selection_target"] == 2 and staged["candidate_count"] == 2
-assert staged["suggestions_are_non_authoritative"] is True
-assert staged["human_adjudication_required"] is True
-assert staged["production_approved"] is False and staged["scheduler_action"] is None
-promoted = copy.deepcopy(result["retained"]); promoted[0]["human_review_status"] = "reviewed"
-assert rejects(lambda: build_review_package(promoted))
+# YID25-YID39: every technical candidate is handed to Analysis without semantic claims.
+staged = build_analysis_handoff_summary(result["retained"])
+assert staged["acquisition_acceptance"] == {
+    "status": "accepted_for_analysis", "accepted_record_count": 2, "semantic_quality_claimed": False,
+}
+assert staged["analysis_handoff"]["status"] == "ready_for_analysis"
+assert staged["analysis_handoff"]["record_count"] == 2
+assert set(staged["analysis_handoff"]["pending_decisions"]) == {
+    "semantic_relevance", "quality", "analytical_rank", "analytical_deduplication", "final_inclusion",
+}
+promoted = copy.deepcopy(result["retained"]); promoted[0]["quality"] = 1.0
+assert rejects(lambda: build_analysis_handoff_summary(promoted))
+assert build_analysis_handoff_summary([])["analysis_handoff"]["status"] == "not_ready"
+
+# Historical v1 packages remain readable but do not act as the current gate.
 assert package["candidate_count"] == 0 and package["human_adjudication_required"] is True
+historical_packet = json.loads((ROOT / "knowledge/v1/candidate-closure-packets/KU2D-YT-QDIVING-CANDIDATES-000001.json").read_text(encoding="utf-8"))
+legacy = build_review_package(historical_packet["candidates"][:2])
+assert legacy["selection_target"] == 2 and legacy["candidate_count"] == 2
 assert evidence["boundaries"]["comments_acquired"] is False
 assert evidence["boundaries"]["captions_called"] is False
 assert evidence["boundaries"]["transcript_text_acquired"] is False
 assert evidence["boundaries"]["oauth_used"] is False
 
-# YID37-YID45: invalid classification, authority and preflight accounting fail closed.
+# One accepted candidate completes technical discovery; no two-item semantic gate remains.
+single = copy.deepcopy(evidence)
+single.update(classification="candidate_evidence_obtained", exit_classification=0, withheld_reason=None,
+              candidate_count=1, retained_candidates=result["retained"][:1],
+              **build_analysis_handoff_summary(result["retained"][:1]))
+assert validate_discovery_evidence(single) is single
+
+# YID40-YID50: invalid classification, acceptance and preflight accounting fail closed.
 for mutation in (
     lambda row: row.update(exit_classification=0),
     lambda row: row["request_quota_ledger"].update(request_count=1),
     lambda row: row.update(usable_reviewed_identity_count=1),
     lambda row: row.update(human_review_completed=True),
+    lambda row: row["acquisition_acceptance"].update(status="accepted_for_analysis"),
+    lambda row: row["analysis_handoff"].update(status="ready_for_analysis"),
     lambda row: row["boundaries"].update(comments_acquired=True),
     lambda row: row["boundaries"].update(captions_called=True),
     lambda row: row["boundaries"].update(transcript_text_acquired=True),
@@ -71,4 +94,4 @@ for mutation in (
     broken = copy.deepcopy(evidence); mutation(broken)
     assert rejects(lambda broken=broken: validate_discovery_evidence(broken))
 
-print("YouTube identity discovery/review deterministic tests passed (YID1-YID45).")
+print("YouTube identity discovery/Analysis handoff deterministic tests passed (YID1-YID50).")
