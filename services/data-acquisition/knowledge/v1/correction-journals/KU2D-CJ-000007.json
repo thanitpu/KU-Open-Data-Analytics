@@ -18,6 +18,7 @@
       "provider_impact": {"provider_reached": true, "request_delta": 6, "quota_delta": 0},
       "schema_impact": "None; only sanitized source evidence was extended.",
       "quality_impact": "Prevents search snippets without stable identity from being retained as source records.",
+      "related_commit_or_pending_commit": "22e5176cca634f9e2d81781ba81a2edfdf525c74",
       "effort_minutes": null,
       "learning": {"reusable_lesson": "TikTok search-index results can identify useful official frontiers while still failing the stable-video identity contract.", "future_prevention": "Require stable video ID plus official canonical resolution before any TikTok candidate is retained.", "labels": ["tiktok", "search-index", "stable-identity", "fail-closed"]},
       "evidence_refs": ["KU2D-P-000057", "KU2D-TIKTOK-LIVE-EVIDENCE-000002"]
@@ -35,6 +36,7 @@
       "provider_impact": {"provider_reached": true, "request_delta": 1, "quota_delta": 0},
       "schema_impact": "None; no raw oEmbed payload was persisted.",
       "quality_impact": "Proves the verification mechanism without treating keyword collision as source quality.",
+      "related_commit_or_pending_commit": "22e5176cca634f9e2d81781ba81a2edfdf525c74",
       "effort_minutes": null,
       "learning": {"reusable_lesson": "A valid official identity is necessary but not sufficient for topic-qualified retention.", "future_prevention": "Apply topic qualification after official identity resolution and before fixture creation.", "labels": ["oembed", "official-verification", "topic-quality"]},
       "evidence_refs": ["KU2D-P-000057", "KU2D-TIKTOK-LIVE-EVIDENCE-000002"]
@@ -52,6 +54,7 @@
       "provider_impact": {"provider_reached": true, "request_delta": 3, "quota_delta": 0},
       "schema_impact": "None; public shells were summarized and discarded.",
       "quality_impact": "Avoids converting cached identity lists or application shells into reproducible live acquisition evidence.",
+      "related_commit_or_pending_commit": "22e5176cca634f9e2d81781ba81a2edfdf525c74",
       "effort_minutes": null,
       "learning": {"reusable_lesson": "Search-index visibility of Creative Center IDs does not guarantee the same records are available from the current live public page.", "future_prevention": "Require current live reproduction before claiming a multi-record technique.", "labels": ["creative-center", "live-reproduction", "public-shell"]},
       "evidence_refs": ["KU2D-P-000057", "KU2D-TIKTOK-LIVE-EVIDENCE-000002"]
@@ -69,6 +72,7 @@
       "provider_impact": {"provider_reached": false, "request_delta": 16, "quota_delta": 0},
       "schema_impact": "None; transport failures are represented only as sanitized classifications.",
       "quality_impact": "Conservative accounting prevents environment failures from silently expanding the authorized request budget.",
+      "related_commit_or_pending_commit": "22e5176cca634f9e2d81781ba81a2edfdf525c74",
       "effort_minutes": null,
       "learning": {"reusable_lesson": "Preconnect failures still consume a bounded experiment's outbound-attempt budget when the contract is stated in outbound requests rather than provider completions.", "future_prevention": "Preflight the approved network path with one request before scheduling a bounded candidate batch.", "labels": ["network", "request-budget", "preconnect", "conservative-accounting"]},
       "evidence_refs": ["KU2D-P-000057", "KU2D-TIKTOK-LIVE-EVIDENCE-000002"]
@@ -86,6 +90,7 @@
       "provider_impact": {"provider_reached": true, "request_delta": 1, "quota_delta": 0},
       "schema_impact": "No V3 registry, source manifest, run manifest or fixture was created.",
       "quality_impact": "Prevents a false-green MTC or technique freeze when the required repeated official verification cannot be completed inside authority.",
+      "related_commit_or_pending_commit": "22e5176cca634f9e2d81781ba81a2edfdf525c74",
       "effort_minutes": null,
       "learning": {"reusable_lesson": "A reproducible single-record resolver does not establish discovery, topic coverage or a two-round Minimum Trusted Connection.", "future_prevention": "Obtain a reviewed request-budget extension or a genuine official multi-record discovery surface before resuming; do not replay P57 automatically.", "labels": ["hard-boundary", "minimum-trusted-connection", "blocked", "no-false-green"]},
       "evidence_refs": ["KU2D-P-000057", "KU2D-TIKTOK-LIVE-EVIDENCE-000002"]
