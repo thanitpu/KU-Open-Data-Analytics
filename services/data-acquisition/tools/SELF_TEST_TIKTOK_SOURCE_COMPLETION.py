@@ -13,6 +13,11 @@ if str(TIKTOK) not in sys.path:
 
 from scope_declaration import FIELDS, SEVEN_FIELDS, validate_scope_declaration
 
+ACQUISITION = ROOT / "acquisition"
+if str(ACQUISITION) not in sys.path:
+    sys.path.insert(0, str(ACQUISITION))
+from technical_correction_journal import validate_technical_correction_journal
+
 
 def load(name: str) -> dict:
     return json.loads((TIKTOK / name).read_text(encoding="utf-8"))
@@ -86,5 +91,10 @@ assert blocker["attempted_extension"]["attempt_persisted_in_final_tree"] is Fals
 assert blocker["provider_accounting"] == {"provider_requests": 5, "maximum_authorized": 20, "quota_delta": 0}
 assert blocker["boundaries"]["production_approved"] is False
 assert blocker["boundaries"]["scheduler_action"] is None
+journal = json.loads((ROOT / "knowledge" / "v1" / "correction-journals" / "KU2D-CJ-000004.json").read_text(encoding="utf-8"))
+validate_technical_correction_journal(journal, require_closed=True)
+assert journal["summary"] == {"event_count": 4, "resolved_count": 3, "unresolved_count": 1, "correction_cycles_used": 4}
+assert all(event["related_commit_or_pending_commit"] == "9e1b5e5151eef40c4dca18bef484b99846cc4d54" for event in journal["events"])
+assert sum(event["provider_impact"]["request_delta"] for event in journal["events"]) == 1
 
 print("TikTok Source Completion checks passed: scope_positive=4 scope_negative=7 requests=5 blockers=2")

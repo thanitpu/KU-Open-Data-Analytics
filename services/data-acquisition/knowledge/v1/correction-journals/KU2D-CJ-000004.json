@@ -1,0 +1,105 @@
+{
+  "schema": "ku2d.technical-correction-journal.v1",
+  "journal_id": "KU2D-CJ-000004",
+  "source_completion_prompt_id": "KU2D-P-000054",
+  "created_at": "2026-09-01T18:51:02.7028328+07:00",
+  "closed_at": "2026-09-01T19:10:00.0000000+07:00",
+  "events": [
+    {
+      "event_id": "KU2D-TC-000014",
+      "observed_at": "2026-09-01T18:51:02.7028328+07:00",
+      "phase": "acquisition",
+      "failure_code": "generic_page_copy_misclassified_as_access_challenge",
+      "observed_signal": "The first public-search diagnostic used broad case-insensitive CAPTCHA and login phrases, so ordinary application-shell copy could be mistaken for a confirmed challenge or required-login boundary.",
+      "root_cause_layer": "runtime_code",
+      "correction": {
+        "action": "Replaced the broad interpretation with exact challenge markers and stable-identity/structured-state checks; the sanitized evidence explicitly records no confirmed challenge.",
+        "components": ["services/data-acquisition/knowledge/v1/tiktok/KU2D-TIKTOK-EXPLORE-000001.json", "services/data-acquisition/docs/TIKTOK_SOURCE_COMPLETION.md"],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": ["exact challenge marker count", "stable video identity count", "sanitized request ledger", "single declared tag repeat"],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": true, "request_delta": 1, "quota_delta": 0},
+      "schema_impact": "No shared schema changed; the P54 evidence shape now distinguishes confirmed challenges from generic page text.",
+      "quality_impact": "Prevents a false access-boundary label while preserving the zero-identity external blocker.",
+      "related_commit_or_pending_commit": "9e1b5e5151eef40c4dca18bef484b99846cc4d54",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "A login link or verification vocabulary in an application shell is not evidence of an active challenge.",
+        "future_prevention": "Classify access boundaries only from exact retained markers or visible challenge state, and report application shells separately.",
+        "labels": ["access-classification", "false-positive", "sanitized-evidence"]
+      },
+      "evidence_refs": ["KU2D-TIKTOK-EXPLORE-000001", "KU2D-P-000054"]
+    },
+    {
+      "event_id": "KU2D-TC-000015",
+      "observed_at": "2026-09-01T19:00:00.0000000+07:00",
+      "phase": "test",
+      "failure_code": "immutable_registry_fingerprint_blocks_additive_source_registration",
+      "observed_signal": "Appending the authorized TikTok registration first failed exact implementation composition; composing both implementations then failed the adapter-registry fingerprint pinned by immutable YouTube manifest KU2D-RM-000001-V001.",
+      "root_cause_layer": "runtime_code",
+      "correction": {
+        "action": "Reverted the attempted adapter, manifests and registry row, preserved exact deterministic failure evidence, restored the original registry and Foundation regression, and stopped before protected-file modification.",
+        "components": ["services/data-acquisition/knowledge/v1/tiktok/KU2D-TIKTOK-FOUNDATION-BLOCKER-000001.json", "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py"],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": ["Foundation Consolidation FC1-FC6", "integration baseline invariant bytes", "original adapter registry content", "two deterministic blocker cases"],
+        "result": "partial"
+      },
+      "outcome": "unresolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "schema_impact": "The new Scope Declaration v1 contract remains valid; no protected P53 runtime, registry schema or immutable manifest was changed.",
+      "quality_impact": "Frozen YouTube execution remains green; TikTok MTC and adapter registration remain correctly withheld.",
+      "related_commit_or_pending_commit": "9e1b5e5151eef40c4dca18bef484b99846cc4d54",
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "A content-addressed singleton adapter registry cannot evolve additively while historical manifests pin the singleton path and full-document fingerprint.",
+        "future_prevention": "Design versioned registry snapshots or an explicitly authorized backward-compatible registry migration before the next source adapter is registered.",
+        "labels": ["foundation-blocker", "immutable-manifest", "registry-versioning", "fail-closed"]
+      },
+      "evidence_refs": ["KU2D-TIKTOK-FOUNDATION-BLOCKER-000001", "KU2D-RM-000001-V001", "KU2D-P-000054"]
+    },
+    {
+      "event_id": "KU2D-TC-000016",
+      "observed_at": "2026-09-01T19:06:00.0000000+07:00",
+      "phase": "test",
+      "failure_code": "full_corpus_harness_resolved_service_path_twice",
+      "observed_signal": "The first Level 3 command started in services/data-acquisition but attempted to resolve services/data-acquisition again, so it stopped before compilation or any test began.",
+      "root_cause_layer": "environment",
+      "correction": {"action": "Removed the duplicate path resolution and reran the harness from the declared service working directory.", "components": ["Level 3 local validation command"], "scope_changed": false},
+      "validation": {"checks": ["service-root command preflight", "compilation reached", "deterministic tests reached"], "result": "passed"},
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "schema_impact": "None; no repository artifact was changed by the failed preflight.",
+      "quality_impact": "Prevents a false test failure caused solely by the local harness working directory.",
+      "related_commit_or_pending_commit": "9e1b5e5151eef40c4dca18bef484b99846cc4d54",
+      "effort_minutes": null,
+      "learning": {"reusable_lesson": "Validation commands must resolve paths relative to their declared working directory exactly once.", "future_prevention": "Print and validate the effective service root before beginning a complete corpus run.", "labels": ["test-harness", "working-directory", "preflight"]},
+      "evidence_refs": ["KU2D-P-000054", "local-level-3-preflight"]
+    },
+    {
+      "event_id": "KU2D-TC-000017",
+      "observed_at": "2026-09-01T19:07:00.0000000+07:00",
+      "phase": "test",
+      "failure_code": "full_corpus_harness_used_python_without_service_dependencies",
+      "observed_signal": "The corrected path harness used system Python; four tests passed before Pattern Guided Explore stopped on missing BeautifulSoup rather than a repository regression.",
+      "root_cause_layer": "dependency",
+      "correction": {"action": "Selected the existing isolated Python 3.12 service environment with the pinned requirements and reran the entire corpus from the beginning.", "components": ["Level 3 local validation command", "isolated Python 3.12 service environment"], "scope_changed": false},
+      "validation": {"checks": ["Python 3.12 runtime", "BeautifulSoup import", "compileall", "complete deterministic corpus 56/56"], "result": "passed"},
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "schema_impact": "None; dependencies and repository files were not installed or changed.",
+      "quality_impact": "Establishes a valid exact-tree Level 3 result without conflating environment setup with product behavior.",
+      "related_commit_or_pending_commit": "9e1b5e5151eef40c4dca18bef484b99846cc4d54",
+      "effort_minutes": null,
+      "learning": {"reusable_lesson": "A deterministic corpus result is authoritative only under the service runtime with its declared dependencies.", "future_prevention": "Resolve and verify the isolated service interpreter before running the first corpus test.", "labels": ["test-harness", "python-runtime", "dependency"]},
+      "evidence_refs": ["KU2D-P-000054", "full-corpus:56-of-56"]
+    }
+  ],
+  "summary": {"event_count": 4, "resolved_count": 3, "unresolved_count": 1, "correction_cycles_used": 4},
+  "safety": {"contains_secret": false, "contains_raw_payload": false, "contains_request_url": false, "contains_personal_data": false}
+}
