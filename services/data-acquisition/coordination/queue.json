@@ -1,6 +1,6 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T09:05:30.000+07:00",
+  "updated_at": "2026-09-01T09:06:30.000+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
   "latest_prompt": "KU2D-P-000041",
   "latest_result": "KU2D-R-000040",
@@ -81,8 +81,8 @@
     "actor": "codex",
     "prompt_id": "KU2D-P-000041",
     "result_id": null,
-    "review_id": "KU2D-V-000040",
-    "human_decision_id": "KU2D-H-000013",
+    "review_id": null,
+    "human_decision_id": null,
     "replay_requested": false
   },
   "branch_handoff": {
@@ -99,5 +99,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "KU2D-H-000013 authorizes the exact-head PR #64 merge into integration/data-acquisition-platform only. KU2D-P-000041 routes the bounded merge operation to Codex after exact-head CI is green. The accepted implementation remains 651969cd67b9f7e88cce1b6464136fdb24df5f29. No main promotion, trust-anchor replacement, workflow dispatch, secret access, YouTube request/quota, comments, captions, transcripts, Human Review, candidate approval, production write, scheduling or authority promotion is authorized."
+  "notes": "KU2D-H-000013 authorizes the exact-head PR #64 merge into integration/data-acquisition-platform only. KU2D-P-000041 is the active bounded merge prompt; downstream record pointers are intentionally null for Codex protocol validation. Historical authority remains in latest_review KU2D-V-000040 and latest_human_decision KU2D-H-000013. No main promotion, trust-anchor replacement, workflow dispatch, secret access, YouTube request/quota, comments, captions, transcripts, Human Review, candidate approval, production write, scheduling or authority promotion is authorized."
 }
