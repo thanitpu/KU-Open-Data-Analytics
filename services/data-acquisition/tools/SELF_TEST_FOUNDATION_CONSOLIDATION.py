@@ -90,10 +90,10 @@ assert run_manifest["authority_boundaries"]["scheduler_action"] is None
 # FC6: the single P53 correction journal remains sanitized and internally exact.
 journal = load(ROOT / "knowledge" / "v1" / "correction-journals" / "KU2D-CJ-000003.json")
 validate_technical_correction_journal(
-    journal, allow_pending_commit=journal["closed_at"] is None,
-    require_closed=journal["closed_at"] is not None,
+    journal, require_closed=True,
 )
 assert journal["summary"]["event_count"] == 4
+assert all(event["related_commit_or_pending_commit"] == "4b15cf2d325a94045c73e2e824a97538c3c84da8" for event in journal["events"])
 assert all(event["provider_impact"] == {"provider_reached": False, "request_delta": 0, "quota_delta": 0} for event in journal["events"])
 
 print("Foundation Consolidation integration checks passed: FC1-FC6")

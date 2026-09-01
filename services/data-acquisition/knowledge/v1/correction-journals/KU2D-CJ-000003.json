@@ -3,7 +3,7 @@
   "journal_id": "KU2D-CJ-000003",
   "source_completion_prompt_id": "KU2D-P-000053",
   "created_at": "2026-09-01T18:00:00.000+07:00",
-  "closed_at": null,
+  "closed_at": "2026-09-01T18:45:00.000+07:00",
   "events": [
     {
       "event_id": "KU2D-TC-000010",
@@ -30,7 +30,7 @@
       "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
       "schema_impact": "Adds closed Adapter Registry v1 and Immutable Run Manifest v1 schemas without rewriting P52 evidence.",
       "quality_impact": "Adds a technical pre-Analysis gate while preserving Analysis authority over semantic quality and final inclusion.",
-      "related_commit_or_pending_commit": "pending_commit",
+      "related_commit_or_pending_commit": "4b15cf2d325a94045c73e2e824a97538c3c84da8",
       "effort_minutes": null,
       "learning": {
         "reusable_lesson": "A reusable Connector Kit needs an immutable execution envelope and explicit registry resolution before a run is authoritative.",
@@ -59,7 +59,7 @@
       "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
       "schema_impact": "No schema change; the test now distinguishes forbidden raw content from required hash evidence.",
       "quality_impact": "Prevents a false-red test while retaining the raw-payload prohibition.",
-      "related_commit_or_pending_commit": "pending_commit",
+      "related_commit_or_pending_commit": "4b15cf2d325a94045c73e2e824a97538c3c84da8",
       "effort_minutes": null,
       "learning": {
         "reusable_lesson": "Sensitive-evidence assertions must inspect JSON keys structurally rather than match safe fingerprint-field substrings.",
@@ -92,7 +92,7 @@
       "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
       "schema_impact": "Adds the closed adapter_registry_path pin beside its SHA-256 in Immutable Run Manifest v1.",
       "quality_impact": "Prevents valid content supplied from an unpinned location from being mistaken for repository-pinned execution evidence.",
-      "related_commit_or_pending_commit": "pending_commit",
+      "related_commit_or_pending_commit": "4b15cf2d325a94045c73e2e824a97538c3c84da8",
       "effort_minutes": null,
       "learning": {
         "reusable_lesson": "An immutable reference needs both a contained repository path and a content hash; either one alone leaves provenance ambiguity.",
@@ -126,7 +126,7 @@
       "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
       "schema_impact": "Narrows v1 runtime version fields to the implemented 1.0.0 contract rather than accepting unimplemented future semantics.",
       "quality_impact": "Prevents false-green execution under a manifest or registry version the runner does not understand.",
-      "related_commit_or_pending_commit": "pending_commit",
+      "related_commit_or_pending_commit": "4b15cf2d325a94045c73e2e824a97538c3c84da8",
       "effort_minutes": null,
       "learning": {
         "reusable_lesson": "Version syntax validation is not compatibility validation; executable contracts must enumerate supported runtime versions.",
