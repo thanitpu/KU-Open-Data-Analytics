@@ -33,6 +33,7 @@ TOPICS = {
     "Diving lesson": "เรียนดำน้ำ",
     "Diving equipment": "อุปกรณ์ดำน้ำ scuba gear",
 }
+ROUND_DISCOVERY_QUERY = "ดำน้ำ"
 ALLOWED_OUTPUT_ROOT = (ROOT / "knowledge" / "v1" / "tiktok").resolve()
 
 
@@ -295,37 +296,48 @@ def run_campaign(
             }
             evidence["rounds"].append(round_summary)
             try:
-                for index, (topic, query) in enumerate(TOPICS.items()):
-                    if index == 0:
-                        row = ledger.begin(
-                            phase=phase, round_id=round_id, operation="public_topic_discovery", topic=topic,
-                        )
-                        write_evidence(output, evidence, ledger)
-                        try:
-                            session.start()
-                            result = session.navigate(_discovery_url(query))
-                        except Exception as exc:
-                            ledger.finish(row, provider_reached=False, failure_code=f"preconnect_{type(exc).__name__}")
-                            write_evidence(output, evidence, ledger)
-                            raise
-                        ledger.finish(
-                            row, provider_reached=bool(result["provider_reached"]),
-                            response_status=result.get("response_status"),
-                            candidate_count=len(result.get("candidates") or []),
-                            failure_code=result.get("failure_code"),
-                            telemetry=result.get("telemetry"),
-                        )
-                        write_evidence(output, evidence, ledger)
-                    else:
-                        result = _navigation_operation(
-                            ledger=ledger, evidence=evidence, output=output, session=session,
-                            phase=phase, round_id=round_id, operation="public_topic_discovery",
-                            url=_discovery_url(query), topic=topic,
-                        )
-                    if result.get("failure_code"):
-                        evidence["stop_condition"] = result["failure_code"]
-                        raise StopIteration
-                    discovered[topic] = list(result.get("candidates") or [])
+                warmup_row = ledger.begin(
+                    phase=phase, round_id=round_id, operation="public_render_warmup",
+                )
+                write_evidence(output, evidence, ledger)
+                try:
+                    session.start()
+                    warmup = session.navigate("https://www.tiktok.com/")
+                except Exception as exc:
+                    ledger.finish(warmup_row, provider_reached=False, failure_code=f"preconnect_{type(exc).__name__}")
+                    write_evidence(output, evidence, ledger)
+                    raise
+                ledger.finish(
+                    warmup_row, provider_reached=bool(warmup["provider_reached"]),
+                    response_status=warmup.get("response_status"),
+                    failure_code=warmup.get("failure_code"), telemetry=warmup.get("telemetry"),
+                )
+                write_evidence(output, evidence, ledger)
+                if warmup.get("failure_code"):
+                    evidence["stop_condition"] = warmup["failure_code"]
+                    raise StopIteration
+                result = _navigation_operation(
+                    ledger=ledger, evidence=evidence, output=output, session=session,
+                    phase=phase, round_id=round_id, operation="public_topic_discovery",
+                    url=_discovery_url(ROUND_DISCOVERY_QUERY), topic=None,
+                )
+                if result.get("failure_code"):
+                    evidence["stop_condition"] = result["failure_code"]
+                    raise StopIteration
+                broad_candidates = list(result.get("candidates") or [])
+                for topic in TOPICS:
+                    prequalified = [
+                        row for row in broad_candidates
+                        if topic_qualified(topic, row.get("visible_context"))
+                    ]
+                    unknown_context = [
+                        row for row in broad_candidates
+                        if not str(row.get("visible_context") or "").strip()
+                    ]
+                    discovered[topic] = prequalified + [
+                        row for row in unknown_context
+                        if row["video_id"] not in {item["video_id"] for item in prequalified}
+                    ]
                     round_summary["discovery_counts"][topic] = len(discovered[topic])
 
                 for topic in TOPICS:

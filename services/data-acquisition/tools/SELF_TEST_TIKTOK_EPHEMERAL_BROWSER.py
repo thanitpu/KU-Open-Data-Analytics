@@ -237,16 +237,16 @@ class FakeLiveBrowser:
                 "failure_code": None if not self.preflight_failure else "preconnect_timeout",
                 "candidates": [],
             }
-        lesson = "gear" not in url
-        base = 100 if lesson else 200
+        lesson_base = 100
+        equipment_base = 200
         if self.mismatch and self.round_number == 2:
-            base += 1000
-        topic = "Diving lesson" if lesson else "Diving equipment"
+            lesson_base += 1000
+            equipment_base += 1000
         return {
             "provider_reached": True,
             "response_status": 200,
             "failure_code": None,
-            "candidates": candidates(base, topic),
+            "candidates": candidates(lesson_base, "Diving lesson") + candidates(equipment_base, "Diving equipment"),
         }
 
     def close(self) -> dict:
