@@ -1,0 +1,68 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000016",
+  "prompt_id": "KU2D-P-000045",
+  "result_id": "KU2D-R-000045",
+  "review_id": "KU2D-V-000045",
+  "decided_at": "2026-09-01T10:27:30.000+07:00",
+  "decided_by": {
+    "actor": "human",
+    "actor_id": "project_owner"
+  },
+  "decision": "confirmed",
+  "reason_note": "The project owner authorizes ChatGPT to maintain KU2D Queue, Prompt, Result, Review and Human Decision records, including repository/branch/PR/CI metadata, on the authoritative coordination branch without repeated confirmation. The owner also authorizes technical work, CI, technically accepted merges and bounded corrective retries within an already approved scope. Secret values must never be recorded. A new Human Gate is required only for materially broader sources or quota, comments/captions/transcripts or personal data, production writes, new external spending or elevated authority. In the active KU2D-V-000045 context, this confirms exactly one corrected bounded YouTube Q-Diving Identity Discovery rerun necessitated by the failed artifact preservation in the earlier authorized run.",
+  "authorized_scope": {
+    "operation": "youtube_qdiving_identity_discovery_corrective_rerun",
+    "dispatches": 1,
+    "profiles": [
+      "QYT-BEGINNER-KOH-TAO-TH",
+      "QYT-BEGINNER-EN"
+    ],
+    "max_results_per_profile": 5,
+    "max_pages_per_profile": 1,
+    "max_search_list_requests": 2,
+    "max_videos_list_requests": 1,
+    "max_additional_documented_quota_units": 201,
+    "max_cumulative_documented_quota_units_including_historical_run": 402,
+    "comments_acquired": false,
+    "captions_called": false,
+    "transcript_text_acquired": false,
+    "oauth_used": false,
+    "production_store": false,
+    "scheduler_action": null
+  },
+  "authorized_execution_revision": "cac243aedaa3c83c188e4e90481e4b752fe8bd2b",
+  "authorized_execution_branch": "integration/data-acquisition-platform",
+  "standing_confirmation_policy": {
+    "authorized_repository": "thanitpu/KU-Open-Data-Analytics",
+    "authorized_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "proceed_without_reconfirmation": [
+      "KU2D Queue, Prompt, Result, Review and Human Decision coordination records",
+      "repository, branch, PR and CI metadata required by those records",
+      "technical correctness review, deterministic validation and CI verification",
+      "technically accepted merges",
+      "bounded corrective retries within an already approved scope"
+    ],
+    "forbidden_to_record": [
+      "secret values"
+    ],
+    "require_new_human_gate_for": [
+      "materially broader sources or quota",
+      "comments, captions, transcripts or personal data",
+      "production writes, new external spending or authority promotion"
+    ]
+  },
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_context": "Project owner replied 'อนุญาตตามนี้' to the complete standing authorization statement and the active bounded rerun continuation.",
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "depends_on_review": "KU2D-V-000045",
+    "depends_on_merge": "cac243aedaa3c83c188e4e90481e4b752fe8bd2b"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
