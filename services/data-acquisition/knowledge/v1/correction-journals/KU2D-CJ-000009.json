@@ -1,0 +1,182 @@
+{
+  "schema": "ku2d.technical-correction-journal.v1",
+  "journal_id": "KU2D-CJ-000009",
+  "source_completion_prompt_id": "KU2D-P-000059",
+  "created_at": "2026-09-02T00:00:00+07:00",
+  "closed_at": "2026-09-02T00:32:28+07:00",
+  "events": [
+    {
+      "event_id": "KU2D-TC-000059",
+      "observed_at": "2026-09-02T00:05:00+07:00",
+      "phase": "preflight",
+      "failure_code": "P59_SOURCE_UNIVERSE_LACKED_EXECUTABLE_CAPS",
+      "observed_signal": "Durable readiness evidence covered eighteen non-TikTok sources, but only four Tier-A sources had both reviewed executable method locks and immutable total campaign caps.",
+      "root_cause_layer": "authorization_schema",
+      "correction": {
+        "action": "Kept the complete durable inventory while marking every Tier-B/Tier-C source without an entered caveat and exact total cap preflight_skipped with zero provider access.",
+        "components": ["config/multi_source_round_robin_manifest_v1.json"],
+        "scope_changed": false
+      },
+      "validation": {"checks": ["manifest validator", "source-order and zero-budget negative tests"], "result": "passed"},
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "related_commit_or_pending_commit": "bf1950c9053435cbe06c9ad8fb5c1a611729288b",
+      "learning": {
+        "reusable_lesson": "Reviewed source evidence does not imply a live campaign cap or executable eligibility.",
+        "future_prevention": "Require a finite method lock, environment lock and total provider cap before adding any source to the active set.",
+        "labels": ["preflight", "authority", "fail-closed"]
+      },
+      "evidence_refs": ["config/acquisition_consolidation_readiness.json", "config/tier_a_locked_source_batch_manifest.json"]
+    },
+    {
+      "event_id": "KU2D-TC-000060",
+      "observed_at": "2026-09-02T00:15:00+07:00",
+      "phase": "artifact",
+      "failure_code": "P59_ZIP_SELF_HASH_CIRCULARITY",
+      "observed_signal": "Embedding an archive's final SHA-256 inside that same archive would change the archive and invalidate the claimed hash.",
+      "root_cause_layer": "artifact",
+      "correction": {
+        "action": "Used an embedded campaign manifest for non-self members and a detached delivery manifest that pins every member including the embedded manifest plus the exact final ZIP size and SHA-256.",
+        "components": ["acquisition/domain_export_bundle.py", "docs/MULTI_SOURCE_ROUND_ROBIN_EXPORT.md"],
+        "scope_changed": false
+      },
+      "validation": {"checks": ["member hash reconciliation", "detached archive hash verification", "ZIP round trip"], "result": "passed"},
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "related_commit_or_pending_commit": "bf1950c9053435cbe06c9ad8fb5c1a611729288b",
+      "learning": {
+        "reusable_lesson": "Self-contained cryptographic self-hashes are circular; exact delivery integrity needs a detached final envelope.",
+        "future_prevention": "Specify embedded member-manifest and detached delivery-manifest roles explicitly for future archive contracts.",
+        "labels": ["artifact", "sha256", "manifest"]
+      },
+      "evidence_refs": ["tools/SELF_TEST_DOMAIN_EXPORT_BUNDLE.py"]
+    },
+    {
+      "event_id": "KU2D-TC-000061",
+      "observed_at": "2026-09-02T00:20:00+07:00",
+      "phase": "test",
+      "failure_code": "P59_TARGETED_TEST_IMPORT_PATH",
+      "observed_signal": "The Gourmet regression stopped before assertions because the standalone test process could not import the service control_plane package.",
+      "root_cause_layer": "environment",
+      "correction": {
+        "action": "Set PYTHONPATH to the service root for the deterministic test command and reran the interrupted regression set unchanged.",
+        "components": ["test process environment"],
+        "scope_changed": false
+      },
+      "validation": {"checks": ["Gourmet regression", "Gourmet detail regression", "supermarket pattern regression"], "result": "passed"},
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "related_commit_or_pending_commit": "bf1950c9053435cbe06c9ad8fb5c1a611729288b",
+      "learning": {
+        "reusable_lesson": "Standalone tool tests require the service root on PYTHONPATH when they import sibling packages.",
+        "future_prevention": "Use the CI-equivalent service-root PYTHONPATH for all exact-corpus commands.",
+        "labels": ["test", "pythonpath", "environment"]
+      },
+      "evidence_refs": ["tools/SELF_TEST_GOURMET_v0.28.py"]
+    },
+    {
+      "event_id": "KU2D-TC-000062",
+      "observed_at": "2026-09-02T00:25:00+07:00",
+      "phase": "implementation",
+      "failure_code": "P59_EXISTING_RUNTIME_BROWSER_FALLBACK",
+      "observed_signal": "Existing Big C and Makro operational functions could enter a headless rendered fallback even though the Tier-A P59 method locks prohibit browser execution.",
+      "root_cause_layer": "runtime_code",
+      "correction": {
+        "action": "Added an explicit browser_mode disabled input honored by the existing functions and made the P59 adapter always pass it while replacing render entry points with fail-closed diagnostics.",
+        "components": ["acquisition/supermarket_techniques.py", "tools/LIVE_MULTI_SOURCE_ROUND_ROBIN.py"],
+        "scope_changed": false
+      },
+      "validation": {"checks": ["P59 transport negative tests", "all supermarket regressions"], "result": "passed"},
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "related_commit_or_pending_commit": "bf1950c9053435cbe06c9ad8fb5c1a611729288b",
+      "learning": {
+        "reusable_lesson": "An existing technique can contain a broader fallback than a later campaign method lock permits.",
+        "future_prevention": "Make execution-mode prohibitions explicit adapter inputs and test that fallback entry points remain unreachable.",
+        "labels": ["method-lock", "browser-disabled", "safety"]
+      },
+      "evidence_refs": ["config/tier_a_locked_source_batch_manifest.json"]
+    },
+    {
+      "event_id": "KU2D-TC-000063",
+      "observed_at": "2026-09-02T00:30:00+07:00",
+      "phase": "implementation",
+      "failure_code": "P59_ROUND_FRONTIER_REPLAY_RISK",
+      "observed_signal": "Existing progressive source functions derived their frontier from the operations database, which P59 must not write, so repeated visits could replay the same frontier.",
+      "root_cause_layer": "runtime_code",
+      "correction": {
+        "action": "Added optional deterministic page, product, and SKU offsets supplied by the isolated campaign ledger without changing default behavior.",
+        "components": ["acquisition/lotus_multitechnique.py", "acquisition/supermarket_techniques.py"],
+        "scope_changed": false
+      },
+      "validation": {"checks": ["round-robin dedup tests", "Lotus regression", "Tops regressions", "supermarket regression"], "result": "passed"},
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "related_commit_or_pending_commit": "bf1950c9053435cbe06c9ad8fb5c1a611729288b",
+      "learning": {
+        "reusable_lesson": "An isolated one-time runner needs an explicit frontier independent of production operations state.",
+        "future_prevention": "Expose deterministic optional offsets while preserving source technique defaults and cross-round identity deduplication.",
+        "labels": ["frontier", "deduplication", "isolation"]
+      },
+      "evidence_refs": ["tools/SELF_TEST_MULTI_SOURCE_ROUND_ROBIN.py"]
+    },
+    {
+      "event_id": "KU2D-TC-000064",
+      "observed_at": "2026-09-02T00:35:00+07:00",
+      "phase": "test",
+      "failure_code": "P59_INITIAL_FIXTURE_INVENTORY_INCOMPLETE",
+      "observed_signal": "The first manifest draft referenced representative Shopee, Lazada, Coffee and YouTube fixtures rather than every available source fixture.",
+      "root_cause_layer": "artifact",
+      "correction": {
+        "action": "Expanded the immutable fixture lists to every available relevant fixture file and added per-source zero-provider replay assertions.",
+        "components": ["config/multi_source_round_robin_manifest_v1.json", "tools/SELF_TEST_MULTI_SOURCE_ROUND_ROBIN.py"],
+        "scope_changed": false
+      },
+      "validation": {"checks": ["declared fixture existence", "UTF-8/JSON replay", "provider counter equality"], "result": "passed"},
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "related_commit_or_pending_commit": "bf1950c9053435cbe06c9ad8fb5c1a611729288b",
+      "learning": {
+        "reusable_lesson": "Representative fixtures are insufficient when a closure contract says every available fixture.",
+        "future_prevention": "Persist the full fixture inventory and assert a per-source replay disposition before live execution.",
+        "labels": ["fixture", "coverage", "zero-provider"]
+      },
+      "evidence_refs": ["config/multi_source_round_robin_manifest_v1.json"]
+    },
+    {
+      "event_id": "KU2D-TC-000065",
+      "observed_at": "2026-09-02T00:16:00+07:00",
+      "phase": "preflight",
+      "failure_code": "P59_CANARY_STOP_NOT_CARRIED_INTO_CAMPAIGN",
+      "observed_signal": "The sealed canary correctly stopped Tops on HTTP 403, but the first execute path initialized a fresh ledger that would have retried the terminal source and omitted four canary operations from campaign totals.",
+      "root_cause_layer": "runtime_code",
+      "correction": {
+        "action": "Required execute mode to import one exact sealed canary ledger, count all four prior operations, preserve Tops as terminal, and use a sanitized hash attestation without rewriting the original evidence.",
+        "components": ["acquisition/round_robin_campaign.py", "tools/LIVE_MULTI_SOURCE_ROUND_ROBIN.py", "knowledge/v1/multi-source/KU2D-P59-CANARY-20260902.json"],
+        "scope_changed": false
+      },
+      "validation": {"checks": ["exact canary hash attestation", "terminal 403 carry-forward", "no duplicate import", "remaining-source fairness"], "result": "passed"},
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": true, "request_delta": 4, "quota_delta": 0},
+      "related_commit_or_pending_commit": "1641e7b2537326ecd89b02c0c3fd20509eaff070",
+      "learning": {
+        "reusable_lesson": "A pre-live canary is part of the campaign safety ledger, not a disposable connectivity check.",
+        "future_prevention": "Require sealed canary import and budget reconciliation before the first campaign operation, preserving all access stops as terminal.",
+        "labels": ["canary", "budget-accounting", "terminal-stop"]
+      },
+      "evidence_refs": ["KU2D-P59-CANARY-20260902", "tools/SELF_TEST_MULTI_SOURCE_ROUND_ROBIN.py"]
+    }
+  ],
+  "summary": {
+    "event_count": 7,
+    "resolved_count": 7,
+    "unresolved_count": 0,
+    "correction_cycles_used": 7
+  },
+  "safety": {
+    "contains_secret": false,
+    "contains_raw_payload": false,
+    "contains_request_url": false,
+    "contains_personal_data": false
+  }
+}

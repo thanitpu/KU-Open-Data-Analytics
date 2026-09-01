@@ -574,7 +574,10 @@ def bigc_product_catalog(seed, max_pages=3, source_id=None, progressive=False, o
             run_no=max(0,int((states().get(source_id) or {}).get('total_runs') or 0)-1)
         except Exception:run_no=0
 
-    offset=(run_no*target)%len(universe) if progressive and universe and not stable_sample else 0
+    offset=int(cfg.get('offset') or 0)
+    if 'offset' not in cfg:
+        offset=(run_no*target)%len(universe) if progressive and universe and not stable_sample else 0
+    if universe:offset=offset%len(universe)
     # Explore tries at most four direct details; operational mode has more spare URLs.
     multiplier=2 if explore_mode else 3
     window=universe[offset:offset+target*multiplier]
@@ -585,7 +588,7 @@ def bigc_product_catalog(seed, max_pages=3, source_id=None, progressive=False, o
     started=time.monotonic()
     time_budget=12.0 if explore_mode else max(35.0,min(75.0,18.0+requested*8.0))
     direct_timeout=6 if explore_mode else 12
-    render_cap=0 if explore_mode else min(2,max(1,target))
+    render_cap=0 if explore_mode or cfg.get('browser_mode')=='disabled' else min(2,max(1,target))
     render_timeout=14 if not explore_mode else 0
 
     for u in window:
@@ -1055,7 +1058,7 @@ def makro_pro_catalog(seed, max_pages=3, source_id=None, progressive=False, oper
             from operations_store import states
             run_no=max(0,int((states().get(source_id) or {}).get('total_runs') or 0)-1)
         except Exception:run_no=0
-    page_start=run_no*max(1,max_pages)+1 if progressive and not stable_sample else 1
+    page_start=int(cfg.get('page_start') or (run_no*max(1,max_pages)+1 if progressive and not stable_sample else 1))
     rows=[];diag=[];checked=[];reported_total=None;product_urls=[]
     for n in range(page_start,page_start+max(1,int(max_pages))):
         sep='&' if '?' in catalog else '?';u=catalog if n==1 else f'{catalog}{sep}page={n}'
@@ -1069,7 +1072,7 @@ def makro_pro_catalog(seed, max_pages=3, source_id=None, progressive=False, oper
         render_used=False
         # Makro PRO is server-rendered today, but headless DOM is an explicit fallback
         # if the fetched HTML contains the count but not the product-card markup.
-        if not rr and n==page_start:
+        if not rr and n==page_start and cfg.get('browser_mode')!='disabled':
             br=browser_render(u,timeout=42)
             if br.get('ok') and br.get('html'):
                 bhtml=br.get('html') or ''
@@ -1324,7 +1327,10 @@ def tops_product_catalog(seed,max_pages=3,source_id=None,progressive=False,opera
             from operations_store import states
             run_no=max(0,int((states().get(source_id) or {}).get('total_runs') or 0)-1)
         except Exception:run_no=0
-    offset=(run_no*target)%len(universe) if progressive and universe and not stable_sample else 0
+    offset=int(cfg.get('offset') or 0)
+    if 'offset' not in cfg:
+        offset=(run_no*target)%len(universe) if progressive and universe and not stable_sample else 0
+    if universe:offset=offset%len(universe)
     window=universe[offset:offset+target*3]
     if len(window)<target*3 and offset:window += universe[:target*3-len(window)]
     rows=[];checked=[];started=time.monotonic();budget=18 if not progressive else max(40,min(80,20+requested*8))

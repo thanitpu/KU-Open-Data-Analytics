@@ -1,0 +1,93 @@
+{
+  "schema": "ku2d.multi-source-round-robin-sanitized-evidence.v1",
+  "run_id": "KU2D-P59-RR-20260902-001",
+  "prompt_id": "KU2D-P-000059",
+  "code_sha": "18c1b1fdc3fb7c65dcd2f21a0e2838b59e4ff704",
+  "code_tree": "9a18bc007bf97a19e78d3d07186c8398e7719b12",
+  "started_at": "2026-09-02T00:21:10+07:00",
+  "ended_at": "2026-09-02T00:24:20+07:00",
+  "wall_clock_seconds": 190,
+  "stop_reason": "empty_active_source_set",
+  "record_slice_per_visit": 100,
+  "rounds_completed": 4,
+  "accepted_unique": 286,
+  "observations": 305,
+  "provider_operations": 107,
+  "documented_quota": 0,
+  "selected_sources": [
+    "SRC-013", "nana_coffee_roasters", "roots_coffee", "SRC-023", "SRC-024", "marketplace-line-shopping", "SRC-018", "SRC-OTA-AGODA", "SRC-OTA-TRAVELOKA", "Q-003", "qdiving-scubadoo-koh-tao", "qdiving-aquamaster-thailand", "youtube-data-api-v3-q-diving", "SRC-001", "SRC-002", "SRC-003", "SRC-004", "SRC-005"
+  ],
+  "preflight_skipped_sources": [
+    "SRC-013", "nana_coffee_roasters", "roots_coffee", "SRC-023", "SRC-024", "marketplace-line-shopping", "SRC-018", "SRC-OTA-AGODA", "SRC-OTA-TRAVELOKA", "Q-003", "qdiving-scubadoo-koh-tao", "qdiving-aquamaster-thailand", "youtube-data-api-v3-q-diving", "SRC-003"
+  ],
+  "attempted_sources": ["SRC-001", "SRC-002", "SRC-004", "SRC-005"],
+  "completed_or_exhausted_sources": ["SRC-005"],
+  "to_be_skipped_sources": [
+    "SRC-013", "nana_coffee_roasters", "roots_coffee", "SRC-023", "SRC-024", "marketplace-line-shopping", "SRC-018", "SRC-OTA-AGODA", "SRC-OTA-TRAVELOKA", "Q-003", "qdiving-scubadoo-koh-tao", "qdiving-aquamaster-thailand", "youtube-data-api-v3-q-diving", "SRC-001", "SRC-002", "SRC-003", "SRC-004"
+  ],
+  "attempted_source_results": [
+    {"source_id": "SRC-001", "source_name": "Tops", "state": "to_be_skipped", "reason": "prelive_canary_http_403_access_boundary", "visits": 0, "provider_operations": 1, "quota": 0, "accepted_unique": 0, "observations": 0, "techniques": []},
+    {"source_id": "SRC-002", "source_name": "Lotus's", "state": "to_be_skipped", "reason": "source_provider_operation_ceiling", "visits": 4, "provider_operations": 80, "quota": 0, "accepted_unique": 265, "observations": 265, "techniques": ["lotus_catalog_api"]},
+    {"source_id": "SRC-004", "source_name": "Big C", "state": "to_be_skipped", "reason": "http_403_access_boundary", "visits": 1, "provider_operations": 10, "quota": 0, "accepted_unique": 0, "observations": 0, "techniques": ["bigc_product_catalog", "generic_sitemap"]},
+    {"source_id": "SRC-005", "source_name": "Makro", "state": "exhausted", "reason": "reviewed_source_frontier_exhausted", "visits": 2, "provider_operations": 16, "quota": 0, "accepted_unique": 21, "observations": 40, "techniques": ["makro_pro_catalog"]}
+  ],
+  "http_status_counts": {
+    "SRC-001": {"403": 1},
+    "SRC-002": {"200": 77, "404": 3},
+    "SRC-004": {"200": 7, "403": 1, "404": 2},
+    "SRC-005": {"200": 16}
+  },
+  "domain_counts": {
+    "Supermarket": {"accepted_unique": 286, "observations": 305},
+    "all_other_domains": {"accepted_unique": 0, "observations": 0}
+  },
+  "quality": {
+    "identity_pct": 100.0,
+    "product_name_pct": 100.0,
+    "price_pct": 100.0,
+    "currency_pct": 100.0,
+    "provenance_pct": 100.0,
+    "official_host_pct": 100.0,
+    "unique_identity_reconciliation": "286/286"
+  },
+  "operation_reconciliation": {
+    "source_total": 107,
+    "operation_log_total": 107,
+    "ledger_total": 107,
+    "minimum_observed_same_host_interval_seconds": 2.0,
+    "query_strings_persisted_in_operation_log": false
+  },
+  "fixture_replay": {
+    "source_dispositions": 18,
+    "fixture_files": 34,
+    "sources_passed": 5,
+    "sources_not_available": 13,
+    "provider_operations": 0
+  },
+  "export": {
+    "domain_count": 10,
+    "member_count": 34,
+    "zip_name": "KU2D_P59_MultiSource_RoundRobin_KU2D-P59-RR-20260902-001.zip",
+    "zip_size": 167218,
+    "zip_sha256": "b52a236cc7ad75a0b037f1ef3c833fd9a9994ba400f8f43ee8f4cc53875d29c3",
+    "hash_reconciliation": "passed",
+    "outside_git": true
+  },
+  "warnings": [
+    "Tops and Big C stopped on public HTTP 403 boundaries and were not retried after their terminal stop.",
+    "Lotus's retained 265 unique records before its immutable 80-operation source cap; the cap is not evidence of catalog completeness.",
+    "Makro retained 21 unique records and 40 observations before the reviewed eight-page frontier was exhausted.",
+    "Only the Supermarket domain produced live records; empty domain exports preserve explicit zero-yield scope rather than quality claims.",
+    "Fixture replay is offline verification and is not counted as live acquisition."
+  ],
+  "safety": {
+    "contains_secret": false,
+    "contains_raw_payload": false,
+    "contains_query_string": false,
+    "contains_headers": false,
+    "contains_personal_data": false,
+    "production_approved": false,
+    "production_store": false,
+    "scheduler_action": null
+  }
+}

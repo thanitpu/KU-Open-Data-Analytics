@@ -1,0 +1,14 @@
+{
+  "schema": "ku2d.multi-source-domain-export-schema.v1",
+  "version": 1,
+  "record_columns": [
+    "domain", "source_id", "source_name", "stable_record_id", "record_type",
+    "observed_at", "canonical_public_source", "technique_id",
+    "provenance_reference", "run_id", "normalized_json"
+  ],
+  "csv": {"encoding": "UTF-8", "null_token": "\\N", "literal_null_token_escape": "\\\\N", "formula_prefix": "'"},
+  "jsonl": {"encoding": "UTF-8", "objects_per_line": 1, "native_null": true},
+  "xlsx": {"worksheets": ["Records", "Source Summary", "Failures"], "null_cell": "absent", "empty_text_cell": "inline-string"},
+  "ordering": ["domain", "source_id", "stable_record_id", "observed_at"],
+  "boundaries": {"production_store": false, "committed_live_records": false}
+}

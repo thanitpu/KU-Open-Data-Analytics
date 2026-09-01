@@ -388,13 +388,14 @@ def _lotus_catalog_api_probe(seed,max_pages=3,source_id=None,progressive=True,op
             # two batches; operational runs can progress through up to 10 batches/run.
             batch_size=max(1,min(99,int(config.get('max_batch_size') or 99)))
             batch_requests=max(1,min(10 if progressive else 2,max(1,int(max_pages))))
-            wanted=batch_size*batch_requests;offset=0
-            if progressive and source_id and products:
+            wanted=batch_size*batch_requests;offset=max(0,int(config.get('sku_offset') or 0))
+            if progressive and source_id and products and 'sku_offset' not in config:
                 try:
                     from operations_store import states
                     st=states().get(source_id) or {};runs=max(0,int(st.get('total_runs') or 0)-1)
                     offset=(runs*wanted)%len(products)
                 except Exception:offset=0
+            offset=offset%len(products) if products else 0
             sample=products[offset:offset+wanted]
             if len(sample)<wanted and offset:sample+=products[:wanted-len(sample)]
             for u in sample:

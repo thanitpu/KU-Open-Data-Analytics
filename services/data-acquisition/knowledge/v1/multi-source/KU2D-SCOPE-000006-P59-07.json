@@ -1,0 +1,22 @@
+{
+  "schema": "ku2d.phase-scope-entry.v1",
+  "scope_declaration_id": "KU2D-SCOPE-000006",
+  "prompt_id": "KU2D-P-000059",
+  "phase_id": "P59-07",
+  "entered_at": "2026-09-02T00:27:34+07:00",
+  "domain": ["repository integration"],
+  "source": ["P59 implementation", "sanitized aggregate evidence", "phase scope records", "KU2D-CJ-000009"],
+  "capability": ["exact-head deterministic validation", "changed-path and invariant audit", "one draft PR", "Data Acquisition CI", "squash merge to integration", "post-merge tree verification", "KU2D-R-000060 handoff"],
+  "acquisition_technique": ["offline deterministic verification and GitHub repository operations only; zero provider access"],
+  "authorized_files_or_modules": ["all P59 authorized paths already changed", "coordination/v1/results/KU2D-R-000060.json", "coordination/queue.json"],
+  "explicit_out_of_scope": ["new provider access", "live rerun", "main modification", "production approval", "live records or ZIP in Git", "recurring scheduling"],
+  "validation_profile": ["git diff check", "YAML parse", "compileall", "targeted P59 suites", "exact-head 56-script corpus", "all supermarket and retail transfer regressions", "protected invariant audit", "PR CI", "squash merge tree equality", "post-merge corpus", "Agent Handoff Protocol"],
+  "prerequisites": {
+    "live_ledger_sealed": true,
+    "provider_access_permanently_stopped_for_p59": true,
+    "fixture_replay_provider_operations": 0,
+    "artifact_hash_reconciliation": "passed",
+    "sanitized_evidence": "KU2D-P59-RR-20260902-001"
+  },
+  "boundaries": {"production_approved": false, "production_store": false, "scheduler_action": null}
+}
