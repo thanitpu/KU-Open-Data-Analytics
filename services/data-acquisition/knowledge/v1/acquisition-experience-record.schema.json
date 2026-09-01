@@ -1,0 +1,294 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ku2d.local/schemas/acquisition-experience-record.v1.schema.json",
+  "title": "KU2D Acquisition Experience Record v1",
+  "description": "Normalized ML-ready experience derived from sanitized acquisition results. Operational Queue, authority records, secrets and raw provider payloads are excluded.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "experience_id",
+    "generated_at",
+    "source",
+    "goal",
+    "attempt",
+    "outcome",
+    "evidence",
+    "learning",
+    "safety"
+  ],
+  "properties": {
+    "schema": {
+      "const": "ku2d.acquisition-experience.v1"
+    },
+    "experience_id": {
+      "type": "string",
+      "pattern": "^KU2D-X-[0-9]{6}$"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "source_type",
+        "provider",
+        "access_surface"
+      ],
+      "properties": {
+        "domain": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "provider": {
+          "type": "string",
+          "minLength": 1
+        },
+        "access_surface": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1
+    },
+    "attempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "techniques",
+        "bounded_scope",
+        "provider_reached"
+      ],
+      "properties": {
+        "method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "techniques": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "bounded_scope": {
+          "type": "object"
+        },
+        "provider_reached": {
+          "type": "boolean"
+        },
+        "effort_class": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "failure_stage",
+        "failure_code",
+        "record_counts",
+        "quality"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "succeeded",
+            "partial",
+            "technical_failure",
+            "access_failure",
+            "quality_failure",
+            "withheld",
+            "blocked"
+          ]
+        },
+        "failure_stage": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "failure_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "record_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          }
+        },
+        "quality": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "useful_rate",
+            "mean_quality",
+            "completeness"
+          ],
+          "properties": {
+            "useful_rate": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 1
+            },
+            "mean_quality": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 1
+            },
+            "completeness": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        },
+        "request_counts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "documented_quota_units": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "result_ids",
+        "provenance_refs",
+        "sanitized"
+      ],
+      "properties": {
+        "result_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "provenance_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "artifact_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "sanitized": {
+          "const": true
+        }
+      }
+    },
+    "learning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reusable_pattern",
+        "reusable_lesson",
+        "next_strategy",
+        "labels"
+      ],
+      "properties": {
+        "reusable_pattern": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reusable_lesson": {
+          "type": "string",
+          "minLength": 1
+        },
+        "next_strategy": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contains_secret",
+        "contains_raw_payload",
+        "contains_personal_data",
+        "production_authorized"
+      ],
+      "properties": {
+        "contains_secret": {
+          "const": false
+        },
+        "contains_raw_payload": {
+          "const": false
+        },
+        "contains_personal_data": {
+          "const": false
+        },
+        "production_authorized": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}
