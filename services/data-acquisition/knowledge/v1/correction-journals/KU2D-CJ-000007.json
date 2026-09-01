@@ -3,7 +3,7 @@
   "journal_id": "KU2D-CJ-000007",
   "source_completion_prompt_id": "KU2D-P-000057",
   "created_at": "2026-09-01T21:19:02.2429054+07:00",
-  "closed_at": "2026-09-01T21:40:00.0000000+07:00",
+  "closed_at": "2026-09-01T21:36:50.0000000+07:00",
   "events": [
     {
       "event_id": "KU2D-TC-000025",
@@ -79,7 +79,7 @@
     },
     {
       "event_id": "KU2D-TC-000029",
-      "observed_at": "2026-09-01T21:40:00.0000000+07:00",
+      "observed_at": "2026-09-01T21:34:00.0000000+07:00",
       "phase": "closure",
       "failure_code": "two_round_minimum_trusted_connection_requires_more_than_remaining_budget",
       "observed_signal": "After 27 of 40 new outbound attempts, no retained scuba record exists and two official verification rounds for ten final records require at least twenty more requests before additional discovery.",
@@ -94,8 +94,25 @@
       "effort_minutes": null,
       "learning": {"reusable_lesson": "A reproducible single-record resolver does not establish discovery, topic coverage or a two-round Minimum Trusted Connection.", "future_prevention": "Obtain a reviewed request-budget extension or a genuine official multi-record discovery surface before resuming; do not replay P57 automatically.", "labels": ["hard-boundary", "minimum-trusted-connection", "blocked", "no-false-green"]},
       "evidence_refs": ["KU2D-P-000057", "KU2D-TIKTOK-LIVE-EVIDENCE-000002"]
+    },
+    {
+      "event_id": "KU2D-TC-000030",
+      "observed_at": "2026-09-01T21:36:45.0000000+07:00",
+      "phase": "evidence",
+      "failure_code": "journal_closure_timestamp_was_later_than_observation_clock",
+      "observed_signal": "Pre-submission inspection found the initial journal closure time had been rounded forward beyond the current repository observation clock.",
+      "root_cause_layer": "artifact",
+      "correction": {"action": "Replaced the rounded future timestamps with bounded observed times and added this durable correction before Result submission.", "components": ["knowledge/v1/correction-journals/KU2D-CJ-000007.json", "tools/SELF_TEST_TIKTOK_SOURCE_COMPLETION.py"], "scope_changed": false},
+      "validation": {"checks": ["RFC 3339 timestamps", "closed_at ordering", "journal exact fields", "full deterministic corpus"], "result": "passed"},
+      "outcome": "resolved",
+      "provider_impact": {"provider_reached": false, "request_delta": 0, "quota_delta": 0},
+      "schema_impact": "None; the correction changes provenance timestamps and journal accounting only.",
+      "quality_impact": "Prevents future-dated closure evidence from entering the coordination Result.",
+      "effort_minutes": null,
+      "learning": {"reusable_lesson": "Evidence timestamps must be captured from the observation clock rather than rounded to a future convenience value.", "future_prevention": "Read the current clock immediately before finalizing journal timestamps and validate closure time before committing.", "labels": ["provenance", "timestamp", "evidence-integrity"]},
+      "evidence_refs": ["KU2D-P-000057", "KU2D-CJ-000007"]
     }
   ],
-  "summary": {"event_count": 5, "resolved_count": 4, "unresolved_count": 1, "correction_cycles_used": 5},
+  "summary": {"event_count": 6, "resolved_count": 5, "unresolved_count": 1, "correction_cycles_used": 6},
   "safety": {"contains_secret": false, "contains_raw_payload": false, "contains_request_url": false, "contains_personal_data": false}
 }

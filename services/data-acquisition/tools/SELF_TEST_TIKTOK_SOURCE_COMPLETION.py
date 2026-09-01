@@ -109,6 +109,6 @@ validate_technical_correction_journal(journal, require_closed=True)
 links = [event.get("related_commit_or_pending_commit") for event in journal["events"]]
 assert all(isinstance(link, str) and re.fullmatch(r"[0-9a-f]{40}", link) for link in links)
 assert sum(event["provider_impact"]["request_delta"] for event in journal["events"]) == 27
-assert journal["summary"] == {"event_count": 5, "resolved_count": 4, "unresolved_count": 1, "correction_cycles_used": 5}
+assert journal["summary"] == {"event_count": 6, "resolved_count": 5, "unresolved_count": 1, "correction_cycles_used": 6}
 
-print("TikTok P57 blocked-boundary checks passed: scope=3 requests=27 retained=0 invariants=7 corrections=5")
+print("TikTok P57 blocked-boundary checks passed: scope=3 requests=27 retained=0 invariants=7 corrections=6")
