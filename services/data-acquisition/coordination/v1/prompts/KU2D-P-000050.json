@@ -1,0 +1,92 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000050",
+  "created_at": "2026-09-01T11:26:00.000+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+  "objective": "YouTube Source Completion Queue: preserve P49, migrate exact historical protocol exceptions safely, complete all technical/PR/merge/acquisition/evidence/ML-export phases autonomously within one bounded envelope, and return one final closure result.",
+  "source_completion_envelope": {
+    "source": "YouTube Data API v3",
+    "purpose": "Q-Diving public video and channel identity discovery",
+    "internal_phases": [
+      "historical_protocol_migration",
+      "full_preflight",
+      "launcher_implementation",
+      "pr_ci_merge",
+      "bounded_acquisition",
+      "sanitized_evidence",
+      "candidate_closure_packet",
+      "ml_experience_export",
+      "source_closure"
+    ],
+    "maximum_offline_technical_correction_cycles": 3,
+    "maximum_preprovider_dispatch_attempts": 2,
+    "maximum_provider_reached_attempts": 1,
+    "cumulative_search_list_requests": 2,
+    "cumulative_videos_list_requests": 1,
+    "cumulative_documented_quota_units": 201,
+    "assistant_intermediate_review_required": false,
+    "technically_green_merges_authorized": true,
+    "intermediate_prompt_or_result_creation": false,
+    "final_result_id": "KU2D-R-000050"
+  },
+  "instructions": [
+    "Treat KU2D-H-000019 and KU2D-V-000049 as the complete authority. Preserve P49 and KU2D-X-000001 as immutable blocked-attempt evidence.",
+    "Do not stop or return control for a correctable syntax, schema, test, CI, artifact, launcher, PR or pre-provider authorization issue while correction remains inside the Source Completion envelope. Record internal checkpoints in the final R50 rather than creating additional Prompt/Result/Review queues.",
+    "Implement an append-only historical-record migration mechanism on the authoritative coordination branch. Add a versioned migration manifest and update Agent Handoff validation/tests so only explicitly listed, exact-hash-pinned historical records may be retained without acting as active authority.",
+    "Migration KU2D-M-000001 must pin V47 blob 702bda7d0b7822ef7b34257a5a177cfe5deb4820 and H17 blob 8e6b4c7c68dd18a305355edcd0c264ce7831f95b; map them respectively to canonical V48 blob afba89a6d66014840d833f0fc03f72b89f5e9e76 and H18 blob 549ae13112a8df31171d02482b1f9572a8d84a4f.",
+    "The migration mechanism must fail closed for an unlisted invalid record, any hash/content mismatch, missing canonical replacement, replacement that does not validate, attempt to use a historical record as current authority, or circular/superseded replacement. It must preserve audit visibility and must not rewrite V47 or H17.",
+    "Run the full deterministic repository corpus after migration. Continue only when JSON/YAML, Agent Handoff, migration negative tests, knowledge schema and all existing acquisition tests pass.",
+    "Offline-stage authorization revision e7a8d6fb3453cb52f3162d35c0811b05b65f6489 and prove KU2D-H-000019 uses explicit_human_input, is confirmed, targets execution cac243aedaa3c83c188e4e90481e4b752fe8bd2b and has authorized_scope exactly equal to immutable AUTH_SCOPE.",
+    "From current main 769149377b9a7886ae2fc6457c7fe815a09d5cd6, prepare a fresh one-file launcher change binding decision KU2D-H-000019, execution cac243aedaa3c83c188e4e90481e4b752fe8bd2b and authorization record e7a8d6fb3453cb52f3162d35c0811b05b65f6489. Preserve every other launcher contract including the corrected artifact guard.",
+    "Open a Ready PR to main, require exact-head one-file diff, clean mergeability and all applicable checks green, then merge with an expected-head guard without intermediate Assistant review.",
+    "Verify the registered main launcher and dispatch with exact H19 inputs. A pre-provider retry is allowed only when the preceding attempt proves the runtime provider step was skipped, request counts are zero and quota is zero. Never retry after the provider was reached. Never exceed two pre-provider dispatch attempts or one provider-reaching attempt.",
+    "Within the envelope, if a pre-provider technical failure requires another launcher correction, create/validate/merge the needed one-file correction PR and continue in P50; do not create P51.",
+    "Retrieve only sanitized Step Summary and sanitized evidence. Never print, persist or commit the API key, raw provider payloads, request URLs or page tokens. Do not acquire comments, captions, transcripts, OAuth-protected or personal data.",
+    "Create a sanitized candidate closure packet using only fields allowed by the approved evidence schema. Candidate approval and production write remain out of scope.",
+    "Create exactly one materially distinct ML-ready experience KU2D-X-000002 conforming to acquisition-experience-record.schema.json. Derive it from sanitized P50 results and cite KU2D-X-000001 as prior experience without copying Queue/Prompt/Human Decision narrative.",
+    "Submit only KU2D-R-000050 at completion or when an external/non-correctable stop condition is reached. Include phase checkpoints, corrections attempted, PR/merge/run/artifact evidence, cumulative attempts/requests/quota, candidate counts, X2 validation and an explicit YouTube source closure status."
+  ],
+  "stop_conditions": [
+    "credential is missing or invalid at the runtime boundary",
+    "provider or policy requires OAuth, restricted data, comments, captions, transcripts, personal data or challenge bypass",
+    "requested provider scope or cumulative quota must exceed H19",
+    "production write, new spending or authority expansion is required",
+    "offline correction cycles or authorized attempt envelope is exhausted",
+    "GitHub permission or protected-branch policy prevents an authorized operation"
+  ],
+  "definition_of_done": [
+    "historical V47/H17 remain immutable and are hash-pinned as non-authoritative history",
+    "active Agent Handoff bundle and complete deterministic corpus pass",
+    "main launcher is bound to H19 through an exact-head reviewed one-file merge",
+    "at most one provider-reaching bounded discovery completes or a genuine external stop condition is documented",
+    "sanitized evidence and candidate closure packet are available when provider execution completes",
+    "KU2D-X-000002 validates and captures the P50 experience",
+    "KU2D-R-000050 recommends closed, partial-closed or external-blocked without requesting another technical queue"
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000050",
+    "next_actor": "assistant",
+    "closure_target": "youtube_source_completion"
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_prompt": "KU2D-P-000049",
+    "depends_on_result": "KU2D-R-000049",
+    "depends_on_review": "KU2D-V-000049",
+    "depends_on_human_decision": "KU2D-H-000019",
+    "authorization_record_revision": "e7a8d6fb3453cb52f3162d35c0811b05b65f6489",
+    "prior_experience": "KU2D-X-000001"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
