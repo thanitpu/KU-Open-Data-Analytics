@@ -1,8 +1,8 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T09:02:30.000+07:00",
+  "updated_at": "2026-09-01T09:05:30.000+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
-  "latest_prompt": "KU2D-P-000040",
+  "latest_prompt": "KU2D-P-000041",
   "latest_result": "KU2D-R-000040",
   "latest_review": "KU2D-V-000040",
   "latest_human_decision": "KU2D-H-000013",
@@ -45,7 +45,8 @@
     "KU2D-P-000037": "completed",
     "KU2D-P-000038": "reviewed",
     "KU2D-P-000039": "reviewed",
-    "KU2D-P-000040": "completed"
+    "KU2D-P-000040": "completed",
+    "KU2D-P-000041": "ready_for_codex"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -77,9 +78,9 @@
     "KU2D-P-000040"
   ],
   "next_action": {
-    "actor": "assistant",
-    "prompt_id": "KU2D-P-000040",
-    "result_id": "KU2D-R-000040",
+    "actor": "codex",
+    "prompt_id": "KU2D-P-000041",
+    "result_id": null,
     "review_id": "KU2D-V-000040",
     "human_decision_id": "KU2D-H-000013",
     "replay_requested": false
@@ -98,5 +99,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "KU2D-H-000013 explicitly authorizes merging reviewed PR #64 into integration/data-acquisition-platform only and delegates future purely technical code-correctness acceptance to the Assistant Reviewer. Human gates remain for live data/API or quota use, privacy/rights-sensitive acquisition, production/scheduling, material business-scope changes and other non-technical authority. No main promotion, trust-anchor replacement, workflow dispatch, secret access, YouTube request/quota, comments, captions, transcripts, Human Review, candidate approval, production write, scheduling or authority promotion is authorized. Assistant executes the exact-head integration merge next."
+  "notes": "KU2D-H-000013 authorizes the exact-head PR #64 merge into integration/data-acquisition-platform only. KU2D-P-000041 routes the bounded merge operation to Codex after exact-head CI is green. The accepted implementation remains 651969cd67b9f7e88cce1b6464136fdb24df5f29. No main promotion, trust-anchor replacement, workflow dispatch, secret access, YouTube request/quota, comments, captions, transcripts, Human Review, candidate approval, production write, scheduling or authority promotion is authorized."
 }
