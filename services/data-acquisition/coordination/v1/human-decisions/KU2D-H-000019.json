@@ -1,0 +1,80 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000019",
+  "prompt_id": "KU2D-P-000049",
+  "result_id": "KU2D-R-000049",
+  "review_id": "KU2D-V-000049",
+  "decided_at": "2026-09-01T11:24:00.000+07:00",
+  "decided_by": {
+    "actor": "human",
+    "actor_id": "project_owner"
+  },
+  "decision": "confirmed",
+  "reason_note": "The project owner explicitly instructed the project to preserve P49 and start a YouTube Source Completion Queue at P50. This authorizes Codex to complete the bounded source lifecycle inside one queue, including a hash-pinned append-only protocol migration, technical self-correction, reviewed PR/CI/merge operations, at most one provider-reaching YouTube acquisition, sanitized evidence retrieval, ML experience export and closure reporting. Multiple pre-provider workflow attempts are permitted only when the runtime provider step did not execute and zero provider requests/quota were used. The cumulative provider scope remains exactly the original H12 scope.",
+  "authorized_scope": {
+    "operation": "youtube_qdiving_identity_discovery",
+    "profiles": [
+      "QYT-BEGINNER-KOH-TAO-TH",
+      "QYT-BEGINNER-EN"
+    ],
+    "max_results_per_profile": 5,
+    "max_pages_per_profile": 1,
+    "max_search_list_requests": 2,
+    "max_videos_list_requests": 1,
+    "max_documented_quota_units": 201,
+    "comments_acquired": false,
+    "captions_called": false,
+    "transcript_text_acquired": false,
+    "oauth_used": false,
+    "production_store": false,
+    "scheduler_action": null
+  },
+  "source_completion_envelope": {
+    "queue_id": "KU2D-P-000050",
+    "maximum_offline_technical_correction_cycles": 3,
+    "maximum_preprovider_dispatch_attempts": 2,
+    "maximum_provider_reached_attempts": 1,
+    "cumulative_search_list_requests": 2,
+    "cumulative_videos_list_requests": 1,
+    "cumulative_documented_quota_units": 201,
+    "preprovider_retry_condition": "previous attempt proves runtime provider step skipped, provider request count zero and documented quota zero",
+    "provider_retry_authorized": false,
+    "assistant_intermediate_review_required": false,
+    "technically_green_merges_authorized": true,
+    "closure_outputs": [
+      "sanitized_candidate_packet",
+      "KU2D-R-000050",
+      "KU2D-X-000002"
+    ]
+  },
+  "protocol_migration_authority": {
+    "rewrite_historical_records": false,
+    "allowed_historical_records": [
+      "KU2D-V-000047",
+      "KU2D-H-000017"
+    ],
+    "require_exact_content_hashes": true,
+    "require_canonical_replacements": [
+      "KU2D-V-000048",
+      "KU2D-H-000018"
+    ],
+    "historical_records_may_not_authorize_execution": true,
+    "unlisted_invalid_record_policy": "fail_closed"
+  },
+  "authorized_execution_revision": "cac243aedaa3c83c188e4e90481e4b752fe8bd2b",
+  "authorized_execution_branch": "integration/data-acquisition-platform",
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_context": "Project owner explicitly requested preservation of P49 and initiation of a YouTube Source Completion Queue beginning at P50.",
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "depends_on_review": "KU2D-V-000049",
+    "depends_on_result": "KU2D-R-000049",
+    "depends_on_merge": "cac243aedaa3c83c188e4e90481e4b752fe8bd2b"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
