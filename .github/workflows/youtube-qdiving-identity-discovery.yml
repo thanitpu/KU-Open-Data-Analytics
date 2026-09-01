@@ -176,7 +176,12 @@ jobs:
       - name: Check sanitized evidence
         id: evidence
         if: always()
-        run: echo "exists=$([[ -f \"$KU2D_EVIDENCE_PATH\" ]] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+        run: |
+          if [[ -f "$KU2D_EVIDENCE_PATH" ]]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Upload sanitized identity evidence
         if: always() && steps.evidence.outputs.exists == 'true'
