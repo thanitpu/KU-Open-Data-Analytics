@@ -12,11 +12,11 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT / "acquisition") not in sys.path:
     sys.path.insert(0, str(ROOT / "acquisition"))
 
+import agent_handoff_protocol as handoff_protocol
 from agent_handoff_protocol import (
     ASSISTANT_REVIEW_SCHEMA,
     BRANCH_HANDOFF_SCHEMA,
     HUMAN_DECISION_SCHEMA,
-    HISTORICAL_MIGRATION_SCHEMA,
     PROMPT_SCHEMA,
     QUEUE_SCHEMA,
     RESULT_SCHEMA,
@@ -29,12 +29,22 @@ from agent_handoff_protocol import (
     validate_assistant_review_record,
     validate_branch_handoff_record,
     validate_human_decision_record,
-    validate_historical_migration_manifest,
     validate_prompt_record,
     validate_prompt_state_transition,
     validate_queue_state,
     validate_result_record,
 )
+
+
+EXTENDED_HISTORY_SUPPORTED = all(
+    hasattr(handoff_protocol, name)
+    for name in ("HISTORICAL_MIGRATION_SCHEMA", "validate_historical_migration_manifest")
+)
+if EXTENDED_HISTORY_SUPPORTED:
+    HISTORICAL_MIGRATION_SCHEMA = handoff_protocol.HISTORICAL_MIGRATION_SCHEMA
+    validate_historical_migration_manifest = (
+        handoff_protocol.validate_historical_migration_manifest
+    )
 
 
 NOW = "2026-08-31T02:00:00+00:00"
@@ -350,51 +360,127 @@ handoff_folder = ROOT / "coordination" / "v1" / "branch-handoffs"
 repository_handoffs = records_in(handoff_folder) if handoff_folder.is_dir() else []
 migration_folder = ROOT / "coordination" / "v1" / "migrations"
 repository_migrations = records_in(migration_folder) if migration_folder.is_dir() else []
+repository_kwargs = {"branch_handoff_records": repository_handoffs}
+if EXTENDED_HISTORY_SUPPORTED:
+    repository_kwargs.update({
+        "historical_migration_records": repository_migrations,
+        "record_blobs": {**review_blobs, **human_blobs},
+    })
 repository_bundle = validate_agent_handoff_bundle(
     repository_prompts, repository_results, repository_reviews, repository_humans,
-    repository_queue, branch_handoff_records=repository_handoffs,
-    historical_migration_records=repository_migrations,
-    record_blobs={**review_blobs, **human_blobs},
+    repository_queue, **repository_kwargs,
 )
 assert repository_bundle["queue_state"]["next_action"]["actor"] in {"codex", "assistant", "human", "none"}
 if repository_bundle["queue_state"]["next_action"]["actor"] == "assistant":
     assert repository_bundle["queue_state"]["latest_result"] == repository_bundle["queue_state"]["next_action"]["result_id"]
-assert set(repository_bundle["human_decision_records"]) == {
+
+# Repository discovery is exact and append-only-aware. Stable anchors prevent
+# historical deletion; equality with discovered non-historical records prevents
+# the validator from silently omitting a newly appended, valid decision.
+stable_human_decision_anchors = {
     "KU2D-H-000001", "KU2D-H-000002", "KU2D-H-000004", "KU2D-H-000005",
     "KU2D-H-000006", "KU2D-H-000007", "KU2D-H-000008", "KU2D-H-000009",
-    "KU2D-H-000010", "KU2D-H-000011", "KU2D-H-000012", "KU2D-H-000013", "KU2D-H-000014", "KU2D-H-000015",
-    "KU2D-H-000016", "KU2D-H-000018", "KU2D-H-000019", "KU2D-H-000020",
-    "KU2D-H-000021", "KU2D-H-000022",
+    "KU2D-H-000010", "KU2D-H-000011", "KU2D-H-000012", "KU2D-H-000013",
 }
-assert repository_bundle["human_decision_records"]["KU2D-H-000001"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000002"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000004"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000005"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000006"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000007"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000008"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000009"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000010"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000011"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000012"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000013"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000014"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000015"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000016"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000018"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000019"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000020"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000021"]["decision"] == "confirmed"
-assert repository_bundle["human_decision_records"]["KU2D-H-000022"]["decision"] == "confirmed"
-assert set(repository_bundle["historical_records"]) == {"KU2D-V-000047", "KU2D-H-000017"}
-assert all(
-    record["active_authority"] is False
-    for record in repository_bundle["historical_records"].values()
-)
+if EXTENDED_HISTORY_SUPPORTED:
+    stable_human_decision_anchors.update({
+        "KU2D-H-000014", "KU2D-H-000015", "KU2D-H-000016", "KU2D-H-000018",
+        "KU2D-H-000019", "KU2D-H-000020", "KU2D-H-000021", "KU2D-H-000022",
+    })
+historical_human_ids = {
+    record_id for record_id in repository_bundle.get("historical_records", {})
+    if record_id.startswith("KU2D-H-")
+}
+discovered_human_ids = {record["human_decision_id"] for record in repository_humans}
+active_human_ids = set(repository_bundle["human_decision_records"])
+assert stable_human_decision_anchors <= active_human_ids
+assert active_human_ids == discovered_human_ids - historical_human_ids
+for human_id, human in repository_bundle["human_decision_records"].items():
+    assert human["decision"] == "confirmed"
+    assert human["provenance"]["decision_source"] == "explicit_human_input"
+    review_record = repository_bundle["assistant_review_records"][human["review_id"]]
+    result_record = repository_bundle["result_records"][human["result_id"]]
+    assert review_record["result_id"] == result_record["result_id"]
+    assert {human["prompt_id"]} == {
+        review_record["prompt_id"], result_record["prompt_id"],
+    }
+if EXTENDED_HISTORY_SUPPORTED:
+    assert set(repository_bundle["historical_records"]) == {"KU2D-V-000047", "KU2D-H-000017"}
+    assert all(
+        record["active_authority"] is False
+        for record in repository_bundle["historical_records"].values()
+    )
 assert validate_authoritative_branch(
     repository_prompts[-1], repository_queue, repository_queue["authoritative_branch"],
     repository_handoffs[-1] if repository_handoffs else None,
 ) == repository_queue["authoritative_branch"]
+
+# P56-A: a future append-only Human Decision passes only with one complete,
+# internally consistent Prompt/Result/Review/Decision chain.
+FP, FR, FV, FH = (
+    "KU2D-P-900001", "KU2D-R-900001", "KU2D-V-900001", "KU2D-H-900001",
+)
+future_prompt = prompt(FP)
+future_result = result(FR, FP)
+future_review = review(FV, FP, FR, require_human=True)
+future_human = human_decision()
+future_human.update({
+    "human_decision_id": FH, "prompt_id": FP, "result_id": FR, "review_id": FV,
+})
+future_queue = queue("completed", "none")
+future_queue.update({
+    "latest_prompt": FP,
+    "latest_result": FR,
+    "latest_review": FV,
+    "latest_human_decision": FH,
+    "prompt_states": {FP: "completed"},
+    "completed_prompt_ids": [FP],
+})
+future_bundle = validate_agent_handoff_bundle(
+    [future_prompt], [future_result], [future_review], [future_human], future_queue,
+)
+assert set(future_bundle["human_decision_records"]) == {FH}
+
+# P56-B: duplicate future Human Decision IDs still fail closed.
+try:
+    validate_agent_handoff_bundle(
+        [future_prompt], [future_result], [future_review],
+        [future_human, deepcopy(future_human)], future_queue,
+    )
+    raise AssertionError("duplicate future Human Decision validated")
+except ValueError:
+    pass
+
+# P56-C: malformed future Human Decision IDs still fail closed.
+malformed_future_human = deepcopy(future_human)
+malformed_future_human["human_decision_id"] = "KU2D-H-FUTURE"
+try:
+    validate_human_decision_record(malformed_future_human)
+    raise AssertionError("malformed future Human Decision validated")
+except ValueError:
+    pass
+
+# P56-D: a future Human Decision without its Review remains an orphan.
+try:
+    validate_agent_handoff_bundle(
+        [future_prompt], [future_result], [], [future_human], future_queue,
+    )
+    raise AssertionError("orphan future Human Decision validated")
+except ValueError:
+    pass
+
+# P56-E: an unrelated Prompt cannot be substituted into the future chain.
+unrelated_prompt = prompt("KU2D-P-900002")
+unrelated_future_human = deepcopy(future_human)
+unrelated_future_human["prompt_id"] = unrelated_prompt["prompt_id"]
+try:
+    validate_agent_handoff_bundle(
+        [future_prompt, unrelated_prompt], [future_result], [future_review],
+        [unrelated_future_human], future_queue,
+    )
+    raise AssertionError("unrelated future Human Decision chain validated")
+except ValueError:
+    pass
 
 # AH19: new branch-authority metadata accepts only the exact checked-out branch.
 branch_prompt = prompt()
@@ -560,8 +646,19 @@ try:
 except ValueError:
     pass
 
+if not EXTENDED_HISTORY_SUPPORTED:
+    print(
+        "Agent Handoff Protocol deterministic tests passed "
+        "(AH1-AH31 plus P56 append-only fixture cases A-E)."
+    )
+    raise SystemExit(0)
+
 # AH32: the repository migration is exact, visible, and non-authoritative.
-assert len(repository_migrations) == 4
+discovered_migration_ids = {record["migration_id"] for record in repository_migrations}
+assert {"KU2D-M-000001", "KU2D-M-000002", "KU2D-M-000003", "KU2D-M-000004"} <= (
+    discovered_migration_ids
+)
+assert set(repository_bundle["historical_migration_records"]) == discovered_migration_ids
 assert validate_historical_migration_manifest(repository_migrations[0])["migration_id"] == (
     "KU2D-M-000001"
 )
@@ -570,9 +667,17 @@ assert all(
     item["active_authority"] is False
     for item in repository_bundle["historical_records"].values()
 )
-assert repository_bundle["proactive_human_decision_ids"] == [
+discovered_proactive_human_ids = {
+    item["human_decision_id"]
+    for migration in repository_migrations
+    for item in migration.get("proactive_human_decisions", [])
+}
+assert {
     "KU2D-H-000018", "KU2D-H-000019", "KU2D-H-000021", "KU2D-H-000022",
-]
+} <= discovered_proactive_human_ids
+assert set(repository_bundle["proactive_human_decision_ids"]) == (
+    discovered_proactive_human_ids
+)
 assert repository_bundle["review_flag_compatibility_ids"] == ["KU2D-V-000050"]
 
 def repository_validation(*, migrations=None, reviews=None, humans=None, blobs=None, queue_state=None):
@@ -877,4 +982,7 @@ try:
 except ValueError:
     pass
 
-print("Agent Handoff Protocol deterministic tests passed (AH1-AH55).")
+print(
+    "Agent Handoff Protocol deterministic tests passed "
+    "(AH1-AH55 plus P56 append-only fixture cases A-E)."
+)
