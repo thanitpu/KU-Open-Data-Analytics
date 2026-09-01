@@ -1,11 +1,11 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T20:24:30.000+07:00",
+  "updated_at": "2026-09-01T20:37:30.000+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
-  "latest_prompt": "KU2D-P-000055",
+  "latest_prompt": "KU2D-P-000056",
   "latest_result": "KU2D-R-000056",
   "latest_review": "KU2D-V-000056",
-  "latest_human_decision": "KU2D-H-000024",
+  "latest_human_decision": "KU2D-H-000025",
   "prompt_states": {
     "KU2D-P-000001": "completed",
     "KU2D-P-000002": "completed",
@@ -60,7 +60,8 @@
     "KU2D-P-000052": "reviewed",
     "KU2D-P-000053": "reviewed",
     "KU2D-P-000054": "completed",
-    "KU2D-P-000055": "completed"
+    "KU2D-P-000055": "completed",
+    "KU2D-P-000056": "ready_for_codex"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -97,8 +98,8 @@
     "KU2D-P-000055"
   ],
   "next_action": {
-    "actor": "none",
-    "prompt_id": null,
+    "actor": "codex",
+    "prompt_id": "KU2D-P-000056",
     "result_id": null,
     "review_id": null,
     "human_decision_id": null,
@@ -118,5 +119,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "V56 accepts R56 and closes P55. PR 72 merged as d79100e6b78895c72d161e3dcc3787d94a81c0fd; PR head, synthetic merge and final merge share tree ca5ada15df296cd64a1678aedf76518aa62daa4a. Exact-head and post-merge Data Acquisition CI passed; V1 invariants are 4/4 byte-identical; V1/V2 YouTube replay parity is 10/10; CJ5 is closed 4/4; provider requests and quota are zero. One non-blocking maintenance item remains: SELF_TEST_AGENT_HANDOFF_PROTOCOL.py on the authoritative coordination branch hard-codes the Human Decision fixture through H22 and omits append-only H23/H24. No correction authority is granted yet. Await explicit project-owner authorization for a small Coordination Protocol Fixture Maintenance package; do not replay P55 or access TikTok automatically."
+  "notes": "H25 authorizes P56 Coordination Protocol Fixture Maintenance. P55 remains completed and must not replay. P56 may change only the static Agent Handoff self-test, its documentation, CJ6/test aggregation if required, and append-only P56 coordination records. It must replace the brittle terminal Human Decision ID set with append-only-aware complete-chain validation while preserving duplicate, malformed, orphan and queue-transition failures. Acquisition runtime, workflows, source files, provider access, production, scheduling and main are prohibited. Use KU2D-SCOPE-000003, one Queue, one PR, KU2D-CJ-000006, exact-head full corpus and Data Acquisition CI. After merge, sync only the exact tested self-test blob to the authoritative coordination branch and rerun the real bundle. Expected Result is KU2D-R-000057; next actor is Codex."
 }
