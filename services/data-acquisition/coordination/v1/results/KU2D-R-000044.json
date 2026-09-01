@@ -1,0 +1,197 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000044",
+  "prompt_id": "KU2D-P-000044",
+  "submitted_at": "2026-09-01T10:05:45.4499160+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "Corrected the canonical integration Q-Diving launcher artifact guard without replaying P43 or issuing another live dispatch. The workflow now uses an explicit correctly quoted Bash if/else and writes exactly exists=true or exists=false. The targeted test extracts and executes the exact YAML shell block against an existing file, a missing file and an existing path containing spaces, producing true, false and true. Ready PR #66 targets integration/data-acquisition-platform at exact head 3b1cb0a7bfeb7ad8cdbef2f9c02272d6b0c0cb19, changes only the authorized workflow and deterministic test, is cleanly mergeable, and all exact-head checks pass. No merge, main mutation, secret access, YouTube request, quota use or workflow dispatch occurred.",
+  "evidence_references": [
+    "KU2D-P-000044",
+    "KU2D-V-000043",
+    "KU2D-R-000043",
+    "implementation-commit:3b1cb0a7bfeb7ad8cdbef2f9c02272d6b0c0cb19",
+    "PR:#66",
+    "workflow:Data Acquisition Platform CI#382",
+    "workflow:Frontend CI#1390",
+    "workflow:Frontend CI#1391",
+    "workflow:PR Browser Preview Link#283"
+  ],
+  "repository_state": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "canonical_base_branch": "integration/data-acquisition-platform",
+    "canonical_base_sha": "453d75ff23e5fdd78e4a8d36f77cd7185db99059",
+    "correction_branch": "codex/youtube-qdiving-artifact-guard-fix-v1",
+    "implementation_head_sha": "3b1cb0a7bfeb7ad8cdbef2f9c02272d6b0c0cb19",
+    "pull_request_number": 66,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/66",
+    "pull_request_state": "open",
+    "ready": true,
+    "draft": false,
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "merged": false
+  },
+  "correction_scope": {
+    "changed_file_count": 2,
+    "changed_files": [
+      ".github/workflows/youtube-qdiving-identity-discovery.yml",
+      "services/data-acquisition/tools/SELF_TEST_YOUTUBE_IDENTITY_DISCOVERY_DISPATCH.py"
+    ],
+    "workflow_change": "replace the command-substitution existence probe with an explicit correctly quoted Bash if/else",
+    "output_contract": [
+      "exists=true",
+      "exists=false"
+    ],
+    "other_implementation_files_changed": false,
+    "historical_p43_prompt_changed": false,
+    "historical_r43_result_changed": false
+  },
+  "executed_shell_contract": {
+    "source": "exact run block extracted from .github/workflows/youtube-qdiving-identity-discovery.yml",
+    "bash_required_and_executed": true,
+    "cases": [
+      {
+        "case": "existing regular file",
+        "expected": "exists=true",
+        "actual": "exists=true",
+        "passed": true
+      },
+      {
+        "case": "missing file",
+        "expected": "exists=false",
+        "actual": "exists=false",
+        "passed": true
+      },
+      {
+        "case": "existing regular file with spaces in path",
+        "expected": "exists=true",
+        "actual": "exists=true",
+        "passed": true
+      }
+    ],
+    "stdout_and_stderr_empty": true,
+    "exit_status": 0,
+    "prior_false_negative_reproduced_by_r43": true,
+    "corrected_false_negative": true
+  },
+  "preserved_launcher_contract": {
+    "trigger": "workflow_dispatch only",
+    "permissions": "contents: read",
+    "integration_trust_anchor_placeholders_preserved": true,
+    "persist_credentials_false_count": 2,
+    "secret_name": "KU2D_YOUTUBE_API_KEY",
+    "secret_reference_count": 1,
+    "secret_reference_scope": "runtime only after immutable authorization validation",
+    "two_checkout_lifecycle_preserved": true,
+    "sanitized_evidence_path_under_runner_temp": true,
+    "step_summary_condition": "always()",
+    "evidence_check_condition": "always()",
+    "artifact_upload_condition": "always() && steps.evidence.outputs.exists == 'true'",
+    "exit_0_summary_and_artifact_completion_preserved": true,
+    "exit_2_summary_and_artifact_completion_preserved": true,
+    "technical_exit_semantics_preserved": true,
+    "profiles": [
+      "QYT-BEGINNER-KOH-TAO-TH",
+      "QYT-BEGINNER-EN"
+    ],
+    "max_pages_per_profile": 1,
+    "max_results_per_profile": 5,
+    "max_search_list_requests": 2,
+    "max_videos_list_requests": 1,
+    "max_documented_quota_units": 201
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "live_request_count": 0,
+    "git_diff_check": "passed",
+    "file_scope_guard": "exactly two authorized files",
+    "json_parse": "219 files passed before Result submission",
+    "yaml_parse": "18 files passed",
+    "python_compilation": "acquisition, api, repository, control_plane, service and tools passed under Python 3.12",
+    "targeted_dispatch_contract": "YIDW1-YIDW80 passed",
+    "agent_handoff_protocol": "AH1-AH31 passed",
+    "complete_deterministic_corpus": "55/55 scripts passed",
+    "supermarket_regressions": "passed within complete corpus and exact-head CI",
+    "retail_transfer_regressions": "passed within complete corpus and exact-head CI",
+    "exact_head_ci": {
+      "head_sha": "3b1cb0a7bfeb7ad8cdbef2f9c02272d6b0c0cb19",
+      "data_acquisition_platform_ci": {
+        "run_number": 382,
+        "run_id": 33464828844,
+        "conclusion": "success",
+        "contract_and_foundation": "success",
+        "supermarket_regressions": "success",
+        "live_smoke": "skipped"
+      },
+      "frontend_ci": [
+        {
+          "run_number": 1390,
+          "run_id": 33464801669,
+          "event": "push",
+          "conclusion": "success"
+        },
+        {
+          "run_number": 1391,
+          "run_id": 33464828807,
+          "event": "pull_request",
+          "conclusion": "success"
+        }
+      ],
+      "pr_browser_preview": {
+        "run_number": 283,
+        "run_id": 33464828800,
+        "conclusion": "success"
+      }
+    }
+  },
+  "security_and_boundaries": {
+    "pull_request_opened": true,
+    "pull_request_merged": false,
+    "main_modified": false,
+    "integration_modified": false,
+    "workflow_dispatched": false,
+    "qdiving_workflow_dispatch_total_unchanged": 1,
+    "existing_historical_run_id": 33463297483,
+    "github_secret_read": false,
+    "secret_value_printed_persisted_uploaded_or_committed": false,
+    "youtube_requests": 0,
+    "documented_quota_units": 0,
+    "raw_provider_data_retrieved": false,
+    "comments_acquired": false,
+    "captions_acquired": false,
+    "transcripts_acquired": false,
+    "human_review_conducted": false,
+    "candidates_approved": false,
+    "production_store": false,
+    "production_approved": false,
+    "authority_promoted": false,
+    "scheduler_action": null
+  },
+  "completed_queue_summary": {
+    "work_completed": "Created the exact-base correction branch, fixed the canonical artifact guard, added executed shell-contract coverage, ran the full deterministic corpus, pushed and opened Ready PR #66.",
+    "key_findings_results": "The exact YAML shell block now returns true for both normal and space-containing existing paths and false for a missing path. PR #66 changes only two authorized files and all exact-head checks pass.",
+    "repo_knowledge_state_changes": "Added reviewable technical correction code only on the feature branch. No acquisition evidence, candidate state, Human Review, approval or production authority changed.",
+    "important_out_of_scope_actions_not_performed": "No PR merge, main/integration mutation, workflow dispatch, P43 replay, secret access, YouTube request/quota, raw provider retrieval, comments, captions, transcripts, Human Review, candidate approval, production write, scheduling or authority promotion.",
+    "remaining_blockers_risks": "The correction is not integrated and the main launcher remains unchanged. A future live rerun is not authorized by P44 and requires fresh Human authority after independent review and integration/promotion.",
+    "recommended_next_step": "Assistant reviews R44 and exact-head Ready PR #66. Do not merge, promote to main or dispatch without a new queued instruction and required Human authority."
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000044.json",
+    "depends_on_result": "KU2D-R-000043",
+    "depends_on_review": "KU2D-V-000043",
+    "canonical_integration_base": "453d75ff23e5fdd78e4a8d36f77cd7185db99059",
+    "target_pr": 66
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
