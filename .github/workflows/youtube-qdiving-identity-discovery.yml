@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      # A separate reviewed one-file promotion to main must replace both
+      # A separate reviewed one-file promotion to main must replace all three
       # placeholders. Until then the launcher fails before checkout.
       KU2D_AUTHORIZED_DECISION_ID: REPLACE_WITH_REVIEWED_HUMAN_DECISION_ID
       KU2D_AUTHORIZED_EXECUTION_REVISION: REPLACE_WITH_REVIEWED_40_CHAR_INTEGRATION_SHA
@@ -46,6 +46,10 @@ jobs:
           fi
           if [[ "$KU2D_AUTHORIZED_DECISION_ID" == REPLACE_* ]]; then
             echo 'Launcher decision ID has not been bound by a reviewed promotion.' >&2
+            exit 1
+          fi
+          if [[ ! "$KU2D_AUTHORIZED_DECISION_ID" =~ ^KU2D-H-[0-9]{6}$ ]]; then
+            echo 'Launcher decision ID is malformed.' >&2
             exit 1
           fi
           if [[ ! "$KU2D_AUTHORIZATION_RECORD_REVISION" =~ ^[0-9a-f]{40}$ ]]; then
@@ -71,24 +75,26 @@ jobs:
           ref: ${{ env.KU2D_AUTHORIZATION_RECORD_REVISION }}
           persist-credentials: false
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install Data Acquisition dependencies
-        working-directory: services/data-acquisition
-        run: python -m pip install --disable-pip-version-check -r requirements.txt
-
-      - name: Validate exact continuation authorization
-        working-directory: services/data-acquisition
-        env:
-          PYTHONPATH: .
-          KU2D_AUTHORIZATION_ID: ${{ env.KU2D_AUTHORIZED_DECISION_ID }}
-          KU2D_EXECUTION_REVISION: ${{ env.KU2D_AUTHORIZED_EXECUTION_REVISION }}
-          KU2D_AUTHORIZATION_REVISION: ${{ env.KU2D_AUTHORIZATION_RECORD_REVISION }}
+      - name: Stage exact authorization record without executing repository code
         run: |
-          python -c "from pathlib import Path; from tools.LIVE_YOUTUBE_QDIVING_IDENTITY_DISCOVERY import authorization; import os; revision=os.environ['KU2D_EXECUTION_REVISION']; p=Path('coordination/v1/human-decisions') / f'{os.environ[\"KU2D_AUTHORIZATION_ID\"]}.json'; authorization(p, os.environ['KU2D_AUTHORIZATION_ID'], revision); assert os.popen('git rev-parse HEAD').read().strip() == os.environ['KU2D_AUTHORIZATION_REVISION']; print('Exact continuation authorization and immutable revisions: confirmed')"
+          if [[ "$(git rev-parse HEAD)" != "$KU2D_AUTHORIZATION_RECORD_REVISION" ]]; then
+            echo 'Authorization-record checkout does not match the reviewed revision.' >&2
+            exit 1
+          fi
+          record_path="services/data-acquisition/coordination/v1/human-decisions/${KU2D_AUTHORIZED_DECISION_ID}.json"
+          staged_path="${RUNNER_TEMP}/ku2d-youtube-authorization-${GITHUB_RUN_ID}.json"
+          if [[ ! -f "$record_path" || -L "$record_path" ]]; then
+            echo 'Exact authorization record is missing or is not a regular file.' >&2
+            exit 1
+          fi
+          record_size=$(wc -c < "$record_path")
+          if [[ "$record_size" -gt 131072 ]]; then
+            echo 'Exact authorization record exceeds the bounded size limit.' >&2
+            exit 1
+          fi
+          cp -- "$record_path" "$staged_path"
+          chmod 600 "$staged_path"
+          echo "KU2D_STAGED_AUTHORIZATION_RECORD=$staged_path" >> "$GITHUB_ENV"
 
       - name: Checkout immutable reviewed execution revision
         uses: actions/checkout@v4
@@ -100,6 +106,24 @@ jobs:
         env:
           KU2D_EXECUTION_REVISION: ${{ env.KU2D_AUTHORIZED_EXECUTION_REVISION }}
         run: test "$(git rev-parse HEAD)" = "$KU2D_EXECUTION_REVISION"
+
+      - name: Set up Python from reviewed execution revision
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Data Acquisition dependencies from reviewed execution revision
+        working-directory: services/data-acquisition
+        run: python -m pip install --disable-pip-version-check -r requirements.txt
+
+      - name: Validate staged continuation authorization with reviewed execution code
+        working-directory: services/data-acquisition
+        env:
+          PYTHONPATH: .
+          KU2D_AUTHORIZATION_ID: ${{ env.KU2D_AUTHORIZED_DECISION_ID }}
+          KU2D_EXECUTION_REVISION: ${{ env.KU2D_AUTHORIZED_EXECUTION_REVISION }}
+        run: |
+          python -c "from pathlib import Path; from tools.LIVE_YOUTUBE_QDIVING_IDENTITY_DISCOVERY import authorization; import os; authorization(Path(os.environ['KU2D_STAGED_AUTHORIZATION_RECORD']), os.environ['KU2D_AUTHORIZATION_ID'], os.environ['KU2D_EXECUTION_REVISION']); print('Staged continuation authorization: confirmed by reviewed execution code')"
 
       - name: Initialize sanitized evidence paths
         run: |
@@ -117,7 +141,7 @@ jobs:
         run: |
           set +e
           python tools/LIVE_YOUTUBE_QDIVING_IDENTITY_DISCOVERY.py \
-            --authorization-record "coordination/v1/human-decisions/${KU2D_AUTHORIZATION_ID}.json" \
+            --authorization-record "${KU2D_STAGED_AUTHORIZATION_RECORD}" \
             --authorization-id "${KU2D_AUTHORIZATION_ID}" \
             --execution-revision "${KU2D_EXECUTION_REVISION}" \
             --output "${KU2D_EVIDENCE_PATH}"
