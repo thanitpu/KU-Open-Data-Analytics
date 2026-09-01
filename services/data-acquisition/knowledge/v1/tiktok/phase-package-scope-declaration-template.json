@@ -1,0 +1,35 @@
+{
+  "schema": "ku2d.phase-package-scope-declaration.v1",
+  "declaration_id": "KU2D-SCOPE-000000",
+  "declaration_type": "package",
+  "package_id": "KU2D-P-000000",
+  "package_name": "REPLACE_WITH_BOUNDED_PACKAGE_NAME",
+  "phase_id": null,
+  "phase_name": null,
+  "parent_declaration_id": null,
+  "human_authority_id": "KU2D-H-000000",
+  "domain": {"id": "REPLACE_DOMAIN_ID", "label": "REPLACE_DOMAIN_LABEL"},
+  "source": {"id": "REPLACE_SOURCE_ID", "label": "REPLACE_SOURCE_LABEL", "topics": ["REPLACE_TOPIC"]},
+  "capability": ["REPLACE_CAPABILITY"],
+  "acquisition_technique": {
+    "status": "to_be_selected_by_bounded_source_lab",
+    "strategy_ladder": ["REPLACE_AUTHORIZED_TECHNIQUE_OR_LADDER_STEP"],
+    "selected_technique": null,
+    "freeze_rule": "Select and freeze the evidenced technique before adapter integration."
+  },
+  "authorized_files_or_modules": ["REPLACE_REPOSITORY_RELATIVE_ALLOWLIST_ENTRY"],
+  "explicit_out_of_scope": ["REPLACE_EXPLICIT_EXCLUSION"],
+  "validation_profile": [
+    "definition and seven-field scope declaration",
+    "contract/schema validation",
+    "isolated feature branch",
+    "diff and invariant-byte check",
+    "unit and source fixture tests",
+    "source integration and evidence validation",
+    "bounded public live smoke only when necessary",
+    "exact-head full deterministic corpus",
+    "PR approval and CI",
+    "squash merge to integration",
+    "post-merge verification"
+  ]
+}

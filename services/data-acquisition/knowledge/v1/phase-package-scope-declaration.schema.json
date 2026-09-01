@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ku2d.local/schemas/phase-package-scope-declaration.v1.schema.json",
+  "title": "KU2D Phase/Package Scope Declaration v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "declaration_id",
+    "declaration_type",
+    "package_id",
+    "package_name",
+    "phase_id",
+    "phase_name",
+    "parent_declaration_id",
+    "human_authority_id",
+    "domain",
+    "source",
+    "capability",
+    "acquisition_technique",
+    "authorized_files_or_modules",
+    "explicit_out_of_scope",
+    "validation_profile"
+  ],
+  "properties": {
+    "schema": {"const": "ku2d.phase-package-scope-declaration.v1"},
+    "declaration_id": {"type": "string", "pattern": "^KU2D-SCOPE-[0-9]{6}(?:-P[0-9]{2})?$"},
+    "declaration_type": {"enum": ["package", "phase"]},
+    "package_id": {"type": "string", "pattern": "^KU2D-P-[0-9]{6}$"},
+    "package_name": {"type": "string", "minLength": 1},
+    "phase_id": {"type": ["string", "null"], "pattern": "^P[0-9]{2}-[0-9]{2}$"},
+    "phase_name": {"type": ["string", "null"], "minLength": 1},
+    "parent_declaration_id": {"type": ["string", "null"], "pattern": "^KU2D-SCOPE-[0-9]{6}$"},
+    "human_authority_id": {"type": "string", "pattern": "^KU2D-H-[0-9]{6}$"},
+    "domain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "label": {"type": "string", "minLength": 1}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "topics"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "label": {"type": "string", "minLength": 1},
+        "topics": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "capability": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "acquisition_technique": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "strategy_ladder", "selected_technique", "freeze_rule"],
+      "properties": {
+        "status": {"enum": ["to_be_selected_by_bounded_source_lab", "selected", "externally_blocked"]},
+        "strategy_ladder": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "selected_technique": {"type": ["string", "null"], "minLength": 1},
+        "freeze_rule": {"type": "string", "minLength": 1}
+      }
+    },
+    "authorized_files_or_modules": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "explicit_out_of_scope": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "validation_profile": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"declaration_type": {"const": "package"}}},
+      "then": {
+        "properties": {
+          "phase_id": {"type": "null"},
+          "phase_name": {"type": "null"},
+          "parent_declaration_id": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"declaration_type": {"const": "phase"}}},
+      "then": {
+        "properties": {
+          "phase_id": {"type": "string", "pattern": "^P[0-9]{2}-[0-9]{2}$"},
+          "phase_name": {"type": "string", "minLength": 1},
+          "parent_declaration_id": {"type": "string", "pattern": "^KU2D-SCOPE-[0-9]{6}$"}
+        }
+      }
+    }
+  ]
+}

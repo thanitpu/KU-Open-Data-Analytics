@@ -1,0 +1,41 @@
+{
+  "schema": "ku2d.tiktok-foundation-blocker.v1",
+  "blocker_id": "KU2D-TIKTOK-FOUNDATION-BLOCKER-000001",
+  "prompt_id": "KU2D-P-000054",
+  "observed_at": "2026-09-01T12:00:00.0000000+00:00",
+  "phase_id": "P54-03",
+  "classification": "protected_foundation_versioning_blocker",
+  "baseline": {
+    "integration_commit": "ecd8614c6be78b662d637b1f2caa954fdb1b7dca",
+    "integration_tree": "dc732a8450f905cbd186751ce6f73817f7a9bff5",
+    "adapter_registry_sha256": "960af6301b52b029bb26d1b3ad08159d261734e51ae6dd382dad7bbc3ec7e6e0",
+    "youtube_run_manifest": "KU2D-RM-000001-V001"
+  },
+  "attempted_extension": {
+    "change": "Append one TikTok fixture-replay metadata registration and explicitly compose both YouTube and TikTok implementations.",
+    "attempted_adapter_registry_sha256": "269f03eabdfbdc56415a78c05c482904f3cea125cfb7925642a14ccd2df2fbf3",
+    "shared_runtime_or_schema_changed": false,
+    "attempt_persisted_in_final_tree": false
+  },
+  "deterministic_failures": [
+    {
+      "case": "existing_foundation_regression_with_original_implementation_catalog",
+      "exception_type": "ValueError",
+      "message": "implementation catalog must exactly match registered keys"
+    },
+    {
+      "case": "existing_youtube_manifest_with_explicit_two-source_implementation_catalog",
+      "exception_type": "ValueError",
+      "message": "adapter registry fingerprint does not match the immutable manifest"
+    }
+  ],
+  "why_p54_cannot_correct_it": [
+    "Updating KU2D-RM-000001-V001 would rewrite or supersede a historical manifest outside the P54 file allowlist.",
+    "Versioning registry resolution safely requires a protected shared runtime, contract or immutable-schema change prohibited by the P54 invariant set.",
+    "Weakening exact implementation composition or fingerprint enforcement would violate P53 integrity gates and frozen YouTube regressions."
+  ],
+  "required_next_authority": "A new Human Decision and Prompt must authorize a backward-compatible versioned registry-evolution design, including the exact historical-manifest migration policy and protected files allowed to change.",
+  "scope_deviation": false,
+  "provider_accounting": {"provider_requests": 5, "maximum_authorized": 20, "quota_delta": 0},
+  "boundaries": {"contains_secret": false, "contains_raw_payload": false, "contains_request_url": false, "contains_personal_data": false, "production_store": false, "production_approved": false, "scheduler_action": null}
+}
