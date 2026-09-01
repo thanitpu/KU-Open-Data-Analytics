@@ -25,7 +25,7 @@ HISTORICAL_MIGRATION_SCHEMA = "ku2d.agent-handoff-historical-migration.v1"
 ACTORS = {"codex", "assistant", "human", "none"}
 PROMPT_STATES = {
     "draft", "ready_for_codex", "in_progress", "result_submitted", "reviewed",
-    "human_decision_required", "completed", "superseded",
+    "correction_required", "human_decision_required", "completed", "superseded",
 }
 RESULT_STATUSES = {"succeeded", "partial", "blocked", "failed"}
 REVIEW_RESULTS = {
@@ -48,7 +48,8 @@ _TRANSITIONS = {
     "draft": {"ready_for_codex", "superseded"},
     "ready_for_codex": {"in_progress", "result_submitted", "superseded"},
     "in_progress": {"result_submitted", "superseded"},
-    "result_submitted": {"reviewed", "human_decision_required", "superseded"},
+    "result_submitted": {"reviewed", "correction_required", "human_decision_required", "superseded"},
+    "correction_required": {"result_submitted", "superseded"},
     "reviewed": {"completed", "human_decision_required", "superseded"},
     "human_decision_required": {"completed", "superseded"},
     "completed": set(),
@@ -167,6 +168,9 @@ def validate_result_record(record: dict[str, Any]) -> dict[str, Any]:
     prompt_id = _record_id(record, "prompt_id")
     if result_id == prompt_id:
         raise ValueError("Result cannot reference itself")
+    supersedes_result_id = _optional_id(record.get("supersedes_result_id"), "result_id")
+    if supersedes_result_id == result_id:
+        raise ValueError("Result cannot supersede itself")
     _nonempty(record.get("submitted_at"), "submitted_at")
     submitter = _mapping(record, "submitted_by")
     if submitter.get("actor") != "codex":
@@ -375,8 +379,8 @@ def validate_queue_state(record: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("next_action.prompt_id must match latest_prompt")
     state = states.get(latest_prompt) if latest_prompt else None
     if actor == "codex":
-        if state not in {"ready_for_codex", "in_progress"}:
-            raise ValueError("codex may act only on ready or in-progress prompts")
+        if state not in {"ready_for_codex", "in_progress", "correction_required"}:
+            raise ValueError("codex may act only on ready, in-progress, or correction-required prompts")
         if latest_prompt in completed and not action["replay_requested"]:
             raise ValueError("completed prompt replay requires explicit request")
         if any(value is not None for value in (action_result, action_review, action_human)):
@@ -823,6 +827,36 @@ def validate_agent_handoff_bundle(
             raise ValueError("orphan Assistant Review chain")
         if result["prompt_id"] != review["prompt_id"]:
             raise ValueError("Assistant Review prompt/result chain is inconsistent")
+
+    superseded_results: set[str] = set()
+    for result in results.values():
+        superseded_id = result.get("supersedes_result_id")
+        if superseded_id is None:
+            continue
+        superseded = results.get(superseded_id)
+        if not superseded or superseded["prompt_id"] != result["prompt_id"]:
+            raise ValueError("Result supersession chain is missing or crosses Prompts")
+        if superseded_id in superseded_results:
+            raise ValueError("one Result cannot have multiple resubmissions")
+        matching_reviews = [
+            review for review in reviews.values()
+            if review["result_id"] == superseded_id
+            and review["prompt_id"] == result["prompt_id"]
+            and review["review_result"] == "correction_required"
+            and review["requires_human_decision"] is False
+        ]
+        if len(matching_reviews) != 1:
+            raise ValueError("Result resubmission requires one correction-required Assistant Review")
+        superseded_results.add(superseded_id)
+    for result in results.values():
+        seen_results: set[str] = set()
+        cursor = result
+        while cursor.get("supersedes_result_id") is not None:
+            cursor_id = cursor["result_id"]
+            if cursor_id in seen_results:
+                raise ValueError("Result supersession chain is circular")
+            seen_results.add(cursor_id)
+            cursor = results[cursor["supersedes_result_id"]]
     for human in humans.values():
         review = reviews.get(human["review_id"])
         result = results.get(human["result_id"])
@@ -875,11 +909,33 @@ def validate_agent_handoff_bundle(
             raise ValueError("pre-result or superseded Prompt cannot have downstream records")
     elif state == "result_submitted":
         current_result = results.get(latest_result)
+        current_result_reviews = [
+            review for review in prompt_reviews if review["result_id"] == latest_result
+        ]
+        chain_ids: set[str] = set()
+        cursor = current_result
+        while cursor is not None:
+            chain_ids.add(cursor["result_id"])
+            superseded_id = cursor.get("supersedes_result_id")
+            cursor = results.get(superseded_id) if superseded_id else None
         if (
             not current_result or current_result["prompt_id"] != latest_prompt
-            or len(prompt_results) != 1 or prompt_reviews or prompt_humans or actor != "assistant"
+            or set(record["result_id"] for record in prompt_results) != chain_ids
+            or current_result_reviews or prompt_humans or actor != "assistant"
         ):
             raise ValueError("result_submitted state requires an unreviewed Result and assistant action")
+    elif state == "correction_required":
+        current_result = results.get(latest_result)
+        current_review = reviews.get(latest_review)
+        if (
+            not current_result or current_result["prompt_id"] != latest_prompt
+            or not current_review or current_review["prompt_id"] != latest_prompt
+            or current_review["result_id"] != latest_result
+            or current_review["review_result"] != "correction_required"
+            or current_review["requires_human_decision"] is not False
+            or prompt_humans or actor != "codex"
+        ):
+            raise ValueError("correction_required state requires a correction review and Codex action")
     elif state == "reviewed":
         current_result = results.get(latest_result)
         current_review = reviews.get(latest_review)

@@ -1,10 +1,10 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T13:14:30.000+07:00",
+  "updated_at": "2026-09-01T13:20:00.000+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
   "latest_prompt": "KU2D-P-000052",
   "latest_result": "KU2D-R-000052",
-  "latest_review": "KU2D-V-000051",
+  "latest_review": "KU2D-V-000052",
   "latest_human_decision": "KU2D-H-000021",
   "prompt_states": {
     "KU2D-P-000001": "completed",
@@ -57,7 +57,7 @@
     "KU2D-P-000049": "reviewed",
     "KU2D-P-000050": "reviewed",
     "KU2D-P-000051": "reviewed",
-    "KU2D-P-000052": "result_submitted"
+    "KU2D-P-000052": "correction_required"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -92,9 +92,9 @@
     "KU2D-P-000044"
   ],
   "next_action": {
-    "actor": "assistant",
+    "actor": "codex",
     "prompt_id": "KU2D-P-000052",
-    "result_id": "KU2D-R-000052",
+    "result_id": null,
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
@@ -113,5 +113,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "R52 is submitted to Assistant review as blocked. The Data Acquisition v1 foundation and YouTube reference MTC are implemented in open Ready PR #70 at exact head eeb08cb9d19104042cbff3ee92734645a3a43445; Level 2 passed 9/9, Level 3 passed 57/57 and all applicable PR checks succeeded. The PR remains clean and mergeable but unmerged because trusted execution policy would not let repository-carried H21 override an earlier explicit user no-merge instruction. No retry or workaround occurred. Provider requests and quota remain zero; production and scheduling remain disabled."
+  "notes": "V52 records the Assistant correction-required review transmitted explicitly by the project owner. P52 is reopened only for bounded closure corrections inside existing PR #70 and CJ2. Codex must register the Connector Kit test in CI, align the correction-journal validator and schema, preserve append-only Result resubmission, rerun Level 1/2 and the complete exact-head corpus, and update PR/Result evidence. Do not merge, open P53 or another PR, call a provider, dispatch live smoke, execute TikTok, write production data or schedule acquisition."
 }

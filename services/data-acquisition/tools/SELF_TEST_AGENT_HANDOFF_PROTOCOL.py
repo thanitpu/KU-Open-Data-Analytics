@@ -805,4 +805,75 @@ try:
 except ValueError:
     pass
 
-print("Agent Handoff Protocol deterministic tests passed (AH1-AH50).")
+# AH51: one correction-required review returns the same Prompt to Codex.
+correction_review = review()
+correction_review["review_result"] = "correction_required"
+correction_review["reason_code"] = "deterministic-correction"
+correction_queue = queue("correction_required", "codex")
+correction_queue["latest_review"] = V1
+assert validate_prompt_state_transition(
+    "result_submitted", "correction_required",
+) == "correction_required"
+correction_bundle = validate_agent_handoff_bundle(
+    [prompt()], [result()], [correction_review], [], correction_queue,
+    previous_queue_state=submitted_queue,
+)
+assert correction_bundle["queue_state"]["next_action"]["actor"] == "codex"
+
+# AH52: a new Result may resubmit the same Prompt only by superseding the reviewed Result.
+R2 = "KU2D-R-000102"
+resubmission = result(R2)
+resubmission["supersedes_result_id"] = R1
+resubmitted_queue = queue("result_submitted", "assistant")
+resubmitted_queue["latest_result"] = R2
+resubmitted_queue["latest_review"] = V1
+resubmitted_queue["next_action"]["result_id"] = R2
+assert validate_prompt_state_transition(
+    "correction_required", "result_submitted",
+) == "result_submitted"
+resubmitted_bundle = validate_agent_handoff_bundle(
+    [prompt()], [result(), resubmission], [correction_review], [], resubmitted_queue,
+    previous_queue_state=correction_queue,
+)
+assert set(resubmitted_bundle["result_records"]) == {R1, R2}
+
+# AH53: two same-Prompt Results without an explicit supersession chain fail closed.
+unlinked = result(R2)
+try:
+    validate_agent_handoff_bundle(
+        [prompt()], [result(), unlinked], [correction_review], [], resubmitted_queue,
+    )
+    raise AssertionError("unlinked Result resubmission validated")
+except ValueError:
+    pass
+
+# AH54: a Result cannot supersede a missing or cross-Prompt Result.
+missing_supersession = deepcopy(resubmission)
+missing_supersession["supersedes_result_id"] = "KU2D-R-000103"
+try:
+    validate_agent_handoff_bundle(
+        [prompt()], [result(), missing_supersession], [correction_review], [], resubmitted_queue,
+    )
+    raise AssertionError("missing Result supersession validated")
+except ValueError:
+    pass
+
+# AH55: resubmission requires the exact correction review and the new Result stays unreviewed.
+try:
+    validate_agent_handoff_bundle(
+        [prompt()], [result(), resubmission], [], [], resubmitted_queue,
+    )
+    raise AssertionError("Result resubmission without correction review validated")
+except ValueError:
+    pass
+reviewed_resubmission = review("KU2D-V-000102", result_id=R2)
+try:
+    validate_agent_handoff_bundle(
+        [prompt()], [result(), resubmission], [correction_review, reviewed_resubmission], [],
+        resubmitted_queue,
+    )
+    raise AssertionError("already-reviewed current resubmission validated")
+except ValueError:
+    pass
+
+print("Agent Handoff Protocol deterministic tests passed (AH1-AH55).")
