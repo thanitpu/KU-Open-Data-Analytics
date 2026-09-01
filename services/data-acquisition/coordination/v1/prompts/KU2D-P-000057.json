@@ -1,0 +1,758 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000057",
+  "created_at": "2026-09-01T21:10:00.000+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+  "objective": "Obtain real, reproducible public TikTok video metadata for Diving lesson and Diving equipment through a bounded multi-technique Strategy Ladder, verify every retained URL on an official TikTok public surface, implement a thin TikTok adapter on immutable Registry V3, and prove Minimum Trusted Connection with two live retrieval rounds without weakening the shared foundation.",
+  "queue_purpose_summary": "กลับมาปิด TikTok ให้ได้ข้อมูลจริงและพิสูจน์ว่าใช้งานซ้ำได้ โดยเปลี่ยนเทคนิคภายใน Queue เดียวเมื่อวิธีหนึ่งล้มเหลว แต่หยุดทันทีที่ต้องใช้สิทธิ์หรือวิธีต้องห้าม.",
+  "phase_package_scope_declaration": {
+    "declaration_id": "KU2D-SCOPE-000004",
+    "package_id": "KU2D-P-000057",
+    "package_name": "TikTok Acquisition Breakthrough and Minimum Trusted Connection",
+    "domain": {
+      "id": "social.public_short_video",
+      "label": "Social — Public Short Video"
+    },
+    "source": {
+      "id": "tiktok",
+      "label": "TikTok",
+      "topics": [
+        "Diving lesson",
+        "Diving equipment"
+      ]
+    },
+    "capability": [
+      "public_video_metadata",
+      "creator_identity",
+      "public_stable_video_identity",
+      "canonical_public_url",
+      "observation_timestamp",
+      "analysis_handoff"
+    ],
+    "acquisition_technique": {
+      "status": "strategy_ladder_authorized",
+      "strategy_ladder": [
+        "Public search-index discovery of canonical TikTok video URLs",
+        "Official TikTok oEmbed/embed verification of every discovered URL",
+        "Official public creator-profile/embed video-card discovery",
+        "Clean ephemeral no-cookie public tag/search rendering",
+        "Permitted public structured state or public network response inspection",
+        "Official API only after a separate Human Decision and separately authorized credentials"
+      ],
+      "preferred_path": "public search discovery -> stable TikTok URL/video ID -> official TikTok verification -> metadata parser -> domain mapper -> sanitized fixture -> repeated live smoke",
+      "strategy_switch_rule": "If one method fails, record the failure and move to the next authorized method within the same Queue and correction journal.",
+      "freeze_rule": "Freeze the first reproducible compliant technique only after two live retrieval rounds and MTC evidence."
+    },
+    "authorized_files_or_modules": [
+      "services/data-acquisition/acquisition/tiktok_diving_connector.py",
+      "services/data-acquisition/config/domain_capability_profiles/tiktok_public_short_video_v1.json",
+      "services/data-acquisition/config/source_manifests/tiktok_diving_v1.json",
+      "services/data-acquisition/config/run_manifests/tiktok_diving_fixture_v1.json",
+      "services/data-acquisition/config/adapter_registry_v3.json",
+      "services/data-acquisition/config/adapter_registry_catalog_v1.json (append-only V3 registration metadata only)",
+      "services/data-acquisition/knowledge/v1/tiktok/**",
+      "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000007.json",
+      "services/data-acquisition/docs/TIKTOK_SOURCE_COMPLETION.md",
+      "services/data-acquisition/tools/SELF_TEST_TIKTOK_SOURCE_COMPLETION.py",
+      "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test registration/aggregation only)",
+      "services/data-acquisition/coordination/v1/** and coordination/queue.json (append-only P57 handoff records only)"
+    ],
+    "explicit_out_of_scope": [
+      "services/data-acquisition/acquisition/source_runner.py",
+      "services/data-acquisition/acquisition/connector_kit.py",
+      "services/data-acquisition/acquisition/run_manifest.py",
+      "services/data-acquisition/acquisition/adapter_registry.py",
+      "services/data-acquisition/config/adapter_registry_v1.json",
+      "services/data-acquisition/config/adapter_registry_v2.json",
+      "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json",
+      "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+      "services/data-acquisition/knowledge/v1/adapter-registry.schema.json",
+      "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+      "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json",
+      "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+      ".github/workflows/**",
+      "comments, captions, transcripts, private account data or follower enrichment",
+      "login, cookies, credentials or user authorization",
+      "CAPTCHA, anti-bot, access-control or policy bypass",
+      "paid scraping/proxy services or new spending",
+      "production write, recurring scheduling or main modification"
+    ],
+    "validation_profile": [
+      "seven-field scope and declared-versus-actual validation",
+      "P54 evidence reuse with no identical request replay",
+      "per-request strategy/surface/topic/outcome ledger",
+      "official verification for every retained canonical URL and video ID",
+      "two independent bounded live retrieval rounds",
+      "at most five retained valid records per topic with deduplication",
+      "sanitized fixture replay through the unchanged Generic Runner",
+      "Minimum Trusted Connection and early acquisition quality gate",
+      "V1/V2 byte invariants plus V3 exact registry resolution and lineage",
+      "targeted tests, integration/evidence tests and exact-head full deterministic corpus",
+      "one PR, Data Acquisition CI, squash merge and post-merge verification"
+    ]
+  },
+  "phase_declaration_requirements": {
+    "required_fields": [
+      "domain",
+      "source",
+      "capability",
+      "acquisition_technique",
+      "authorized_files_or_modules",
+      "explicit_out_of_scope",
+      "validation_profile"
+    ],
+    "phases": [
+      {
+        "phase_id": "P57-01",
+        "phase": "p54_evidence_reuse_and_strategy_ledger",
+        "declaration": {
+          "declaration_id": "KU2D-SCOPE-000004",
+          "package_id": "KU2D-P-000057",
+          "package_name": "TikTok Acquisition Breakthrough and Minimum Trusted Connection",
+          "domain": {
+            "id": "social.public_short_video",
+            "label": "Social — Public Short Video"
+          },
+          "source": {
+            "id": "tiktok",
+            "label": "TikTok",
+            "topics": [
+              "Diving lesson",
+              "Diving equipment"
+            ]
+          },
+          "capability": [
+            "public_stable_video_identity",
+            "canonical_public_url"
+          ],
+          "acquisition_technique": {
+            "status": "strategy_ladder_authorized",
+            "strategy_ladder": [
+              "Public search-index discovery of canonical TikTok video URLs",
+              "Official TikTok oEmbed/embed verification of every discovered URL",
+              "Official public creator-profile/embed video-card discovery",
+              "Clean ephemeral no-cookie public tag/search rendering",
+              "Permitted public structured state or public network response inspection",
+              "Official API only after a separate Human Decision and separately authorized credentials"
+            ],
+            "preferred_path": "public search discovery -> stable TikTok URL/video ID -> official TikTok verification -> metadata parser -> domain mapper -> sanitized fixture -> repeated live smoke",
+            "strategy_switch_rule": "If one method fails, record the failure and move to the next authorized method within the same Queue and correction journal.",
+            "freeze_rule": "Freeze the first reproducible compliant technique only after two live retrieval rounds and MTC evidence."
+          },
+          "authorized_files_or_modules": [
+            "services/data-acquisition/acquisition/tiktok_diving_connector.py",
+            "services/data-acquisition/config/domain_capability_profiles/tiktok_public_short_video_v1.json",
+            "services/data-acquisition/config/source_manifests/tiktok_diving_v1.json",
+            "services/data-acquisition/config/run_manifests/tiktok_diving_fixture_v1.json",
+            "services/data-acquisition/config/adapter_registry_v3.json",
+            "services/data-acquisition/config/adapter_registry_catalog_v1.json (append-only V3 registration metadata only)",
+            "services/data-acquisition/knowledge/v1/tiktok/**",
+            "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000007.json",
+            "services/data-acquisition/docs/TIKTOK_SOURCE_COMPLETION.md",
+            "services/data-acquisition/tools/SELF_TEST_TIKTOK_SOURCE_COMPLETION.py",
+            "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test registration/aggregation only)",
+            "services/data-acquisition/coordination/v1/** and coordination/queue.json (append-only P57 handoff records only)"
+          ],
+          "explicit_out_of_scope": [
+            "services/data-acquisition/acquisition/source_runner.py",
+            "services/data-acquisition/acquisition/connector_kit.py",
+            "services/data-acquisition/acquisition/run_manifest.py",
+            "services/data-acquisition/acquisition/adapter_registry.py",
+            "services/data-acquisition/config/adapter_registry_v1.json",
+            "services/data-acquisition/config/adapter_registry_v2.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry.schema.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+            ".github/workflows/**",
+            "comments, captions, transcripts, private account data or follower enrichment",
+            "login, cookies, credentials or user authorization",
+            "CAPTCHA, anti-bot, access-control or policy bypass",
+            "paid scraping/proxy services or new spending",
+            "production write, recurring scheduling or main modification"
+          ],
+          "validation_profile": [
+            "seven-field scope and declared-versus-actual validation",
+            "P54 evidence reuse with no identical request replay",
+            "per-request strategy/surface/topic/outcome ledger",
+            "official verification for every retained canonical URL and video ID",
+            "two independent bounded live retrieval rounds",
+            "at most five retained valid records per topic with deduplication",
+            "sanitized fixture replay through the unchanged Generic Runner",
+            "Minimum Trusted Connection and early acquisition quality gate",
+            "V1/V2 byte invariants plus V3 exact registry resolution and lineage",
+            "targeted tests, integration/evidence tests and exact-head full deterministic corpus",
+            "one PR, Data Acquisition CI, squash merge and post-merge verification"
+          ]
+        },
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow the package declaration but may not omit a field, widen access, increase request budget, change protected foundation or add production/scheduling/main authority.",
+        "completion_evidence": "Persist the validated phase declaration, request-ledger delta, declared-versus-actual diff and phase outcome."
+      },
+      {
+        "phase_id": "P57-02",
+        "phase": "public_discovery_and_official_verification",
+        "declaration": {
+          "declaration_id": "KU2D-SCOPE-000004",
+          "package_id": "KU2D-P-000057",
+          "package_name": "TikTok Acquisition Breakthrough and Minimum Trusted Connection",
+          "domain": {
+            "id": "social.public_short_video",
+            "label": "Social — Public Short Video"
+          },
+          "source": {
+            "id": "tiktok",
+            "label": "TikTok",
+            "topics": [
+              "Diving lesson",
+              "Diving equipment"
+            ]
+          },
+          "capability": [
+            "public_video_metadata",
+            "creator_identity",
+            "public_stable_video_identity",
+            "canonical_public_url"
+          ],
+          "acquisition_technique": {
+            "status": "strategy_ladder_authorized",
+            "strategy_ladder": [
+              "Public search-index discovery of canonical TikTok video URLs",
+              "Official TikTok oEmbed/embed verification of every discovered URL",
+              "Official public creator-profile/embed video-card discovery",
+              "Clean ephemeral no-cookie public tag/search rendering",
+              "Permitted public structured state or public network response inspection",
+              "Official API only after a separate Human Decision and separately authorized credentials"
+            ],
+            "preferred_path": "public search discovery -> stable TikTok URL/video ID -> official TikTok verification -> metadata parser -> domain mapper -> sanitized fixture -> repeated live smoke",
+            "strategy_switch_rule": "If one method fails, record the failure and move to the next authorized method within the same Queue and correction journal.",
+            "freeze_rule": "Freeze the first reproducible compliant technique only after two live retrieval rounds and MTC evidence."
+          },
+          "authorized_files_or_modules": [
+            "services/data-acquisition/acquisition/tiktok_diving_connector.py",
+            "services/data-acquisition/config/domain_capability_profiles/tiktok_public_short_video_v1.json",
+            "services/data-acquisition/config/source_manifests/tiktok_diving_v1.json",
+            "services/data-acquisition/config/run_manifests/tiktok_diving_fixture_v1.json",
+            "services/data-acquisition/config/adapter_registry_v3.json",
+            "services/data-acquisition/config/adapter_registry_catalog_v1.json (append-only V3 registration metadata only)",
+            "services/data-acquisition/knowledge/v1/tiktok/**",
+            "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000007.json",
+            "services/data-acquisition/docs/TIKTOK_SOURCE_COMPLETION.md",
+            "services/data-acquisition/tools/SELF_TEST_TIKTOK_SOURCE_COMPLETION.py",
+            "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test registration/aggregation only)",
+            "services/data-acquisition/coordination/v1/** and coordination/queue.json (append-only P57 handoff records only)"
+          ],
+          "explicit_out_of_scope": [
+            "services/data-acquisition/acquisition/source_runner.py",
+            "services/data-acquisition/acquisition/connector_kit.py",
+            "services/data-acquisition/acquisition/run_manifest.py",
+            "services/data-acquisition/acquisition/adapter_registry.py",
+            "services/data-acquisition/config/adapter_registry_v1.json",
+            "services/data-acquisition/config/adapter_registry_v2.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry.schema.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+            ".github/workflows/**",
+            "comments, captions, transcripts, private account data or follower enrichment",
+            "login, cookies, credentials or user authorization",
+            "CAPTCHA, anti-bot, access-control or policy bypass",
+            "paid scraping/proxy services or new spending",
+            "production write, recurring scheduling or main modification"
+          ],
+          "validation_profile": [
+            "seven-field scope and declared-versus-actual validation",
+            "P54 evidence reuse with no identical request replay",
+            "per-request strategy/surface/topic/outcome ledger",
+            "official verification for every retained canonical URL and video ID",
+            "two independent bounded live retrieval rounds",
+            "at most five retained valid records per topic with deduplication",
+            "sanitized fixture replay through the unchanged Generic Runner",
+            "Minimum Trusted Connection and early acquisition quality gate",
+            "V1/V2 byte invariants plus V3 exact registry resolution and lineage",
+            "targeted tests, integration/evidence tests and exact-head full deterministic corpus",
+            "one PR, Data Acquisition CI, squash merge and post-merge verification"
+          ]
+        },
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow the package declaration but may not omit a field, widen access, increase request budget, change protected foundation or add production/scheduling/main authority.",
+        "completion_evidence": "Persist the validated phase declaration, request-ledger delta, declared-versus-actual diff and phase outcome."
+      },
+      {
+        "phase_id": "P57-03",
+        "phase": "thin_adapter_parser_mapper_and_registry_v3",
+        "declaration": {
+          "declaration_id": "KU2D-SCOPE-000004",
+          "package_id": "KU2D-P-000057",
+          "package_name": "TikTok Acquisition Breakthrough and Minimum Trusted Connection",
+          "domain": {
+            "id": "social.public_short_video",
+            "label": "Social — Public Short Video"
+          },
+          "source": {
+            "id": "tiktok",
+            "label": "TikTok",
+            "topics": [
+              "Diving lesson",
+              "Diving equipment"
+            ]
+          },
+          "capability": [
+            "public_video_metadata",
+            "creator_identity",
+            "observation_timestamp",
+            "analysis_handoff"
+          ],
+          "acquisition_technique": {
+            "status": "strategy_ladder_authorized",
+            "strategy_ladder": [
+              "Public search-index discovery of canonical TikTok video URLs",
+              "Official TikTok oEmbed/embed verification of every discovered URL",
+              "Official public creator-profile/embed video-card discovery",
+              "Clean ephemeral no-cookie public tag/search rendering",
+              "Permitted public structured state or public network response inspection",
+              "Official API only after a separate Human Decision and separately authorized credentials"
+            ],
+            "preferred_path": "public search discovery -> stable TikTok URL/video ID -> official TikTok verification -> metadata parser -> domain mapper -> sanitized fixture -> repeated live smoke",
+            "strategy_switch_rule": "If one method fails, record the failure and move to the next authorized method within the same Queue and correction journal.",
+            "freeze_rule": "Freeze the first reproducible compliant technique only after two live retrieval rounds and MTC evidence."
+          },
+          "authorized_files_or_modules": [
+            "services/data-acquisition/acquisition/tiktok_diving_connector.py",
+            "services/data-acquisition/config/domain_capability_profiles/tiktok_public_short_video_v1.json",
+            "services/data-acquisition/config/source_manifests/tiktok_diving_v1.json",
+            "services/data-acquisition/config/run_manifests/tiktok_diving_fixture_v1.json",
+            "services/data-acquisition/config/adapter_registry_v3.json",
+            "services/data-acquisition/config/adapter_registry_catalog_v1.json (append-only V3 registration metadata only)",
+            "services/data-acquisition/knowledge/v1/tiktok/**",
+            "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000007.json",
+            "services/data-acquisition/docs/TIKTOK_SOURCE_COMPLETION.md",
+            "services/data-acquisition/tools/SELF_TEST_TIKTOK_SOURCE_COMPLETION.py",
+            "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test registration/aggregation only)",
+            "services/data-acquisition/coordination/v1/** and coordination/queue.json (append-only P57 handoff records only)"
+          ],
+          "explicit_out_of_scope": [
+            "services/data-acquisition/acquisition/source_runner.py",
+            "services/data-acquisition/acquisition/connector_kit.py",
+            "services/data-acquisition/acquisition/run_manifest.py",
+            "services/data-acquisition/acquisition/adapter_registry.py",
+            "services/data-acquisition/config/adapter_registry_v1.json",
+            "services/data-acquisition/config/adapter_registry_v2.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry.schema.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+            ".github/workflows/**",
+            "comments, captions, transcripts, private account data or follower enrichment",
+            "login, cookies, credentials or user authorization",
+            "CAPTCHA, anti-bot, access-control or policy bypass",
+            "paid scraping/proxy services or new spending",
+            "production write, recurring scheduling or main modification"
+          ],
+          "validation_profile": [
+            "seven-field scope and declared-versus-actual validation",
+            "P54 evidence reuse with no identical request replay",
+            "per-request strategy/surface/topic/outcome ledger",
+            "official verification for every retained canonical URL and video ID",
+            "two independent bounded live retrieval rounds",
+            "at most five retained valid records per topic with deduplication",
+            "sanitized fixture replay through the unchanged Generic Runner",
+            "Minimum Trusted Connection and early acquisition quality gate",
+            "V1/V2 byte invariants plus V3 exact registry resolution and lineage",
+            "targeted tests, integration/evidence tests and exact-head full deterministic corpus",
+            "one PR, Data Acquisition CI, squash merge and post-merge verification"
+          ]
+        },
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow the package declaration but may not omit a field, widen access, increase request budget, change protected foundation or add production/scheduling/main authority.",
+        "completion_evidence": "Persist the validated phase declaration, request-ledger delta, declared-versus-actual diff and phase outcome."
+      },
+      {
+        "phase_id": "P57-04",
+        "phase": "repeated_live_mtc_fixture_and_quality_gate",
+        "declaration": {
+          "declaration_id": "KU2D-SCOPE-000004",
+          "package_id": "KU2D-P-000057",
+          "package_name": "TikTok Acquisition Breakthrough and Minimum Trusted Connection",
+          "domain": {
+            "id": "social.public_short_video",
+            "label": "Social — Public Short Video"
+          },
+          "source": {
+            "id": "tiktok",
+            "label": "TikTok",
+            "topics": [
+              "Diving lesson",
+              "Diving equipment"
+            ]
+          },
+          "capability": [
+            "public_video_metadata",
+            "creator_identity",
+            "public_stable_video_identity",
+            "canonical_public_url",
+            "observation_timestamp",
+            "analysis_handoff"
+          ],
+          "acquisition_technique": {
+            "status": "strategy_ladder_authorized",
+            "strategy_ladder": [
+              "Public search-index discovery of canonical TikTok video URLs",
+              "Official TikTok oEmbed/embed verification of every discovered URL",
+              "Official public creator-profile/embed video-card discovery",
+              "Clean ephemeral no-cookie public tag/search rendering",
+              "Permitted public structured state or public network response inspection",
+              "Official API only after a separate Human Decision and separately authorized credentials"
+            ],
+            "preferred_path": "public search discovery -> stable TikTok URL/video ID -> official TikTok verification -> metadata parser -> domain mapper -> sanitized fixture -> repeated live smoke",
+            "strategy_switch_rule": "If one method fails, record the failure and move to the next authorized method within the same Queue and correction journal.",
+            "freeze_rule": "Freeze the first reproducible compliant technique only after two live retrieval rounds and MTC evidence."
+          },
+          "authorized_files_or_modules": [
+            "services/data-acquisition/acquisition/tiktok_diving_connector.py",
+            "services/data-acquisition/config/domain_capability_profiles/tiktok_public_short_video_v1.json",
+            "services/data-acquisition/config/source_manifests/tiktok_diving_v1.json",
+            "services/data-acquisition/config/run_manifests/tiktok_diving_fixture_v1.json",
+            "services/data-acquisition/config/adapter_registry_v3.json",
+            "services/data-acquisition/config/adapter_registry_catalog_v1.json (append-only V3 registration metadata only)",
+            "services/data-acquisition/knowledge/v1/tiktok/**",
+            "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000007.json",
+            "services/data-acquisition/docs/TIKTOK_SOURCE_COMPLETION.md",
+            "services/data-acquisition/tools/SELF_TEST_TIKTOK_SOURCE_COMPLETION.py",
+            "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test registration/aggregation only)",
+            "services/data-acquisition/coordination/v1/** and coordination/queue.json (append-only P57 handoff records only)"
+          ],
+          "explicit_out_of_scope": [
+            "services/data-acquisition/acquisition/source_runner.py",
+            "services/data-acquisition/acquisition/connector_kit.py",
+            "services/data-acquisition/acquisition/run_manifest.py",
+            "services/data-acquisition/acquisition/adapter_registry.py",
+            "services/data-acquisition/config/adapter_registry_v1.json",
+            "services/data-acquisition/config/adapter_registry_v2.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry.schema.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+            ".github/workflows/**",
+            "comments, captions, transcripts, private account data or follower enrichment",
+            "login, cookies, credentials or user authorization",
+            "CAPTCHA, anti-bot, access-control or policy bypass",
+            "paid scraping/proxy services or new spending",
+            "production write, recurring scheduling or main modification"
+          ],
+          "validation_profile": [
+            "seven-field scope and declared-versus-actual validation",
+            "P54 evidence reuse with no identical request replay",
+            "per-request strategy/surface/topic/outcome ledger",
+            "official verification for every retained canonical URL and video ID",
+            "two independent bounded live retrieval rounds",
+            "at most five retained valid records per topic with deduplication",
+            "sanitized fixture replay through the unchanged Generic Runner",
+            "Minimum Trusted Connection and early acquisition quality gate",
+            "V1/V2 byte invariants plus V3 exact registry resolution and lineage",
+            "targeted tests, integration/evidence tests and exact-head full deterministic corpus",
+            "one PR, Data Acquisition CI, squash merge and post-merge verification"
+          ]
+        },
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow the package declaration but may not omit a field, widen access, increase request budget, change protected foundation or add production/scheduling/main authority.",
+        "completion_evidence": "Persist the validated phase declaration, request-ledger delta, declared-versus-actual diff and phase outcome."
+      },
+      {
+        "phase_id": "P57-05",
+        "phase": "exact_head_ci_pr_merge_and_closure",
+        "declaration": {
+          "declaration_id": "KU2D-SCOPE-000004",
+          "package_id": "KU2D-P-000057",
+          "package_name": "TikTok Acquisition Breakthrough and Minimum Trusted Connection",
+          "domain": {
+            "id": "social.public_short_video",
+            "label": "Social — Public Short Video"
+          },
+          "source": {
+            "id": "tiktok",
+            "label": "TikTok",
+            "topics": [
+              "Diving lesson",
+              "Diving equipment"
+            ]
+          },
+          "capability": [
+            "public_video_metadata",
+            "creator_identity",
+            "public_stable_video_identity",
+            "canonical_public_url",
+            "observation_timestamp",
+            "analysis_handoff"
+          ],
+          "acquisition_technique": {
+            "status": "strategy_ladder_authorized",
+            "strategy_ladder": [
+              "Public search-index discovery of canonical TikTok video URLs",
+              "Official TikTok oEmbed/embed verification of every discovered URL",
+              "Official public creator-profile/embed video-card discovery",
+              "Clean ephemeral no-cookie public tag/search rendering",
+              "Permitted public structured state or public network response inspection",
+              "Official API only after a separate Human Decision and separately authorized credentials"
+            ],
+            "preferred_path": "public search discovery -> stable TikTok URL/video ID -> official TikTok verification -> metadata parser -> domain mapper -> sanitized fixture -> repeated live smoke",
+            "strategy_switch_rule": "If one method fails, record the failure and move to the next authorized method within the same Queue and correction journal.",
+            "freeze_rule": "Freeze the first reproducible compliant technique only after two live retrieval rounds and MTC evidence."
+          },
+          "authorized_files_or_modules": [
+            "services/data-acquisition/acquisition/tiktok_diving_connector.py",
+            "services/data-acquisition/config/domain_capability_profiles/tiktok_public_short_video_v1.json",
+            "services/data-acquisition/config/source_manifests/tiktok_diving_v1.json",
+            "services/data-acquisition/config/run_manifests/tiktok_diving_fixture_v1.json",
+            "services/data-acquisition/config/adapter_registry_v3.json",
+            "services/data-acquisition/config/adapter_registry_catalog_v1.json (append-only V3 registration metadata only)",
+            "services/data-acquisition/knowledge/v1/tiktok/**",
+            "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000007.json",
+            "services/data-acquisition/docs/TIKTOK_SOURCE_COMPLETION.md",
+            "services/data-acquisition/tools/SELF_TEST_TIKTOK_SOURCE_COMPLETION.py",
+            "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (test registration/aggregation only)",
+            "services/data-acquisition/coordination/v1/** and coordination/queue.json (append-only P57 handoff records only)"
+          ],
+          "explicit_out_of_scope": [
+            "services/data-acquisition/acquisition/source_runner.py",
+            "services/data-acquisition/acquisition/connector_kit.py",
+            "services/data-acquisition/acquisition/run_manifest.py",
+            "services/data-acquisition/acquisition/adapter_registry.py",
+            "services/data-acquisition/config/adapter_registry_v1.json",
+            "services/data-acquisition/config/adapter_registry_v2.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v1.json",
+            "services/data-acquisition/config/run_manifests/youtube_qdiving_fixture_v2.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry.schema.json",
+            "services/data-acquisition/knowledge/v1/adapter-registry-v2.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json",
+            "services/data-acquisition/knowledge/v1/immutable-run-manifest-v2.schema.json",
+            ".github/workflows/**",
+            "comments, captions, transcripts, private account data or follower enrichment",
+            "login, cookies, credentials or user authorization",
+            "CAPTCHA, anti-bot, access-control or policy bypass",
+            "paid scraping/proxy services or new spending",
+            "production write, recurring scheduling or main modification"
+          ],
+          "validation_profile": [
+            "seven-field scope and declared-versus-actual validation",
+            "P54 evidence reuse with no identical request replay",
+            "per-request strategy/surface/topic/outcome ledger",
+            "official verification for every retained canonical URL and video ID",
+            "two independent bounded live retrieval rounds",
+            "at most five retained valid records per topic with deduplication",
+            "sanitized fixture replay through the unchanged Generic Runner",
+            "Minimum Trusted Connection and early acquisition quality gate",
+            "V1/V2 byte invariants plus V3 exact registry resolution and lineage",
+            "targeted tests, integration/evidence tests and exact-head full deterministic corpus",
+            "one PR, Data Acquisition CI, squash merge and post-merge verification"
+          ]
+        },
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow the package declaration but may not omit a field, widen access, increase request budget, change protected foundation or add production/scheduling/main authority.",
+        "completion_evidence": "Persist the validated phase declaration, request-ledger delta, declared-versus-actual diff and phase outcome."
+      }
+    ],
+    "rules": [
+      "All seven fields are mandatory before each phase.",
+      "Authorized paths are a strict allowlist and phase declarations may only narrow.",
+      "Reuse P54 evidence and do not repeat identical failed requests without a new falsifiable reason.",
+      "Every outbound request must be recorded before the next request is made.",
+      "Every retained URL and stable video ID must be verified against an official TikTok public surface.",
+      "A technique failure triggers the next authorized strategy inside P57, not a new Queue or PR.",
+      "Any need for login, cookies, credentials, CAPTCHA/anti-bot bypass, paid service, protected-foundation edits, more than 40 new requests, production, scheduling or main authority stops for Human Decision."
+    ]
+  },
+  "resume_checkpoint": {
+    "source_prompt": "KU2D-P-000054",
+    "source_result": "KU2D-R-000055",
+    "prior_requests": 5,
+    "prior_quota_delta": 0,
+    "prior_retained_records": {
+      "diving_lesson": 0,
+      "diving_equipment": 0
+    },
+    "resolved_foundation_prompt": "KU2D-P-000055",
+    "resolved_foundation_result": "KU2D-R-000056",
+    "registry_versions_available": [
+      "V1",
+      "V2"
+    ],
+    "coordination_fixture_prompt": "KU2D-P-000056",
+    "coordination_fixture_result": "KU2D-R-000057",
+    "prohibited_replay": "Do not repeat the same P54 public surface request merely to reproduce the same zero-identity outcome."
+  },
+  "access_and_request_policy": {
+    "official_or_public_surfaces_only": true,
+    "maximum_new_outbound_requests_total": 40,
+    "historical_p54_requests_carried_in_ledger": 5,
+    "maximum_retained_records_per_topic": 5,
+    "minimum_target_records_per_topic": 5,
+    "required_live_retrieval_rounds": 2,
+    "no_login": true,
+    "no_cookies": true,
+    "no_credentials": true,
+    "no_new_spending": true,
+    "no_authentication_or_antibot_bypass": true,
+    "every_request_recorded": true,
+    "request_ledger_fields": [
+      "sequence",
+      "timestamp",
+      "strategy",
+      "surface",
+      "topic",
+      "purpose",
+      "status",
+      "records_found",
+      "stable_ids_found",
+      "retained",
+      "failure_class",
+      "quota_delta"
+    ],
+    "sanitize_once_then_replay": true,
+    "raw_payload_storage": "minimum sanitized fixture only; no secrets, tokens, cookies, request URLs or unnecessary personal data"
+  },
+  "success_contract": {
+    "valid_records_per_topic": 5,
+    "stable_video_id_required": true,
+    "canonical_public_url_required": true,
+    "metadata_and_creator_identity_required": true,
+    "observation_timestamp_required": true,
+    "official_surface_verification_required": true,
+    "repeated_live_retrieval_rounds": 2,
+    "deduplication_required": true,
+    "pagination_or_multi_result_discovery_required_when_surface_supports_it": true,
+    "fixture_replay_required": true,
+    "registry_snapshot": "V3",
+    "analysis_handoff_required": true
+  },
+  "technical_correction_policy": {
+    "journal_id": "KU2D-CJ-000007",
+    "next_event_id": "KU2D-TC-000025",
+    "multiple_corrections_per_queue": true,
+    "one_pr": true,
+    "pr_or_queue_per_correction": false,
+    "finalize_all_commit_links_before_pr_or_closure": true
+  },
+  "implementation_and_merge": {
+    "implementation_branch": "codex/ku2d-tiktok-acquisition-breakthrough-v1",
+    "target_branch": "integration/data-acquisition-platform",
+    "integration_baseline": "fc611d408146830b47f9220ae85d04645512d4da",
+    "one_coherent_pr": true,
+    "exact_head_required": true,
+    "data_acquisition_ci_required": true,
+    "technically_green_squash_merge_authorized": true,
+    "assistant_intermediate_review_required": false,
+    "post_merge_verification_required": true,
+    "main_modification_authorized": false
+  },
+  "instructions": [
+    "Validate KU2D-SCOPE-000004 and the current phase declaration before every phase.",
+    "Reuse P54 evidence, start a cumulative ledger at historical requests 5, and do not replay identical failed calls.",
+    "Try the Strategy Ladder in order, recording why each transition is justified.",
+    "Prefer public search-index discovery followed by official TikTok oEmbed/embed verification of stable canonical URLs.",
+    "Retain no more than five valid records per topic and verify the final set in two bounded live rounds.",
+    "After live proof, sanitize fixtures and use fixture replay for all remaining tests.",
+    "Create a thin source-specific adapter/parser/mapper and immutable Registry V3 without editing V1/V2 or shared validators/runner/workflow.",
+    "Run targeted, integration, MTC, invariant and exact-head full-corpus tests; use one PR and squash merge only when all required gates pass.",
+    "Submit only KU2D-R-000058 with strategy outcomes, exact ledger, records by topic, repeated-live proof, MTC, registry lineage, fixture/evidence hashes, scope diff, CJ7, PR/CI/tree and limitations."
+  ],
+  "stop_conditions": [
+    "login, cookies, credentials, user authorization or provider approval is required",
+    "CAPTCHA, anti-bot, access-control or policy bypass is required",
+    "paid scraping/proxy service or spending is required",
+    "more than 40 new outbound requests is required",
+    "a protected shared runner, validator, V1/V2 registry/manifest/schema or CI workflow must change",
+    "a retained URL cannot be verified on an official TikTok public surface",
+    "production write, recurring scheduling or main modification is required",
+    "scope must widen beyond KU2D-SCOPE-000004"
+  ],
+  "definition_of_done": [
+    "all entered phases have valid seven-field declarations",
+    "five valid records per topic are retained with stable video IDs and canonical URLs",
+    "every retained URL is verified on an official TikTok public surface",
+    "two bounded live retrieval rounds reproduce the valid final set",
+    "request ledger, deduplication and record caps are exact",
+    "thin TikTok adapter, sanitized fixture, capability/source/run manifests and Registry V3 are complete",
+    "V1/V2 and shared foundation invariants remain unchanged",
+    "fixture replay, MTC, early quality gate, exact-head corpus and Data Acquisition CI pass",
+    "KU2D-CJ-000007 closes with no pending links",
+    "one green PR squash-merges to integration and post-merge verification passes",
+    "KU2D-R-000058 is submitted"
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000058",
+    "next_actor": "assistant",
+    "closure_target": "tiktok_acquisition_breakthrough_and_minimum_trusted_connection",
+    "provider_request_limit": 40
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_prompt": "KU2D-P-000056",
+    "depends_on_result": "KU2D-R-000057",
+    "depends_on_review": "KU2D-V-000057",
+    "depends_on_human_decision": "KU2D-H-000026",
+    "resumes_prompt": "KU2D-P-000054",
+    "resolves_external_work_after_foundation": "KU2D-P-000055",
+    "integration_baseline": "fc611d408146830b47f9220ae85d04645512d4da"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
