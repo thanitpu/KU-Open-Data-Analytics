@@ -33,8 +33,6 @@ jobs:
       KU2D_AUTHORIZED_DECISION_ID: REPLACE_WITH_REVIEWED_HUMAN_DECISION_ID
       KU2D_AUTHORIZED_EXECUTION_REVISION: REPLACE_WITH_REVIEWED_40_CHAR_INTEGRATION_SHA
       KU2D_AUTHORIZATION_RECORD_REVISION: REPLACE_WITH_40_CHAR_DECISION_RECORD_SHA
-      KU2D_EVIDENCE_PATH: ${{ runner.temp }}/ku2d-youtube-qdiving-${{ github.run_id }}.json
-      KU2D_ARTIFACT_NAME: youtube-qdiving-identity-discovery-${{ github.run_id }}
     steps:
       - name: Validate immutable launcher trust anchors
         env:
@@ -102,6 +100,11 @@ jobs:
         env:
           KU2D_EXECUTION_REVISION: ${{ env.KU2D_AUTHORIZED_EXECUTION_REVISION }}
         run: test "$(git rev-parse HEAD)" = "$KU2D_EXECUTION_REVISION"
+
+      - name: Initialize sanitized evidence paths
+        run: |
+          echo "KU2D_EVIDENCE_PATH=${RUNNER_TEMP}/ku2d-youtube-qdiving-${GITHUB_RUN_ID}.json" >> "$GITHUB_ENV"
+          echo "KU2D_ARTIFACT_NAME=youtube-qdiving-identity-discovery-${GITHUB_RUN_ID}" >> "$GITHUB_ENV"
 
       - name: Run exact bounded public discovery
         id: discovery

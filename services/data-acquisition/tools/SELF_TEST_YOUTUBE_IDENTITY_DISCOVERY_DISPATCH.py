@@ -19,6 +19,7 @@ for required in ("workflow_dispatch:", "contents: read", "persist-credentials: f
                  "REPLACE_WITH_40_CHAR_DECISION_RECORD_SHA",
                  "ref: ${{ env.KU2D_AUTHORIZATION_RECORD_REVISION }}",
                  "ref: ${{ env.KU2D_AUTHORIZED_EXECUTION_REVISION }}",
+                 "Initialize sanitized evidence paths", "RUNNER_TEMP", "GITHUB_RUN_ID",
                  "set +e", "code=$?", "set -e", "if: always()"):
     assert required in workflow
 for prohibited in ("schedule:", "push:", "pull_request:", "echo $KU2D_YOUTUBE_API_KEY", "printenv"):
@@ -74,5 +75,6 @@ assert workflow.index("Validate immutable launcher trust anchors") < workflow.in
 assert workflow.index("Checkout immutable authorization record revision") < workflow.index("Validate exact continuation authorization")
 assert workflow.index("Validate exact continuation authorization") < workflow.index("Checkout immutable reviewed execution revision")
 assert workflow.index("Checkout immutable reviewed execution revision") < workflow.index("KU2D_YOUTUBE_API_KEY")
+assert "${{ runner.temp }}" not in workflow
 
 print("YouTube H12 manual dispatch deterministic tests passed (YIDW1-YIDW45).")
