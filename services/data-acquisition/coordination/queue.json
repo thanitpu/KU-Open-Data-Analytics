@@ -1,9 +1,9 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T12:16:00.000+07:00",
+  "updated_at": "2026-09-01T12:39:41.9279260+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
   "latest_prompt": "KU2D-P-000051",
-  "latest_result": "KU2D-R-000050",
+  "latest_result": "KU2D-R-000051",
   "latest_review": "KU2D-V-000050",
   "latest_human_decision": "KU2D-H-000020",
   "prompt_states": {
@@ -56,7 +56,7 @@
     "KU2D-P-000048": "reviewed",
     "KU2D-P-000049": "reviewed",
     "KU2D-P-000050": "reviewed",
-    "KU2D-P-000051": "ready_for_codex"
+    "KU2D-P-000051": "result_submitted"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -91,9 +91,9 @@
     "KU2D-P-000044"
   ],
   "next_action": {
-    "actor": "codex",
+    "actor": "assistant",
     "prompt_id": "KU2D-P-000051",
-    "result_id": null,
+    "result_id": "KU2D-R-000051",
     "review_id": null,
     "human_decision_id": null,
     "replay_requested": false
@@ -112,5 +112,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "P51 is ready. Objective: remove semantic Human candidate selection from Acquisition, preserve all ten P50 YouTube candidates, create a versioned Analysis intake handoff, and assign relevance/quality/ranking/final inclusion to Analysis. H20 accepts all ten only for Analysis intake, not as quality- or production-approved. P51 permits no provider request or quota and must preserve immutable P50 evidence."
+  "notes": "P51 boundary alignment is merged to integration. R51 submits KU2D-AI-000001 with all 10 immutable P50 candidates accepted for Analysis, zero hidden records, zero provider requests/quota, and no production or scheduling authority. Assistant review is next."
 }

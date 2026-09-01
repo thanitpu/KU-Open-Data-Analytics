@@ -1,0 +1,187 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000051",
+  "prompt_id": "KU2D-P-000051",
+  "submitted_at": "2026-09-01T12:39:41.9279260+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "P51 completed the Acquisition-to-Analysis boundary alignment without replaying P50 or reaching a provider. The versioned contract accepts every technically valid, authorized, policy-compliant, provenance-bearing and sanitized record for Analysis without claiming semantic quality or production authority. KU2D-AI-000001 indexes all ten immutable P50 YouTube candidates in packet order with packet, Result, artifact, commit, hash and per-record provenance; no record is hidden. Exact-pinned compatibility preserves contradictory V50 bytes while validating only its confirmed H20 chain. Ready PR #69 passed all applicable checks and squash-merged 19 scoped files to integration as 78505d041bd9f491b6fa4ba9bb98c2d0e3644b4a. Deterministic corpus passed 56/56 with zero provider requests and zero quota.",
+  "evidence_references": [
+    "KU2D-P-000051",
+    "KU2D-V-000050",
+    "KU2D-H-000020",
+    "KU2D-R-000050",
+    "manifest:KU2D-AI-000001",
+    "packet:KU2D-YT-QDIVING-CANDIDATES-000001",
+    "policy:KU2D-KP-000003",
+    "migration:KU2D-M-000002",
+    "authoritative-implementation:b5c7028c71d23fd48db7d905676b360f7be28d36",
+    "pull-request:69",
+    "pr-head:466a906b801e0d3e260d8756a3a9d69f2ee40222",
+    "integration-merge:78505d041bd9f491b6fa4ba9bb98c2d0e3644b4a",
+    "post-merge-ci:33474353273",
+    "post-merge-frontend:33474353283"
+  ],
+  "boundary_contract": {
+    "schema": "ku2d.acquisition-analysis-handoff.v1",
+    "schema_path": "services/data-acquisition/knowledge/v1/acquisition-analysis-handoff.schema.json",
+    "policy_id": "KU2D-KP-000003",
+    "policy_path": "services/data-acquisition/knowledge/v1/acquisition-analysis-boundary-policy.json",
+    "validator_path": "services/data-acquisition/acquisition/acquisition_analysis_handoff.py",
+    "acceptance_status": "accepted_for_analysis",
+    "required_criteria": [
+      "technically_valid",
+      "authorized",
+      "policy_compliant",
+      "provenance_bearing",
+      "sanitized"
+    ],
+    "analysis_owned_fields": [
+      "semantic_relevance",
+      "quality",
+      "analytical_rank",
+      "analytical_deduplication",
+      "final_inclusion"
+    ],
+    "selection_target_is_active_gate": false,
+    "legacy_fields_readable_but_non_authorizing": true
+  },
+  "analysis_intake_manifest": {
+    "manifest_id": "KU2D-AI-000001",
+    "path": "services/data-acquisition/knowledge/v1/analysis-intake-manifests/KU2D-AI-000001.json",
+    "source_batch_id": "KU2D-YT-QDIVING-IDENTITY-DISCOVERY-RUNTIME-000001",
+    "source_result_id": "KU2D-R-000050",
+    "source_artifact_id": "9786568183",
+    "immutable_packet_id": "KU2D-YT-QDIVING-CANDIDATES-000001",
+    "immutable_packet_path": "services/data-acquisition/knowledge/v1/candidate-closure-packets/KU2D-YT-QDIVING-CANDIDATES-000001.json",
+    "immutable_packet_commit": "722b54ef5ea8b8778a33f84e31e17a3a2083ddc0",
+    "immutable_packet_git_blob_sha": "84eefad591b12944579e2f4e65e0e65d69b9c26e",
+    "immutable_packet_sha256": "794b4951987592f715663fa5b9c0a47fc7d9b611379aa6ed2868fe7029277609",
+    "source_candidate_count": 10,
+    "accepted_for_analysis_count": 10,
+    "retrievable_record_count": 10,
+    "hidden_record_count": 0,
+    "packet_order_and_provenance_preserved": true,
+    "unassessed_quality_values_null": true,
+    "analysis_handoff_status": "ready_for_analysis",
+    "production_ready_count": 0
+  },
+  "historical_compatibility": {
+    "immutable_p50_records_rewritten": false,
+    "candidate_packet_rewritten": false,
+    "v50_record_rewritten": false,
+    "migration_id": "KU2D-M-000002",
+    "v50_blob_sha": "8e8c1c67be8bc71df2c40448cf33c48b219d4835",
+    "h20_blob_sha": "c17d8c06ede180ce809bba6c4febd2d01d1a9562",
+    "compatibility_interpretation": "exact accepted to human_decision_required normalization for the pinned V50/H20 chain only",
+    "ordinary_review_validator_remains_strict": true,
+    "queue_codex_downstream_pointer_removed": true
+  },
+  "implementation_and_merge": {
+    "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "authoritative_implementation_commit": "b5c7028c71d23fd48db7d905676b360f7be28d36",
+    "pr_branch": "codex/acquisition-analysis-handoff-v1",
+    "pr_base_sha": "cac243aedaa3c83c188e4e90481e4b752fe8bd2b",
+    "pr_head_sha": "466a906b801e0d3e260d8756a3a9d69f2ee40222",
+    "pull_request_number": 69,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/69",
+    "ready_for_review": true,
+    "exact_head_verified": true,
+    "changed_file_count": 19,
+    "mergeable_state": "clean",
+    "merge_method": "squash",
+    "expected_head_guard": true,
+    "integration_merge_sha": "78505d041bd9f491b6fa4ba9bb98c2d0e3644b4a",
+    "integration_manifest_present": true,
+    "integration_packet_present": true,
+    "integration_packet_blob_sha": "84eefad591b12944579e2f4e65e0e65d69b9c26e",
+    "main_modified": false
+  },
+  "pull_request_checks": [
+    {"id": 99750095771, "name": "contract-and-foundation", "conclusion": "success"},
+    {"id": 99750095869, "name": "supermarket-regressions", "conclusion": "success"},
+    {"id": 99750095693, "name": "preview-link", "conclusion": "success"},
+    {"id": 99750095526, "name": "frontend-smoke", "conclusion": "success"},
+    {"id": 99750018292, "name": "frontend-smoke", "conclusion": "success"},
+    {"id": 99750096732, "name": "live-smoke", "conclusion": "skipped"}
+  ],
+  "post_merge_workflows": [
+    {"run_id": 33474353273, "name": "Data Acquisition Platform CI", "run_number": 385, "conclusion": "success"},
+    {"run_id": 33474353283, "name": "Frontend CI", "run_number": 1444, "conclusion": "success"}
+  ],
+  "technical_corrections": [
+    {
+      "code": "v50_review_flag_contradiction",
+      "resolution": "exact V50/H20 Git-blob-pinned compatibility; raw records unchanged",
+      "provider_requests": 0,
+      "documented_quota_units": 0
+    },
+    {
+      "code": "codex_action_downstream_pointer",
+      "resolution": "removed only next_action.human_decision_id while H20 remains latest Human authority",
+      "provider_requests": 0,
+      "documented_quota_units": 0
+    },
+    {
+      "code": "worktree_line_ending_hash_variance",
+      "resolution": "normalize CRLF to canonical repository LF bytes before packet hash validation",
+      "provider_requests": 0,
+      "documented_quota_units": 0
+    }
+  ],
+  "verification": {
+    "deterministic_tests_passed": true,
+    "live_request_count": 0,
+    "python_compilation": "passed for acquisition, api, repository, control_plane, service and tools",
+    "targeted_handoff": "AAI1-AAI35 passed",
+    "targeted_youtube": "YID1-YID50 passed",
+    "operational_regression": "YOH1-YOH84 passed",
+    "agent_handoff_protocol": "AH1-AH50 passed",
+    "complete_authoritative_corpus": "56/56 passed",
+    "complete_pr_corpus": "56/56 passed",
+    "repository_json_yaml": "passed",
+    "git_diff_check": "passed",
+    "immutable_p50_guard": "passed",
+    "provider_requests": 0,
+    "documented_quota_units": 0
+  },
+  "security_and_boundaries": {
+    "p50_replayed": false,
+    "workflow_dispatched": false,
+    "provider_reached": false,
+    "credential_read": false,
+    "secret_exposed_or_committed": false,
+    "restricted_or_personal_data_acquired": false,
+    "semantic_quality_claimed": false,
+    "candidate_selection_performed_by_acquisition": false,
+    "candidate_count_discarded_or_hidden": 0,
+    "production_store": false,
+    "production_approved": false,
+    "authority_promoted": false,
+    "scheduler_action": null
+  },
+  "closure": {
+    "status": "acquisition_analysis_boundary_alignment_complete",
+    "all_ten_candidates_accepted_for_analysis": true,
+    "analysis_decisions_pending": true,
+    "technical_work_remaining_in_p51": false,
+    "recommended_next_step": "Assistant reviews R51 and hands KU2D-AI-000001 to Analysis. Do not replay P50/P51 or infer semantic quality, production approval or scheduling from Acquisition acceptance."
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000051.json",
+    "depends_on_result": "KU2D-R-000050",
+    "depends_on_review": "KU2D-V-000050",
+    "depends_on_human_decision": "KU2D-H-000020"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

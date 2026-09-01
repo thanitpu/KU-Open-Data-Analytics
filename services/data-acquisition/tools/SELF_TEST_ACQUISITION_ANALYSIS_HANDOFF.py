@@ -50,7 +50,7 @@ assert manifest["boundaries"]["provider_request_performed"] is False
 assert manifest["boundaries"]["documented_quota_units"] == 0
 
 # AAI13-AAI18: packet hashes and policy/schema alignment are explicit.
-packet_bytes = PACKET_PATH.read_bytes()
+packet_bytes = PACKET_PATH.read_bytes().replace(b"\r\n", b"\n")
 blob_sha = hashlib.sha1(f"blob {len(packet_bytes)}\0".encode("ascii") + packet_bytes).hexdigest()
 packet_ref = manifest["source_batch"]["immutable_packet"]
 assert blob_sha == packet_ref["git_blob_sha"]
