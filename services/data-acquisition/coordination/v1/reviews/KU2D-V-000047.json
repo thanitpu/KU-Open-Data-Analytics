@@ -1,0 +1,59 @@
+{
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
+  "review_id": "KU2D-V-000047",
+  "prompt_id": "KU2D-P-000047",
+  "result_id": "KU2D-R-000047",
+  "reviewed_at": "2026-09-01T10:46:23.981+07:00",
+  "reviewed_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review",
+    "human_authority_claimed": false
+  },
+  "review_result": "accepted_with_bounded_corrective_continuation",
+  "requires_human_decision": false,
+  "reason_code": "preprovider_authorization_schema_mismatch_corrective_retry_covered_by_h16_standing_policy",
+  "explanation": "Accepted R47 as an accurate fail-closed technical result. PR #67 was merged at exact head and run 33467010248 was dispatched exactly once, but immutable staged authorization validation rejected H16 before evidence initialization and before the runtime discovery step because H16's authorized_scope field names differed from the validator's exact AUTH_SCOPE schema. Zero YouTube endpoint requests and zero quota units were used. Under the owner's standing authorization in H16, this pre-provider technical failure may be corrected and retried once without another confirmation, provided the new immutable decision record uses the exact original H12 scope, the launcher changes only trust anchors, all deterministic and exact-head checks pass, and there is no scope expansion.",
+  "evidence_references": [
+    "KU2D-R-000047",
+    "KU2D-P-000047",
+    "KU2D-V-000046",
+    "KU2D-H-000016",
+    "PR:#67",
+    "main-merge:769149377b9a7886ae2fc6457c7fe815a09d5cd6",
+    "workflow-run:33467010248",
+    "workflow-job:99728856187",
+    "provider-request-count:0",
+    "documented-quota-units:0"
+  ],
+  "authorized_next_step": {
+    "operation": "finalize_youtube_identity_discovery_in_one_bounded_queue",
+    "correction": "record a new immutable Human Decision whose authorized_scope exactly equals the reviewed execution AUTH_SCOPE, update only launcher trust anchors, validate, exact-head merge and dispatch once",
+    "maximum_additional_dispatch_count": 1,
+    "maximum_provider_scope": {
+      "profiles": [
+        "QYT-BEGINNER-KOH-TAO-TH",
+        "QYT-BEGINNER-EN"
+      ],
+      "max_results_per_profile": 5,
+      "max_pages_per_profile": 1,
+      "max_search_list_requests": 2,
+      "max_videos_list_requests": 1,
+      "max_documented_quota_units": 201
+    },
+    "automatic_retry": false,
+    "required_closure_output": "sanitized evidence and a YouTube identity-discovery closure packet"
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "reviewed_result": "KU2D-R-000047",
+    "failed_run_id": 33467010248,
+    "standing_human_authority": "KU2D-H-000016"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
