@@ -1,0 +1,29 @@
+{
+  "schema":"ku2d.agent-handoff-prompt.v1",
+  "prompt_id":"KU2D-P-000038",
+  "created_at":"2026-09-01T06:58:00+07:00",
+  "created_by":{"actor":"assistant","actor_id":"assistant_review"},
+  "status":"ready_for_codex",
+  "authoritative_branch":"codex/ku2d-youtube-operational-hardening-batch-readiness-v1",
+  "objective":"Complete a bounded public YouTube identity-discovery and Human Review preparation pass for Q-Diving so exactly two canonical candidate video identities can be presented for human adjudication, while preserving all H12 boundaries and preparing the shortest safe path to finish YouTube today.",
+  "instructions":[
+    "Execute Branch Handoff KU2D-BH-000012 mechanically: close the source queue before switching, create/switch to codex/ku2d-youtube-identity-discovery-review-v1 from exact integration merge dc48ce0e63a01902e8cdb42c2ad85cc9b9c88db6, initialize the target queue, preserve completed history, and avoid dual active authority.",
+    "Carry KU2D-V-000037 and explicit Human Decision KU2D-H-000012 into the target coordination history. Because adding H12 extends repository history, update only the deterministic Agent Handoff repository-history expectation so H12 is included and confirmed; do not weaken validators or linkage rules.",
+    "Use only existing Q-Diving YouTube query-profile intent and official public YouTube Data API methods already allowed by the merged YouTube foundation. Do not use browser/Edge, HTML scraping, undocumented/internal endpoints, proxying, login, CAPTCHA handling, or bypass.",
+    "Run one bounded public discovery pass sufficient to identify a small candidate set of canonical Q-Diving video IDs for Human Review. Keep request/page/result budgets explicit, evidence-first, quota-ledgered, and fail closed on quota or identity ambiguity.",
+    "Discovery may identify candidates but MUST NOT mark any candidate Human-Reviewed, approved, production-ready, trusted, ground truth, or executable merely because it was returned by the API.",
+    "For each retained candidate, preserve canonical video_id, channel_id, title, published timestamp, profile/query provenance, observed_at, public availability state, and enough metadata to support human relevance adjudication. Do not retain private credentials, raw API secrets, or unnecessary personal data.",
+    "Prepare a compact Human Review package that makes it easy to select exactly two Q-Diving videos. Include why each candidate matches the existing Q-Diving intent, any commercial/context caveats, language/default-language signals if available, and explicit uncertainty. Suggestions are non-authoritative.",
+    "Do not acquire comments/replies in P38. Do not call captions.list or captions.download. Do not acquire transcript text. No OAuth flow. Transcript policy remains Thai/English only for future authorized work.",
+    "Do not expand to other YouTube domains, channels, or arbitrary search terms beyond existing Q-Diving query-profile intent. Do not substitute a different domain if candidate yield is low.",
+    "Update the reviewed-video identity registry only with candidate-side entries/staging if the registry contract permits that without human approval; usable reviewed identity count must remain zero until actual human adjudication occurs.",
+    "Generate deterministic fixtures/tests for discovery retention, duplicate video IDs across profiles, unavailable/private/deleted candidates, ambiguous channel linkage, quota stop, zero-result queries, and candidate package generation.",
+    "Write durable sanitized evidence and a readiness report distinguishing discovery success from Human Review completion and from later live metadata/comments execution.",
+    "If discovery yields fewer than two credible candidates, report evidence_withheld with the exact reason and do not broaden scope automatically. Continue all safe offline/report/test phases before finishing.",
+    "Run targeted tests, Agent Handoff tests, YouTube v2/hardening regressions, complete deterministic corpus, JSON/YAML parse, Python compile, git diff check, and exact-head CI. Open one PR to integration/data-acquisition-platform, mark Ready only when green, and do not merge.",
+    "Result KU2D-R-000038 must include completed_queue_summary with work_completed, key_findings_results, repo_knowledge_state_changes, important_out_of_scope_actions_not_performed, blockers_risks, recommended_next_step, request/quota counts, candidate count, and exact Human Review requirement."
+  ],
+  "expected_result":{"result_id":"KU2D-R-000038","next_actor":"assistant"},
+  "provenance":{"repository":"thanitpu/KU-Open-Data-Analytics","source_branch":"codex/ku2d-youtube-operational-hardening-batch-readiness-v1","target_branch":"codex/ku2d-youtube-identity-discovery-review-v1","depends_on_result":"KU2D-R-000037","depends_on_review":"KU2D-V-000037","depends_on_human_decision":"KU2D-H-000012","depends_on_merge":"dc48ce0e63a01902e8cdb42c2ad85cc9b9c88db6"},
+  "boundaries":{"coordination_only":true,"production_authorized":false,"automatic_learning_memory_export":false,"scheduler_action":null}
+}
