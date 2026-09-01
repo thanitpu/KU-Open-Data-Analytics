@@ -1,0 +1,197 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000043",
+  "prompt_id": "KU2D-P-000043",
+  "submitted_at": "2026-09-01T09:43:43.0197290+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "partial",
+  "summary": "Merged exact-head PR #65 to main with an expected-head guard, verified the registered launcher and dispatched the H15-bound Q-Diving Identity Discovery workflow exactly once. Run 33463297483 completed with a successful job and successful discovery step, proving that the CLI returned an evidence classification rather than technical exit 1. However, the artifact upload was skipped and the run has zero artifacts because the launcher evidence-existence shell expression tests a path containing literal quote characters. The sanitized Step Summary is not exposed by the official Actions API and was not available in the unauthenticated public run view, so exit 0 versus 2, candidate count, withheld reason, endpoint counts, quota units and ledger events cannot be recovered safely. No retry or second dispatch occurred.",
+  "evidence_references": [
+    "KU2D-P-000043",
+    "KU2D-V-000042",
+    "KU2D-H-000015",
+    "PR:#65",
+    "main-merge:4ee155edb560b3845c66aeb118bb506a89c649a0",
+    "integration-execution:453d75ff23e5fdd78e4a8d36f77cd7185db99059",
+    "authorization-record:8295ecb02f9cc593193da4924c0e3f900fd157cc",
+    "workflow-run:33463297483",
+    "workflow-job:99717870510"
+  ],
+  "merge_outcome": {
+    "pull_request_number": 65,
+    "expected_head_sha": "ae7a0473d633fbbe847a66326d067bc253450fe6",
+    "base_branch": "main",
+    "merge_method": "squash",
+    "expected_head_guard_used": true,
+    "premerge_state": "open_ready_cleanly_mergeable_unmerged",
+    "changed_file_count": 1,
+    "changed_files": [
+      ".github/workflows/youtube-qdiving-identity-discovery.yml"
+    ],
+    "applicable_exact_head_check_count": 3,
+    "applicable_exact_head_checks_successful": true,
+    "merged": true,
+    "merge_commit_sha": "4ee155edb560b3845c66aeb118bb506a89c649a0",
+    "postmerge_pr_state": "closed"
+  },
+  "registered_main_launcher": {
+    "workflow_id": 347084304,
+    "workflow_name": "KU2D Q-Diving Identity Discovery",
+    "workflow_path": ".github/workflows/youtube-qdiving-identity-discovery.yml",
+    "state": "active",
+    "trigger": "workflow_dispatch only",
+    "permissions": "contents: read",
+    "decision_id": "KU2D-H-000015",
+    "execution_revision": "453d75ff23e5fdd78e4a8d36f77cd7185db99059",
+    "authorization_record_revision": "8295ecb02f9cc593193da4924c0e3f900fd157cc",
+    "secret_reference_count": 1,
+    "secret_reference_scope": "runtime discovery step after authorization validation",
+    "persist_credentials_false_count": 2,
+    "postmerge_static_guard_passed": true
+  },
+  "single_dispatch_proof": {
+    "dispatch_post_attempt_count": 1,
+    "dispatch_http_status": 204,
+    "automatic_retry_count": 0,
+    "additional_dispatch_count": 0,
+    "workflow_dispatch_run_count_before": 0,
+    "workflow_dispatch_run_count_after": 1,
+    "run_id": 33463297483,
+    "run_number": 6,
+    "event": "workflow_dispatch",
+    "head_branch": "main",
+    "head_sha": "4ee155edb560b3845c66aeb118bb506a89c649a0",
+    "created_at": "2026-09-01T02:38:31Z",
+    "completed_at": "2026-09-01T02:38:52Z",
+    "status": "completed",
+    "conclusion": "success",
+    "job_id": 99717870510,
+    "job_name": "bounded-discovery",
+    "job_conclusion": "success",
+    "discovery_step_conclusion": "success"
+  },
+  "sanitized_execution_outcome": {
+    "exit_classification": null,
+    "exit_classification_interpretation": "unavailable; successful discovery step narrows the immutable wrapper result to exit 0 or exit 2 and rules out technical exit 1",
+    "technical_completion": true,
+    "candidate_count": null,
+    "usable_reviewed_identity_count": 0,
+    "usable_reviewed_identity_count_basis": "immutable execution code always leaves Human Review incomplete and usable reviewed identity count zero",
+    "withheld_reason": null,
+    "withheld_reason_available": false,
+    "request_counts_by_endpoint": {
+      "search.list": null,
+      "videos.list": null
+    },
+    "documented_quota_units": null,
+    "sanitized_ledger_events": null,
+    "authorized_upper_bounds": {
+      "search.list": 2,
+      "videos.list": 1,
+      "documented_quota_units": 201
+    },
+    "human_review_completed": false,
+    "candidate_evidence_usable_for_acquisition": false
+  },
+  "sanitized_evidence_availability": {
+    "step_summary_write_step_conclusion": "success",
+    "step_summary_expected_fields": [
+      "exit code",
+      "outcome",
+      "classification",
+      "technical_completion",
+      "candidate_count",
+      "usable_reviewed_identity_count",
+      "withheld_reason",
+      "Artifact"
+    ],
+    "step_summary_retrieved": false,
+    "step_summary_access_note": "GitHub's official Actions API does not expose GITHUB_STEP_SUMMARY content, the check-run output summary was empty, and the public run view did not expose the custom summary in the available unauthenticated browser session.",
+    "expected_artifact_name": "youtube-qdiving-identity-discovery-33463297483",
+    "artifact_count": 0,
+    "artifact_available": false,
+    "artifact_upload_step": "skipped",
+    "raw_job_log_retrieved": false,
+    "raw_provider_payload_retrieved": false
+  },
+  "evidence_gap_diagnosis": {
+    "classification": "launcher_artifact_guard_false_negative",
+    "affected_step": "Check sanitized evidence",
+    "cause": "The shell test uses backslash-escaped double quotes inside the command substitution, causing Bash to test a filename containing literal quote characters.",
+    "deterministic_reproduction": {
+      "existing_file": "/etc/hosts",
+      "workflow_expression_result": false,
+      "correctly_quoted_expression_result": true
+    },
+    "runtime_effect": "The evidence output may have existed and the Step Summary writer may have read it, but the existence output was false and the always-guarded upload condition skipped the artifact.",
+    "evidence_values_reconstructed_or_guessed": false,
+    "workflow_fixed_in_this_prompt": false,
+    "rerun_performed": false
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "live_request_count": 1,
+    "live_request_count_semantics": "exact authorized live workflow run count; provider endpoint request count is unavailable because the sanitized artifact was not uploaded",
+    "git_diff_check": "passed",
+    "json_parse": "passed",
+    "yaml_parse": "passed",
+    "agent_handoff_protocol": "AH1-AH31 passed",
+    "premerge_remote_guard": "passed",
+    "source_plus_three_anchors_equivalence": "passed",
+    "postmerge_main_launcher_guard": "passed",
+    "single_dispatch_guard": "passed",
+    "artifact_api_check": "zero artifacts",
+    "artifact_guard_reproduction": "passed"
+  },
+  "security_and_boundaries": {
+    "main_modified_by_authorized_merge": true,
+    "integration_modified": false,
+    "workflow_dispatch_count": 1,
+    "automatic_or_additional_dispatch_count": 0,
+    "github_secret_value_accessed_by_codex": false,
+    "secret_value_printed_persisted_uploaded_or_committed": false,
+    "secret_reference_scope": "runtime only",
+    "provider_request_count_known": false,
+    "provider_request_count_maximum": 3,
+    "documented_quota_units_known": false,
+    "documented_quota_units_maximum": 201,
+    "comments_acquired": false,
+    "captions_acquired": false,
+    "transcripts_acquired": false,
+    "oauth_used": false,
+    "browser_automation_or_scraping_used_for_youtube": false,
+    "human_review_conducted": false,
+    "candidates_approved": false,
+    "production_store": false,
+    "production_approved": false,
+    "authority_promoted": false,
+    "scheduler_action": null
+  },
+  "completed_queue_summary": {
+    "work_completed": "Merged exact-head PR #65 to main, verified the immutable registered launcher, dispatched it exactly once with H15 anchors, monitored only run 33463297483 and checked sanitized summary/artifact availability.",
+    "key_findings_results": "The run and discovery step completed successfully, ruling out technical exit 1. Artifact upload was skipped due a deterministic quoting defect in the evidence existence check, leaving exit 0 versus 2, candidate count, withheld reason and actual quota/request ledger unavailable without unsafe raw-log retrieval or a prohibited rerun.",
+    "repo_knowledge_state_changes": "Main now contains only the reviewed launcher promotion. No discovered candidate, Human Review, acquisition authority or production knowledge was durably added because sanitized runtime evidence was unavailable.",
+    "important_out_of_scope_actions_not_performed": "No second dispatch, retry, workflow fix, raw job-log retrieval, secret read, raw provider payload retrieval, comments, captions, transcripts, OAuth, YouTube browser automation or scraping, candidate approval, Human Review completion, production write, scheduling, scope broadening or authority promotion.",
+    "remaining_blockers_risks": "The first authorized run's sanitized evidence artifact is unavailable. Runtime classification and measurements must remain unknown; they must not be reconstructed from job success. The launcher artifact existence check requires separate review before any newly authorized run.",
+    "recommended_next_step": "Assistant reviews R43 and the launcher artifact-guard defect. Any fix, main promotion, or additional live dispatch requires a new queued Prompt and any live run requires explicit fresh authority; do not retry P43."
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000043.json",
+    "depends_on_result": "KU2D-R-000042",
+    "depends_on_review": "KU2D-V-000042",
+    "depends_on_human_decision": "KU2D-H-000015",
+    "target_pr": 65,
+    "target_run_id": 33463297483
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
