@@ -1,0 +1,74 @@
+{
+  "schema": "ku2d.agent-handoff-assistant-review.v1",
+  "review_id": "KU2D-V-000050",
+  "prompt_id": "KU2D-P-000050",
+  "result_id": "KU2D-R-000050",
+  "reviewed_at": "2026-09-01T12:03:40.147+07:00",
+  "reviewed_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review",
+    "human_authority_claimed": false
+  },
+  "review_result": "accepted",
+  "requires_human_decision": true,
+  "reason_code": "youtube_source_completion_technically_closed_candidate_review_pending",
+  "explanation": "Accepted R50 after independent verification of PR #68, the one-file launcher diff and merge commit, workflow run 33471158167 and all bounded-discovery job steps, artifact 9786568183, the exact sanitized ten-candidate packet, KU2D-X-000002, KU2D-CJ-000001 and the hash-pinned historical migration. The bounded provider execution stayed within H19/P50: one provider-reaching dispatch, two search.list calls, one videos.list call, 201 documented quota units and no retry. No secret, raw provider payload, comments, captions, transcript text, production write, scheduling or authority promotion crossed the boundary. The YouTube technical source-connection work is therefore closed at the public candidate-discovery boundary. Semantic candidate selection remains a Human Review decision and is not a technical defect or a new Codex queue.",
+  "evidence_references": [
+    "KU2D-R-000050",
+    "KU2D-P-000050",
+    "KU2D-H-000019",
+    "migration:KU2D-M-000001",
+    "correction-journal:KU2D-CJ-000001",
+    "experience:KU2D-X-000002",
+    "candidate-packet:KU2D-YT-QDIVING-CANDIDATES-000001",
+    "pull-request:68",
+    "launcher-head:04e8bed90a91327f535948b5a45d39c8d457e84a",
+    "main-merge:502ac05042a214add17fd4223387187ef05aa605",
+    "workflow-run:33471158167",
+    "workflow-job:99741028458",
+    "github-artifact:9786568183",
+    "provider-request-count:3",
+    "documented-quota-units:201",
+    "deterministic-corpus:55/55"
+  ],
+  "verification": {
+    "pr_68_merged": true,
+    "pr_68_changed_file_count": 1,
+    "launcher_exact_head_verified": true,
+    "merge_commit_verified": true,
+    "workflow_job_all_steps_success": true,
+    "artifact_exists_and_unexpired": true,
+    "artifact_candidate_packet_exact_match": true,
+    "candidate_count": 10,
+    "technical_correction_events_resolved": 3,
+    "technical_correction_events_unresolved": 0,
+    "ml_experience_record_valid": true,
+    "historical_migration_hash_pinned": true,
+    "provider_reached_attempts": 1,
+    "provider_requests": 3,
+    "documented_quota_units": 201
+  },
+  "authorized_next_step": {
+    "operation": "human_semantic_candidate_review",
+    "new_codex_prompt_required": false,
+    "selection_target_maximum": 2,
+    "candidate_packet_id": "KU2D-YT-QDIVING-CANDIDATES-000001",
+    "source_completion_queue_closed": true,
+    "automatic_replay_allowed": false,
+    "production_write_allowed": false,
+    "scheduling_allowed": false
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "reviewed_result": "KU2D-R-000050",
+    "standing_human_authority": "KU2D-H-000016",
+    "execution_human_decision": "KU2D-H-000019"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
