@@ -187,6 +187,9 @@ class OperationLedger:
             "response_status": None,
             "candidate_count": 0,
             "retained_count": 0,
+            "tiktok_response_count": 0,
+            "third_party_requests_blocked": 0,
+            "public_json_responses_inspected": 0,
             "failure_code": None,
             "quota_delta": 0,
         }
@@ -195,9 +198,11 @@ class OperationLedger:
 
     def finish(self, row: dict[str, Any], *, provider_reached: bool,
                response_status: int | None = None, candidate_count: int = 0,
-               retained_count: int = 0, failure_code: str | None = None) -> None:
+               retained_count: int = 0, failure_code: str | None = None,
+               telemetry: dict[str, Any] | None = None) -> None:
         if row is not self.rows[-1] or row["status"] != "started":
             raise RuntimeError("only the active operation may be finalized")
+        telemetry = telemetry or {}
         row.update({
             "completed_at": observed_at(),
             "status": "provider_reached" if provider_reached else "preconnect_failure",
@@ -205,6 +210,9 @@ class OperationLedger:
             "response_status": response_status,
             "candidate_count": int(candidate_count),
             "retained_count": int(retained_count),
+            "tiktok_response_count": int(telemetry.get("tiktok_response_count") or 0),
+            "third_party_requests_blocked": int(telemetry.get("third_party_requests_blocked") or 0),
+            "public_json_responses_inspected": int(telemetry.get("public_json_responses_inspected") or 0),
             "failure_code": failure_code,
         })
         if self.provider_reached > self.provider_limit or self.preconnect_failures > self.preconnect_limit:
@@ -356,10 +364,9 @@ class EphemeralBrowser:
                 self.allowed_subresource_responses += 1
                 if is_tiktok_host(host) and str(params.get("type") or "").casefold() == "document":
                     return True, int(response.get("status") or 0) or None, None
-                mime = str(response.get("mimeType") or "").casefold()
                 resource_type = str(params.get("type") or "").casefold()
                 request_id = str(params.get("requestId") or "")
-                if is_tiktok_host(host) and request_id and resource_type in {"xhr", "fetch"} and "json" in mime:
+                if is_allowed_tiktok_resource_host(host) and request_id and resource_type in {"xhr", "fetch"}:
                     self.public_json_responses[request_id] = {"loaded": False, "encoded_size": 0}
         if method == "Network.loadingFinished":
             request_id = str(params.get("requestId") or "")
@@ -394,7 +401,7 @@ class EphemeralBrowser:
         loaded_at: float | None = None
         deadline = time.monotonic() + timeout_seconds
         while time.monotonic() < deadline:
-            if loaded_at is not None and time.monotonic() - loaded_at >= 6:
+            if loaded_at is not None and time.monotonic() - loaded_at >= 10:
                 break
             if self.pending:
                 message = self.pending.pop(0)

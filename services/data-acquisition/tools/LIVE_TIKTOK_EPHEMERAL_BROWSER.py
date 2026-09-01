@@ -166,6 +166,7 @@ def _navigation_operation(
         response_status=result.get("response_status"),
         candidate_count=len(result.get("candidates") or []),
         failure_code=result.get("failure_code"),
+        telemetry=result.get("telemetry"),
     )
     write_evidence(output, evidence, ledger)
     return result
@@ -249,6 +250,7 @@ def run_campaign(
                     preflight_row, provider_reached=bool(preflight["provider_reached"]),
                     response_status=preflight.get("response_status"),
                     failure_code=preflight.get("failure_code"),
+                    telemetry=preflight.get("telemetry"),
                 )
             except Exception as exc:
                 ledger.finish(preflight_row, provider_reached=False, failure_code=f"preconnect_{type(exc).__name__}")
@@ -311,6 +313,7 @@ def run_campaign(
                             response_status=result.get("response_status"),
                             candidate_count=len(result.get("candidates") or []),
                             failure_code=result.get("failure_code"),
+                            telemetry=result.get("telemetry"),
                         )
                         write_evidence(output, evidence, ledger)
                     else:

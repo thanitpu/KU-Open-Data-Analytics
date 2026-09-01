@@ -89,7 +89,12 @@ assert not browser.is_allowed_tiktok_resource_host("tracker.example")
 
 ledger = browser.OperationLedger(provider_limit=2, preconnect_limit=1)
 first = ledger.begin(phase="preflight", round_id="preflight", operation="navigate")
-ledger.finish(first, provider_reached=True, response_status=200)
+ledger.finish(first, provider_reached=True, response_status=200, telemetry={
+    "tiktok_response_count": 12,
+    "third_party_requests_blocked": 3,
+    "public_json_responses_inspected": 2,
+})
+assert (first["tiktok_response_count"], first["third_party_requests_blocked"], first["public_json_responses_inspected"]) == (12, 3, 2)
 second = ledger.begin(phase="round_one", round_id="round-1", operation="discover", topic="Diving lesson")
 ledger.finish(second, provider_reached=False, failure_code="preconnect_timeout")
 assert ledger.summary() == {
