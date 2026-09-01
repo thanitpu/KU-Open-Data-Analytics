@@ -1,11 +1,11 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T10:42:02.6283177+07:00",
+  "updated_at": "2026-09-01T10:49:00.000+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
-  "latest_prompt": "KU2D-P-000047",
+  "latest_prompt": "KU2D-P-000048",
   "latest_result": "KU2D-R-000047",
-  "latest_review": "KU2D-V-000046",
-  "latest_human_decision": "KU2D-H-000016",
+  "latest_review": "KU2D-V-000047",
+  "latest_human_decision": "KU2D-H-000017",
   "prompt_states": {
     "KU2D-P-000001": "completed",
     "KU2D-P-000002": "completed",
@@ -52,7 +52,8 @@
     "KU2D-P-000044": "completed",
     "KU2D-P-000045": "reviewed",
     "KU2D-P-000046": "reviewed",
-    "KU2D-P-000047": "result_submitted"
+    "KU2D-P-000047": "reviewed",
+    "KU2D-P-000048": "ready_for_codex"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -87,11 +88,11 @@
     "KU2D-P-000044"
   ],
   "next_action": {
-    "actor": "assistant",
-    "prompt_id": "KU2D-P-000047",
-    "result_id": "KU2D-R-000047",
+    "actor": "codex",
+    "prompt_id": "KU2D-P-000048",
+    "result_id": "KU2D-R-000048",
     "review_id": null,
-    "human_decision_id": null,
+    "human_decision_id": "KU2D-H-000017",
     "replay_requested": false
   },
   "branch_handoff": {
@@ -108,5 +109,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "KU2D-R-000047 records the guarded squash merge of exact-head PR #67 to main and exactly one H16-bound dispatch. Run 33467010248 failed during staged authorization validation before evidence-path initialization or runtime discovery because H16's corrective-rerun authorized_scope is not exactly equal to the immutable execution validator's original AUTH_SCOPE. Exit classification is technical failure 1; technical completion is false; no YouTube provider request, quota use, Step Summary or artifact occurred. No retry or second dispatch was performed. Assistant review is next."
+  "notes": "KU2D-V-000047 accepts R47 as a fail-closed pre-provider schema mismatch with zero YouTube requests and zero quota. KU2D-H-000017 records the exact validator-compatible H12 scope under the owner's standing corrective authority. KU2D-P-000048 is the final YouTube execution queue. Queue objective: offline-prove H17 scope compatibility, update only launcher trust anchors, validate/open/exact-head merge the one-file PR, dispatch exactly once, retrieve sanitized evidence and return a complete YouTube identity-discovery closure packet. No automatic retry, comments, captions, transcripts, candidate approval, production write, scheduling or authority promotion is permitted."
 }
