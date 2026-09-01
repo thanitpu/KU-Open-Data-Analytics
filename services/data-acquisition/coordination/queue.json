@@ -1,11 +1,11 @@
 {
   "schema": "ku2d.agent-handoff-queue.v1",
-  "updated_at": "2026-09-01T18:21:35.000+07:00",
+  "updated_at": "2026-09-01T18:39:36.000+07:00",
   "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
-  "latest_prompt": "KU2D-P-000053",
+  "latest_prompt": "KU2D-P-000054",
   "latest_result": "KU2D-R-000054",
   "latest_review": "KU2D-V-000054",
-  "latest_human_decision": "KU2D-H-000022",
+  "latest_human_decision": "KU2D-H-000023",
   "prompt_states": {
     "KU2D-P-000001": "completed",
     "KU2D-P-000002": "completed",
@@ -58,7 +58,8 @@
     "KU2D-P-000050": "reviewed",
     "KU2D-P-000051": "reviewed",
     "KU2D-P-000052": "reviewed",
-    "KU2D-P-000053": "reviewed"
+    "KU2D-P-000053": "reviewed",
+    "KU2D-P-000054": "ready_for_codex"
   },
   "completed_prompt_ids": [
     "KU2D-P-000001",
@@ -93,8 +94,8 @@
     "KU2D-P-000044"
   ],
   "next_action": {
-    "actor": "none",
-    "prompt_id": null,
+    "actor": "codex",
+    "prompt_id": "KU2D-P-000054",
     "result_id": null,
     "review_id": null,
     "human_decision_id": null,
@@ -114,5 +115,5 @@
     "target_initialization_succeeded": true,
     "human_authority_required": false
   },
-  "notes": "V54 accepts and closes P53 after independent verification of PR #71, exact tree identity, PR/post-merge CI, full corpus 59/59, YouTube parity 10/10, CJ3 4/4 and zero provider/quota. No P54 is open. Explicit project-owner authority is required before TikTok provider access or a new merge-capable Source Completion Queue."
+  "notes": "H23 explicitly authorizes P54 TikTok Source Completion for Diving lesson and Diving equipment: public/official surfaces only, no login/cookies/credentials/bypass, <=20 requests, <=5 retained records per topic, one Queue/PR/CJ4, exact-head CI before squash merge, no production or scheduling. P54 and every internal Phase/Package must declare and validate seven fields: Domain, Source, Capability, Acquisition Technique, Authorized Files/Modules, Explicit Out-of-Scope and Validation Profile. P54 also creates the reusable fail-closed Scope Declaration v1 contract. Next actor is Codex."
 }

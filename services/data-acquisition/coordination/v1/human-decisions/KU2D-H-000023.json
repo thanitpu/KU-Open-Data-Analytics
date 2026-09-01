@@ -1,0 +1,99 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000023",
+  "prompt_id": "KU2D-P-000053",
+  "result_id": "KU2D-R-000054",
+  "review_id": "KU2D-V-000054",
+  "decided_at": "2026-09-01T18:39:36.000+07:00",
+  "decided_by": {
+    "actor": "human",
+    "actor_id": "project_owner"
+  },
+  "decision": "confirmed",
+  "reason_note": "The project owner explicitly authorizes P54 TikTok Source Completion for Diving lesson and Diving equipment, limited to official/public surfaces, no login/cookies/credentials, no CAPTCHA/anti-bot/policy bypass, no more than 20 provider requests total, no more than five retained records per topic, one Queue, one PR and KU2D-CJ-000004, technically green exact-head merge to integration, and no production write or scheduling. The owner additionally requires every Phase/Package to declare seven scope dimensions.",
+  "authorized_scope": {
+    "operation": "tiktok_source_completion_extensibility_proof",
+    "target_prompt": "KU2D-P-000054",
+    "source": "TikTok",
+    "topics": [
+      "Diving lesson",
+      "Diving equipment"
+    ],
+    "official_or_public_surfaces_only": true,
+    "maximum_live_provider_requests_total": 20,
+    "maximum_retained_records_per_topic": 5,
+    "login_cookies_or_credentials": false,
+    "authentication_or_antibot_bypass": false,
+    "new_spending": false,
+    "one_queue": true,
+    "one_pr": true,
+    "correction_journal": "KU2D-CJ-000004",
+    "exact_head_and_ci_required_before_merge": true,
+    "merge_target": "integration/data-acquisition-platform",
+    "production_store": false,
+    "scheduler_action": null
+  },
+  "phase_package_scope_policy": {
+    "required_for_every_phase_and_package": true,
+    "required_fields": [
+      "domain",
+      "source",
+      "capability",
+      "acquisition_technique",
+      "authorized_files_or_modules",
+      "explicit_out_of_scope",
+      "validation_profile"
+    ],
+    "machine_validated_contract_required": true,
+    "current_declaration": "KU2D-SCOPE-000001",
+    "enforcement": "A Phase/Package cannot enter development or PR readiness if any declaration is missing, empty, contradictory, or broader than Human authority."
+  },
+  "access_policy": {
+    "strategy_ladder": [
+      "Technique Library reuse",
+      "official documented public surface",
+      "public structured data/catalog",
+      "policy-compliant public network surface",
+      "public HTML/browser rendering",
+      "bounded source-specific method"
+    ],
+    "prohibit": [
+      "login, cookies or credentials",
+      "authentication bypass",
+      "CAPTCHA or anti-bot circumvention",
+      "private/restricted data",
+      "unnecessary personal-data enrichment",
+      "robots or provider-policy violation"
+    ],
+    "stop_if": [
+      "provider approval is required",
+      "request cap would be exceeded",
+      "quota/spending is required",
+      "legal or policy authority is unclear"
+    ]
+  },
+  "workflow_authority": {
+    "create_prompt": "KU2D-P-000054",
+    "next_actor": "codex",
+    "assistant_intermediate_review_required": false,
+    "one_source_completion_queue": true,
+    "one_pull_request": true,
+    "technically_green_squash_merge_to_integration_authorized": true,
+    "immutable_historical_records_must_not_be_rewritten": true
+  },
+  "provenance": {
+    "decision_source": "explicit_human_input",
+    "source_context": "Project owner supplied exact P54 access, request, record, PR/merge and production boundaries plus the seven-field declaration rule.",
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_review": "KU2D-V-000054",
+    "depends_on_result": "KU2D-R-000054",
+    "integration_baseline": "ecd8614c6be78b662d637b1f2caa954fdb1b7dca"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

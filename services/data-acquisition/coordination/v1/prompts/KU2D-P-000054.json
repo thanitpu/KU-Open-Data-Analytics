@@ -1,0 +1,380 @@
+{
+  "schema": "ku2d.agent-handoff-prompt.v1",
+  "prompt_id": "KU2D-P-000054",
+  "created_at": "2026-09-01T18:39:36.000+07:00",
+  "created_by": {
+    "actor": "assistant",
+    "actor_id": "assistant_review"
+  },
+  "status": "ready_for_codex",
+  "authoritative_branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+  "objective": "Complete one bounded TikTok Source Completion Queue for Diving lesson and Diving equipment, prove that P53 supports a new source through adapter plus manifests without changing the Generic Runner or CI workflow, and establish a machine-validatable seven-field Scope Declaration contract for every current and future Phase/Package.",
+  "queue_purpose_summary": "ใช้ TikTok พิสูจน์ extensibility ของ foundation และบังคับให้ทุก Phase/Package ประกาศ Domain, Source, Capability, Technique, Authorized Scope, Out-of-Scope และ Validation ก่อนเริ่มพัฒนา.",
+  "phase_package_scope_declaration": {
+    "declaration_id": "KU2D-SCOPE-000001",
+    "package_id": "KU2D-P-000054",
+    "package_name": "TikTok Source Completion",
+    "domain": {
+      "id": "social.public_short_video",
+      "label": "Social — Public Short Video"
+    },
+    "source": {
+      "id": "tiktok",
+      "label": "TikTok",
+      "topics": [
+        "Diving lesson",
+        "Diving equipment"
+      ]
+    },
+    "capability": [
+      "public_video_metadata",
+      "creator_identity",
+      "public_stable_video_identity",
+      "public_observation_timestamp",
+      "analysis_handoff"
+    ],
+    "acquisition_technique": {
+      "status": "to_be_selected_by_bounded_source_lab",
+      "strategy_ladder": [
+        "Technique Library reuse",
+        "official documented public surface",
+        "public structured data/catalog",
+        "policy-compliant public network surface",
+        "public HTML/browser rendering",
+        "bounded source-specific method"
+      ],
+      "freeze_rule": "Declare the selected technique and evidence at Deep Audit before adapter integration."
+    },
+    "authorized_files_or_modules": [
+      "services/data-acquisition/acquisition/tiktok_diving_connector.py",
+      "services/data-acquisition/config/domain_capability_profiles/tiktok_public_short_video_v1.json",
+      "services/data-acquisition/config/source_manifests/tiktok_diving_v1.json",
+      "services/data-acquisition/config/run_manifests/tiktok_diving_fixture_v1.json",
+      "services/data-acquisition/config/adapter_registry_v1.json (TikTok metadata registration only)",
+      "services/data-acquisition/knowledge/v1/tiktok/**",
+      "services/data-acquisition/knowledge/v1/phase-package-scope-declaration.schema.json",
+      "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000004.json",
+      "services/data-acquisition/docs/**",
+      "services/data-acquisition/tools/SELF_TEST_TIKTOK_SOURCE_COMPLETION.py",
+      "services/data-acquisition/tools/SELF_TEST_FOUNDATION_CONSOLIDATION.py (registered test aggregation only)"
+    ],
+    "explicit_out_of_scope": [
+      ".github/workflows/data-acquisition-platform-ci.yml",
+      "services/data-acquisition/acquisition/source_runner.py",
+      "services/data-acquisition/acquisition/connector_kit.py",
+      "services/data-acquisition/acquisition/run_manifest.py",
+      "services/data-acquisition/acquisition/adapter_registry.py",
+      "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json",
+      "services/data-acquisition/knowledge/v1/adapter-registry.schema.json",
+      "comments",
+      "captions",
+      "transcripts",
+      "private account data",
+      "follower enrichment",
+      "login, cookies or credentials",
+      "CAPTCHA/anti-bot/policy bypass",
+      "production write",
+      "scheduling",
+      "main branch modification"
+    ],
+    "validation_profile": [
+      "definition and seven-field scope declaration",
+      "contract/schema validation",
+      "isolated feature branch",
+      "diff and invariant-byte check",
+      "unit and TikTok fixture tests",
+      "source integration and evidence validation",
+      "bounded public live smoke only when necessary",
+      "exact-head full deterministic corpus",
+      "PR approval and CI",
+      "squash merge to integration",
+      "post-merge verification"
+    ]
+  },
+  "phase_declaration_requirements": {
+    "required_fields": [
+      "domain",
+      "source",
+      "capability",
+      "acquisition_technique",
+      "authorized_files_or_modules",
+      "explicit_out_of_scope",
+      "validation_profile"
+    ],
+    "phases": [
+      {
+        "phase_id": "P54-01",
+        "phase": "technique_library_and_explore",
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow the package declaration but may not omit a field or expand authority.",
+        "completion_evidence": "Persist the final seven-field declaration and validation result in P54 evidence."
+      },
+      {
+        "phase_id": "P54-02",
+        "phase": "deep_audit",
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow the package declaration but may not omit a field or expand authority.",
+        "completion_evidence": "Persist the final seven-field declaration and validation result in P54 evidence."
+      },
+      {
+        "phase_id": "P54-03",
+        "phase": "adapter_parser_mapper",
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow the package declaration but may not omit a field or expand authority.",
+        "completion_evidence": "Persist the final seven-field declaration and validation result in P54 evidence."
+      },
+      {
+        "phase_id": "P54-04",
+        "phase": "fixture_replay_and_quality_gate",
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow the package declaration but may not omit a field or expand authority.",
+        "completion_evidence": "Persist the final seven-field declaration and validation result in P54 evidence."
+      },
+      {
+        "phase_id": "P54-05",
+        "phase": "mtc_integration_and_closure",
+        "required_declaration_fields": [
+          "domain",
+          "source",
+          "capability",
+          "acquisition_technique",
+          "authorized_files_or_modules",
+          "explicit_out_of_scope",
+          "validation_profile"
+        ],
+        "inheritance_rule": "May narrow the package declaration but may not omit a field or expand authority.",
+        "completion_evidence": "Persist the final seven-field declaration and validation result in P54 evidence."
+      }
+    ],
+    "rules": [
+      "The package declaration is mandatory before development begins.",
+      "Each internal phase declares all seven fields; inheritance may narrow but never omit or widen.",
+      "Authorized Files/Modules are an allowlist, not examples.",
+      "Explicit Out-of-Scope must name protected shared foundation and prohibited data/access surfaces.",
+      "Validation Profile must map Definition -> Contract -> Branch -> Development -> Diff check -> Fixture -> Integration -> optional Smoke -> Exact-head corpus -> PR -> Squash merge -> integration.",
+      "Any material change to one of the seven fields requires a new Human Decision before execution continues.",
+      "Result R55 must report declared versus actual scope and every deviation."
+    ],
+    "durable_deliverable": {
+      "schema": "ku2d.phase-package-scope-declaration.v1",
+      "requirements": [
+        "closed versioned JSON Schema",
+        "pure fail-closed validator",
+        "P54 declaration instance",
+        "positive and negative deterministic tests",
+        "operating-protocol documentation",
+        "future Prompt template"
+      ],
+      "validator_rejections": [
+        "missing or empty field",
+        "unknown field",
+        "unauthorized file/module",
+        "out-of-scope overlap",
+        "validation profile missing required gates",
+        "child phase broader than package",
+        "scope change without Human authority"
+      ]
+    }
+  },
+  "architecture_alignment": {
+    "hierarchy": "KU2 Platform -> KU2D Acquisition -> Foundation -> Domain / Techniques / Contracts -> Source Adapter -> Generic Runner -> Run Manifest -> Quality Gates -> Evidence",
+    "invariant_baseline": "ecd8614c6be78b662d637b1f2caa954fdb1b7dca",
+    "invariant_files": [
+      ".github/workflows/data-acquisition-platform-ci.yml",
+      "services/data-acquisition/acquisition/source_runner.py",
+      "services/data-acquisition/acquisition/connector_kit.py",
+      "services/data-acquisition/acquisition/run_manifest.py",
+      "services/data-acquisition/acquisition/adapter_registry.py",
+      "services/data-acquisition/knowledge/v1/immutable-run-manifest.schema.json",
+      "services/data-acquisition/knowledge/v1/adapter-registry.schema.json"
+    ],
+    "invariant_rule": "All invariant files must remain byte-identical. If not possible, stop with a foundation blocker."
+  },
+  "source_lab_lifecycle": [
+    "Technique Library reuse",
+    "Explore",
+    "Deep Audit",
+    "Adapter and Parser",
+    "Fixture Replay",
+    "Minimum Trusted Connection",
+    "Integration",
+    "Closure"
+  ],
+  "access_and_request_policy": {
+    "official_or_public_surfaces_only": true,
+    "maximum_live_provider_requests_total": 20,
+    "maximum_retained_records_per_topic": 5,
+    "no_login": true,
+    "no_cookies": true,
+    "no_credentials": true,
+    "no_new_spending": true,
+    "no_authentication_or_antibot_bypass": true,
+    "every_request_recorded": true,
+    "sanitize_once_then_replay": true,
+    "raw_payload_storage": "minimum sanitized fixture only; no secrets, tokens, cookies, request URLs or unnecessary personal data"
+  },
+  "capability_and_mtc_policy": {
+    "do_not_copy_youtube_capabilities_blindly": true,
+    "candidate_capabilities": [
+      "public_video_metadata",
+      "creator_identity",
+      "public_stable_video_identity",
+      "public_observation_timestamp",
+      "analysis_handoff"
+    ],
+    "capability_states": [
+      "available",
+      "partial",
+      "unverified",
+      "blocked",
+      "unsupported",
+      "not_applicable"
+    ],
+    "minimum_trusted_connection": [
+      "at least one useful reproducible capability for each topic or an explicit external blocker",
+      "schema-valid source/domain records with provenance and timestamp",
+      "known access limitations and failure modes",
+      "sanitized fixture replay through unchanged Generic Runner",
+      "request/quota accounting",
+      "early technical quality gate",
+      "Analysis-ready output without semantic quality claims"
+    ],
+    "non_blocking_capabilities": [
+      "comments",
+      "captions",
+      "transcripts"
+    ]
+  },
+  "required_deliverables": [
+    "Phase/Package Scope Declaration v1 schema, validator, P54 instance, tests, docs and future Prompt template",
+    "seven-field declarations for every P54 internal phase",
+    "TikTok capability profile and source manifest",
+    "thin TikTok adapter with separate parser and mapper",
+    "registry metadata and explicit implementation composition",
+    "immutable run manifest and sanitized fixtures/evidence",
+    "MTC assessment or honest external-blocker assessment",
+    "Analysis handoff preserving all accepted bounded records",
+    "byte-identity proof for every invariant file",
+    "KU2D-CJ-000004"
+  ],
+  "testing_policy": {
+    "level_1": [
+      "scope-declaration unit tests",
+      "TikTok adapter fixture tests"
+    ],
+    "level_2": [
+      "TikTok source integration",
+      "evidence validation",
+      "phase/package scope validation",
+      "foundation byte identity"
+    ],
+    "level_3": [
+      "full deterministic corpus on exact PR head"
+    ],
+    "rerun_if_final_code_schema_fixture_policy_test_journal_or_declaration_changes": true,
+    "reuse_only_if_merge_tree_equals_tested_tree": true
+  },
+  "technical_correction_policy": {
+    "journal_id": "KU2D-CJ-000004",
+    "next_event_id": "KU2D-TC-000014",
+    "multiple_corrections_per_queue": true,
+    "one_pr": true,
+    "pr_or_queue_per_correction": false,
+    "finalize_all_commit_links_before_pr_or_closure": true
+  },
+  "implementation_and_merge": {
+    "target_branch": "integration/data-acquisition-platform",
+    "integration_baseline": "ecd8614c6be78b662d637b1f2caa954fdb1b7dca",
+    "one_coherent_pr": true,
+    "exact_head_required": true,
+    "technically_green_squash_merge_authorized": true,
+    "assistant_intermediate_review_required": false,
+    "main_modification_authorized": false
+  },
+  "instructions": [
+    "Validate the P54 package declaration before development and persist a seven-field declaration for each internal phase.",
+    "Inspect Technique Library and P53 contracts before attempting TikTok access.",
+    "Explore only authorized public surfaces in strategy order and within the 20-request ledger.",
+    "Do not assume YouTube-equivalent fields; declare actual TikTok capabilities and limitations.",
+    "After evidence is obtained, sanitize once and use fixture replay for all further tests.",
+    "Add TikTok only through authorized extension modules; do not modify any invariant file.",
+    "Acquisition retains every technically valid bounded record and does not rank relevance or decide final inclusion.",
+    "Run targeted tests, Level 2 validations and one exact-head full corpus; merge one green PR and verify the final tree.",
+    "Submit only KU2D-R-000055 with all seven declarations, declared-versus-actual diff, access attempts, records by topic, MTC/blocker, CJ4, tests, PR/CI/tree, request/quota and limitations."
+  ],
+  "stop_conditions": [
+    "any Phase/Package declaration is missing, invalid, contradictory or requires broader authority",
+    "login, cookies, credentials, provider approval, CAPTCHA/anti-bot or policy bypass is required",
+    "restricted/private/unnecessary personal data is required",
+    "more than 20 requests or any spending/quota is required",
+    "an invariant foundation or CI workflow file must change",
+    "production write, scheduling, main modification or elevated authority is required"
+  ],
+  "definition_of_done": [
+    "P54 and every internal phase have validated seven-field declarations",
+    "the durable Scope Declaration v1 contract is reusable by future Prompts",
+    "Explore/Deep Audit address both topics within policy",
+    "TikTok capabilities and limitations are explicit",
+    "source is added through adapter/manifests/registry/fixtures without invariant changes",
+    "fixture replay passes unchanged runner and technical gate",
+    "at least one valid record per topic reaches Analysis or genuine external blocker is proven",
+    "CJ4 finalized",
+    "three testing levels pass",
+    "one green PR squash-merges when evidence exists",
+    "requests/quota and declared-versus-actual scope are exact",
+    "KU2D-R-000055 submitted"
+  ],
+  "expected_result": {
+    "result_id": "KU2D-R-000055",
+    "next_actor": "assistant",
+    "closure_target": "tiktok_source_completion_and_scope_declaration_contract",
+    "provider_request_limit": 20
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "depends_on_prompt": "KU2D-P-000053",
+    "depends_on_result": "KU2D-R-000054",
+    "depends_on_review": "KU2D-V-000054",
+    "depends_on_human_decision": "KU2D-H-000023",
+    "integration_baseline": "ecd8614c6be78b662d637b1f2caa954fdb1b7dca"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
