@@ -1,0 +1,57 @@
+{
+  "schema": "ku2d.agent-handoff-human-decision.v1",
+  "human_decision_id": "KU2D-H-000017",
+  "prompt_id": "KU2D-P-000047",
+  "result_id": "KU2D-R-000047",
+  "review_id": "KU2D-V-000047",
+  "decided_at": "2026-09-01T10:47:00.000+07:00",
+  "decided_by": {
+    "actor": "human",
+    "actor_id": "project_owner"
+  },
+  "decision": "confirmed",
+  "reason_note": "Recorded under the project owner's standing authorization in KU2D-H-000016 and the explicit instruction to finish the YouTube work within the final queue. Run 33467010248 failed before provider execution solely because H16's corrective labels did not exactly match the immutable validator schema; it used zero YouTube requests and zero quota units. This decision authorizes exactly one final bounded corrective dispatch with the original H12 authorized_scope represented byte-for-schema equivalently to the reviewed validator. It does not expand acquisition scope.",
+  "authorized_scope": {
+    "operation": "youtube_qdiving_identity_discovery",
+    "profiles": [
+      "QYT-BEGINNER-KOH-TAO-TH",
+      "QYT-BEGINNER-EN"
+    ],
+    "max_results_per_profile": 5,
+    "max_pages_per_profile": 1,
+    "max_search_list_requests": 2,
+    "max_videos_list_requests": 1,
+    "max_documented_quota_units": 201,
+    "comments_acquired": false,
+    "captions_called": false,
+    "transcript_text_acquired": false,
+    "oauth_used": false,
+    "production_store": false,
+    "scheduler_action": null
+  },
+  "authorized_dispatch_count": 1,
+  "authorized_execution_revision": "cac243aedaa3c83c188e4e90481e4b752fe8bd2b",
+  "authorized_execution_branch": "integration/data-acquisition-platform",
+  "corrective_context": {
+    "prior_failed_run_id": 33467010248,
+    "prior_provider_request_count": 0,
+    "prior_documented_quota_units": 0,
+    "correction": "authorization record schema compatibility only",
+    "scope_expanded": false,
+    "automatic_retry_after_this_dispatch": false
+  },
+  "provenance": {
+    "decision_source": "standing_explicit_human_authority",
+    "source_context": "KU2D-H-000016 plus the owner's explicit request to close YouTube within the final queue",
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "depends_on_review": "KU2D-V-000047",
+    "depends_on_result": "KU2D-R-000047",
+    "depends_on_merge": "cac243aedaa3c83c188e4e90481e4b752fe8bd2b"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}
