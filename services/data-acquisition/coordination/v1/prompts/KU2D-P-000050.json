@@ -32,7 +32,14 @@
     "assistant_intermediate_review_required": false,
     "technically_green_merges_authorized": true,
     "intermediate_prompt_or_result_creation": false,
-    "final_result_id": "KU2D-R-000050"
+    "final_result_id": "KU2D-R-000050",
+    "technical_correction_journal": {
+      "journal_id": "KU2D-CJ-000001",
+      "event_id_prefix": "KU2D-TC-",
+      "capture_timing": "immediately_after_each_material_correction",
+      "persistence": "single_validated_commit_at_queue_closure",
+      "maximum_event_count": 12
+    }
   },
   "instructions": [
     "Treat KU2D-H-000019 and KU2D-V-000049 as the complete authority. Preserve P49 and KU2D-X-000001 as immutable blocked-attempt evidence.",
@@ -49,6 +56,10 @@
     "Retrieve only sanitized Step Summary and sanitized evidence. Never print, persist or commit the API key, raw provider payloads, request URLs or page tokens. Do not acquire comments, captions, transcripts, OAuth-protected or personal data.",
     "Create a sanitized candidate closure packet using only fields allowed by the approved evidence schema. Candidate approval and production write remain out of scope.",
     "Create exactly one materially distinct ML-ready experience KU2D-X-000002 conforming to acquisition-experience-record.schema.json. Derive it from sanitized P50 results and cite KU2D-X-000001 as prior experience without copying Queue/Prompt/Human Decision narrative.",
+    "During every internal phase, immediately append each materially distinct technical correction to a local sanitized journal using technical-correction-journal.schema.json and policy KU2D-KP-000002. Do not create a new Queue, Prompt, Result or remote commit per event.",
+    "Use journal KU2D-CJ-000001 and sequential event IDs KU2D-TC-000001 onward. Capture phase, failure code, observed signal, evidence-supported root-cause layer, correction action/components, validation checks/result, resolution status, provider request/quota delta, effort when observed, reusable lesson and future prevention.",
+    "Do not log every command, unchanged test rerun or duplicate symptom. Merge repeated symptoms of one root cause. Use unknown/null rather than inferring unsupported root cause, effort or quality.",
+    "Before submitting R50, validate and commit exactly one sanitized journal at services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000001.json. R50 must report journal event/resolution counts; KU2D-X-000002 must reference CJ1 and summarize correction patterns without copying operational narrative.",
     "Submit only KU2D-R-000050 at completion or when an external/non-correctable stop condition is reached. Include phase checkpoints, corrections attempted, PR/merge/run/artifact evidence, cumulative attempts/requests/quota, candidate counts, X2 validation and an explicit YouTube source closure status."
   ],
   "stop_conditions": [
@@ -66,12 +77,14 @@
     "at most one provider-reaching bounded discovery completes or a genuine external stop condition is documented",
     "sanitized evidence and candidate closure packet are available when provider execution completes",
     "KU2D-X-000002 validates and captures the P50 experience",
+    "KU2D-CJ-000001 validates, contains only material sanitized correction events, and is linked from R50 and KU2D-X-000002",
     "KU2D-R-000050 recommends closed, partial-closed or external-blocked without requesting another technical queue"
   ],
   "expected_result": {
     "result_id": "KU2D-R-000050",
     "next_actor": "assistant",
-    "closure_target": "youtube_source_completion"
+    "closure_target": "youtube_source_completion",
+    "technical_correction_journal": "KU2D-CJ-000001"
   },
   "provenance": {
     "repository": "thanitpu/KU-Open-Data-Analytics",
@@ -81,7 +94,9 @@
     "depends_on_review": "KU2D-V-000049",
     "depends_on_human_decision": "KU2D-H-000019",
     "authorization_record_revision": "e7a8d6fb3453cb52f3162d35c0811b05b65f6489",
-    "prior_experience": "KU2D-X-000001"
+    "prior_experience": "KU2D-X-000001",
+    "technical_correction_schema_revision": "aec77b9f539d9c4e8f485fc8e95e45d81771e167",
+    "technical_correction_policy_revision": "68be778433d7ac5d2c39cf39c98005efed3f44dd"
   },
   "boundaries": {
     "coordination_only": true,
