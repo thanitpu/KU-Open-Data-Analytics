@@ -1,0 +1,271 @@
+{
+  "schema": "ku2d.youtube-qdiving-human-review-package.v1",
+  "selection_target": 2,
+  "candidate_count": 10,
+  "candidates": [
+    {
+      "video_id": "XZ6tmqUATWk",
+      "canonical_watch_url": "https://www.youtube.com/watch?v=XZ6tmqUATWk",
+      "channel_id": "UCqs3pijNrYHZCdl_HGfgTQw",
+      "channel_title": "Go Went Go",
+      "title": "ต้องดู​ ก่อนไปเรียนดำน้ำ!! เกาะเต่า​ 🇹🇭",
+      "published_at": "2021-03-20T02:00:03Z",
+      "default_language": "th",
+      "default_audio_language": "th",
+      "query_profile_ids": [
+        "QYT-BEGINNER-KOH-TAO-TH"
+      ],
+      "profile_query_provenance": [
+        {
+          "query_profile_id": "QYT-BEGINNER-KOH-TAO-TH",
+          "query_text": "เรียนดำน้ำ เกาะเต่า"
+        }
+      ],
+      "observed_at": "2026-09-01T04:47:45.246533+00:00",
+      "public_availability_state": "public",
+      "suggested_match_reason": "returned by an existing Q-Diving query profile and resolved by public metadata",
+      "commercial_context_caveat": "not adjudicated",
+      "uncertainty": "Human Review required",
+      "human_review_status": "pending",
+      "usable_for_live_acquisition": false
+    },
+    {
+      "video_id": "MyDSwfGTmd0",
+      "canonical_watch_url": "https://www.youtube.com/watch?v=MyDSwfGTmd0",
+      "channel_id": "UCFlqnrKdEcMdRuS9lc4Z3oQ",
+      "channel_title": "EarnEve",
+      "title": "รีวิว เรียนดำน้ำครั้งแรกที่เกาะเต่า แบบละเอียดยิบ ดูจบรู้เลยว่าควรไปเรียนจริงไหม | EarnEve",
+      "published_at": "2022-04-03T12:05:20Z",
+      "default_language": "th",
+      "default_audio_language": "th",
+      "query_profile_ids": [
+        "QYT-BEGINNER-KOH-TAO-TH"
+      ],
+      "profile_query_provenance": [
+        {
+          "query_profile_id": "QYT-BEGINNER-KOH-TAO-TH",
+          "query_text": "เรียนดำน้ำ เกาะเต่า"
+        }
+      ],
+      "observed_at": "2026-09-01T04:47:45.246604+00:00",
+      "public_availability_state": "public",
+      "suggested_match_reason": "returned by an existing Q-Diving query profile and resolved by public metadata",
+      "commercial_context_caveat": "not adjudicated",
+      "uncertainty": "Human Review required",
+      "human_review_status": "pending",
+      "usable_for_live_acquisition": false
+    },
+    {
+      "video_id": "cCpadHyIoNQ",
+      "canonical_watch_url": "https://www.youtube.com/watch?v=cCpadHyIoNQ",
+      "channel_id": "UCRzYFduWt7a-9cPS2YrRcaQ",
+      "channel_title": "BIVOYAGE",
+      "title": "พาไปเปิดโลกใต้ทะเล เรียนดำน้ำ เกาะเต่า 4 วันจบ! ll Bivoyage",
+      "published_at": "2020-08-22T05:30:01Z",
+      "default_language": "th",
+      "default_audio_language": null,
+      "query_profile_ids": [
+        "QYT-BEGINNER-KOH-TAO-TH"
+      ],
+      "profile_query_provenance": [
+        {
+          "query_profile_id": "QYT-BEGINNER-KOH-TAO-TH",
+          "query_text": "เรียนดำน้ำ เกาะเต่า"
+        }
+      ],
+      "observed_at": "2026-09-01T04:47:45.246609+00:00",
+      "public_availability_state": "public",
+      "suggested_match_reason": "returned by an existing Q-Diving query profile and resolved by public metadata",
+      "commercial_context_caveat": "not adjudicated",
+      "uncertainty": "Human Review required",
+      "human_review_status": "pending",
+      "usable_for_live_acquisition": false
+    },
+    {
+      "video_id": "aVpL68zeIoE",
+      "canonical_watch_url": "https://www.youtube.com/watch?v=aVpL68zeIoE",
+      "channel_id": "UC6J5FmAHnzX4G4fDeIEU0rg",
+      "channel_title": "MUKLABEL",
+      "title": "เรียนดำน้ำที่เกาะเต่าครั้งแรก SCUBA พาไปเปิดโลกใต้ทะเลลึก 18 เมตร | Vlog หน้าสดลงทะเล🐢🤿",
+      "published_at": "2022-09-09T04:47:28Z",
+      "default_language": "th",
+      "default_audio_language": "en-GB",
+      "query_profile_ids": [
+        "QYT-BEGINNER-KOH-TAO-TH"
+      ],
+      "profile_query_provenance": [
+        {
+          "query_profile_id": "QYT-BEGINNER-KOH-TAO-TH",
+          "query_text": "เรียนดำน้ำ เกาะเต่า"
+        }
+      ],
+      "observed_at": "2026-09-01T04:47:45.246612+00:00",
+      "public_availability_state": "public",
+      "suggested_match_reason": "returned by an existing Q-Diving query profile and resolved by public metadata",
+      "commercial_context_caveat": "not adjudicated",
+      "uncertainty": "Human Review required",
+      "human_review_status": "pending",
+      "usable_for_live_acquisition": false
+    },
+    {
+      "video_id": "qztSQDGdny8",
+      "canonical_watch_url": "https://www.youtube.com/watch?v=qztSQDGdny8",
+      "channel_id": "UCicKegGtK8YBWg6WJ2w_5-A",
+      "channel_title": "Roam the roads",
+      "title": "รีวิวไปเรียนดำน้ำที่เกาะเต่ามา Kohtao scuba diving openwater #scubadiving #kohtao",
+      "published_at": "2023-08-01T15:48:31Z",
+      "default_language": "th",
+      "default_audio_language": "en-US",
+      "query_profile_ids": [
+        "QYT-BEGINNER-KOH-TAO-TH"
+      ],
+      "profile_query_provenance": [
+        {
+          "query_profile_id": "QYT-BEGINNER-KOH-TAO-TH",
+          "query_text": "เรียนดำน้ำ เกาะเต่า"
+        }
+      ],
+      "observed_at": "2026-09-01T04:47:45.246615+00:00",
+      "public_availability_state": "public",
+      "suggested_match_reason": "returned by an existing Q-Diving query profile and resolved by public metadata",
+      "commercial_context_caveat": "not adjudicated",
+      "uncertainty": "Human Review required",
+      "human_review_status": "pending",
+      "usable_for_live_acquisition": false
+    },
+    {
+      "video_id": "T3wCrNhTW3Y",
+      "canonical_watch_url": "https://www.youtube.com/watch?v=T3wCrNhTW3Y",
+      "channel_id": "UCGdao2VKYgHLBggF6RwfvZA",
+      "channel_title": "Bangkok Jack",
+      "title": "The ULTIMATE Guide to Scuba Diving in THAILAND!",
+      "published_at": "2024-10-16T10:00:35Z",
+      "default_language": "en",
+      "default_audio_language": "en-GB",
+      "query_profile_ids": [
+        "QYT-BEGINNER-EN"
+      ],
+      "profile_query_provenance": [
+        {
+          "query_profile_id": "QYT-BEGINNER-EN",
+          "query_text": "scuba diving beginner Thailand"
+        }
+      ],
+      "observed_at": "2026-09-01T04:47:45.246621+00:00",
+      "public_availability_state": "public",
+      "suggested_match_reason": "returned by an existing Q-Diving query profile and resolved by public metadata",
+      "commercial_context_caveat": "not adjudicated",
+      "uncertainty": "Human Review required",
+      "human_review_status": "pending",
+      "usable_for_live_acquisition": false
+    },
+    {
+      "video_id": "-xssfyMuHLA",
+      "canonical_watch_url": "https://www.youtube.com/watch?v=-xssfyMuHLA",
+      "channel_id": "UCkoJu-OVU7qc-xbWozSMRKQ",
+      "channel_title": "Scuba Diver Magazine",
+      "title": "Scuba Diving in Thailand Aboard the Aggressor Liveaboard! Full Guide + Tips",
+      "published_at": "2024-11-30T15:00:00Z",
+      "default_language": "en-GB",
+      "default_audio_language": "en-GB",
+      "query_profile_ids": [
+        "QYT-BEGINNER-EN"
+      ],
+      "profile_query_provenance": [
+        {
+          "query_profile_id": "QYT-BEGINNER-EN",
+          "query_text": "scuba diving beginner Thailand"
+        }
+      ],
+      "observed_at": "2026-09-01T04:47:45.246624+00:00",
+      "public_availability_state": "public",
+      "suggested_match_reason": "returned by an existing Q-Diving query profile and resolved by public metadata",
+      "commercial_context_caveat": "not adjudicated",
+      "uncertainty": "Human Review required",
+      "human_review_status": "pending",
+      "usable_for_live_acquisition": false
+    },
+    {
+      "video_id": "dWu-nPvPjZk",
+      "canonical_watch_url": "https://www.youtube.com/watch?v=dWu-nPvPjZk",
+      "channel_id": "UC31tgjNLZH3oy4MLri0mSHg",
+      "channel_title": "OffTheStrip",
+      "title": "Beginner’s Scuba Dive in Phuket: What Its REALLY Like!",
+      "published_at": "2025-09-17T14:32:57Z",
+      "default_language": "en",
+      "default_audio_language": "en-US",
+      "query_profile_ids": [
+        "QYT-BEGINNER-EN"
+      ],
+      "profile_query_provenance": [
+        {
+          "query_profile_id": "QYT-BEGINNER-EN",
+          "query_text": "scuba diving beginner Thailand"
+        }
+      ],
+      "observed_at": "2026-09-01T04:47:45.246627+00:00",
+      "public_availability_state": "public",
+      "suggested_match_reason": "returned by an existing Q-Diving query profile and resolved by public metadata",
+      "commercial_context_caveat": "not adjudicated",
+      "uncertainty": "Human Review required",
+      "human_review_status": "pending",
+      "usable_for_live_acquisition": false
+    },
+    {
+      "video_id": "GF75EVUld5E",
+      "canonical_watch_url": "https://www.youtube.com/watch?v=GF75EVUld5E",
+      "channel_id": "UC5HnGcnpqkTL0OUe1Y7HDUA",
+      "channel_title": "Bhavini Srivastava",
+      "title": "Is Scuba Diving in Phuket, Thailand Easy for Beginners? | My First Experience Ep. 6",
+      "published_at": "2024-08-23T14:57:54Z",
+      "default_language": "en",
+      "default_audio_language": "en",
+      "query_profile_ids": [
+        "QYT-BEGINNER-EN"
+      ],
+      "profile_query_provenance": [
+        {
+          "query_profile_id": "QYT-BEGINNER-EN",
+          "query_text": "scuba diving beginner Thailand"
+        }
+      ],
+      "observed_at": "2026-09-01T04:47:45.246629+00:00",
+      "public_availability_state": "public",
+      "suggested_match_reason": "returned by an existing Q-Diving query profile and resolved by public metadata",
+      "commercial_context_caveat": "not adjudicated",
+      "uncertainty": "Human Review required",
+      "human_review_status": "pending",
+      "usable_for_live_acquisition": false
+    },
+    {
+      "video_id": "wQZpvrijs8g",
+      "canonical_watch_url": "https://www.youtube.com/watch?v=wQZpvrijs8g",
+      "channel_id": "UCmRL4-a1AUJafnvndpHzOEw",
+      "channel_title": "Roselyn Lambatin",
+      "title": "Scuba Diving in Krabi, Thailand🇹🇭 #fyp #krabithailand #roselyntravels",
+      "published_at": "2024-10-18T08:25:32Z",
+      "default_language": "en",
+      "default_audio_language": null,
+      "query_profile_ids": [
+        "QYT-BEGINNER-EN"
+      ],
+      "profile_query_provenance": [
+        {
+          "query_profile_id": "QYT-BEGINNER-EN",
+          "query_text": "scuba diving beginner Thailand"
+        }
+      ],
+      "observed_at": "2026-09-01T04:47:45.246632+00:00",
+      "public_availability_state": "public",
+      "suggested_match_reason": "returned by an existing Q-Diving query profile and resolved by public metadata",
+      "commercial_context_caveat": "not adjudicated",
+      "uncertainty": "Human Review required",
+      "human_review_status": "pending",
+      "usable_for_live_acquisition": false
+    }
+  ],
+  "suggestions_are_non_authoritative": true,
+  "human_adjudication_required": true,
+  "production_approved": false,
+  "scheduler_action": null
+}

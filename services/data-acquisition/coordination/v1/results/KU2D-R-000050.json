@@ -1,0 +1,315 @@
+{
+  "schema": "ku2d.agent-handoff-result.v1",
+  "result_id": "KU2D-R-000050",
+  "prompt_id": "KU2D-P-000050",
+  "submitted_at": "2026-09-01T11:56:20.4554731+07:00",
+  "submitted_by": {
+    "actor": "codex",
+    "actor_id": "codex/data-acquisition-agent"
+  },
+  "status": "succeeded",
+  "summary": "P50 completed the YouTube Source Completion Queue at the bounded candidate-discovery boundary. Immutable historical V47/H17 remain exact-hash-pinned non-authoritative history, the active Agent Handoff bundle and 55-test deterministic corpus pass, Ready PR #68 promoted only the H19 launcher to main and merged as 502ac05042a214add17fd4223387187ef05aa605, and exactly one P50 dispatch reached the official YouTube Data API v3. Run 33471158167 completed with exit 0, wrote sanitized Step Summary evidence, uploaded artifact 9786568183, used search.list twice plus videos.list once for 201 documented quota units, and retained ten public identity candidates for Human Review. No candidate was approved, no production write or scheduling occurred, and no retry was made after provider access. The exact sanitized review package, KU2D-X-000002 and KU2D-CJ-000001 are committed with this closure.",
+  "evidence_references": [
+    "KU2D-P-000050",
+    "KU2D-V-000049",
+    "KU2D-H-000019",
+    "migration:KU2D-M-000001",
+    "correction-journal:KU2D-CJ-000001",
+    "experience:KU2D-X-000001",
+    "experience:KU2D-X-000002",
+    "candidate-packet:KU2D-YT-QDIVING-CANDIDATES-000001",
+    "migration-commit:72c3b193effeb7ee7b688fc2130803432b0f764d",
+    "launcher-head:04e8bed90a91327f535948b5a45d39c8d457e84a",
+    "main-merge:502ac05042a214add17fd4223387187ef05aa605",
+    "pull-request:68",
+    "workflow-run:33471158167",
+    "workflow-job:99741028458",
+    "github-artifact:9786568183"
+  ],
+  "phase_checkpoints": {
+    "historical_protocol_migration": "passed; V47 and H17 preserved, exact Git-blob pins verified, canonical V48/H18 validated, and migrated records denied active-authority status",
+    "full_preflight": "passed; H19 explicit_human_input confirmed, execution and authorization record immutable, AUTH_SCOPE exact equality, full bundle valid",
+    "launcher_implementation": "passed; fresh one-file head 04e8bed90a91327f535948b5a45d39c8d457e84a changed only H19 and authorization-record anchors while preserving execution and artifact guard",
+    "pr_ci_merge": "passed; Ready PR #68 exact-head checks green, one changed file, squash merged to main with expected-head guard",
+    "bounded_acquisition": "passed; one dispatch, one provider-reaching attempt, no retry",
+    "sanitized_evidence": "passed; evidence validator, Step Summary writer, evidence guard and artifact upload all succeeded",
+    "candidate_closure_packet": "passed; exact human_review_package extracted without authority promotion",
+    "ml_experience_export": "passed; exactly one materially distinct KU2D-X-000002 created and validated",
+    "source_closure": "closed_at_candidate_discovery_boundary_pending_human_review"
+  },
+  "historical_migration": {
+    "migration_id": "KU2D-M-000001",
+    "migration_commit": "72c3b193effeb7ee7b688fc2130803432b0f764d",
+    "historical_records_rewritten": false,
+    "historical_records_active_authority": false,
+    "historical_review": {
+      "record_id": "KU2D-V-000047",
+      "blob_sha": "702bda7d0b7822ef7b34257a5a177cfe5deb4820",
+      "replacement_id": "KU2D-V-000048",
+      "replacement_blob_sha": "afba89a6d66014840d833f0fc03f72b89f5e9e76"
+    },
+    "historical_human_decision": {
+      "record_id": "KU2D-H-000017",
+      "blob_sha": "8e6b4c7c68dd18a305355edcd0c264ce7831f95b",
+      "replacement_id": "KU2D-H-000018",
+      "replacement_blob_sha": "549ae13112a8df31171d02482b1f9572a8d84a4f"
+    },
+    "fail_closed_negative_coverage": [
+      "unlisted invalid record",
+      "historical or replacement hash mismatch",
+      "missing or invalid canonical replacement",
+      "historical record used as current authority",
+      "circular or superseded replacement",
+      "unlisted proactive Human Decision"
+    ]
+  },
+  "technical_corrections": {
+    "journal_id": "KU2D-CJ-000001",
+    "path": "services/data-acquisition/knowledge/v1/correction-journals/KU2D-CJ-000001.json",
+    "event_count": 3,
+    "resolved_count": 3,
+    "unresolved_count": 0,
+    "correction_cycles_used": 3,
+    "provider_request_delta": 0,
+    "provider_quota_delta": 0,
+    "events": [
+      "KU2D-TC-000001 historical records blocked active bundle validation",
+      "KU2D-TC-000002 proactive authority exception was narrowed to exact blob-pinned pairs",
+      "KU2D-TC-000003 concurrent authoritative-branch additions were rebased without force and revalidated"
+    ],
+    "schema_validation": "passed",
+    "sanitized": true
+  },
+  "offline_authorization_gate": {
+    "decision_id": "KU2D-H-000019",
+    "decision_source": "explicit_human_input",
+    "decision_confirmed": true,
+    "execution_revision": "cac243aedaa3c83c188e4e90481e4b752fe8bd2b",
+    "authorization_record_revision": "e7a8d6fb3453cb52f3162d35c0811b05b65f6489",
+    "authorized_scope_exactly_equals_auth_scope": true,
+    "immutable_validator_result": "passed"
+  },
+  "promotion": {
+    "main_starting_sha": "769149377b9a7886ae2fc6457c7fe815a09d5cd6",
+    "launcher_branch": "codex/promote-youtube-qdiving-h19-launcher-v1",
+    "launcher_head_sha": "04e8bed90a91327f535948b5a45d39c8d457e84a",
+    "pull_request_number": 68,
+    "pull_request_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/pull/68",
+    "pull_request_ready": true,
+    "pull_request_changed_file_count": 1,
+    "pull_request_changed_file": ".github/workflows/youtube-qdiving-identity-discovery.yml",
+    "pull_request_checks": [
+      {
+        "id": 99740145464,
+        "name": "preview-link",
+        "conclusion": "success"
+      },
+      {
+        "id": 99740145410,
+        "name": "frontend-smoke",
+        "conclusion": "success"
+      },
+      {
+        "id": 99740005098,
+        "name": "frontend-smoke",
+        "conclusion": "success"
+      }
+    ],
+    "merge_method": "squash",
+    "merge_commit_sha": "502ac05042a214add17fd4223387187ef05aa605",
+    "expected_head_guard": true,
+    "main_launcher_postmerge_guard": "passed",
+    "natural_main_workflows": [
+      {
+        "run_id": 33470997405,
+        "name": "pages build and deployment",
+        "conclusion": "success"
+      },
+      {
+        "run_id": 33470998023,
+        "name": "Frontend CI",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "bounded_execution": {
+    "workflow_id": 347084304,
+    "workflow_name": "KU2D Q-Diving Identity Discovery",
+    "dispatch_run_count_before_p50": 2,
+    "dispatch_run_count_after_p50": 3,
+    "p50_dispatch_attempts": 1,
+    "p50_preprovider_failed_attempts": 0,
+    "p50_provider_reached_attempts": 1,
+    "automatic_retries": 0,
+    "run_id": 33471158167,
+    "run_number": 8,
+    "run_attempt": 1,
+    "run_url": "https://github.com/thanitpu/KU-Open-Data-Analytics/actions/runs/33471158167",
+    "run_head_sha": "502ac05042a214add17fd4223387187ef05aa605",
+    "run_conclusion": "success",
+    "job_id": 99741028458,
+    "job_name": "bounded-discovery",
+    "job_conclusion": "success",
+    "exit_classification": 0,
+    "technical_completion": true,
+    "provider_reached": true,
+    "step_summary_write_conclusion": "success",
+    "sanitized_evidence_check_conclusion": "success",
+    "artifact_upload_conclusion": "success"
+  },
+  "execution_outcome": {
+    "classification": "candidate_evidence_obtained",
+    "exit_classification": 0,
+    "technical_completion": true,
+    "withheld_reason": null,
+    "planned_profiles": [
+      "QYT-BEGINNER-KOH-TAO-TH",
+      "QYT-BEGINNER-EN"
+    ],
+    "candidate_count": 10,
+    "candidate_counts_by_profile": {
+      "QYT-BEGINNER-KOH-TAO-TH": 5,
+      "QYT-BEGINNER-EN": 5
+    },
+    "retained_candidate_count": 10,
+    "excluded_candidate_count": 0,
+    "human_review_completed": false,
+    "usable_reviewed_identity_count": 0,
+    "request_counts_by_endpoint": {
+      "search.list": 2,
+      "videos.list": 1
+    },
+    "total_provider_requests": 3,
+    "documented_quota_units": 201,
+    "sanitized_ledger_events": [
+      {
+        "endpoint": "search.list",
+        "query_profile_id": "QYT-BEGINNER-KOH-TAO-TH",
+        "result_count": 5,
+        "status": "ok",
+        "estimated_cost": 100
+      },
+      {
+        "endpoint": "search.list",
+        "query_profile_id": "QYT-BEGINNER-EN",
+        "result_count": 5,
+        "status": "ok",
+        "estimated_cost": 100
+      },
+      {
+        "endpoint": "videos.list",
+        "query_profile_id": null,
+        "result_count": 10,
+        "status": "ok",
+        "estimated_cost": 1
+      }
+    ],
+    "quality": {
+      "useful_rate": null,
+      "mean_quality": null,
+      "completeness": null,
+      "reason": "semantic usefulness remains Human Review authority; no unsupported quality score inferred"
+    }
+  },
+  "sanitized_artifact": {
+    "artifact_id": 9786568183,
+    "artifact_name": "youtube-qdiving-identity-discovery-33471158167",
+    "evidence_file_name": "ku2d-youtube-qdiving-33471158167.json",
+    "size_in_bytes": 3246,
+    "expired": false,
+    "created_at": "2026-09-01T04:47:46Z",
+    "expires_at": "2026-09-08T04:47:45Z",
+    "step_summary_available": true,
+    "sanitized_evidence_available": true,
+    "evidence_schema_validation": "passed",
+    "raw_logs_retrieved": false,
+    "raw_provider_payload_retrieved": false
+  },
+  "candidate_closure_packet": {
+    "packet_id": "KU2D-YT-QDIVING-CANDIDATES-000001",
+    "path": "services/data-acquisition/knowledge/v1/candidate-closure-packets/KU2D-YT-QDIVING-CANDIDATES-000001.json",
+    "schema": "ku2d.youtube-qdiving-human-review-package.v1",
+    "exactly_matches_sanitized_artifact_package": true,
+    "selection_target": 2,
+    "candidate_count": 10,
+    "suggestions_are_non_authoritative": true,
+    "human_adjudication_required": true,
+    "human_review_status": "pending",
+    "production_approved": false,
+    "scheduler_action": null
+  },
+  "acquisition_experience_export": {
+    "experience_id": "KU2D-X-000002",
+    "path": "services/data-acquisition/knowledge/v1/experiences/KU2D-X-000002.json",
+    "record_count": 1,
+    "schema": "ku2d.acquisition-experience.v1",
+    "prior_experience_cited": "KU2D-X-000001",
+    "correction_journal_cited": "KU2D-CJ-000001",
+    "result_cited": "KU2D-R-000050",
+    "schema_validation": "passed",
+    "unknown_quality_values_null": true,
+    "operational_control_copied": false,
+    "human_decision_narrative_copied": false,
+    "contains_secret": false,
+    "contains_raw_payload": false,
+    "contains_personal_data": false,
+    "production_authorized": false
+  },
+  "verification": {
+    "deterministic_tests_passed": true,
+    "live_request_count": 3,
+    "python_compilation": "passed for acquisition, api, repository, control_plane, service and tools",
+    "repository_json_parse": "passed; 274 files after R50 and queue closure",
+    "repository_yaml_parse": "passed; 18 files",
+    "agent_handoff_protocol": "passed; AH1-AH44",
+    "complete_deterministic_corpus": "passed; 55/55",
+    "git_diff_check": "passed",
+    "candidate_packet_exact_artifact_validation": "passed",
+    "experience_record_contract_validation": "passed",
+    "technical_correction_journal_contract_validation": "passed",
+    "post_result_agent_handoff_validation": "passed in the final 55/55 deterministic corpus"
+  },
+  "security_and_boundaries": {
+    "github_secret_value_accessed_by_codex": false,
+    "runtime_secret_reference_used": true,
+    "secret_value_printed_persisted_uploaded_or_committed": false,
+    "raw_workflow_logs_retrieved": false,
+    "raw_provider_payload_retrieved": false,
+    "request_urls_or_page_tokens_retrieved": false,
+    "comments_acquired": false,
+    "captions_called": false,
+    "transcript_text_acquired": false,
+    "oauth_used": false,
+    "browser_or_scraping_used": false,
+    "candidate_approval_performed": false,
+    "production_store": false,
+    "production_approved": false,
+    "authority_promoted": false,
+    "automatic_model_training": false,
+    "scheduler_action": null
+  },
+  "source_closure": {
+    "status": "closed",
+    "boundary": "bounded_public_identity_candidates_staged_for_human_review",
+    "technical_work_remaining_in_p50": false,
+    "human_review_required": true,
+    "production_authorized": false,
+    "recommended_next_step": "Assistant reviews R50 and the sanitized ten-candidate packet. Any candidate inclusion, channel monitoring, broader discovery, production write or scheduling requires the appropriate Human Review and new authority; do not replay P50 automatically."
+  },
+  "provenance": {
+    "repository": "thanitpu/KU-Open-Data-Analytics",
+    "branch": "codex/ku2d-youtube-identity-discovery-review-v1",
+    "source_prompt": "coordination/v1/prompts/KU2D-P-000050.json",
+    "depends_on_result": "KU2D-R-000049",
+    "depends_on_review": "KU2D-V-000049",
+    "depends_on_human_decision": "KU2D-H-000019",
+    "knowledge_policy": "KU2D-KP-000001",
+    "technical_correction_policy": "KU2D-KP-000002"
+  },
+  "boundaries": {
+    "coordination_only": true,
+    "production_authorized": false,
+    "automatic_learning_memory_export": false,
+    "scheduler_action": null
+  }
+}

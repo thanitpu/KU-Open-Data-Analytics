@@ -1,0 +1,104 @@
+{
+  "schema": "ku2d.acquisition-experience.v1",
+  "experience_id": "KU2D-X-000002",
+  "generated_at": "2026-09-01T11:52:00.000+07:00",
+  "source": {
+    "domain": "Q-Diving",
+    "source_type": "public_video_metadata",
+    "provider": "YouTube Data API v3",
+    "access_surface": "official_metadata_api"
+  },
+  "goal": "Complete bounded public Q-Diving video and channel identity discovery and stage sanitized non-authoritative candidates for Human Review.",
+  "attempt": {
+    "method": "hash-pinned authority migration followed by an immutable two-checkout H19 workflow with evidence-before-exit",
+    "techniques": [
+      "bounded first-page search.list discovery",
+      "batched videos.list metadata enrichment",
+      "exact-scope offline authorization validation",
+      "sanitized candidate retention",
+      "always-upload evidence guard"
+    ],
+    "bounded_scope": {
+      "profiles": [
+        "QYT-BEGINNER-KOH-TAO-TH",
+        "QYT-BEGINNER-EN"
+      ],
+      "max_results_per_profile": 5,
+      "max_pages_per_profile": 1,
+      "max_search_list_requests": 2,
+      "max_videos_list_requests": 1,
+      "max_documented_quota_units": 201,
+      "comments_acquired": false,
+      "captions_called": false,
+      "transcript_text_acquired": false,
+      "production_store": false
+    },
+    "provider_reached": true,
+    "effort_class": "high"
+  },
+  "outcome": {
+    "status": "succeeded",
+    "failure_stage": null,
+    "failure_code": null,
+    "record_counts": {
+      "dispatch_attempts": 1,
+      "provider_reached_attempts": 1,
+      "candidate_count": 10,
+      "retained_candidate_count": 10,
+      "excluded_candidate_count": 0,
+      "usable_reviewed_identity_count": 0,
+      "sanitized_artifact_count": 1,
+      "candidate_closure_packet_count": 1
+    },
+    "quality": {
+      "useful_rate": null,
+      "mean_quality": null,
+      "completeness": null
+    },
+    "request_counts": {
+      "search.list": 2,
+      "videos.list": 1,
+      "total": 3
+    },
+    "documented_quota_units": 201
+  },
+  "evidence": {
+    "result_ids": [
+      "KU2D-R-000050"
+    ],
+    "provenance_refs": [
+      "experience:KU2D-X-000001",
+      "correction-journal:KU2D-CJ-000001",
+      "human-review-package:KU2D-YT-QDIVING-CANDIDATES-000001",
+      "main:502ac05042a214add17fd4223387187ef05aa605",
+      "execution:cac243aedaa3c83c188e4e90481e4b752fe8bd2b",
+      "workflow-run:33471158167"
+    ],
+    "artifact_refs": [
+      "github-artifact:9786568183",
+      "youtube-qdiving-identity-discovery-33471158167"
+    ],
+    "sanitized": true
+  },
+  "learning": {
+    "reusable_pattern": "Resolve append-only authority incompatibilities with exact-content migration pins, preserve default authority rules, and bind one bounded provider attempt to immutable decision, execution and authorization-record revisions.",
+    "reusable_lesson": "A source-completion run can remain autonomous and fail closed when protocol corrections are separated from provider attempts, exact-head launcher review precedes dispatch, and only sanitized non-authoritative candidates cross the artifact boundary.",
+    "next_strategy": "Perform Human Review of the ten staged identities, selecting up to two without auto-approval; request new authority before any production write, monitoring schedule or expanded provider scope.",
+    "labels": [
+      "candidate-discovery",
+      "correction-journal",
+      "evidence-before-exit",
+      "hash-pinned-authority",
+      "human-review-pending",
+      "q-diving",
+      "source-completion",
+      "youtube"
+    ]
+  },
+  "safety": {
+    "contains_secret": false,
+    "contains_raw_payload": false,
+    "contains_personal_data": false,
+    "production_authorized": false
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "schema": "ku2d.technical-correction-journal.v1",
+  "journal_id": "KU2D-CJ-000001",
+  "source_completion_prompt_id": "KU2D-P-000050",
+  "created_at": "2026-09-01T11:32:00.000+07:00",
+  "closed_at": "2026-09-01T11:52:00.000+07:00",
+  "events": [
+    {
+      "event_id": "KU2D-TC-000001",
+      "observed_at": "2026-09-01T11:32:00.000+07:00",
+      "phase": "protocol_migration",
+      "failure_code": "historical_records_block_active_bundle_validation",
+      "observed_signal": "The full Agent Handoff bundle rejected immutable historical review V47 and decision H17 before active P50 authority could validate.",
+      "root_cause_layer": "coordination_protocol",
+      "correction": {
+        "action": "Added a versioned migration manifest with exact Git-blob pins for V47 and H17, validated canonical V48 and H18 replacements, kept historical records visible, and prevented migrated records from acting as current authority.",
+        "components": [
+          "services/data-acquisition/acquisition/agent_handoff_protocol.py",
+          "services/data-acquisition/coordination/v1/migrations/KU2D-M-000001.json",
+          "services/data-acquisition/docs/AGENT_HANDOFF_PROTOCOL.md",
+          "services/data-acquisition/tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": [
+          "exact historical and replacement Git-blob SHA validation",
+          "negative tests for unlisted, mismatched, missing, invalid, circular and active-authority misuse",
+          "Agent Handoff deterministic cases AH1-AH44",
+          "complete deterministic Data Acquisition corpus 55/55"
+        ],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {
+        "provider_reached": false,
+        "request_delta": 0,
+        "quota_delta": 0
+      },
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "Append-only history can remain auditable without weakening current authority when every exception and canonical replacement is exact-content pinned and denied active-authority status.",
+        "future_prevention": "Validate the complete append-only bundle and migration manifest before any remote mutation or provider dispatch.",
+        "labels": [
+          "append-only-history",
+          "fail-closed",
+          "hash-pinned-migration"
+        ]
+      },
+      "evidence_refs": [
+        "KU2D-M-000001",
+        "commit:72c3b193effeb7ee7b688fc2130803432b0f764d"
+      ]
+    },
+    {
+      "event_id": "KU2D-TC-000002",
+      "observed_at": "2026-09-01T11:38:00.000+07:00",
+      "phase": "test",
+      "failure_code": "proactive_human_authority_rule_overbroad",
+      "observed_signal": "Safety review rejected a generalized relaxation that could have accepted unrelated proactive Human Decisions outside the established review chain.",
+      "root_cause_layer": "authorization_schema",
+      "correction": {
+        "action": "Restored the default Human Decision chain rule and permitted only the exact blob-pinned H18/V48 and H19/V49 pairs listed in the migration manifest.",
+        "components": [
+          "services/data-acquisition/acquisition/agent_handoff_protocol.py",
+          "services/data-acquisition/coordination/v1/migrations/KU2D-M-000001.json",
+          "services/data-acquisition/tools/SELF_TEST_AGENT_HANDOFF_PROTOCOL.py"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": [
+          "default proactive Human Decision chain rejection retained",
+          "exact blob-pinned H18/V48 and H19/V49 acceptance",
+          "blob mismatch and unlisted pair rejection",
+          "Agent Handoff deterministic cases AH1-AH44"
+        ],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {
+        "provider_reached": false,
+        "request_delta": 0,
+        "quota_delta": 0
+      },
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "A historical exception must identify exact records and exact content; changing a general authority rule creates a wider execution surface than the migration requires.",
+        "future_prevention": "Prefer record-specific manifest pins over global authorization-rule exceptions and include negative tests for unrelated records.",
+        "labels": [
+          "authority-boundary",
+          "exact-scope",
+          "negative-testing"
+        ]
+      },
+      "evidence_refs": [
+        "KU2D-H-000018",
+        "KU2D-H-000019",
+        "KU2D-V-000048",
+        "KU2D-V-000049"
+      ]
+    },
+    {
+      "event_id": "KU2D-TC-000003",
+      "observed_at": "2026-09-01T11:39:00.000+07:00",
+      "phase": "merge",
+      "failure_code": "authoritative_branch_advanced_during_local_migration",
+      "observed_signal": "The first authoritative-branch push could not fast-forward because the remote branch gained the P50 correction-journal schema, policy and queue revisions during local work.",
+      "root_cause_layer": "git",
+      "correction": {
+        "action": "Fetched the new remote state, rebased the migration commit without force, revalidated the combined tree, and pushed the linear authoritative history.",
+        "components": [
+          "codex/ku2d-youtube-identity-discovery-review-v1",
+          "services/data-acquisition/knowledge/v1/technical-correction-journal.schema.json",
+          "services/data-acquisition/knowledge/v1/technical-correction-policy.json"
+        ],
+        "scope_changed": false
+      },
+      "validation": {
+        "checks": [
+          "authoritative branch fast-forward ancestry",
+          "clean post-rebase working tree",
+          "full Agent Handoff validation after rebase",
+          "complete deterministic corpus after rebase"
+        ],
+        "result": "passed"
+      },
+      "outcome": "resolved",
+      "provider_impact": {
+        "provider_reached": false,
+        "request_delta": 0,
+        "quota_delta": 0
+      },
+      "effort_minutes": null,
+      "learning": {
+        "reusable_lesson": "Concurrent coordination additions can be preserved safely by rebasing and repeating authority checks; a force push is unnecessary.",
+        "future_prevention": "Fetch the authoritative branch immediately before publishing each phase and re-run bundle validation whenever coordination records changed.",
+        "labels": [
+          "concurrent-update",
+          "git-safety",
+          "revalidation"
+        ]
+      },
+      "evidence_refs": [
+        "schema-revision:aec77b9f539d9c4e8f485fc8e95e45d81771e167",
+        "policy-revision:68be778433d7ac5d2c39cf39c98005efed3f44dd",
+        "commit:72c3b193effeb7ee7b688fc2130803432b0f764d"
+      ]
+    }
+  ],
+  "summary": {
+    "event_count": 3,
+    "resolved_count": 3,
+    "unresolved_count": 0,
+    "correction_cycles_used": 3
+  },
+  "safety": {
+    "contains_secret": false,
+    "contains_raw_payload": false,
+    "contains_request_url": false,
+    "contains_personal_data": false
+  }
+}
