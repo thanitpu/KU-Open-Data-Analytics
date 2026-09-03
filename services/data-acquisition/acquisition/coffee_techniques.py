@@ -35,6 +35,7 @@ def _baht_price(text: str) -> float | None:
     for pat in (
         r"(?:Price|ราคา)\s*[:：]?\s*([0-9][0-9,.]*)\s*(?:Baht|บาท)",
         r"(?:฿|THB)\s*([0-9][0-9,.]*)",
+        r"([0-9][0-9,.]*)\s*฿",
         r"([0-9][0-9,.]*)\s*(?:Baht|บาท)",
     ):
         m = re.search(pat, text or "", re.I)
@@ -199,4 +200,82 @@ def audit_punthai_runs(first: dict, second: dict, minimum_records: int = 5) -> d
         "field_quality": {"price_completeness_pct": price_pct, "provenance_pct": provenance_pct},
         "repeatability": {"menu_repeatability_pct": repeat, "first_unique": len(k1), "second_unique": len(k2), "overlap": len(k1 & k2)},
         "technique": "punthai_official_menu_detail",
+    }
+
+
+def roaster_product_record(html: str, url: str, source: str, observed_at: str | None = None) -> dict | None:
+    """Normalize one official public roasted-coffee product detail.
+
+    This remains separate from cafe drink-menu pricing. Stable identity comes
+    from the canonical official URL; origin/process/roast fields are accepted
+    only from explicit labels or structured product data.
+    """
+    if not html or not url or not source or not BeautifulSoup:
+        return None
+    observed_at = observed_at or datetime.now(timezone.utc).isoformat()
+    parsed = urlparse(url)
+    if parsed.scheme != "https" or not parsed.hostname:
+        return None
+    soup = BeautifulSoup(html, "html.parser")
+    text = _clean(soup.get_text("\n", strip=True))
+    obj = _jsonld_menu(html) or {}
+    name = _clean(obj.get("name")) if isinstance(obj, dict) else ""
+    if not name:
+        h1 = soup.find("h1")
+        name = _clean(h1.get_text(" ", strip=True)) if h1 else ""
+    if not name:
+        meta = soup.find("meta", attrs={"property": "og:title"})
+        name = _clean(meta.get("content")) if meta else ""
+    offers = obj.get("offers") if isinstance(obj, dict) else None
+    offer = offers[0] if isinstance(offers, list) and offers else offers
+    price = None
+    currency = None
+    availability = None
+    if isinstance(offer, dict):
+        try:
+            price = float(str(offer.get("price") or "").replace(",", "")) or None
+        except ValueError:
+            price = None
+        currency = _clean(offer.get("priceCurrency")) or None
+        availability = _clean(offer.get("availability")).rsplit("/", 1)[-1] or None
+    price = price if price is not None else _baht_price(text)
+    currency = currency or ("THB" if price is not None else None)
+
+    def labeled(label: str, aliases: str = "") -> str | None:
+        expression = rf"(?:{label}{aliases})\s*[:：]\s*([^\n]{{1,240}}?)(?=\s+(?:Origin|Process|Taste Notes?|Tasting Notes?|Roast Level|Size)\s*[:：]|$)"
+        match = re.search(expression, text, re.I)
+        return _clean(match.group(1))[:240] if match else None
+
+    origin = labeled("Origin", "|แหล่งปลูก|แหล่งที่มา")
+    process = labeled("Process", "|กระบวนการ")
+    tasting_notes = labeled("Taste Notes?", "|Tasting Notes?|โน้ตรสชาติ")
+    roast = labeled("Roast Level", "|Roast|ระดับการคั่ว")
+    size = labeled("Size", "|ขนาด") or _size(text)
+    coffee_semantics = any((origin, process, tasting_notes, roast)) or bool(
+        re.search(r"coffee beans?|เมล็ดกาแฟ|single origin", name + " " + text[:1000], re.I)
+    )
+    if not name or price is None or not coffee_semantics:
+        return None
+    slug = parsed.path.rstrip("/").split("/")[-1]
+    if not slug:
+        return None
+    if availability is None:
+        availability = "sold-out" if re.search(r"sold out|สินค้าหมด", text, re.I) else "publicly-listed"
+    return {
+        "record_type": "CoffeeProductCandidate",
+        "coffee_product_id": f"{parsed.hostname.casefold()}:{slug.casefold()}",
+        "product_name": name[:300],
+        "origin": origin,
+        "process": process,
+        "tasting_notes": tasting_notes,
+        "roast_level": roast,
+        "package_size": size,
+        "price": price,
+        "currency": currency,
+        "availability": availability,
+        "source": source,
+        "source_url": parsed._replace(fragment="").geturl(),
+        "provenance": "official-public-roaster-product-detail",
+        "observed_at": observed_at,
+        "production_approved": False,
     }
