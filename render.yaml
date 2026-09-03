@@ -2,7 +2,7 @@ services:
   - type: web
     name: ku-open-data-analytics-api
     runtime: python
-    repo: https://github.com/thanitpu/KU-Open-Data-Analytics
+    repo: https://github.com/thanitpu/KU2A-Analytics
     branch: main
     rootDir: backend
     buildCommand: pip install -r requirements.txt

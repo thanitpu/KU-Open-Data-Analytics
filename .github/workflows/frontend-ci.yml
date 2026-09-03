@@ -63,6 +63,7 @@ jobs:
           node --check tests/frontend_visual_smoke.js
           node --check tests/ku2d_data_asset_smoke.js
           node --check tests/text_analytics_smoke.js
+          node --check tests/repository_identity_smoke.js
           node --check tests/ku2d_intake_browser_smoke.js
           node --check tests/text_analytics_browser_smoke.js
       - name: Public and Product entry separation guard
@@ -75,6 +76,8 @@ jobs:
         run: node tests/ku2d_data_asset_smoke.js
       - name: Text analytics deterministic smoke
         run: node tests/text_analytics_smoke.js
+      - name: Repository identity and rename guard
+        run: node tests/repository_identity_smoke.js
       - name: Product shell profile wiring guard
         run: node tests/profile_shell_wiring_smoke.js
       - name: Local Profile Manifest smoke

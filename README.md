@@ -2,6 +2,8 @@
 
 KU Open Data Analytics combines a public university-facing Landing Page with a browser-first analytical workspace backed by validated FastAPI execution.
 
+The canonical repository is `thanitpu/KU2A-Analytics`. **KU Open Data Analytics** remains the user-facing product name; the repository rename does not rename the product or its existing Render API service. Repository-cutover and cross-repository handoff rules are recorded in `docs/KU2A_REPOSITORY_RENAME_CUTOVER.md`.
+
 The Product experience follows one six-step journey:
 
 1. **Start** — choose or upload a CSV/XLSX dataset, or inspect one or more compatible KU2D trusted JSON assets.
