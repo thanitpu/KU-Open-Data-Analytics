@@ -45,5 +45,12 @@ const rows=[
   window.KUAppState.setStep('profile');window.KUAppState.setStep('analyze');
   assert.strictEqual(window.KUAppState.getState().textAnalysis.selectedTextField,'review_text','navigation must preserve the selected field');
   assert.strictEqual(window.KUAppState.getState().textAnalysis.sentiment.labelField,'sentiment_label','navigation must preserve sentiment evidence');
+  const categoricalRows=[{Group:'A',Satisfaction:'High'},{Group:'B',Satisfaction:'Medium'}];
+  window.KUDataLoader.loadObjectRows(categoricalRows,['Group','Satisfaction'],{origin:'local',name:'categorical fixture'});
+  window.KUAppState.setDataset({loaded:true,revision:2,rowCount:2,columnCount:2,fields:[{name:'Group',storage:'text',level:'Nominal'},{name:'Satisfaction',storage:'text',level:'Ordinal'}]});
+  window.KUTextAnalyticsWorkflow.renderAll();await new Promise(resolve=>setTimeout(resolve,10));
+  const optionValues=[...window.document.querySelectorAll('#textAnalyticsProfile select option')].map(option=>option.value);
+  assert.ok(optionValues.includes('Group')&&optionValues.includes('Satisfaction'),'manual field selection must remain available when no field is suggested as free text');
+  assert.strictEqual(window.KUAppState.getState().textAnalysis.selectedTextField,null,'categorical fields must not be auto-selected as free text');
   console.log('TEXT_ANALYTICS_BROWSER_SMOKE_OK (progressive UI + state persistence)');
 })().catch(error=>{console.error(error);process.exit(1);});
