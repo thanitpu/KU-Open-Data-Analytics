@@ -3,11 +3,10 @@
   const VERSION='0.1';
   const PRODUCTS=new Set(['KUOpen','KU2A','KU2B','KU2C','KU2D']);
   const DEPTHS=new Set(['contextual','glossary','concept']);
-
+  const REQUEST_TYPES=new Set(['new_entry','new_context','new_depth','content_revision','alias_request','concept_link_request','deprecation_review']);
   function requireText(value,name){if(typeof value!=='string'||!value.trim())throw new Error(name+' is required');return value.trim();}
   function buildRequest({knowledge_ref,surface,requested_depth='contextual',locale='th-TH',audience_level='default',request_id}){
-    const ref=requireText(knowledge_ref,'knowledge_ref');
-    const sf=requireText(surface,'surface');
+    const ref=requireText(knowledge_ref,'knowledge_ref'),sf=requireText(surface,'surface');
     if(!DEPTHS.has(requested_depth))throw new Error('unsupported requested_depth');
     return {contract_version:VERSION,request_id:request_id||('ku2a-'+Date.now()),knowledge_ref:ref,source_product:'KU2A',surface:sf,requested_depth,locale,audience_level};
   }
@@ -19,7 +18,21 @@
     if(!PRODUCTS.has(payload.term_owner))throw new Error('unknown term_owner');
     return payload;
   }
-  const api={VERSION,buildRequest,validateResponse};
+  function discoverCatalog(catalog,{query='',depth=null}={}){
+    if(!catalog||catalog.contract_version!==VERSION||!Array.isArray(catalog.entries))throw new Error('invalid knowledge catalog');
+    if(depth&&!DEPTHS.has(depth))throw new Error('unsupported depth');
+    const q=String(query||'').trim().toLowerCase();
+    return catalog.entries.filter(entry=>(!depth||(entry.available_depths||[]).includes(depth))&&(!q||[entry.knowledge_ref,entry.canonical_label,...(entry.aliases||[])].join(' ').toLowerCase().includes(q)));
+  }
+  function buildSurfaceManifest({manifest_version='0.1',surfaces=[]}={}){
+    return {contract_version:VERSION,product:'KU2A',manifest_version:requireText(manifest_version,'manifest_version'),surfaces:surfaces.map(item=>({surface:requireText(item.surface,'surface'),supports:(item.supports||[]).filter(x=>DEPTHS.has(x)),bound_refs:[...(item.bound_refs||[])],keywords:[...(item.keywords||[])]}))};
+  }
+  function buildEntryRequest({request_type,reason,knowledge_ref=null,proposed_label=null,term_owner='KU2A',source_definition=null,source_definition_version=null,needed_depths=[],intended_surfaces=[],locales=['th-TH'],request_id}){
+    if(!REQUEST_TYPES.has(request_type))throw new Error('unsupported request_type');
+    if(!PRODUCTS.has(term_owner))throw new Error('unknown term_owner');
+    return {contract_version:VERSION,request_id:request_id||('KR-KU2A-'+Date.now()),requester:'KU2A',request_type,knowledge_ref,proposed_label,term_owner,source_definition,source_definition_version,needed_depths:needed_depths.filter(x=>DEPTHS.has(x)),intended_surfaces:[...intended_surfaces],locales:[...locales],reason:requireText(reason,'reason')};
+  }
+  const api={VERSION,buildRequest,validateResponse,discoverCatalog,buildSurfaceManifest,buildEntryRequest};
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
   root.KU2AKnowledgeReference=api;
 })(typeof window!=='undefined'?window:globalThis);
