@@ -1,0 +1,7 @@
+review_id,review_text,sentiment_label
+r-001,good service and helpful staff,positive
+r-002,slow service and long wait,negative
+r-003,helpful support and good response,positive
+r-004,long wait and slow response,negative
+r-005,service was acceptable,neutral
+r-006,staff response was acceptable,neutral

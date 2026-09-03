@@ -58,8 +58,8 @@ const resultDetails=fs.readFileSync(path.join(root,'src/result-details.js'),'utf
 const accessibility=fs.readFileSync(path.join(root,'src/accessibility.js'),'utf8');
 const uiPreferences=fs.readFileSync(path.join(root,'src/ui-preferences.css'),'utf8');
 assert.strictEqual(appEntry,'app.html','static Product smoke must use app.html as canonical entry');
-for(const id of ['workspaceView','variablesView','profileOverview','profileQuality','relFieldA','relFieldB','relationshipResult','aiAnalyticsView'])assert.ok(html.includes(`id="${id}"`),`missing required UI id ${id}`);
-for(const src of ['src/state.js','src/advanced-stats.js','src/ai-analytics.js','src/relationship-stats.js','src/data-profile.js','src/workflow-steps.js','src/result-drivers.js','src/result-details.js','src/accessibility.js','src/journey.js'])assert.ok(html.includes(`src="${src}"`),`missing direct script ${src}`);
+for(const id of ['workspaceView','variablesView','profileOverview','profileQuality','relFieldA','relFieldB','relationshipResult','aiAnalyticsView','ku2dFile','textAnalyticsProfile'])assert.ok(html.includes(`id="${id}"`),`missing required UI id ${id}`);
+for(const src of ['src/state.js','src/ku2d-data-asset.js','src/text-analytics-workflow.js','src/advanced-stats.js','src/ai-analytics.js','src/relationship-stats.js','src/data-profile.js','src/workflow-steps.js','src/result-drivers.js','src/result-details.js','src/accessibility.js','src/journey.js'])assert.ok(html.includes(`src="${src}"`),`missing direct script ${src}`);
 assert.ok(html.includes('href="src/workflow-steps.css"'),'workflow CSS should load directly from the app shell');
 assert.ok(!html.includes('src/v05.js'),'versioned v05 runtime must not be loaded');
 assert.ok(!html.includes('hotfix-v051'),'legacy hotfix must not be loaded from app entry');
@@ -74,6 +74,7 @@ assert.ok(accessibility.includes('src/ui-preferences.css'),'accessibility module
 for(const option of ['standard','comfortable','large'])assert.ok(accessibility.includes(`data-ku-text-size=\\"${option}\\"`)||accessibility.includes(`data-ku-text-size="${option}"`),`missing text-size option ${option}`);
 assert.ok(uiPreferences.includes('--ku-text-scale:1.12'),'comfortable text size should be the default scale');
 assert.ok(journey.includes('datasetRevision'),'journey should track monotonic dataset revisions');
+assert.ok(journey.includes('KUDataLoader?.getContext'),'journey should preserve KU2D origin and lineage metadata in application state');
 assert.ok(journey.includes('data!==lastDataReference'),'dataset revision must advance when the loader replaces the data array');
 assert.ok(journey.includes("variableTable.addEventListener('change'"),'measurement-level edits should sync metadata directly into application state');
 for(const text of ['Automatically handled','Needs review','Approve Preparation →','Run recommended analysis →','Technical Run Specification','Backend API'])assert.ok(workflow.includes(text),`missing accepted workflow text: ${text}`);

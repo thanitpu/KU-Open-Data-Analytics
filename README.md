@@ -4,7 +4,7 @@ KU Open Data Analytics combines a public university-facing Landing Page with a b
 
 The Product experience follows one six-step journey:
 
-1. **Start** — choose or upload a CSV/XLSX dataset.
+1. **Start** — choose or upload a CSV/XLSX dataset, or inspect one or more compatible KU2D trusted JSON assets.
 2. **Data Profile** — review field structure, measurement levels, data quality, and mixed-type relationships.
 3. **Analyze** — define the analytical question; KU Open DA derives the analytical family from the question and target.
 4. **Prepare** — review route-specific preparation using the actual selected fields.
@@ -12,6 +12,14 @@ The Product experience follows one six-step journey:
 6. **Results** — read the answer first, then inspect evidence, family-specific findings, warnings, and technical payload.
 
 The browser also retains optional classical statistical tools for focused exploration. They are secondary to the production journey.
+
+## KU2D intake and text analytics
+
+The Product provides a separate **Use Data from KU2D** path for `trusted-data-asset-v1` JSON. It validates contract version, approval status, compatible schemas, counts, identities, provenance, and acquisition/effective timestamps. Draft assets can be inspected, but remain explicitly non-production-approved. Multi-snapshot rows retain `data_asset_id` lineage and keep acquisition time separate from effective time.
+
+Text Analytics is progressively disclosed across the existing journey: text profile and terms/phrases in Data Profile; supervised baseline sentiment, topic discovery, Topic × Sentiment, and disclosed retrieval in Analyze; human topic curation in Prepare; configuration disclosure in Setup; and evidence/derived-feature exports in Results. Browser retrieval is labelled as lexical fallback. Backend semantic routes use a versioned engine and identify LSA fallback as non-transformer output.
+
+KU2D continues to own discovery, audit, approval, acquisition, monitoring, provenance, and repository storage. KU2A does not import credentials, crawlers, production scheduling, or KU2B operational inference. See `docs/KU2A_TEXT_ANALYTICS_MIGRATION_REGISTER.md` and `docs/KU2A_TEXT_ANALYTICS_UAT.md`.
 
 ## Validated analytical routes
 

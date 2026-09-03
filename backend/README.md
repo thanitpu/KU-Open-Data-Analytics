@@ -44,6 +44,9 @@ Deep model and architecture discovery remains in the research notebook layer.
 
 - `GET /health`
 - `POST /analyze`
+- `POST /text-analytics/semantic-search`
+- `POST /text-analytics/similar-documents`
+- `POST /text-analytics/topics`
 
 The `/analyze` endpoint accepts:
 
@@ -64,3 +67,5 @@ The `/analyze` endpoint accepts:
 ### Current limitation
 
 Deep discovery engines are not yet exposed by the deployment package.
+
+Text semantic routes use the separately versioned `ku2a-semantic-engine-v1`. The public API deliberately uses the deterministic LSA/TF-IDF path and returns `engine: lsa-fallback`, `semantic: false`, and `fallback: true`; it never presents fallback output as transformer output.

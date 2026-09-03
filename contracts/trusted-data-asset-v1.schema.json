@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ku-open-data-analytics.example/contracts/trusted-data-asset-v1.schema.json",
+  "title": "KU2D Trusted Data Asset v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "data_asset_id",
+    "approval_status",
+    "schema",
+    "record_count",
+    "records",
+    "provenance",
+    "acquired_at",
+    "effective_at"
+  ],
+  "properties": {
+    "contract_version": { "const": "trusted-data-asset-v1" },
+    "data_asset_id": { "type": "string", "minLength": 1 },
+    "approval_status": { "enum": ["draft", "approved"] },
+    "schema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identity_field", "fields"],
+      "properties": {
+        "identity_field": { "type": "string", "minLength": 1 },
+        "fields": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "storage_type"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "storage_type": { "enum": ["text", "numeric", "boolean", "datetime", "object", "array", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "record_count": { "type": "integer", "minimum": 1 },
+    "records": { "type": "array", "minItems": 1, "items": { "type": "object" } },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["producer", "source_ids", "evidence_refs"],
+      "properties": {
+        "producer": { "const": "KU2D" },
+        "source_ids": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "evidence_refs": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "acquired_at": { "type": "string", "format": "date-time" },
+    "effective_at": { "type": "string", "format": "date-time" }
+  }
+}

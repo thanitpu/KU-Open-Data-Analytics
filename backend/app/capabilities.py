@@ -24,6 +24,13 @@ def get_capabilities():
                 'backend_contract_validation': 'lineage + allowed operation + source/output field + basic output type validation',
                 'arbitrary_code_returned': False,
                 'allowed_browser_operations': sorted(ALLOWED_BROWSER_OPERATIONS),
+            },
+            'text_analytics': {
+                'engine_version': 'ku2a-semantic-engine-v1',
+                'routes': ['/text-analytics/semantic-search', '/text-analytics/similar-documents', '/text-analytics/topics'],
+                'default_engine': 'lsa-fallback',
+                'transformer_enabled_by_api': False,
+                'fallback_disclosure': 'LSA/TF-IDF fallback is never represented as transformer output',
             }
         },
         'routes': {

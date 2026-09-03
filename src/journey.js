@@ -176,8 +176,10 @@
       :`empty|${datasetRevision}`;
     if(signature===lastDatasetSignature)return;
     lastDatasetSignature=signature;
+    const context=window.KUDataLoader?.getContext?.()||{};
     window.KUAppState.setDataset(loaded?{
       loaded:true,
+      name:context.name||null,
       revision:datasetRevision,
       rowCount:data.length,
       columnCount:headers.length,
@@ -185,7 +187,12 @@
         name,
         storage:typeof types!=='undefined'?types[name]:null,
         level:typeof meta!=='undefined'?meta[name]?.level:null
-      }))
+      })),
+      origin:context.origin||'local',
+      assets:context.assets||[],
+      approval:context.approval||null,
+      acquiredAt:context.acquiredAt||[],
+      effectiveAt:context.effectiveAt||[]
     }:null);
   }
   window.syncKUJourneyDataset=syncDatasetFromLegacy;

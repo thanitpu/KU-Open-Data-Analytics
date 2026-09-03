@@ -64,3 +64,20 @@ class FeatureEngineeringRecommendationResponse(BaseModel):
     domain_hints: List[str] = Field(default_factory=list)
     recommendations: List[FeatureEngineeringRecommendation] = Field(default_factory=list)
     warnings: List[str] = Field(default_factory=list)
+
+
+class SemanticSearchRequest(BaseModel):
+    texts: List[str] = Field(min_length=1, max_length=5000)
+    query: str = Field(min_length=1, max_length=1000)
+    top_n: int = Field(default=10, ge=1, le=50)
+
+
+class SimilarDocumentsRequest(BaseModel):
+    texts: List[str] = Field(min_length=2, max_length=5000)
+    index: int = Field(ge=0)
+    top_n: int = Field(default=5, ge=1, le=50)
+
+
+class TopicDiscoveryRequest(BaseModel):
+    texts: List[str] = Field(min_length=2, max_length=5000)
+    k: int = Field(default=5, ge=2, le=20)

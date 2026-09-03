@@ -7,8 +7,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from .orchestrator import execute_analysis
 from .reporting import build_executive_report
 from .capabilities import get_capabilities
-from .schemas import FeatureEngineeringRecommendationRequest, FeatureEngineeringRecommendationResponse
+from .schemas import FeatureEngineeringRecommendationRequest, FeatureEngineeringRecommendationResponse, SemanticSearchRequest, SimilarDocumentsRequest, TopicDiscoveryRequest
 from intelligence.fe_recommender import recommend_features
+from text_analytics.semantic_engine import semantic_search, similar_documents, discover_topics
 
 app = FastAPI(title='Automated Analytics Service', version='0.5.0')
 
@@ -40,6 +41,30 @@ def capabilities():
 def recommend_feature_engineering(request: FeatureEngineeringRecommendationRequest):
     try:
         return recommend_features(request.model_dump())
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=str(ex))
+
+
+@app.post('/text-analytics/semantic-search')
+def text_semantic_search(request: SemanticSearchRequest):
+    try:
+        return semantic_search(request.texts, request.query, request.top_n, prefer_transformer=False)
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=str(ex))
+
+
+@app.post('/text-analytics/similar-documents')
+def text_similar_documents(request: SimilarDocumentsRequest):
+    try:
+        return similar_documents(request.texts, request.index, request.top_n, prefer_transformer=False)
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=str(ex))
+
+
+@app.post('/text-analytics/topics')
+def text_topics(request: TopicDiscoveryRequest):
+    try:
+        return discover_topics(request.texts, request.k, prefer_transformer=False)
     except Exception as ex:
         raise HTTPException(status_code=400, detail=str(ex))
 
