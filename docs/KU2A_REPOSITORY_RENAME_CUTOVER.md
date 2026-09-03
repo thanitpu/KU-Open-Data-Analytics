@@ -1,6 +1,6 @@
 # KU2A Repository Rename Cutover
 
-Status: controlled cutover record
+Status: completed and verified on 2026-09-03 (Asia/Bangkok)
 
 ## Authoritative identity decision
 
@@ -11,6 +11,27 @@ Status: controlled cutover record
 - Default branch: `main` (unchanged)
 
 The repository name identifies the KU2A analytical system. It does not rename the public product, the Render service, API contracts, or established user-facing URLs. The old GitHub repository name must not be reused: GitHub redirects for repository links depend on that name remaining unclaimed.
+
+## Completed cutover evidence
+
+- Cutover PR: `#75` (squash merged)
+- Integration commit: `38cf7f264d0656dff11598f06787b6fbb70e0bd5`
+- Repository ID before and after rename: `1329450012`
+- Canonical default-branch tree: `fea35a676a67687b2c9665b52698fdf7b0826935`
+- Reviewed PR-head tree: `fea35a676a67687b2c9665b52698fdf7b0826935` (identical)
+- Post-merge Frontend CI run `33765235021`: success
+- Post-merge Backend CI run `33765235014`: success
+- Post-rename Pages deployment run `33765406132`: success
+- New Pages project URL: `https://thanitpu.github.io/KU2A-Analytics/` (HTTP 200 when verified)
+- Previous Pages project URL: `https://thanitpu.github.io/KU-Open-Data-Analytics/` (HTTP 404, expected because GitHub Pages project URLs do not redirect)
+- Previous GitHub repository URL: permanent redirect to `https://github.com/thanitpu/KU2A-Analytics`
+- Commit-pinned raw.githack app preview and existing Render `/health`: HTTP 200 when verified
+- Remote branch count at verification: 84; `integration/data-acquisition-platform` and the retained cutover branch were present
+- Open acquisition PRs `#22` and `#36`–`#43` remained open under the renamed repository
+- Repository Actions secrets remained attached to the same repository; `KU2D_YOUTUBE_API_KEY` was confirmed present by name only. Its value was never read or exposed.
+- No live acquisition/provider request, production Human Approve action, or scheduler mutation occurred during cutover.
+
+The local canonical `main` and `origin/main` both pointed to the integration commit after verification. The active workspace directory retained its previous filesystem name solely to avoid invalidating the running Codex workspace; this does not change repository identity.
 
 ## Scope and preservation rules
 
