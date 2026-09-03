@@ -1,0 +1,27 @@
+{
+  "contract_version": "trusted-data-asset-v1",
+  "data_asset_id": "KU2D-ASSET-TEXT-001",
+  "approval_status": "approved",
+  "schema": {
+    "identity_field": "review_id",
+    "fields": [
+      { "name": "review_id", "storage_type": "text" },
+      { "name": "review_text", "storage_type": "text" },
+      { "name": "sentiment_label", "storage_type": "text" }
+    ]
+  },
+  "record_count": 4,
+  "records": [
+    { "review_id": "r-001", "review_text": "บริการดีมาก พนักงานช่วยเหลือดี", "sentiment_label": "positive" },
+    { "review_id": "r-002", "review_text": "บริการช้าและรอนานมาก", "sentiment_label": "negative" },
+    { "review_id": "r-003", "review_text": "helpful staff and good service", "sentiment_label": "positive" },
+    { "review_id": "r-004", "review_text": "slow service and long wait", "sentiment_label": "negative" }
+  ],
+  "provenance": {
+    "producer": "KU2D",
+    "source_ids": ["SRC-DEMO-001"],
+    "evidence_refs": ["EVIDENCE-DEMO-001"]
+  },
+  "acquired_at": "2026-08-30T09:00:00+07:00",
+  "effective_at": "2026-08-29T00:00:00+07:00"
+}

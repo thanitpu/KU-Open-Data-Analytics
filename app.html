@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="src/journey.css">
 <link rel="stylesheet" href="src/data-profile.css">
 <link rel="stylesheet" href="src/workflow-steps.css">
+<link rel="stylesheet" href="src/text-analytics.css">
 </head>
 <body>
 <header>
@@ -18,6 +19,7 @@
   <div class="actions">
     <button class="btn" onclick="demo()">Load demo</button>
     <label class="btn primary">Import CSV/XLSX<input id="file" type="file" accept=".csv,.xlsx,.xls,text/csv" hidden></label>
+    <label class="btn">Use Data from KU2D<input id="ku2dFile" type="file" accept=".json,application/json" multiple hidden></label>
   </div>
 </header>
 <div class="app">
@@ -58,6 +60,7 @@
     <div>
       <section class="card upload-card"><div class="head">Choose your dataset</div><div class="body">
         <div class="drop" id="drop"><strong>Drop CSV or Excel file here</strong><small>or use Import CSV/XLSX above</small></div>
+        <div class="ku2d-intake-note"><b>KU2D trusted asset</b><span>Use the separate header action to select one or more compatible <code>trusted-data-asset-v1</code> JSON snapshots. Draft assets remain inspectable only.</span></div>
         <div class="row hidden" id="sheetRow"><span class="note">Excel sheet:</span><select id="sheetSelect" class="sheet-select"></select><button class="btn" onclick="loadSelectedSheet()">Load sheet</button></div>
         <details class="paste-details"><summary>Paste delimited data instead</summary><textarea id="paste" placeholder="Group,Score,Age&#10;A,72,21&#10;B,88,20"></textarea><div class="row"><button class="btn" onclick="usePaste()">Use pasted data</button></div></details>
         <div class="row"><button class="btn" onclick="clearAll()">Clear dataset</button><span class="note" id="status">No dataset loaded</span></div>
@@ -86,6 +89,7 @@
     <button class="profile-tab" data-profile-tab="fields" onclick="setProfileTab('fields')">Fields</button>
     <button class="profile-tab" data-profile-tab="quality" onclick="setProfileTab('quality')">Data Quality</button>
     <button class="profile-tab" data-profile-tab="relationships" onclick="setProfileTab('relationships')">Relationships</button>
+    <button class="profile-tab" data-profile-tab="text" onclick="setProfileTab('text')">Text Analytics</button>
   </div>
   <div class="profile-pane active" data-profile-pane="overview">
     <div id="profileOverview"></div>
@@ -113,6 +117,7 @@
       <div id="relationshipResult" class="relationship-result"><div class="empty">Select two fields and analyze their relationship.</div></div>
     </section>
   </div>
+  <div class="profile-pane" data-profile-pane="text"><div id="textAnalyticsProfile"><div class="empty">Load a dataset to inspect text fields.</div></div></div>
   <div class="profile-footer"><button class="btn ghost" onclick="goToJourneyStep('start')">← Back to Start</button><button class="btn primary" onclick="goToJourneyStep('analyze')">Continue to Analyze →</button></div>
 </section>
 <section id="analysisView" class="hidden"><div class="row" style="margin:0 0 14px"><button class="btn" onclick="showView('variables')">← Back to Data Profile</button><span class="pill">Advanced statistical tool</span></div>
@@ -124,6 +129,23 @@
 <section id="aiAnalyticsView" class="hidden"></section>
 </main></div>
 <script src="src/state.js"></script>
+<script src="src/ku2d-data-asset.js"></script>
+<script src="src/text-analytics/contracts/text-field-contract.js"></script>
+<script src="src/text-analytics/contracts/text-profile-contract.js"></script>
+<script src="src/text-analytics/contracts/derived-feature-contract.js"></script>
+<script src="src/text-analytics/core/text-normalizer.js"></script>
+<script src="src/text-analytics/core/language-detector.js"></script>
+<script src="src/text-analytics/core/tokenizer.js"></script>
+<script src="src/text-analytics/core/text-field-detector.js"></script>
+<script src="src/text-analytics/core/text-profiler.js"></script>
+<script src="src/text-analytics/core/keyword-extractor.js"></script>
+<script src="src/text-analytics/core/phrase-extractor.js"></script>
+<script src="src/text-analytics/core/sentiment-baseline.js"></script>
+<script src="src/text-analytics/core/topic-discovery.js"></script>
+<script src="src/text-analytics/core/topic-sentiment.js"></script>
+<script src="src/text-analytics/core/semantic-browser.js"></script>
+<script src="src/text-analytics/core/csv-exporter.js"></script>
+<script src="src/text-analytics/adapters/ku-open-da-adapter.js"></script>
 <script src="src/app.js"></script>
 <script src="src/file-load-indicator.js"></script>
 <script src="src/analysis.js"></script>
@@ -139,5 +161,6 @@
 <script src="src/result-drivers.js"></script>
 <script src="src/result-details.js"></script>
 <script src="src/accessibility.js"></script>
+<script src="src/text-analytics-workflow.js"></script>
 <script src="src/journey.js"></script>
 </body></html>

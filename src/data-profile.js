@@ -7,7 +7,7 @@ const fmt=(v,d=3)=>Number.isFinite(v)?Number(v).toFixed(d):'—';
 const pct=v=>Number.isFinite(v)?`${(100*v).toFixed(1)}%`:'—';
 const stats=()=>window.KURelationshipStats;
 function loaded(){return typeof headers!=='undefined'&&typeof data!=='undefined'&&headers.length>0&&data.length>0}
-function datasetName(){const f=el('file')?.files?.[0];if(f?.name)return f.name;return el('paste')?.value?.trim()?'Pasted / demo dataset':'Current dataset'}
+function datasetName(){const context=window.KUDataLoader?.getContext?.();if(context?.name)return context.name;const f=el('file')?.files?.[0];if(f?.name)return f.name;return el('paste')?.value?.trim()?'Pasted / demo dataset':'Current dataset'}
 function missingCount(){if(!loaded())return 0;let n=0;for(const r of data)for(const h of headers)if(r[h]===''||r[h]===null||r[h]===undefined)n++;return n}
 function duplicateRows(){if(!loaded())return 0;const seen=new Set();let dup=0;for(const r of data){const key=headers.map(h=>String(r[h]??'')).join('\u001f');if(seen.has(key))dup++;else seen.add(key)}return dup}
 function fieldSummary(h){const vals=data.map(r=>r[h]).filter(v=>v!==''&&v!==null&&v!==undefined),missing=data.length-vals.length,unique=new Set(vals.map(String)).size;return{name:h,storage:types[h],level:meta[h]?.level||'Nominal',n:vals.length,missing,unique,missingRate:missing/Math.max(1,data.length)}}

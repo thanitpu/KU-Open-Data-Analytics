@@ -1,4 +1,5 @@
 let data=[],headers=[],types={},meta={},workbook=null;
+let datasetContext={origin:'local',name:null,assets:[],approval:null,acquiredAt:[],effectiveAt:[]};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
@@ -64,7 +65,28 @@ function normalizeHeaders(raw){
   });
 }
 
-function parseDelimited(text){
+function setDatasetContext(context={}){
+  datasetContext={
+    origin:context.origin||'local',
+    name:context.name||null,
+    assets:Array.isArray(context.assets)?context.assets:[],
+    approval:context.approval||null,
+    acquiredAt:Array.isArray(context.acquiredAt)?context.acquiredAt:[],
+    effectiveAt:Array.isArray(context.effectiveAt)?context.effectiveAt:[]
+  };
+}
+
+function loadObjectRows(rows,columns,context={}){
+  if(!Array.isArray(rows)||!rows.length)throw Error('The dataset must contain at least one record.');
+  if(!Array.isArray(columns)||!columns.length)throw Error('The dataset schema must contain at least one field.');
+  headers=normalizeHeaders(columns);
+  data=rows.map(row=>({...row}));
+  setDatasetContext(context);
+  inferMetadata();
+  render();
+}
+
+function parseDelimited(text,context={origin:'local',name:'Pasted delimited data'}){
   const delimiter=detectDelimiter(text);
   const rows=parseDelimitedRows(text,delimiter);
   if(rows.length<2)throw Error('Please provide a header and at least one data row.');
@@ -74,6 +96,7 @@ function parseDelimited(text){
     headers.forEach((h,i)=>o[h]=r[i]??'');
     return o;
   });
+  setDatasetContext(context);
   inferMetadata();
   render();
 }
@@ -87,6 +110,7 @@ function loadAOA(rows){
     headers.forEach((h,i)=>o[h]=(r[i]===null||r[i]===undefined)?'':String(r[i]).trim());
     return o;
   });
+  if(datasetContext.origin!=='local')setDatasetContext({origin:'local'});
   inferMetadata();
   render();
 }
@@ -135,7 +159,7 @@ function render(){
   $('cols').textContent=headers.length;
   $('nums').textContent=numeric.length;
   $('miss').textContent=missing;
-  $('status').textContent=`${data.length} rows × ${headers.length} variables loaded`;
+  $('status').textContent=`${data.length} rows × ${headers.length} variables loaded · ${datasetContext.origin==='ku2d'?'KU2D trusted asset':'local input'}`;
 
   let h='<div class="table"><table><thead><tr>'+headers.map(x=>`<th>${esc(x)}<br><span class="pill">${esc(meta[x].level)}</span></th>`).join('')+'</tr></thead><tbody>';
   data.slice(0,50).forEach(r=>h+='<tr>'+headers.map(x=>`<td>${esc(r[x])}</td>`).join('')+'</tr>');
@@ -249,13 +273,14 @@ function advisor(){
   $('advisor').innerHTML=msg;
 }
 
-function usePaste(){try{parseDelimited($('paste').value)}catch(e){alert(e.message)}}
+function usePaste(){try{parseDelimited($('paste').value,{origin:'local',name:'Pasted delimited data'})}catch(e){alert(e.message)}}
 function demo(){
   $('paste').value='Group,Score,Age,Satisfaction\nA,72,21,High\nA,81,22,High\nA,77,24,Medium\nB,88,20,High\nB,91,22,High\nB,79,25,Medium\nC,68,21,Low\nC,74,23,Medium\nC,77,26,High';
-  usePaste();
+  try{parseDelimited($('paste').value,{origin:'local',name:'Built-in demo'})}catch(e){alert(e.message)}
 }
 function clearAll(){
   data=[];headers=[];types={};meta={};workbook=null;
+  setDatasetContext({origin:'local'});
   $('paste').value='';$('preview').innerHTML='<div class="empty">Import data to preview it here.</div>';
   $('variableTable').innerHTML='<div class="empty">Import data first.</div>';
   ['rows','cols','nums','miss'].forEach(id=>$(id).textContent='—');
@@ -265,6 +290,7 @@ function clearAll(){
 
 async function handleFile(file){
   if(!file)return;
+  setDatasetContext({origin:'local',name:file.name});
   const name=file.name.toLowerCase();
   if(name.endsWith('.xlsx')||name.endsWith('.xls')){
     if(typeof XLSX==='undefined'){alert('Excel reader library could not be loaded. Please check your internet connection.');return}
@@ -275,7 +301,7 @@ async function handleFile(file){
     loadSelectedSheet();
   }else{
     const text=await file.text();
-    parseDelimited(text);
+    parseDelimited(text,{origin:'local',name:file.name});
     $('sheetRow').classList.add('hidden');
   }
 }
@@ -284,10 +310,47 @@ function loadSelectedSheet(){
   const name=$('sheetSelect').value || workbook.SheetNames[0];
   const rows=XLSX.utils.sheet_to_json(workbook.Sheets[name],{header:1,defval:''});
   loadAOA(rows);
+  datasetContext.name=`${datasetContext.name||'Workbook'} · ${name}`;
   $('status').textContent += ` · sheet: ${name}`;
 }
 
+async function handleKU2DFiles(fileList){
+  const files=[...(fileList||[])];
+  if(!files.length)return;
+  if(!window.KU2DDataAsset)throw Error('KU2D asset contract module is unavailable.');
+  const parsed=[];
+  for(const file of files)parsed.push(window.KU2DDataAsset.parseJSON(await file.text(),file.name));
+  const batch=window.KU2DDataAsset.validateAssets(parsed);
+  workbook=null;
+  loadObjectRows(batch.rows,batch.dataColumns,{
+    origin:'ku2d',
+    name:batch.assets.map(asset=>asset.data_asset_id).join(' + '),
+    assets:batch.assets.map(asset=>({
+      dataAssetId:asset.data_asset_id,
+      approvalStatus:asset.approval_status,
+      provenance:asset.provenance,
+      acquiredAt:asset.acquired_at,
+      effectiveAt:asset.effective_at,
+      recordCount:asset.record_count
+    })),
+    approval:batch.approval,
+    acquiredAt:batch.acquiredAt,
+    effectiveAt:batch.effectiveAt
+  });
+  const approval=batch.approval.productionApproved?'production-approved':'inspectable only · not production-approved';
+  $('status').textContent=`${batch.rows.length} records from ${batch.assets.length} KU2D asset${batch.assets.length===1?'':'s'} · ${approval}`;
+  $('sheetRow').classList.add('hidden');
+}
+
 $('file').addEventListener('change',e=>handleFile(e.target.files[0]).catch(err=>alert(err.message)));
+$('ku2dFile').addEventListener('change',e=>handleKU2DFiles(e.target.files).catch(err=>alert(err.message)));
 ['dragover','drop'].forEach(ev=>$('drop').addEventListener(ev,e=>e.preventDefault()));
 $('drop').addEventListener('drop',e=>handleFile(e.dataTransfer.files[0]).catch(err=>alert(err.message)));
 clearCanvas();
+
+window.KUDataLoader=Object.freeze({
+  loadObjectRows,
+  getRows:()=>data.map(row=>({...row})),
+  getHeaders:()=>[...headers],
+  getContext:()=>JSON.parse(JSON.stringify(datasetContext))
+});

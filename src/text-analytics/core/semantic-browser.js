@@ -1,0 +1,9 @@
+(function(root,factory){const api=factory(root);if(typeof module==='object'&&module.exports)module.exports=api;if(root)root.KUSemanticBrowser=api;})(typeof window!=='undefined'?window:globalThis,function(root){
+  'use strict';
+  const ENGINE=Object.freeze({engine:'browser-tfidf-lexical',version:'1.0',semantic:false,disclosure:'Lexical browser fallback; not a transformer embedding.'});
+  function vector(text){const counts=new Map();for(const token of root.KUPhraseExtractor.meaningful(root.KUPhraseExtractor.tokenize(text,'th')))counts.set(token,(counts.get(token)||0)+1);let norm=Math.sqrt([...counts.values()].reduce((sum,value)=>sum+value*value,0))||1;return new Map([...counts].map(([key,value])=>[key,value/norm]));}
+  function cosine(a,b){let score=0,small=a.size<=b.size?a:b,large=small===a?b:a;for(const [key,value] of small)score+=value*(large.get(key)||0);return score;}
+  function semanticSearch(texts,query,topN=10){if(!String(query||'').trim())throw new Error('Search query is required.');const queryVector=vector(query);return {engine:ENGINE,query:String(query),results:(texts||[]).map((text,index)=>({index,text:String(text??''),similarity:cosine(vector(text),queryVector)})).sort((a,b)=>b.similarity-a.similarity).slice(0,Math.max(1,Math.min(Number(topN)||10,texts.length)))};}
+  function similarDocuments(texts,index,topN=5){index=Number(index);if(!Number.isInteger(index)||index<0||index>=texts.length)throw new Error('Document index is out of range.');const source=vector(texts[index]);return {engine:ENGINE,source:{index,text:String(texts[index]??'')},results:texts.map((text,itemIndex)=>({index:itemIndex,text:String(text??''),similarity:cosine(vector(text),source)})).filter(item=>item.index!==index).sort((a,b)=>b.similarity-a.similarity).slice(0,Math.max(1,Number(topN)||5))};}
+  return {ENGINE,semanticSearch,similarDocuments};
+});
