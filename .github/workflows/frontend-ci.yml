@@ -7,6 +7,7 @@ jobs:
   frontend-smoke:
     runs-on: ubuntu-latest
     env:
+      # Final architecture: index.html is Public Landing; app.html is the canonical Functional Product entry.
       KU_APP_ENTRY: app.html
     steps:
       - uses: actions/checkout@v4
@@ -15,16 +16,66 @@ jobs:
           node-version: '24'
       - name: JavaScript syntax
         run: |
-          find src -name '*.js' -print0 | xargs -0 -n1 node --check
-          find tests -name '*.js' -print0 | xargs -0 -n1 node --check
-      - name: KU Open knowledge reference consumer smoke
-        run: node tests/knowledge_reference_contract_smoke.js
+          node --check src/state.js
+          node --check src/journey.js
+          node --check src/relationship-stats.js
+          node --check src/profile-manifest.js
+          node --check src/profile-insights.js
+          node --check src/large-dataset-profile.js
+          node --check src/method-selection.js
+          node --check src/fe-executor.js
+          node --check src/fe-review.js
+          node --check src/multi-method.js
+          node --check src/data-profile.js
+          node --check src/ai-analytics.js
+          node --check src/workflow-steps.js
+          node --check src/result-drivers.js
+          node --check src/result-details.js
+          node --check src/accessibility.js
+          node --check src/advanced-stats.js
+          node --check src/app.js
+          node --check src/ku2d-data-asset.js
+          node --check src/text-analytics-workflow.js
+          find src/text-analytics -name '*.js' -print0 | xargs -0 -n1 node --check
+          node --check src/analysis.js
+          node --check src/landing-copy.js
+          node --check src/landing-content.js
+          node --check src/landing.js
+          node --check src/knowledge-reference.js
+          node --check tests/frontend_entry_guard.js
+          node --check tests/landing_smoke.js
+          node --check tests/ui_preferences_smoke.js
+          node --check tests/frontend_file_loader_smoke.js
+          node --check tests/frontend_dom_smoke.js
+          node --check tests/frontend_ordinal_smoke.js
+          node --check tests/profile_manifest_smoke.js
+          node --check tests/large_dataset_profile_smoke.js
+          node --check tests/profile_insights_smoke.js
+          node --check tests/profile_insights_browser_smoke.js
+          node --check tests/profile_shell_wiring_smoke.js
+          node --check tests/method_selection_smoke.js
+          node --check tests/method_selection_browser_smoke.js
+          node --check tests/fe_executor_smoke.js
+          node --check tests/fe_review_browser_smoke.js
+          node --check tests/multi_method_smoke.js
+          node --check tests/multi_method_browser_smoke.js
+          node --check tests/public_product_visual_smoke.js
+          node --check tests/responsive_sticky_smoke.js
+          node --check tests/frontend_visual_smoke.js
+          node --check tests/ku2d_data_asset_smoke.js
+          node --check tests/text_analytics_smoke.js
+          node --check tests/repository_identity_smoke.js
+          node --check tests/ku2d_intake_browser_smoke.js
+          node --check tests/text_analytics_browser_smoke.js
+          node --check tests/knowledge_reference_contract_smoke.js
       - name: Public and Product entry separation guard
         run: node tests/frontend_entry_guard.js
       - name: Landing static smoke
         run: node tests/landing_smoke.js
       - name: Product static smoke tests
         run: node tests/frontend_smoke.js
+      - name: KU Open knowledge reference consumer smoke
+        run: node tests/knowledge_reference_contract_smoke.js
       - name: KU2D trusted data asset contract smoke
         run: node tests/ku2d_data_asset_smoke.js
       - name: Text analytics deterministic smoke
