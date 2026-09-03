@@ -41,6 +41,7 @@ jobs:
           node --check src/landing-copy.js
           node --check src/landing-content.js
           node --check src/landing.js
+          node --check src/knowledge-reference.js
           node --check tests/frontend_entry_guard.js
           node --check tests/landing_smoke.js
           node --check tests/ui_preferences_smoke.js
@@ -66,12 +67,15 @@ jobs:
           node --check tests/repository_identity_smoke.js
           node --check tests/ku2d_intake_browser_smoke.js
           node --check tests/text_analytics_browser_smoke.js
+          node --check tests/knowledge_reference_contract_smoke.js
       - name: Public and Product entry separation guard
         run: node tests/frontend_entry_guard.js
       - name: Landing static smoke
         run: node tests/landing_smoke.js
       - name: Product static smoke tests
         run: node tests/frontend_smoke.js
+      - name: KU Open knowledge reference consumer smoke
+        run: node tests/knowledge_reference_contract_smoke.js
       - name: KU2D trusted data asset contract smoke
         run: node tests/ku2d_data_asset_smoke.js
       - name: Text analytics deterministic smoke
