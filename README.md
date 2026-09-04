@@ -72,6 +72,14 @@ Product runtime code must not hard-code `index.html` or root-absolute redirects.
 
 Architecture/workstream boundaries are recorded in `docs/ADR-frontend-public-landing-app-entry.md`; handoff and migration history are in `docs/LANDING_INTEGRATION_HANDOFF.md`, `docs/FUNCTIONAL_APP_HANDOFF.md`, and `docs/APP_ENTRY_MIGRATION_UAT.md`.
 
+## Cloudflare online UAT
+
+KU2A supports Cloudflare Pages Git-integrated online UAT while the repository remains private. Cloudflare must publish only the staged browser payload created by `tools/build_cloudflare_preview.sh`, not the repository root.
+
+Recommended Pages settings and the online UAT checklist are documented in [`docs/CLOUDFLARE_ONLINE_UAT.md`](docs/CLOUDFLARE_ONLINE_UAT.md). The staged publication boundary is `_cloudflare_site/`; backend, contracts, tests, and repository-internal files are deliberately excluded.
+
+Cloudflare is a frontend/UAT deployment surface only. Validated backend analysis continues to use the configured FastAPI service and must pass backend CI independently.
+
 ## Backend
 
 The FastAPI service lives under `backend/` and currently reports API version `0.3.0`.

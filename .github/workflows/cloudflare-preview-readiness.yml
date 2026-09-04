@@ -1,0 +1,45 @@
+name: Cloudflare Preview Readiness
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'app.html'
+      - 'preview.html'
+      - 'assets/**'
+      - 'src/**'
+      - 'tools/build_cloudflare_preview.sh'
+      - 'docs/CLOUDFLARE_ONLINE_UAT.md'
+      - '.github/workflows/cloudflare-preview-readiness.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'app.html'
+      - 'preview.html'
+      - 'assets/**'
+      - 'src/**'
+      - 'tools/build_cloudflare_preview.sh'
+      - '.github/workflows/cloudflare-preview-readiness.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  stage-static-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build static UAT payload
+        run: bash tools/build_cloudflare_preview.sh
+      - name: Verify publication boundary
+        run: |
+          test -f _cloudflare_site/index.html
+          test -f _cloudflare_site/app.html
+          test -d _cloudflare_site/src
+          test -d _cloudflare_site/assets
+          test ! -e _cloudflare_site/backend
+          test ! -e _cloudflare_site/contracts
+          test ! -e _cloudflare_site/tests
+          echo 'KU2A Cloudflare preview readiness PASS'
