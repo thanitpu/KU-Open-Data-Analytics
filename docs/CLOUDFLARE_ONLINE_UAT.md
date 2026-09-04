@@ -2,12 +2,12 @@
 
 ## Purpose
 
-This document defines the standard way to test the KU2A browser UI online while keeping the GitHub repository private.
+This document defines the standard way to test the KU2A browser UI online through Cloudflare Pages Git integration without making repository visibility a deployment requirement.
 
 The intended flow is:
 
 ```text
-private GitHub repository
+GitHub repository (public or private)
         ↓
 Cloudflare Pages Git integration
         ↓
@@ -15,7 +15,7 @@ production branch (`main`) → stable UAT URL
 feature branch / PR          → preview URL
 ```
 
-Cloudflare is a deployment surface, not the source of truth. GitHub `main` remains the known-good source baseline.
+Cloudflare is a deployment surface, not the source of truth. GitHub `main` remains the known-good source baseline. Repository visibility must not be changed merely to enable online UAT.
 
 ## What is published
 
